@@ -21,9 +21,16 @@ Supercoder AI 웹사이트 — **AIVIEW** 제품 랜딩 페이지. AI 면접으�
 - **섹션 = 페이지 구조.** 본문은 번호가 매겨진 `<section>` 블록의 세로 스택이다(DECLARATION → VALUE → FLOOD → ROLE → HOW IT WORKS → PROOF → VOICES → FINAL CTA → FOOTER). 각 섹션은 고유 클래스(`.decl`, `.value`, `.flood`, `.role`, `.how`, `.proof2`, `.voices`, `.final`)를 가지며, 해당 섹션의 CSS는 주석 헤더(`/* 1. DECLARATION */` 등) 아래에 모여 있다. 섹션을 편집할 땐 마크업과 그 주석 블록을 함께 본다.
 - **실험적/대체 레이아웃이 공존한다.** 동일 메시지의 변형 컴포넌트가 여러 개 들어 있다 — 예: ROLE REVERSAL은 `.role`(2-컬럼)과 `.role-funnel`(깔때기) 두 버전이 있고, 깔때기에도 `.tri`/`.fA`/`.fB`/`.fC` 변형 CSS가 남아 있다. 일부는 현재 마크업에서 렌더링되지 않는 "보관용" 스타일이니, 클래스를 지우기 전 실제 사용 여부를 확인한다.
 - **반응형은 컴포넌트별 `@media`로.** 전역 브레이크포인트 시스템이 아니라 각 섹션 CSS 끝에 개별 `@media(max-width:...)` 규칙이 붙어 있다. 주 브레이크포인트는 880/760/560px 대.
-- **외부 의존성은 CDN 2개뿐:** Pretendard 폰트(jsdelivr), Font Awesome 6.5.2 아이콘(cdnjs). 아이콘은 `<i class="fa-...">`로 사용.
-- **로컬 에셋:** `supercoder-nav.png`(헤더 로고), `supercoder-logo.png`(푸터 로고), `demo-result.png`(HOW IT WORKS 제품 데모 스크린샷). `index.html`이 상대경로로 직접 참조한다.
-- **CTA 폼은 비기능.** 최종 CTA의 `<form>`은 `onsubmit="return false"`로 제출을 막아 둔 더미다 — 실제 백엔드/제출 처리는 아직 없다.
+- **외부 의존성은 CDN:** Pretendard 폰트(jsdelivr), Font Awesome 6.5.2 아이콘(cdnjs), `apply.html`은 `@supabase/supabase-js@2`(jsdelivr) 추가. 아이콘은 `<i class="fa-...">`로 사용.
+- **로컬 에셋:** `supercoder-nav.png`(헤더 로고), `supercoder-logo.png`(푸터 로고), `demo-result.png`(HOW IT WORKS 제품 데모 스크린샷). 상대경로로 직접 참조한다.
+- **무료 신청 폼은 Supabase 저장(기능).** `apply.html` 폼은 제출 시 클라이언트에서 직접 Supabase `public.signups` 테이블에 INSERT 한다(검증 → insert → 완료 화면). `index.html` 최종 CTA는 폼이 아니라 `apply.html`로 가는 버튼이다.
+
+## Backend (Supabase)
+
+- **프로젝트:** `supercoder-aiview` (ref `ymzlcghqamkynuvotzgh`, region ap-northeast-2). org `uwuwftckkxbtbqjlsrav`.
+- **테이블:** `public.signups` — 컬럼: `id, created_at, name, company, email, role, phone, size, memo`. RLS 활성, **anon `insert`만 허용**(SELECT 정책 없음 → 익명 읽기 불가, 쓰기 전용).
+- **연결 방식:** 정적 페이지라 백엔드 없이 `apply.html`에 **publishable(공개) 키 + 프로젝트 URL을 인라인**한다. publishable 키는 공개용이라 노출돼도 안전(RLS가 INSERT로 제한). 로컬(`file://`·localhost)·배포 모두 동일 프로젝트/데이터에 연결된다.
+- **service_role 키는 절대 클라이언트/깃에 넣지 않는다.** 신청 데이터 조회·관리는 Supabase 대시보드 또는 MCP(`execute_sql`)로 한다.
 
 ## Running / Preview
 

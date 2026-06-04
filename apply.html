@@ -69,6 +69,9 @@
   .agree a{color:var(--blue);text-decoration:underline}
   .agree.invalid{color:var(--red)}
   .apply-card .btn{width:100%;justify-content:center;font-size:16px;padding:15px}
+  .apply-card .btn[disabled]{opacity:.6;cursor:default;transform:none}
+  .form-err{display:none;background:#FDECEA;border:1px solid #F3C2BC;color:#B23B2E;font-size:13.5px;font-weight:600;border-radius:10px;padding:11px 14px;margin-bottom:14px}
+  .form-err.show{display:block}
 
   .apply-done{display:none;text-align:center;padding:24px 8px 14px}
   .apply-done .dot{width:76px;height:76px;border-radius:50%;background:var(--soft-2);color:var(--green);display:grid;place-items:center;font-size:36px;margin:0 auto 22px}
@@ -173,7 +176,8 @@
             <span><a href="#">개인정보 수집·이용</a>에 동의합니다. (필수)</span>
           </label>
 
-          <button type="submit" class="btn btn-blue">무료 신청하기 <i class="fa-solid fa-arrow-right"></i></button>
+          <div class="form-err" id="formErr"></div>
+          <button type="submit" class="btn btn-blue" id="submitBtn">무료 신청하기 <i class="fa-solid fa-arrow-right"></i></button>
         </form>
       </div>
 
@@ -193,17 +197,39 @@
 <site-footer></site-footer>
 
 <script src="partials.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 (function () {
+  // Supabase 연결 — publishable(공개) 키. RLS 로 INSERT 만 허용되어 노출돼도 안전하다.
+  // 로컬(file://·localhost)·배포(Vercel) 모두 동일 프로젝트/데이터에 연결된다.
+  var SUPABASE_URL = 'https://ymzlcghqamkynuvotzgh.supabase.co';
+  var SUPABASE_KEY = 'sb_publishable_QZ9NGClQjBIuPWz7CR8_wA_Acv9anJQ';
+
   var form = document.getElementById('applyForm');
   var card = document.getElementById('applyCard');
   var done = document.getElementById('applyDone');
+  var btn = document.getElementById('submitBtn');
+  var errBox = document.getElementById('formErr');
   if (!form) return;
+
+  var db = (window.supabase && window.supabase.createClient)
+    ? window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY)
+    : null;
 
   var emailRe = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
 
-  form.addEventListener('submit', function (e) {
+  function val(id) { var el = document.getElementById(id); return el ? el.value.trim() : ''; }
+  function showError(msg) { errBox.textContent = msg; errBox.classList.add('show'); }
+  function setLoading(on) {
+    btn.disabled = on;
+    btn.innerHTML = on
+      ? '전송 중… <i class="fa-solid fa-spinner fa-spin"></i>'
+      : '무료 신청하기 <i class="fa-solid fa-arrow-right"></i>';
+  }
+
+  form.addEventListener('submit', async function (e) {
     e.preventDefault();
+    errBox.classList.remove('show');
     var valid = true;
 
     // 검증 상태 초기화
@@ -225,10 +251,31 @@
       return;
     }
 
-    // 백엔드 연동은 후속 작업 — 현재는 완료 화면으로 전환만 한다.
-    card.style.display = 'none';
-    done.style.display = 'block';
-    done.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    var payload = {
+      name: val('f-name'),
+      company: val('f-company'),
+      email: val('f-email'),
+      role: val('f-role') || null,
+      phone: val('f-phone') || null,
+      size: val('f-size'),
+      memo: val('f-memo') || null
+    };
+
+    setLoading(true);
+    try {
+      if (!db) throw new Error('Supabase 클라이언트를 불러오지 못했습니다.');
+      var res = await db.from('signups').insert(payload);
+      if (res.error) throw res.error;
+
+      // 저장 성공 → 완료 화면으로 전환
+      card.style.display = 'none';
+      done.style.display = 'block';
+      done.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    } catch (err) {
+      setLoading(false);
+      showError('신청 저장 중 문제가 발생했습니다. 잠시 후 다시 시도해 주세요.');
+      console.error('signup insert failed:', err);
+    }
   });
 
   // 입력 시 해당 필드의 오류 표시 해제
