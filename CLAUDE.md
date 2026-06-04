@@ -34,6 +34,18 @@ python3 -m http.server 8000     # http://localhost:8000 로 서빙 (CDN/이미�
 
 ## 작업 규칙 (Workflow Rules)
 
+### 구현 후 로컬 Playwright 테스트 (MUST)
+
+구현이 끝나면 **commit/push 전에 항상** 로컬에서 Playwright로 검증한다:
+
+1. 정적 서버를 띄운다 — `python3 -m http.server 8000` (백그라운드).
+2. Playwright(`mcp__playwright__*`)로 `http://localhost:8000`에 접속해 변경한 화면을 확인한다.
+3. 캡처한 스크린샷은 **반드시 `screenshots/` 폴더**에 저장한다(없으면 생성). 파일명은 의미 있게 — 예: `screenshots/<섹션-또는-기능>-<desktop|mobile>.png`.
+4. 콘솔 에러·레이아웃 깨짐이 없는지 확인한 뒤에야 다음의 push 단계로 넘어간다.
+
+- 데스크톱뿐 아니라 주요 반응형 브레이크포인트(880/760/560px)도 필요 시 캡처한다.
+- `screenshots/`는 git에 커밋해 변경 이력의 시각적 근거로 남긴다.
+
 ### 새 기능 추가 시 자동 push (MUST)
 
 새로운 기능이 추가되거나 구현이 완료되면 **항상** 다음 순서로 `main` 브랜치에 push 한다:
