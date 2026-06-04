@@ -227,6 +227,7 @@
   .cta-form input::placeholder{color:#8A93A8}
   .cta-break{flex:0 0 100%;height:0}
   .cta-form .btn{flex:0 0 auto;margin:8px auto 0;justify-content:center}
+  .cta-actions{display:flex;justify-content:center;margin-top:4px}
   .final .reassure{margin-top:22px;display:flex;gap:22px;justify-content:center;flex-wrap:wrap;font-size:14px;color:#DCE7FF}
   .final .reassure i{margin-right:6px}
   @media(max-width:560px){.cta-form{flex-direction:column}.cta-form input,.cta-form .btn{width:100%;min-width:0}.cta-form .btn{justify-content:center}.final .reassure{gap:14px 18px}}
@@ -338,15 +339,7 @@
 </head>
 <body>
 
-<header>
-  <nav class="wrap">
-    <a href="#" class="logo"><img src="supercoder-nav.png" alt="Supercoder" class="nav-logo-img"></a>
-    <div class="navlinks">
-      <a href="#final">서비스 문의</a>
-      <a href="#final" class="btn btn-blue nav-btn">무료 데모 신청</a>
-    </div>
-  </nav>
-</header>
+<site-header></site-header>
 
 <!-- 1. DECLARATION -->
 <section class="decl">
@@ -356,7 +349,7 @@
       <h1>1차 검토는 <span class="blue">AI</span>에게.<br>채용팀은 <span class="blue">진짜 인재</span>만 만나세요.</h1>
       <p>수천 명을 <span class="blue" style="font-weight:700">AI 면접</span>으로 자동 검증하고,<br>검증된 핵심 인재 리포트만 받아보세요.</p>
       <div class="decl-cta">
-        <a href="#final" class="btn btn-blue">무료 데모 신청 <i class="fa-solid fa-arrow-right"></i></a>
+        <a href="apply.html" class="btn btn-blue">무료 데모 신청 <i class="fa-solid fa-arrow-right"></i></a>
       </div>
     </div>
   </div>
@@ -579,13 +572,9 @@
   <div class="wrap">
     <h2>이제, 진짜 인재만<br>만나보세요.</h2>
     <p>5분이면 충분합니다. 지금 무료로 확인하세요.</p>
-    <form class="cta-form" onsubmit="return false">
-      <input type="text" placeholder="이름" aria-label="이름">
-      <input type="text" placeholder="회사" aria-label="회사">
-      <input type="email" placeholder="이메일" aria-label="이메일">
-      <span class="cta-break"></span>
-      <button type="submit" class="btn btn-white">무료 데모 신청 <i class="fa-solid fa-arrow-right"></i></button>
-    </form>
+    <div class="cta-actions">
+      <a href="apply.html" class="btn btn-white">무료 신청하기 <i class="fa-solid fa-arrow-right"></i></a>
+    </div>
     <div class="reassure">
       <span><i class="fa-solid fa-circle-check"></i> 설치 없음</span>
       <span><i class="fa-solid fa-circle-check"></i> 계약 없음</span>
@@ -594,35 +583,9 @@
   </div>
 </section>
 
-<!-- FOOTER -->
-<footer>
-  <div class="wrap">
-    <div class="foot-links">
-      <div class="foot-col">
-        <h4>AI 면접관</h4>
-        <ul>
-          <li><a href="#">개인정보처리 방침</a></li>
-          <li><a href="#">기업용 서비스 이용약관</a></li>
-          <li><a href="#">지원자용 서비스 이용약관</a></li>
-        </ul>
-      </div>
-      <div class="foot-col">
-        <h4>글로벌 인재 채용</h4>
-        <ul>
-          <li><a href="#">개인정보처리 방침</a></li>
-          <li><a href="#">서비스 이용약관</a></li>
-        </ul>
-      </div>
-    </div>
-    <div class="foot-bottom">
-      <img src="supercoder-logo.png" class="foot-logo-img" alt="Supercoder">
-      <div class="foot-social">
-        <a href="mailto:contact@supercoder.co" aria-label="이메일"><i class="fa-solid fa-envelope"></i></a>
-        <a href="#" aria-label="LinkedIn"><i class="fa-brands fa-linkedin-in"></i></a>
-      </div>
-    </div>
-  </div>
-</footer>
+<!-- FOOTER (공유 partial) -->
+<site-footer></site-footer>
 
+<script src="partials.js"></script>
 </body>
 </html>

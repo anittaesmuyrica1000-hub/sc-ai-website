@@ -1,0 +1,73 @@
+- generic [active] [ref=e1]:
+  - banner [ref=e3]:
+    - navigation [ref=e4]:
+      - link "Supercoder" [ref=e5] [cursor=pointer]:
+        - /url: index.html
+        - img "Supercoder" [ref=e6]
+      - generic [ref=e7]:
+        - link "서비스 문의" [ref=e8] [cursor=pointer]:
+          - /url: apply.html
+        - link "무료 데모 신청" [ref=e9] [cursor=pointer]:
+          - /url: apply.html
+  - generic [ref=e12]:
+    - generic [ref=e13]:
+      - generic [ref=e14]:
+        - generic [ref=e15]: 
+        - text: AI 면접 채용 검증
+      - heading "이제, 진짜 인재만 만나보세요." [level=1] [ref=e16]:
+        - text: 이제, 진짜 인재만
+        - text: 만나보세요.
+      - paragraph [ref=e17]: 수천 명의 지원자를 AI 면접으로 자동 검증하고, 검증된 핵심 인재 리포트만 받아보세요. 신청하면 담당자가 데모를 안내해 드립니다.
+      - generic [ref=e18]:
+        - generic [ref=e19]:
+          - generic [ref=e20]: 
+          - text: 설치 없음 — 바로 시작
+        - generic [ref=e21]:
+          - generic [ref=e22]: 
+          - text: 계약 없음 — 부담 없이 체험
+        - generic [ref=e23]:
+          - generic [ref=e24]: 
+          - text: 5분이면 충분
+      - generic [ref=e25]: 500개 이상의 팀이 신뢰하는 선택
+    - text: 
+    - generic [ref=e90]:
+      - generic [ref=e92]: 
+      - heading "신청이 접수되었습니다." [level=2] [ref=e93]
+      - paragraph [ref=e94]:
+        - text: 영업일 기준 1일 내 담당자가
+        - text: 입력해 주신 이메일로 연락드립니다.
+      - link "홈으로 돌아가기" [ref=e95] [cursor=pointer]:
+        - /url: index.html
+  - contentinfo [ref=e60]:
+    - generic [ref=e61]:
+      - generic [ref=e62]:
+        - generic [ref=e63]:
+          - heading "AI 면접관" [level=4] [ref=e64]
+          - list [ref=e65]:
+            - listitem [ref=e66]:
+              - link "개인정보처리 방침" [ref=e67] [cursor=pointer]:
+                - /url: "#"
+            - listitem [ref=e68]:
+              - link "기업용 서비스 이용약관" [ref=e69] [cursor=pointer]:
+                - /url: "#"
+            - listitem [ref=e70]:
+              - link "지원자용 서비스 이용약관" [ref=e71] [cursor=pointer]:
+                - /url: "#"
+        - generic [ref=e72]:
+          - heading "글로벌 인재 채용" [level=4] [ref=e73]
+          - list [ref=e74]:
+            - listitem [ref=e75]:
+              - link "개인정보처리 방침" [ref=e76] [cursor=pointer]:
+                - /url: "#"
+            - listitem [ref=e77]:
+              - link "서비스 이용약관" [ref=e78] [cursor=pointer]:
+                - /url: "#"
+      - generic [ref=e79]:
+        - img "Supercoder" [ref=e80]
+        - generic [ref=e81]:
+          - link "이메일" [ref=e82] [cursor=pointer]:
+            - /url: mailto:contact@supercoder.co
+            - generic [ref=e83]: 
+          - link "LinkedIn" [ref=e84] [cursor=pointer]:
+            - /url: "#"
+            - generic [ref=e85]: 

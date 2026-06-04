@@ -1,0 +1,287 @@
+- generic [active] [ref=e1]:
+  - banner [ref=e3]:
+    - navigation [ref=e4]:
+      - link "Supercoder" [ref=e5] [cursor=pointer]:
+        - /url: index.html
+        - img "Supercoder" [ref=e6]
+      - generic [ref=e7]:
+        - link "서비스 문의" [ref=e8] [cursor=pointer]:
+          - /url: apply.html
+        - link "무료 데모 신청" [ref=e9] [cursor=pointer]:
+          - /url: apply.html
+  - generic [ref=e12]:
+    - generic [ref=e13]:
+      - generic [ref=e14]: 
+      - text: AI 면접 채용 검증
+    - heading "1차 검토는 AI에게. 채용팀은 진짜 인재만 만나세요." [level=1] [ref=e15]:
+      - text: 1차 검토는 AI에게.
+      - text: 채용팀은 진짜 인재만 만나세요.
+    - paragraph [ref=e16]:
+      - text: 수천 명을 AI 면접으로 자동 검증하고,
+      - text: 검증된 핵심 인재 리포트만 받아보세요.
+    - link "무료 데모 신청 " [ref=e18] [cursor=pointer]:
+      - /url: apply.html
+      - text: 무료 데모 신청
+      - generic [ref=e19]: 
+  - generic [ref=e20]:
+    - paragraph [ref=e21]: 500개 이상의 팀이 신뢰하는 선택
+    - generic [ref=e23]:
+      - generic [ref=e24]: Woongjin
+      - generic [ref=e25]: SKONEC
+      - generic [ref=e26]: MEDIT
+      - generic [ref=e27]: 벽산
+      - generic [ref=e28]: MIRI.D!H
+      - generic [ref=e29]: 가온프라임
+      - generic [ref=e30]: Woongjin
+      - generic [ref=e31]: SKONEC
+      - generic [ref=e32]: MEDIT
+      - generic [ref=e33]: 벽산
+      - generic [ref=e34]: MIRI.D!H
+      - generic [ref=e35]: 가온프라임
+  - generic [ref=e37]:
+    - generic [ref=e38]:
+      - heading "왜 AI 면접인가" [level=2] [ref=e39]
+      - paragraph [ref=e40]: 채용팀이 원하는 단 세 가지 — 더 빠르게, 더 적은 비용으로, 더 정확하게.
+    - generic [ref=e41]:
+      - generic [ref=e42]:
+        - generic [ref=e44]: 
+        - heading "빠르다" [level=3] [ref=e45]
+        - paragraph [ref=e46]: 수천 명의 지원자를 AI가 동시에 검증합니다. 1차 서류·검증에 쏟던 시간이 사라집니다.
+        - generic [ref=e47]: 검토 시간 60%↓
+      - generic [ref=e48]:
+        - generic [ref=e50]: 
+        - heading "비용 절감" [level=3] [ref=e51]
+        - paragraph [ref=e52]: 잘못된 채용 한 건의 비용은 연봉의 30%. 검증을 자동화해 채용 실패 비용을 줄입니다.
+        - generic [ref=e53]: 채용 미스매치 ↓
+      - generic [ref=e54]:
+        - generic [ref=e56]: 
+        - heading "정확한 검증" [level=3] [ref=e57]
+        - paragraph [ref=e58]: 이력서의 주장과 실제 역량을 대조해 과장·허위를 잡아냅니다. 감이 아니라 데이터로.
+        - generic [ref=e59]: 허위·과장 적발 94%
+  - generic [ref=e61]:
+    - generic [ref=e62]:
+      - heading "가짜는 쏟아지고, 잘못된 채용은 비싸집니다" [level=2] [ref=e63]:
+        - text: 가짜는 쏟아지고,
+        - text: 잘못된 채용은 비싸집니다
+      - paragraph [ref=e64]: AI가 써주는 이력서 속에서 진짜를 가려내지 못하면 — 그대로 비용이 됩니다.
+    - generic [ref=e65]:
+      - generic [ref=e66]:
+        - generic [ref=e67]: AI로 자소서 쓰는 지원자
+        - generic [ref=e68]: 60%
+        - generic [ref=e69]:
+          - generic [ref=e70]: 
+          - text: 진학사 캐치, 취준생 1,379명
+      - generic [ref=e71]:
+        - generic [ref=e72]: 기준 미달도 통과시킨 경험
+        - generic [ref=e73]: 58.9%
+        - generic [ref=e74]:
+          - generic [ref=e75]: 
+          - text: 잡코리아, 인사담당자 794명
+      - generic [ref=e76]:
+        - generic [ref=e77]: 잘못 뽑아 후회한 경험
+        - generic [ref=e78]: 80.2%
+        - generic [ref=e79]:
+          - generic [ref=e80]: 
+          - text: 사람인, 인사담당자 377명
+      - generic [ref=e81]:
+        - generic [ref=e82]: 채용 1명당 평균 비용
+        - generic [ref=e83]: 1,272만원
+        - generic [ref=e84]:
+          - generic [ref=e85]: 
+          - text: 사람인, 기업 499개사
+  - generic [ref=e87]:
+    - generic [ref=e88]:
+      - heading "뒷일은 AI가 합니다. 채용팀은 판단만 하세요." [level=2] [ref=e89]:
+        - text: 뒷일은 AI가 합니다.
+        - text: 채용팀은 판단만 하세요.
+      - paragraph [ref=e90]: 소모적인 검증은 AI에게, 가치 있는 결정은 사람에게.
+    - generic [ref=e91]:
+      - generic [ref=e92]:
+        - generic [ref=e93]:
+          - generic [ref=e94]: 
+          - text: AI가 합니다
+        - list [ref=e95]:
+          - listitem [ref=e96]:
+            - generic [ref=e97]: 
+            - text: AI 면접으로 수천 명 자동 검증
+          - listitem [ref=e98]:
+            - generic [ref=e99]: 
+            - text: 역량 분석·정량 채점
+          - listitem [ref=e100]:
+            - generic [ref=e101]: 
+            - text: 과장·허위 기재 탐지
+          - listitem [ref=e102]:
+            - generic [ref=e103]: 
+            - text: 핵심 인재 리포트 정리
+      - generic [ref=e104]:
+        - generic [ref=e105]:
+          - generic [ref=e106]: 
+          - text: 채용팀은 합니다
+        - list [ref=e107]:
+          - listitem [ref=e108]:
+            - generic [ref=e109]: 
+            - text: 최종 합격 판단
+          - listitem [ref=e110]:
+            - generic [ref=e111]: 
+            - text: 인재와의 관계 형성
+          - listitem [ref=e112]:
+            - generic [ref=e113]: 
+            - text: 컬처핏·잠재력 결정
+          - listitem [ref=e114]:
+            - generic [ref=e115]: 
+            - text: 전략적 채용 설계
+    - generic [ref=e116]: 당신의 에너지는 진짜 인재에게만 쓰세요.
+  - generic [ref=e118]:
+    - generic [ref=e119]:
+      - heading "수천 명은 AI가 걸러내고, 마지막 판단만 채용팀이" [level=2] [ref=e120]:
+        - text: 수천 명은 AI가 걸러내고,
+        - text: 마지막 판단만 채용팀이
+      - paragraph [ref=e121]: 넓게 쏟아진 지원자를 AI가 좁혀, 단 하나의 결정만 사람에게 남깁니다.
+    - generic [ref=e122]:
+      - generic [ref=e123]:
+        - generic [ref=e124]: 5,000명
+        - text: 지원자 전체 — AI 자동 검증
+      - generic [ref=e126]: 
+      - generic [ref=e127]:
+        - generic [ref=e128]: 800명
+        - text: 역량 대조 · 과장·허위 탐지 통과
+      - generic [ref=e130]: 
+      - generic [ref=e131]:
+        - generic [ref=e132]: 40명
+        - text: 핵심 인재 리포트
+      - generic [ref=e134]: 
+      - generic [ref=e135]:
+        - generic [ref=e136]:
+          - generic [ref=e137]: 
+          - text: 채용팀
+        - generic [ref=e138]: 최종 판단
+  - generic [ref=e140]:
+    - generic [ref=e141]:
+      - heading "그 ‘판단’, 이 리포트 한 장이면 충분합니다" [level=2] [ref=e142]
+      - paragraph [ref=e143]: AI가 검증을 끝내면 — 채용팀은 이 화면만 보고 결정하면 됩니다.
+    - generic:
+      - img "AIVIEW AI 인터뷰 결과 화면 — 프론트엔드 채용 검증 리포트"
+    - paragraph [ref=e145]: 이 리포트가 만들어지기까지, 단 3단계
+    - generic [ref=e146]:
+      - generic [ref=e147]:
+        - generic [ref=e148]: STEP 01
+        - generic [ref=e150]: 
+        - heading "후보자 AI 면접 응시" [level=3] [ref=e151]
+        - paragraph [ref=e152]: 지원자가 온라인에서 AI 면접에 응시하고 이력서를 제출합니다. 설치 불필요.
+      - generic [ref=e154]: 
+      - generic [ref=e155]:
+        - generic [ref=e156]: STEP 02
+        - generic [ref=e158]: 
+        - heading "AI 분석·검증" [level=3] [ref=e159]
+        - paragraph [ref=e160]: 이력서 주장과 실제 역량을 대조해 자동으로 검증·채점합니다.
+      - generic [ref=e162]: 
+      - generic [ref=e163]:
+        - generic [ref=e164]: STEP 03
+        - generic [ref=e166]: 
+        - heading "리포트 수신" [level=3] [ref=e167]
+        - paragraph [ref=e168]: 채용팀은 검증된 핵심 인재 리포트만 받아 판단합니다.
+  - generic [ref=e170]:
+    - heading "도입 효과는, 숫자로 증명됩니다" [level=2] [ref=e172]
+    - generic [ref=e173]:
+      - generic [ref=e174]:
+        - generic [ref=e175]:
+          - generic [ref=e176]: 
+          - text: 빠르다
+        - generic [ref=e177]: 48시간
+        - paragraph [ref=e178]: 전체 지원자 검증 완료
+      - generic [ref=e179]:
+        - generic [ref=e180]:
+          - generic [ref=e181]: 
+          - text: 비용 절감
+        - generic [ref=e182]: 40%↓
+        - paragraph [ref=e183]: 잘못된 채용(미스매치) 감소
+      - generic [ref=e184]:
+        - generic [ref=e185]:
+          - generic [ref=e186]: 
+          - text: 정확한 검증
+        - generic [ref=e187]: 94%
+        - paragraph [ref=e188]: 허위·과장 기재 적발률
+  - generic [ref=e190]:
+    - generic [ref=e191]:
+      - heading "도입한 채용팀이 먼저 말합니다" [level=2] [ref=e192]
+      - paragraph [ref=e193]: 채용팀의 신뢰도, 그리고 후보자의 만족도까지 — 둘 다 잡았습니다.
+    - generic [ref=e194]:
+      - generic [ref=e195]:
+        - generic [ref=e196]:
+          - generic [ref=e198]: 
+          - blockquote [ref=e199]: “300장을 넘기던 1차 검토가 사라졌습니다. 이제 우리는 검증된 후보 20명과의 ‘대화’에만 집중합니다.”
+        - generic [ref=e200]:
+          - generic [ref=e201]: 김
+          - generic [ref=e202]:
+            - generic [ref=e203]: 김○○ 채용팀장
+            - generic [ref=e204]: 국내 대기업 인사본부
+      - generic [ref=e205]:
+        - generic [ref=e206]:
+          - generic [ref=e208]: 
+          - blockquote [ref=e209]: “이력서 너머의 진짜 실력이 보입니다. 입사 후 ‘기대와 달랐다’는 미스매치가 눈에 띄게 줄었어요.”
+        - generic [ref=e210]:
+          - generic [ref=e211]: 이
+          - generic [ref=e212]:
+            - generic [ref=e213]: 이○○ 인재문화팀 리더
+            - generic [ref=e214]: 성장기업 People팀
+      - generic [ref=e215]:
+        - generic [ref=e216]:
+          - generic [ref=e218]: 
+          - blockquote [ref=e219]: “긴장되는 대면 면접보다 편했어요. 제 역량을 충분히 보여줄 수 있어 오히려 공정하다고 느꼈습니다.”
+        - generic [ref=e220]:
+          - generic [ref=e222]: 
+          - generic [ref=e223]:
+            - generic [ref=e224]: AI 면접 응시 후보자
+            - generic [ref=e225]: 지원자 응시 만족도 92%
+  - generic [ref=e227]:
+    - heading "이제, 진짜 인재만 만나보세요." [level=2] [ref=e228]:
+      - text: 이제, 진짜 인재만
+      - text: 만나보세요.
+    - paragraph [ref=e229]: 5분이면 충분합니다. 지금 무료로 확인하세요.
+    - link "무료 신청하기 " [ref=e231] [cursor=pointer]:
+      - /url: apply.html
+      - text: 무료 신청하기
+      - generic [ref=e232]: 
+    - generic [ref=e233]:
+      - generic [ref=e234]:
+        - generic [ref=e235]: 
+        - text: 설치 없음
+      - generic [ref=e236]:
+        - generic [ref=e237]: 
+        - text: 계약 없음
+      - generic [ref=e238]:
+        - generic [ref=e239]: 
+        - text: 5분이면 충분
+  - contentinfo [ref=e241]:
+    - generic [ref=e242]:
+      - generic [ref=e243]:
+        - generic [ref=e244]:
+          - heading "AI 면접관" [level=4] [ref=e245]
+          - list [ref=e246]:
+            - listitem [ref=e247]:
+              - link "개인정보처리 방침" [ref=e248] [cursor=pointer]:
+                - /url: "#"
+            - listitem [ref=e249]:
+              - link "기업용 서비스 이용약관" [ref=e250] [cursor=pointer]:
+                - /url: "#"
+            - listitem [ref=e251]:
+              - link "지원자용 서비스 이용약관" [ref=e252] [cursor=pointer]:
+                - /url: "#"
+        - generic [ref=e253]:
+          - heading "글로벌 인재 채용" [level=4] [ref=e254]
+          - list [ref=e255]:
+            - listitem [ref=e256]:
+              - link "개인정보처리 방침" [ref=e257] [cursor=pointer]:
+                - /url: "#"
+            - listitem [ref=e258]:
+              - link "서비스 이용약관" [ref=e259] [cursor=pointer]:
+                - /url: "#"
+      - generic [ref=e260]:
+        - img "Supercoder" [ref=e261]
+        - generic [ref=e262]:
+          - link "이메일" [ref=e263] [cursor=pointer]:
+            - /url: mailto:contact@supercoder.co
+            - generic [ref=e264]: 
+          - link "LinkedIn" [ref=e265] [cursor=pointer]:
+            - /url: "#"
+            - generic [ref=e266]: 

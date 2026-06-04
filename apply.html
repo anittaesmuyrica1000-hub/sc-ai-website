@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>무료 신청 · AIVIEW | AI 면접 채용 검증</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<style>
+  :root{
+    --blue:#2E6CF0; --blue-d:#1F54CC; --blue-2:#5B8DF7;
+    --soft:#F4F8FF; --soft-2:#EAF1FE; --tint:#DCE8FE;
+    --ink:#142036; --slate:#566179; --slate-2:#8A93A8; --line:#E5EBF5;
+    --bg:#fff; --green:#16A34A; --amber:#E0890B; --red:#E0584A;
+    --r:16px; --shadow:0 18px 48px -22px rgba(20,40,90,.22);
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{font-family:'Pretendard','Apple SD Gothic Neo',-apple-system,'Segoe UI',sans-serif;color:var(--ink);background:var(--bg);line-height:1.62;-webkit-font-smoothing:antialiased}
+  a{text-decoration:none;color:inherit}
+  .wrap{max-width:1140px;margin:0 auto;padding:0 24px}
+  .btn{display:inline-flex;align-items:center;gap:9px;padding:14px 28px;border-radius:11px;font-weight:700;font-size:15px;cursor:pointer;border:none;transition:.2s;white-space:nowrap}
+  .btn-blue{background:var(--blue);color:#fff;box-shadow:0 8px 20px -8px rgba(46,108,240,.6)}
+  .btn-blue:hover{background:var(--blue-d);transform:translateY(-1px)}
+  .btn-out{background:#fff;color:var(--ink);border:1px solid var(--line)}
+  .btn-out:hover{border-color:var(--blue-2);color:var(--blue-d)}
+  h2{font-size:clamp(28px,3.6vw,44px);font-weight:800;letter-spacing:-.03em;line-height:1.22}
+  .blue{color:var(--blue)}
+  .eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:800;letter-spacing:.06em;color:var(--blue);text-transform:uppercase;margin-bottom:16px;background:var(--soft-2);padding:6px 14px;border-radius:999px}
+
+  /* NAV (partial: site-header) — index.html 과 동일 스타일 */
+  header{position:sticky;top:0;z-index:60;background:rgba(255,255,255,.85);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+  nav{display:flex;align-items:center;justify-content:space-between;height:64px}
+  .logo{font-weight:800;font-size:20px;letter-spacing:-.02em;display:flex;align-items:center;gap:8px;color:var(--ink)}
+  .nav-logo-img{height:30px;width:auto;display:block}
+  .navlinks{display:flex;align-items:center;gap:20px;font-size:15px;font-weight:600;color:var(--slate)}
+  .navlinks a:hover{color:var(--ink)}
+  .navlinks .nav-btn{padding:9px 18px;font-size:14px;color:#fff}
+  @media(max-width:880px){.navlinks{gap:18px;font-size:14px}}
+  @media(max-width:600px){.navlinks{gap:11px;font-size:12.5px}.logo{font-size:18px}}
+  @media(max-width:480px){.navlinks .nav-btn{padding:8px 14px;font-size:13px}}
+
+  /* APPLY */
+  .apply{background:linear-gradient(180deg,#EAF1FE 0%,#F4F8FF 48%,#fff 100%);padding:60px 0 92px;min-height:calc(100vh - 64px)}
+  .apply-grid{display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:start;max-width:1040px;margin:0 auto}
+  .apply-copy h1{font-size:clamp(30px,3.8vw,46px);font-weight:800;letter-spacing:-.035em;line-height:1.16}
+  .apply-copy h1 .blue{display:inline}
+  .apply-copy .lead{font-size:18px;color:var(--slate);margin:18px 0 30px;max-width:440px}
+  .apply-copy .reassure{display:flex;flex-direction:column;gap:14px;font-size:15.5px;color:var(--ink);font-weight:600}
+  .apply-copy .reassure i{color:var(--green);margin-right:10px}
+  .apply-copy .trust{margin-top:34px;padding-top:26px;border-top:1px solid var(--line);font-size:13px;font-weight:700;color:var(--slate-2);letter-spacing:.02em}
+
+  .apply-card{background:#fff;border:1px solid var(--line);border-radius:20px;box-shadow:var(--shadow);padding:34px}
+  .apply-card .ct{font-size:20px;font-weight:800;letter-spacing:-.02em;margin-bottom:4px}
+  .apply-card .cs{font-size:14px;color:var(--slate);margin-bottom:24px}
+  .field{margin-bottom:16px}
+  .field label{display:block;font-size:13px;font-weight:700;color:var(--ink);margin-bottom:7px}
+  .field label .req{color:var(--blue);margin-left:2px}
+  .field input,.field select,.field textarea{width:100%;padding:13px 14px;border:1px solid var(--line);border-radius:11px;font-size:15px;font-family:inherit;color:var(--ink);background:#fff;transition:.15s}
+  .field input::placeholder,.field textarea::placeholder{color:var(--slate-2)}
+  .field input:focus,.field select:focus,.field textarea:focus{outline:none;border-color:var(--blue-2);box-shadow:0 0 0 3px rgba(91,141,247,.16)}
+  .field textarea{resize:vertical;min-height:86px}
+  .field-row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  .field.invalid input,.field.invalid select{border-color:var(--red);box-shadow:0 0 0 3px rgba(224,88,74,.13)}
+  .field .err{display:none;color:var(--red);font-size:12.5px;margin-top:6px}
+  .field.invalid .err{display:block}
+  .agree{display:flex;align-items:flex-start;gap:9px;font-size:13.5px;color:var(--slate);margin:8px 0 22px;line-height:1.5}
+  .agree input{width:auto;margin-top:3px;flex-shrink:0;accent-color:var(--blue)}
+  .agree a{color:var(--blue);text-decoration:underline}
+  .agree.invalid{color:var(--red)}
+  .apply-card .btn{width:100%;justify-content:center;font-size:16px;padding:15px}
+
+  .apply-done{display:none;text-align:center;padding:24px 8px 14px}
+  .apply-done .dot{width:76px;height:76px;border-radius:50%;background:var(--soft-2);color:var(--green);display:grid;place-items:center;font-size:36px;margin:0 auto 22px}
+  .apply-done h2{font-size:24px;margin-bottom:12px}
+  .apply-done p{color:var(--slate);font-size:15.5px;margin-bottom:26px}
+
+  @media(max-width:880px){.apply-grid{grid-template-columns:1fr;gap:38px;max-width:560px}.apply-copy .lead{max-width:none}}
+  @media(max-width:560px){.field-row{grid-template-columns:1fr}.apply-card{padding:24px}.apply{padding:40px 0 64px}}
+
+  /* FOOTER (partial: site-footer) — index.html 과 동일 스타일 */
+  footer{background:linear-gradient(135deg,#0C1430 0%,#0E1626 60%);color:#8A93A8;padding:66px 0 42px;font-size:14px}
+  .foot-links{display:grid;grid-template-columns:minmax(0,240px) minmax(0,240px);gap:64px}
+  .foot-col h4{color:#7E89A1;font-size:14px;font-weight:600;margin-bottom:20px}
+  .foot-col ul{list-style:none;display:grid;gap:15px}
+  .foot-col li a{color:#E6EAF2;font-size:14px}
+  .foot-col a:hover{color:#fff}
+  .foot-bottom{margin-top:46px;padding-top:30px;border-top:1px solid rgba(255,255,255,.1);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:18px}
+  .foot-logo-img{height:88px;width:auto;display:block}
+  .foot-social{display:flex;gap:20px}
+  .foot-social a{color:#8A93A8;font-size:18px}
+  .foot-social a:hover{color:#fff}
+  @media(max-width:560px){.foot-links{grid-template-columns:1fr 1fr;gap:28px}}
+</style>
+</head>
+<body>
+
+<!-- GNB (공유 partial) -->
+<site-header></site-header>
+
+<!-- 무료 신청 -->
+<section class="apply">
+  <div class="wrap">
+    <div class="apply-grid">
+
+      <!-- 좌: 카피 -->
+      <div class="apply-copy">
+        <div class="eyebrow"><i class="fa-solid fa-bolt"></i> AI 면접 채용 검증</div>
+        <h1>이제, 진짜 인재만<br><span class="blue">만나보세요.</span></h1>
+        <p class="lead">수천 명의 지원자를 AI 면접으로 자동 검증하고, 검증된 핵심 인재 리포트만 받아보세요. 신청하면 담당자가 데모를 안내해 드립니다.</p>
+        <div class="reassure">
+          <span><i class="fa-solid fa-circle-check"></i> 설치 없음 — 바로 시작</span>
+          <span><i class="fa-solid fa-circle-check"></i> 계약 없음 — 부담 없이 체험</span>
+          <span><i class="fa-solid fa-circle-check"></i> 5분이면 충분</span>
+        </div>
+        <div class="trust">500개 이상의 팀이 신뢰하는 선택</div>
+      </div>
+
+      <!-- 우: 신청 폼 카드 -->
+      <div class="apply-card" id="applyCard">
+        <div class="ct">무료 신청</div>
+        <div class="cs">아래 정보를 남겨주시면 영업일 기준 1일 내 연락드립니다.</div>
+        <form id="applyForm" novalidate>
+          <div class="field-row">
+            <div class="field">
+              <label for="f-name">이름 <span class="req">*</span></label>
+              <input type="text" id="f-name" name="name" placeholder="홍길동" required>
+              <div class="err">이름을 입력해 주세요.</div>
+            </div>
+            <div class="field">
+              <label for="f-company">회사 <span class="req">*</span></label>
+              <input type="text" id="f-company" name="company" placeholder="회사명" required>
+              <div class="err">회사를 입력해 주세요.</div>
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="f-email">업무 이메일 <span class="req">*</span></label>
+            <input type="email" id="f-email" name="email" placeholder="you@company.com" required>
+            <div class="err">올바른 이메일을 입력해 주세요.</div>
+          </div>
+
+          <div class="field-row">
+            <div class="field">
+              <label for="f-role">직무 / 직책</label>
+              <input type="text" id="f-role" name="role" placeholder="예: 인사팀장">
+            </div>
+            <div class="field">
+              <label for="f-phone">연락처</label>
+              <input type="tel" id="f-phone" name="phone" placeholder="010-0000-0000">
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="f-size">연간 채용 규모 <span class="req">*</span></label>
+            <select id="f-size" name="size" required>
+              <option value="" selected disabled>선택해 주세요</option>
+              <option value="1-10">1~10명</option>
+              <option value="11-50">11~50명</option>
+              <option value="51-200">51~200명</option>
+              <option value="200+">200명 이상</option>
+            </select>
+            <div class="err">채용 규모를 선택해 주세요.</div>
+          </div>
+
+          <div class="field">
+            <label for="f-memo">문의 메모</label>
+            <textarea id="f-memo" name="memo" placeholder="궁금한 점이나 도입 배경을 자유롭게 적어주세요."></textarea>
+          </div>
+
+          <label class="agree" id="f-agree-wrap">
+            <input type="checkbox" id="f-agree" name="agree" required>
+            <span><a href="#">개인정보 수집·이용</a>에 동의합니다. (필수)</span>
+          </label>
+
+          <button type="submit" class="btn btn-blue">무료 신청하기 <i class="fa-solid fa-arrow-right"></i></button>
+        </form>
+      </div>
+
+      <!-- 우: 제출 완료 상태 (폼 카드 자리 교체) -->
+      <div class="apply-card apply-done" id="applyDone">
+        <div class="dot"><i class="fa-solid fa-check"></i></div>
+        <h2>신청이 접수되었습니다.</h2>
+        <p>영업일 기준 1일 내 담당자가<br>입력해 주신 이메일로 연락드립니다.</p>
+        <a href="index.html" class="btn btn-out">홈으로 돌아가기</a>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER (공유 partial) -->
+<site-footer></site-footer>
+
+<script src="partials.js"></script>
+<script>
+(function () {
+  var form = document.getElementById('applyForm');
+  var card = document.getElementById('applyCard');
+  var done = document.getElementById('applyDone');
+  if (!form) return;
+
+  var emailRe = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
+
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    var valid = true;
+
+    // 검증 상태 초기화
+    form.querySelectorAll('.invalid').forEach(function (el) { el.classList.remove('invalid'); });
+
+    form.querySelectorAll('[required]').forEach(function (el) {
+      var ok = el.type === 'checkbox' ? el.checked : el.value.trim() !== '';
+      if (ok && el.type === 'email') ok = emailRe.test(el.value.trim());
+      if (!ok) {
+        valid = false;
+        var box = el.closest('.field') || el.closest('.agree');
+        if (box) box.classList.add('invalid');
+      }
+    });
+
+    if (!valid) {
+      var first = form.querySelector('.invalid input, .invalid select');
+      if (first) first.focus();
+      return;
+    }
+
+    // 백엔드 연동은 후속 작업 — 현재는 완료 화면으로 전환만 한다.
+    card.style.display = 'none';
+    done.style.display = 'block';
+    done.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  });
+
+  // 입력 시 해당 필드의 오류 표시 해제
+  form.addEventListener('input', function (e) {
+    var box = e.target.closest('.field') || e.target.closest('.agree');
+    if (box) box.classList.remove('invalid');
+  });
+})();
+</script>
+</body>
+</html>
