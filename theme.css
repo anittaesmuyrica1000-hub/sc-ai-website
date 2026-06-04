@@ -1,0 +1,70 @@
+/* theme.css — 공유 디자인 토큰 + 컴포넌트 (Single Source of Truth)
+ *
+ * 모든 페이지(index.html, apply.html, docs/design-system.html)가 이 파일을 link 한다.
+ * 여기 정의된 컴포넌트(.btn, .eyebrow, GNB, 푸터, 색/타이포 토큰 등)를 고치면
+ * 전 페이지의 동일 UI가 함께 바뀐다. 페이지 고유(섹션) CSS만 각 페이지 인라인 <style>에 둔다.
+ * 규격: docs/design-system.md · 갤러리: docs/design-system.html
+ */
+
+/* ===== Design Tokens ===== */
+:root{
+  --blue:#2E6CF0; --blue-d:#1F54CC; --blue-2:#5B8DF7;
+  --soft:#F4F8FF; --soft-2:#EAF1FE; --tint:#DCE8FE;
+  --ink:#142036; --slate:#566179; --slate-2:#8A93A8; --line:#E5EBF5;
+  --bg:#fff; --green:#16A34A; --amber:#E0890B; --red:#E0584A;
+  --r:16px; --shadow:0 18px 48px -22px rgba(20,40,90,.22);
+}
+
+/* ===== Base ===== */
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:'Pretendard','Apple SD Gothic Neo',-apple-system,'Segoe UI',sans-serif;color:var(--ink);background:var(--bg);line-height:1.62;-webkit-font-smoothing:antialiased}
+a{text-decoration:none;color:inherit}
+.wrap{max-width:1140px;margin:0 auto;padding:0 24px}
+section{padding:92px 0}
+
+/* ===== Typography helpers ===== */
+h2{font-size:clamp(28px,3.6vw,44px);font-weight:800;letter-spacing:-.03em;line-height:1.22}
+.center{text-align:center}
+.blue{color:var(--blue)}
+.lead{font-size:18px;color:var(--slate);margin-top:14px}
+
+/* ===== Buttons ===== */
+.btn{display:inline-flex;align-items:center;gap:9px;padding:14px 28px;border-radius:11px;font-weight:700;font-size:15px;cursor:pointer;border:none;transition:.2s;white-space:nowrap}
+.btn-blue{background:var(--blue);color:#fff;box-shadow:0 8px 20px -8px rgba(46,108,240,.6)}
+.btn-blue:hover{background:var(--blue-d);transform:translateY(-1px)}
+.btn-out{background:#fff;color:var(--ink);border:1px solid var(--line)}
+.btn-out:hover{border-color:var(--blue-2);color:var(--blue-d)}
+.btn-white{background:#fff;color:var(--blue-d)}
+.btn-white:hover{transform:translateY(-1px)}
+
+/* ===== Eyebrow / chip ===== */
+.eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:800;letter-spacing:.06em;color:var(--blue);text-transform:uppercase;margin-bottom:16px;background:var(--soft-2);padding:6px 14px;border-radius:999px}
+
+/* ===== GNB / Header (partial: <site-header>) ===== */
+header{position:sticky;top:0;z-index:60;background:rgba(255,255,255,.85);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+nav{display:flex;align-items:center;justify-content:space-between;height:64px}
+.logo{font-weight:800;font-size:20px;letter-spacing:-.02em;display:flex;align-items:center;gap:8px;color:var(--ink)}
+.nav-logo-img{height:30px;width:auto;display:block}
+.logo .m{width:26px;height:26px;border-radius:8px;background:linear-gradient(135deg,var(--blue),var(--blue-2));display:grid;place-items:center;color:#fff;font-size:13px}
+.navlinks{display:flex;align-items:center;gap:20px;font-size:15px;font-weight:600;color:var(--slate)}
+.navlinks a:hover{color:var(--ink)}
+.nav-cta{display:flex;gap:10px;align-items:center}
+.navlinks .nav-btn{padding:9px 18px;font-size:14px;color:#fff}
+@media(max-width:880px){.navlinks{gap:18px;font-size:14px}}
+@media(max-width:600px){.navlinks{gap:11px;font-size:12.5px}.logo{font-size:18px}.logo .m{width:23px;height:23px}}
+@media(max-width:480px){.navlinks .nav-btn{padding:8px 14px;font-size:13px}}
+
+/* ===== Footer (partial: <site-footer>) ===== */
+footer{background:linear-gradient(135deg,#0C1430 0%,#0E1626 60%);color:#8A93A8;padding:66px 0 42px;font-size:14px}
+.foot-links{display:grid;grid-template-columns:minmax(0,240px) minmax(0,240px);gap:64px}
+.foot-col h4{color:#7E89A1;font-size:14px;font-weight:600;margin-bottom:20px}
+.foot-col ul{list-style:none;display:grid;gap:15px}
+.foot-col li a{color:#E6EAF2;font-size:14px}
+.foot-col a:hover{color:#fff}
+.foot-bottom{margin-top:46px;padding-top:30px;border-top:1px solid rgba(255,255,255,.1);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:18px}
+.foot-logo-img{height:88px;width:auto;display:block}
+.foot-social{display:flex;gap:20px}
+.foot-social a{color:#8A93A8;font-size:18px}
+.foot-social a:hover{color:#fff}
+@media(max-width:560px){.foot-links{grid-template-columns:1fr 1fr;gap:28px}}

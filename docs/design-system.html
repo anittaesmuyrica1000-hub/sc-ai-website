@@ -6,29 +6,10 @@
 <title>AIVIEW · 디자인 시스템 (컴포넌트 갤러리)</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<!-- 실제 컴포넌트를 그대로 보여주기 위해 SSOT 스타일시트를 링크한다 (docs/ 하위라 ../) -->
+<link rel="stylesheet" href="../theme.css">
 <style>
-  /* ===== 디자인 토큰 (index.html / apply.html 과 동일) ===== */
-  :root{
-    --blue:#2E6CF0; --blue-d:#1F54CC; --blue-2:#5B8DF7;
-    --soft:#F4F8FF; --soft-2:#EAF1FE; --tint:#DCE8FE;
-    --ink:#142036; --slate:#566179; --slate-2:#8A93A8; --line:#E5EBF5;
-    --bg:#fff; --green:#16A34A; --amber:#E0890B; --red:#E0584A;
-    --r:16px; --shadow:0 18px 48px -22px rgba(20,40,90,.22);
-  }
-  *{margin:0;padding:0;box-sizing:border-box}
-  body{font-family:'Pretendard','Apple SD Gothic Neo',-apple-system,'Segoe UI',sans-serif;color:var(--ink);background:#fff;line-height:1.62;-webkit-font-smoothing:antialiased}
-  a{text-decoration:none;color:inherit}
-
-  /* ===== 공유 컴포넌트 CSS (실사용 페이지에서 가져옴) ===== */
-  .btn{display:inline-flex;align-items:center;gap:9px;padding:14px 28px;border-radius:11px;font-weight:700;font-size:15px;cursor:pointer;border:none;transition:.2s;white-space:nowrap}
-  .btn-blue{background:var(--blue);color:#fff;box-shadow:0 8px 20px -8px rgba(46,108,240,.6)}
-  .btn-blue:hover{background:var(--blue-d);transform:translateY(-1px)}
-  .btn-out{background:#fff;color:var(--ink);border:1px solid var(--line)}
-  .btn-out:hover{border-color:var(--blue-2);color:var(--blue-d)}
-  .btn-white{background:#fff;color:var(--blue-d)}
-  .btn-white:hover{transform:translateY(-1px)}
-  .blue{color:var(--blue)}
-  .eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:800;letter-spacing:.06em;color:var(--blue);text-transform:uppercase;background:var(--soft-2);padding:6px 14px;border-radius:999px}
+  /* 갤러리 전용 데모 스타일. 공유 토큰·버튼·eyebrow 등은 ../theme.css 에서 온다. */
   .tagchip{display:inline-flex;align-items:center;gap:8px;background:#fff;border:1px solid var(--line);border-radius:999px;padding:7px 16px;font-size:13px;font-weight:700;color:var(--slate);box-shadow:0 4px 12px -6px rgba(20,40,90,.15)}
   .tagchip i{color:var(--blue)}
 
