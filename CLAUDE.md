@@ -11,7 +11,11 @@ Supercoder AI 웹사이트 — **AIVIEW** 제품 랜딩 페이지. AI 면접으�
 
 ## Architecture
 
-**단일 정적 파일.** 빌드 시스템·프레임워크·패키지 매니저가 없다. `index.html` 한 파일에 마크업·CSS·(소량의) JS가 모두 들어 있다.
+**정적 멀티 페이지.** 빌드 시스템·프레임워크·패키지 매니저가 없다. 각 페이지는 자체 인라인 `<style>`을 가진 단일 HTML 파일이다.
+
+- **페이지:** `index.html`(랜딩), `apply.html`(무료 신청 — 폼·검증·완료 상태). 모든 CTA는 `apply.html`로 연결된다.
+- **공유 GNB/푸터는 `partials.js`.** `<site-header>`/`<site-footer>` 커스텀 엘리먼트로 nav·footer 마크업을 한 곳에서 관리(내부에 `<header>`/`<footer>` 태그를 렌더하므로 기존 CSS 셀렉터가 그대로 적용). 빌드/`fetch` 없이 `file://`·정적서버 양쪽에서 동작. nav/footer **CSS 자체**는 각 페이지 인라인 `<style>`에 동일하게 둔다(마크업만 공유).
+- **디자인 시스템 규격은 `docs/design-system.md`.** 토큰·폰트·컴포넌트 정의. 색/반경/그림자/폰트는 하드코딩하지 말고 이 규격(`:root` 변수)을 따른다.
 
 - **CSS는 `<style>` 인라인 블록 하나.** 외부 스타일시트 없음. 디자인 토큰은 `:root`의 CSS 변수로 정의(`--blue`, `--ink`, `--soft`, `--r`, `--shadow` 등) — 색상/반경/그림자를 바꿀 때는 하드코딩 대신 이 변수를 수정한다.
 - **섹션 = 페이지 구조.** 본문은 번호가 매겨진 `<section>` 블록의 세로 스택이다(DECLARATION → VALUE → FLOOD → ROLE → HOW IT WORKS → PROOF → VOICES → FINAL CTA → FOOTER). 각 섹션은 고유 클래스(`.decl`, `.value`, `.flood`, `.role`, `.how`, `.proof2`, `.voices`, `.final`)를 가지며, 해당 섹션의 CSS는 주석 헤더(`/* 1. DECLARATION */` 등) 아래에 모여 있다. 섹션을 편집할 땐 마크업과 그 주석 블록을 함께 본다.
