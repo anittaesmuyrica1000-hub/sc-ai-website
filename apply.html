@@ -169,6 +169,15 @@
   var errBox = document.getElementById('formErr');
   if (!form) return;
 
+  // index.html 최종 CTA 인라인 폼에서 넘어온 값을 채운다 (?name=&company=&email=)
+  try {
+    var qp = new URLSearchParams(location.search);
+    [['name', 'f-name'], ['company', 'f-company'], ['email', 'f-email']].forEach(function (m) {
+      var v = qp.get(m[0]); var el = document.getElementById(m[1]);
+      if (v && el) el.value = v;
+    });
+  } catch (e) {}
+
   var db = (window.supabase && window.supabase.createClient)
     ? window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY)
     : null;

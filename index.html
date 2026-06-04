@@ -38,15 +38,13 @@
   .barkeys span{flex:1;text-align:center;font-size:13px;color:var(--slate-2);font-weight:700}
   @media(max-width:880px){.decl .wrap{grid-template-columns:1fr;gap:40px}.decl{min-height:auto}}
 
-  /* HERO STRIP — 도입사 로고 (Hero에 자연스럽게 연결, 섹션 구분 없음) */
-  .herostrip{background:#fff;padding:28px 0 84px;overflow:hidden}
-  .hs-label{font-size:18px;color:var(--slate);font-weight:700;text-align:center;margin-bottom:36px}
-  .logo-marquee{width:100%;overflow:hidden;padding:30px 0;-webkit-mask-image:linear-gradient(90deg,transparent,#000 9%,#000 91%,transparent);mask-image:linear-gradient(90deg,transparent,#000 9%,#000 91%,transparent)}
-  .marquee-track{display:flex;align-items:center;width:max-content;animation:marquee 28s linear infinite}
-  .marquee-track span{font-weight:800;font-size:30px;color:#A2ACC2;letter-spacing:-.01em;white-space:nowrap;margin:0 44px}
-  .logo-marquee:hover .marquee-track{animation-play-state:paused}
-  @keyframes marquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}
-  @media(prefers-reduced-motion:reduce){.marquee-track{animation:none;justify-content:center;width:100%;flex-wrap:wrap;gap:12px}}
+  /* HERO STRIP — 도입사 로고 (실제 브랜드 로고, 정적 행) */
+  .herostrip{background:#fff;padding:28px 0 84px}
+  .hs-label{font-size:17px;color:var(--slate);font-weight:700;text-align:center;margin-bottom:40px}
+  .logo-row{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:30px 56px;max-width:1080px;margin:0 auto;padding:0 24px}
+  .logo-row img{max-width:150px;max-height:60px;width:auto;height:auto;object-fit:contain;display:block}
+  @media(max-width:760px){.logo-row{gap:24px 40px}.logo-row img{max-width:120px;max-height:48px}}
+  @media(max-width:480px){.logo-row{gap:18px 30px}.logo-row img{max-width:96px;max-height:40px}}
 
   /* ATS 연동 */
   .ats{margin-top:54px;padding-top:42px;border-top:1px solid var(--line);text-align:center}
@@ -210,26 +208,28 @@
   .valcard .metric{display:inline-block;margin-top:14px;font-size:13px;font-weight:800;color:var(--blue);background:var(--soft-2);padding:5px 13px;border-radius:999px}
   @media(max-width:760px){.value-grid{grid-template-columns:1fr;max-width:460px;margin-left:auto;margin-right:auto}}
 
-  /* ROLE FUNNEL (대안: 역삼각형) */
+  /* ROLE FUNNEL — 깔때기 (트라페조이드 3단 + 다크 tip) */
   .role-funnel{background:#fff}
   .role-funnel .head{text-align:center;max-width:760px;margin:0 auto}
-  .funnel{max-width:780px;margin:52px auto 0;display:flex;flex-direction:column;align-items:center;gap:12px}
-  .funnel .frow{border-radius:14px;padding:18px 24px;text-align:center;color:#fff;background:linear-gradient(135deg,var(--blue),var(--blue-2));box-shadow:0 14px 30px -18px rgba(46,108,240,.6)}
-  .funnel .frow .ftag{display:block;font-size:12px;font-weight:800;letter-spacing:.05em;opacity:.85;margin-bottom:3px}
-  .funnel .frow .ftxt{font-size:16px;font-weight:700;letter-spacing:-.01em}
-  .funnel .frow.r1{width:100%}
-  .funnel .frow.r2{width:80%}
-  .funnel .frow.r3{width:62%}
-  .funnel .frow.r4{width:46%}
-  .funnel .zone-tag{display:inline-flex;align-items:center;gap:8px;font-weight:800;font-size:14px;padding:9px 20px;border-radius:999px;margin-bottom:6px}
-  .funnel .zone-ai{background:var(--blue);color:#fff;box-shadow:0 8px 18px -8px rgba(46,108,240,.6)}
-  .funnel .handoff{display:flex;align-items:center;justify-content:center;gap:12px;width:100%;max-width:520px;margin:16px 0 8px;color:var(--slate-2);font-size:12.5px;font-weight:800;letter-spacing:.02em;white-space:nowrap}
-  .funnel .handoff::before,.funnel .handoff::after{content:"";height:1px;flex:1;background:var(--line)}
-  .funnel .handoff i{color:var(--blue-2)}
-  .funnel .ftip{background:var(--ink);color:#fff;border:2px solid #2B3A55;border-radius:18px;padding:18px 36px;text-align:center;box-shadow:var(--shadow)}
-  .funnel .ftip .ftag{display:block;font-size:12px;font-weight:800;color:#7DA9FF;margin-bottom:2px}
-  .funnel .ftip .ftxt{font-size:18px;font-weight:800;letter-spacing:-.01em}
-  @media(max-width:600px){.funnel .frow.r2,.funnel .frow.r3,.funnel .frow.r4{width:100%}.funnel .frow .ftxt{font-size:15px}}
+  .funnel3{max-width:900px;margin:56px auto 0;padding:0 24px}
+  .fn-stack{position:relative;max-width:720px;margin:0 auto;display:flex;flex-direction:column;align-items:center;gap:10px}
+  .fn-seg{display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:17px;letter-spacing:-.01em;text-align:center;padding:0 16px;background:linear-gradient(180deg,#5A7BF5,#3F62EA);box-shadow:0 18px 34px -24px rgba(46,108,240,.75)}
+  .fn-seg.s1{width:100%;height:100px;clip-path:polygon(0 0,100% 0,90% 100%,10% 100%)}
+  .fn-seg.s2{width:74%;height:94px;clip-path:polygon(0 0,100% 0,86% 100%,14% 100%)}
+  .fn-seg.s3{width:51%;height:94px;clip-path:polygon(0 0,100% 0,80% 100%,20% 100%)}
+  .fn-tip{width:30%;min-width:158px;height:108px;display:flex;align-items:flex-start;justify-content:center;padding-top:18px;color:#fff;font-weight:800;font-size:16px;line-height:1.16;text-align:center;background:linear-gradient(180deg,#1B2740,#0E1626);clip-path:polygon(0 0,100% 0,50% 100%)}
+  .fn-tag{position:absolute;display:inline-flex;align-items:center;gap:7px;background:#fff;border:1px solid var(--tint);font-weight:800;font-size:13px;padding:7px 15px;border-radius:999px;box-shadow:0 6px 16px -10px rgba(20,40,90,.3);z-index:3}
+  .fn-tag i{color:var(--blue)}
+  .fn-tag.tag-ai{left:-4px;top:48%;transform:translateY(-50%);color:var(--blue-d)}
+  .fn-tag.tag-team{left:-4px;bottom:30px;color:var(--ink)}
+  .fn-stack::before{content:"";position:absolute;left:96px;top:6px;width:36px;height:calc(100% - 142px);border-left:1.6px dashed var(--blue-2);border-top:1.6px dashed var(--blue-2);border-bottom:1.6px dashed var(--blue-2);border-radius:7px 0 0 7px;opacity:.65;z-index:1}
+  .fn-stack::after{content:"";position:absolute;left:96px;bottom:42px;width:calc(50% - 96px);border-top:1.6px dashed var(--slate-2);opacity:.6;z-index:1}
+  @media(max-width:680px){
+    .fn-seg{font-size:14px}
+    .fn-seg.s2{width:90%}.fn-seg.s3{width:74%}
+    .fn-tip{min-width:140px;font-size:14px}
+    .fn-tag,.fn-stack::before,.fn-stack::after{display:none}
+  }
 
   /* ROLE FUNNEL — 연속 역삼각형 (그라데이션) */
   .tri{position:relative;width:100%;max-width:760px;margin:54px auto 0;height:480px;clip-path:polygon(0 0,100% 0,50% 100%);color:#fff;text-align:center}
@@ -296,7 +296,7 @@
   <div class="wrap">
     <div>
       <div class="tagchip"><i class="fa-solid fa-bolt"></i> AI 면접 채용 검증</div>
-      <h1>1차 검토는 <span class="blue">AI</span>에게.<br>채용팀은 <span class="blue">진짜 인재</span>만 만나세요.</h1>
+      <h1>1차 검토는 <span class="blue">AI</span>에게<br>채용팀은 <span class="blue">진짜 인재</span>만 만나세요.</h1>
       <p>수천 명을 <span class="blue" style="font-weight:700">AI 면접</span>으로 자동 검증하고,<br>검증된 핵심 인재 리포트만 받아보세요.</p>
       <div class="decl-cta">
         <a href="apply.html" class="btn btn-blue">무료 데모 신청 <i class="fa-solid fa-arrow-right"></i></a>
@@ -305,14 +305,15 @@
   </div>
 </section>
 
-<!-- HERO STRIP: 도입사 로고 (흐르는 마퀴) -->
+<!-- HERO STRIP: 도입사 로고 -->
 <div class="herostrip">
   <p class="hs-label">500개 이상의 팀이 신뢰하는 선택</p>
-  <div class="logo-marquee">
-    <div class="marquee-track" aria-hidden="false">
-      <span>Woongjin</span><span>SKONEC</span><span>MEDIT</span><span>벽산</span><span>MIRI.D!H</span><span>가온프라임</span>
-      <span>Woongjin</span><span>SKONEC</span><span>MEDIT</span><span>벽산</span><span>MIRI.D!H</span><span>가온프라임</span>
-    </div>
+  <div class="logo-row">
+    <img src="logos/kakaopay.png" alt="kakaopay">
+    <img src="logos/hyundai-autoever.png" alt="HYUNDAI AutoEver">
+    <img src="logos/woongjin.png" alt="Woongjin">
+    <img src="logos/skonec.png" alt="SKONEC entertainment">
+    <img src="logos/markany.png" alt="MarkAny">
   </div>
 </div>
 
@@ -350,7 +351,7 @@
 <section class="flood" id="flood">
   <div class="wrap">
     <div class="head">
-      <h2>가짜는 쏟아지고,<br><span class="red">잘못된 채용</span>은 비싸집니다</h2>
+      <h2>가짜는 쏟아지고,<br>잘못된 채용은 비싸집니다</h2>
       <p class="lead">AI가 써주는 이력서 속에서 진짜를 가려내지 못하면 — 그대로 비용이 됩니다.</p>
     </div>
     <div class="flood-grid">
@@ -378,52 +379,22 @@
   </div>
 </section>
 
-<!-- 4. ROLE REVERSAL -->
-<section class="role" id="role">
-  <div class="wrap">
-    <div class="head">
-      <h2>뒷일은 AI가 합니다.<br>채용팀은 <span class="blue">판단만</span> 하세요.</h2>
-      <p class="lead">소모적인 검증은 AI에게, 가치 있는 결정은 사람에게.</p>
-    </div>
-    <div class="split">
-      <div class="sidecard ai">
-        <span class="cap"><i class="fa-solid fa-robot"></i> AI가 합니다</span>
-        <ul>
-          <li><i class="fa-solid fa-check"></i> AI 면접으로 수천 명 자동 검증</li>
-          <li><i class="fa-solid fa-check"></i> 역량 분석·정량 채점</li>
-          <li><i class="fa-solid fa-check"></i> 과장·허위 기재 탐지</li>
-          <li><i class="fa-solid fa-check"></i> 핵심 인재 리포트 정리</li>
-        </ul>
-      </div>
-      <div class="sidecard team">
-        <span class="cap"><i class="fa-solid fa-user-tie"></i> 채용팀은 합니다</span>
-        <ul>
-          <li><i class="fa-regular fa-circle-check"></i> 최종 합격 판단</li>
-          <li><i class="fa-regular fa-circle-check"></i> 인재와의 관계 형성</li>
-          <li><i class="fa-regular fa-circle-check"></i> 컬처핏·잠재력 결정</li>
-          <li><i class="fa-regular fa-circle-check"></i> 전략적 채용 설계</li>
-        </ul>
-      </div>
-    </div>
-    <div class="role-banner">당신의 에너지는 <span class="blue">진짜 인재</span>에게만 쓰세요.</div>
-  </div>
-</section>
-
-<!-- 4-ALT. ROLE REVERSAL (역삼각형/깔때기 대안) -->
-<section class="role-funnel" id="role-alt">
+<!-- 4. ROLE REVERSAL (깔때기) -->
+<section class="role-funnel" id="role">
   <div class="wrap">
     <div class="head">
       <h2>수천 명은 <span class="blue">AI</span>가 걸러내고,<br>마지막 <span class="blue">판단</span>만 채용팀이</h2>
       <p class="lead">넓게 쏟아진 지원자를 AI가 좁혀, 단 하나의 결정만 사람에게 남깁니다.</p>
     </div>
-    <div class="fA">
-      <div class="bar b1"><span class="n">5,000명</span><span class="l">지원자 전체 — AI 자동 검증</span></div>
-      <div class="ar"><i class="fa-solid fa-chevron-down"></i></div>
-      <div class="bar b2"><span class="n">800명</span><span class="l">역량 대조 · 과장·허위 탐지 통과</span></div>
-      <div class="ar"><i class="fa-solid fa-chevron-down"></i></div>
-      <div class="bar b3"><span class="n">40명</span><span class="l">핵심 인재 리포트</span></div>
-      <div class="ar"><i class="fa-solid fa-chevron-down"></i></div>
-      <div class="tip"><span class="l"><i class="fa-solid fa-user-tie"></i> 채용팀</span><span class="n">최종 판단</span></div>
+    <div class="funnel3">
+      <div class="fn-stack">
+        <span class="fn-tag tag-ai"><i class="fa-solid fa-robot"></i> AI</span>
+        <span class="fn-tag tag-team"><i class="fa-solid fa-user"></i> 채용팀</span>
+        <div class="fn-seg s1">지원자 전체 - AI 자동 검증</div>
+        <div class="fn-seg s2">역량 대조 · 과장·허위 탐지 통과</div>
+        <div class="fn-seg s3">핵심 인재 리포트</div>
+        <div class="fn-tip"><span>최종<br>판단</span></div>
+      </div>
     </div>
   </div>
 </section>
@@ -520,11 +491,14 @@
 <!-- 8. FINAL CTA -->
 <section class="final" id="final">
   <div class="wrap">
-    <h2>이제, 진짜 인재만<br>만나보세요.</h2>
+    <h2>이제, 진짜 인재만 만나보세요.</h2>
     <p>5분이면 충분합니다. 지금 무료로 확인하세요.</p>
-    <div class="cta-actions">
-      <a href="apply.html" class="btn btn-white">무료 신청하기 <i class="fa-solid fa-arrow-right"></i></a>
-    </div>
+    <form class="cta-form" action="apply.html" method="get">
+      <input type="text" name="name" placeholder="이름" aria-label="이름" required>
+      <input type="text" name="company" placeholder="회사" aria-label="회사" required>
+      <input type="email" name="email" placeholder="이메일" aria-label="이메일" required>
+      <button type="submit" class="btn btn-white">무료 데모 신청 <i class="fa-solid fa-arrow-right"></i></button>
+    </form>
     <div class="reassure">
       <span><i class="fa-solid fa-circle-check"></i> 설치 없음</span>
       <span><i class="fa-solid fa-circle-check"></i> 계약 없음</span>

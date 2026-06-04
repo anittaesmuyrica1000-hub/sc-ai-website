@@ -12,7 +12,7 @@
     '  <nav class="wrap">' +
     '    <a href="index.html" class="logo"><img src="supercoder-nav.png" alt="Supercoder" class="nav-logo-img"></a>' +
     '    <div class="navlinks">' +
-    '      <a href="apply.html">서비스 문의</a>' +
+    '      <a href="apply.html">도입 문의</a>' +
     '      <a href="apply.html" class="btn btn-blue nav-btn">무료 데모 신청</a>' +
     '    </div>' +
     '  </nav>' +
@@ -39,7 +39,10 @@
     '      </div>' +
     '    </div>' +
     '    <div class="foot-bottom">' +
-    '      <img src="supercoder-logo.png" class="foot-logo-img" alt="Supercoder">' +
+    '      <div class="foot-brand">' +
+    '        <img src="supercoder-logo.png" class="foot-logo-img" alt="Supercoder">' +
+    '        <p class="foot-copy">© 2025 Second Team. All rights reserved.</p>' +
+    '      </div>' +
     '      <div class="foot-social">' +
     '        <a href="mailto:contact@supercoder.co" aria-label="이메일"><i class="fa-solid fa-envelope"></i></a>' +
     '        <a href="#" aria-label="LinkedIn"><i class="fa-brands fa-linkedin-in"></i></a>' +

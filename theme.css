@@ -63,7 +63,9 @@ footer{background:linear-gradient(135deg,#0C1430 0%,#0E1626 60%);color:#8A93A8;p
 .foot-col li a{color:#E6EAF2;font-size:14px}
 .foot-col a:hover{color:#fff}
 .foot-bottom{margin-top:46px;padding-top:30px;border-top:1px solid rgba(255,255,255,.1);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:18px}
+.foot-brand{display:flex;flex-direction:column;gap:10px}
 .foot-logo-img{height:88px;width:auto;display:block}
+.foot-copy{color:#5C6678;font-size:13px;margin:0}
 .foot-social{display:flex;gap:20px}
 .foot-social a{color:#8A93A8;font-size:18px}
 .foot-social a:hover{color:#fff}
