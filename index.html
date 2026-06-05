@@ -230,6 +230,10 @@
   .fn-svg .seg,.fn-svg .tip{filter:drop-shadow(0 3.6px 13.5px rgba(58,111,255,.6))}
   .fn-svg .fl{fill:#fff;font-weight:700;font-size:25px;letter-spacing:-.01em;text-anchor:middle;dominant-baseline:central}
   .fn-svg .ft{font-weight:800;font-size:26px}
+  /* 우측 지원자 수 — 단을 내려갈수록 줄어듦(5,000→800→40) */
+  .fn-svg .fn-num{fill:var(--blue);font-weight:800;font-size:34px;letter-spacing:-.02em;text-anchor:start;dominant-baseline:central}
+  .fn-svg .fn-num .unit{font-size:.6em;font-weight:700;fill:var(--slate)}
+  .fn-svg .fn-conn{stroke:var(--blue);stroke-width:1.5;opacity:.4;stroke-dasharray:5 6;stroke-linecap:round}
   .fn-guides{opacity:.5}
   .fn-tag{position:absolute;display:inline-flex;align-items:center;gap:4px;height:28px;background:#fff;border:1px solid var(--tint);font-weight:800;font-size:12.5px;padding:0 13px;border-radius:999px;box-shadow:0 6px 16px -10px rgba(20,40,90,.3);transform:translate(-50%,-50%);white-space:nowrap;z-index:3}
   .fn-tag i{color:var(--blue)}
@@ -240,6 +244,7 @@
   @media(max-width:640px){
     .fn-guides,.fn-tag{display:none}
     .fn-svg .fl{font-size:33px}.fn-svg .ft{font-size:34px}
+    .fn-svg .fn-num{font-size:40px}
   }
 
   /* ROLE FUNNEL — 연속 역삼각형 (그라데이션) */
@@ -437,6 +442,13 @@
           <text class="fl" x="570" y="435">핵심 인재 리포트</text>
           <text class="fl ft" x="570" y="552">최종</text>
           <text class="fl ft" x="570" y="586">판단</text>
+          <!-- 우측 지원자 수: 단(段)을 내려갈수록 줄어든다 (5,000 → 800 → 40) -->
+          <line class="fn-conn" x1="886" y1="135" x2="945" y2="135"/>
+          <line class="fn-conn" x1="793" y1="290" x2="945" y2="290"/>
+          <line class="fn-conn" x1="706" y1="435" x2="945" y2="435"/>
+          <text class="fn-num" x="960" y="135">5,000<tspan class="unit"> 명</tspan></text>
+          <text class="fn-num" x="960" y="290">800<tspan class="unit"> 명</tspan></text>
+          <text class="fn-num" x="960" y="435">40<tspan class="unit"> 명</tspan></text>
         </svg>
         <span class="fn-tag tag-ai"><i class="fa-solid fa-robot"></i> AI</span>
         <span class="fn-tag tag-team"><i class="fa-solid fa-user"></i> 채용팀</span>
