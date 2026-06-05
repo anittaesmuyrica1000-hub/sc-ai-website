@@ -173,7 +173,9 @@
   .pc2 p{font-size:15px;color:var(--slate);margin-top:10px}
   .logo-wall{display:flex;flex-wrap:wrap;justify-content:center;gap:16px 40px;align-items:center;margin-top:52px;padding-top:40px;border-top:1px solid var(--line)}
   .logo-wall span{font-weight:800;font-size:20px;color:#A2ACC2}
-  @media(max-width:760px){.proof-row{grid-template-columns:1fr}}
+  /* 3개 지표는 어떤 폭에서도 한 줄(3열) 유지 — VALUE와 동일하게 gap·패딩·폰트만 축소 */
+  @media(max-width:760px){.proof-row{gap:12px;margin-top:36px}.pc2{padding:26px 12px}.pc2 .vlabel{font-size:12px;margin-bottom:10px}.pc2 p{font-size:13px;margin-top:8px}}
+  @media(max-width:480px){.proof-row{gap:8px}.pc2{padding:18px 9px;border-radius:12px}.pc2 .vlabel{font-size:10.5px;gap:4px;margin-bottom:8px}.pc2 .big{font-size:clamp(22px,7vw,38px)}.pc2 p{font-size:11px;margin-top:7px}}
 
   /* 7. VOICES */
   .voices{background:#fff}
