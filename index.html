@@ -403,6 +403,13 @@
     <div class="funnel3">
       <div class="fn-wrap">
         <svg class="fn-svg" viewBox="0 0 1000 720" role="img" aria-label="지원자 전체를 AI가 자동 검증·필터링해 핵심 인재 리포트로 좁히고, 최종 판단만 채용팀이 내리는 깔때기">
+          <!-- 세그먼트 선형 그라데이션 (0% #4577FF α90% → 100% #3A6FFF, 약 7.2°) -->
+          <defs>
+            <linearGradient id="fnGrad" x1="0" y1="0" x2="0.125" y2="1">
+              <stop offset="0" stop-color="#4577FF" stop-opacity="0.9"/>
+              <stop offset="1" stop-color="#3A6FFF"/>
+            </linearGradient>
+          </defs>
           <!-- 좌측 점선 가이드(AI 브래킷) + 하단 점선(채용팀) -->
           <g class="fn-guides">
             <path d="M180 120 H110 V465 H360" fill="none" stroke="#5B8DF7" stroke-width="2" stroke-dasharray="6 6" stroke-linecap="round"/>
@@ -410,9 +417,9 @@
           </g>
           <!-- 하나의 큰 역삼각형(상단 150~850, 꼭짓점 500,660)을 가로로 슬라이스 →
                모든 단의 옆변이 같은 대각선 위에 놓여 전체가 역삼각형으로 읽힘 -->
-          <path class="seg" d="M150 70 H850 L773 200 H227 Z" fill="#5C78E6" stroke="#5C78E6" stroke-width="22" stroke-linejoin="round"/>
-          <path class="seg" d="M245 230 H755 L684 350 H316 Z" fill="#4E6BE6" stroke="#4E6BE6" stroke-width="22" stroke-linejoin="round"/>
-          <path class="seg" d="M334 380 H666 L601 490 H399 Z" fill="#5673E8" stroke="#5673E8" stroke-width="22" stroke-linejoin="round"/>
+          <path class="seg" d="M150 70 H850 L773 200 H227 Z" fill="url(#fnGrad)" stroke="url(#fnGrad)" stroke-width="22" stroke-linejoin="round"/>
+          <path class="seg" d="M245 230 H755 L684 350 H316 Z" fill="url(#fnGrad)" stroke="url(#fnGrad)" stroke-width="22" stroke-linejoin="round"/>
+          <path class="seg" d="M334 380 H666 L601 490 H399 Z" fill="url(#fnGrad)" stroke="url(#fnGrad)" stroke-width="22" stroke-linejoin="round"/>
           <path class="tip" d="M417 520 H583 L500 660 Z" fill="#141d33" stroke="#141d33" stroke-width="20" stroke-linejoin="round"/>
           <!-- 라벨 -->
           <text class="fl" x="500" y="135">지원자 전체 - AI 자동 검증</text>
