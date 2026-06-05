@@ -141,7 +141,7 @@
 ### 4.6 공유 GNB / 푸터 (partial)
 - **`partials.js`** 가 `<site-header></site-header>` / `<site-footer></site-footer>` 커스텀 엘리먼트를 정의한다. 마크업은 이 파일에서만 수정한다.
 - 내부에 `<header>` / `<footer>` 태그를 렌더하므로 아래 CSS 셀렉터가 그대로 적용된다 — **모든 페이지의 인라인 `<style>`에 nav/footer CSS를 동일하게 포함**시켜야 한다.
-  - GNB: `header`(sticky, blur 배경, 하단 `--line` 보더), `.logo`/`.nav-logo-img`, `.navlinks`, `.nav-btn`.
+  - GNB: `header`(sticky, blur 배경, 하단 `--line` 보더), `.logo`/`.nav-logo-img`, `.navlinks`(우측 액션). 우측은 **「도입 문의」 버튼(`.nav-btn`, 파란 솔리드) + 햄버거 메뉴 버튼(`.nav-menu-btn`, 흰 아웃라인)** 한 쌍 — 동일 높이(40px)·라운드(11px). 메뉴 버튼은 `.nav-menu` 드롭다운(섹션 링크 + `.nav-menu-cta` 무료 데모 신청)을 토글하며, 토글 로직은 `partials.js`에 위임 바인딩.
   - 푸터: `footer`(다크 그라데이션 `#0C1430→#0E1626`), `.foot-links`(2컬럼), `.foot-col`, `.foot-bottom`, `.foot-logo-img`, `.foot-social`.
 - 로고: GNB `supercoder-nav.svg`(파란 락업, h 26px) · 푸터 `supercoder-logo.svg`(흰색 락업, h 24px). 공식 브랜드 가이드에서 추출한 벡터.
 

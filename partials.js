@@ -12,8 +12,19 @@
     '  <nav class="wrap">' +
     '    <a href="index.html" class="logo"><img src="supercoder-nav.svg" alt="Supercoder" class="nav-logo-img"></a>' +
     '    <div class="navlinks">' +
-    '      <a href="apply.html">도입 문의</a>' +
-    '      <a href="apply.html" class="btn btn-blue nav-btn">무료 데모 신청</a>' +
+    '      <a href="apply.html" class="btn btn-blue nav-btn">도입 문의</a>' +
+    '      <div class="nav-menu-wrap">' +
+    '        <button type="button" class="nav-menu-btn" aria-label="메뉴" aria-haspopup="true" aria-expanded="false" aria-controls="navMenu">' +
+    '          <span class="nav-burger"><span></span><span></span><span></span></span>' +
+    '        </button>' +
+    '        <div class="nav-menu" id="navMenu" hidden>' +
+    '          <a href="index.html#value">왜 AI 면접인가</a>' +
+    '          <a href="index.html#how">작동 방식</a>' +
+    '          <a href="index.html#proof">도입 효과</a>' +
+    '          <a href="index.html#voices">고객 후기</a>' +
+    '          <a href="apply.html" class="nav-menu-cta">무료 데모 신청</a>' +
+    '        </div>' +
+    '      </div>' +
     '    </div>' +
     '  </nav>' +
     '</header>';
@@ -60,4 +71,33 @@
 
   define('site-header', HEADER);
   define('site-footer', FOOTER);
+
+  /* GNB 메뉴(햄버거) 토글 — 커스텀 엘리먼트가 innerHTML로 렌더되므로 위임 방식으로 바인딩 */
+  function closeMenu() {
+    var menu = document.getElementById('navMenu');
+    var btn = document.querySelector('.nav-menu-btn');
+    if (menu) menu.setAttribute('hidden', '');
+    if (btn) { btn.setAttribute('aria-expanded', 'false'); btn.classList.remove('open'); }
+  }
+  document.addEventListener('click', function (e) {
+    var btn = e.target.closest && e.target.closest('.nav-menu-btn');
+    var menu = document.getElementById('navMenu');
+    if (!menu) return;
+    if (btn) {
+      e.preventDefault();
+      var willOpen = menu.hasAttribute('hidden');
+      if (willOpen) {
+        menu.removeAttribute('hidden');
+        btn.setAttribute('aria-expanded', 'true');
+        btn.classList.add('open');
+      } else {
+        closeMenu();
+      }
+      return;
+    }
+    if (!e.target.closest('.nav-menu')) closeMenu(); // 바깥 클릭 시 닫기
+  });
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') closeMenu();
+  });
 })();
