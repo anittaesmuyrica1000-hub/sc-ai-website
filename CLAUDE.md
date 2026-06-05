@@ -17,7 +17,22 @@ Supercoder AI 웹사이트 — **AIVIEW** 제품 랜딩 페이지. AI 면접으�
 - **공유 컴포넌트 CSS는 `theme.css` (SSOT, Single Source of Truth).** 디자인 토큰(`:root` 변수: `--blue`, `--ink`, `--soft`, `--r`, `--shadow` 등)·버튼(`.btn*`)·`.eyebrow`·GNB(`header`/`nav`)·푸터(`footer`) 스타일이 모두 여기 있다. 모든 페이지가 `<link rel="stylesheet" href="theme.css">`(docs 하위는 `../theme.css`)로 링크한다. **공유 컴포넌트를 바꿀 땐 `theme.css`만 고치면 전 페이지가 함께 바뀐다** — 페이지마다 복붙하지 않는다.
 - **공유 GNB/푸터 마크업은 `partials.js`.** `<site-header>`/`<site-footer>` 커스텀 엘리먼트로 nav·footer **마크업**을 한 곳에서 관리(내부에 `<header>`/`<footer>` 태그를 렌더하므로 `theme.css`의 셀렉터가 그대로 적용). 빌드/`fetch` 없이 `file://`·정적서버 양쪽에서 동작. → 마크업은 `partials.js`, 스타일은 `theme.css` 가 단일 출처.
 - **디자인 시스템 규격은 `docs/design-system.md`(문서) + `docs/design-system.html`(라이브 컴포넌트 갤러리).** 색/반경/그림자/폰트는 하드코딩하지 말고 `theme.css`의 토큰을 따른다.
-- **섹션 = 페이지 구조.** 본문은 번호가 매겨진 `<section>` 블록의 세로 스택이다(DECLARATION → VALUE → FLOOD → ROLE → HOW IT WORKS → PROOF → VOICES → FINAL CTA → FOOTER). 각 섹션은 고유 클래스(`.decl`, `.value`, `.flood`, `.role`, `.how`, `.proof2`, `.voices`, `.final`)를 가지며, 해당 섹션의 CSS는 주석 헤더(`/* 1. DECLARATION */` 등) 아래에 모여 있다. 섹션을 편집할 땐 마크업과 그 주석 블록을 함께 본다.
+- **섹션 = 페이지 구조 (정의된 이름·번호·id).** 본문은 번호가 매겨진 블록의 세로 스택이다. `index.html`의 각 블록 위에는 `<!-- ===== SECTION NN · NAME (설명) · #id ===== -->` 형식의 일관된 배너 주석이 있고, 마크업은 그 배너로 구분한다. 정식 섹션 목록:
+
+  | # | 코드명(NAME) | 클래스 | id | 헤드라인/내용 |
+  |---|---|---|---|---|
+  | 01 | DECLARATION | `.decl` | `#hero` | "1차 검토는 AI에게…" (히어로) |
+  | 02 | CLIENTS | `.herostrip` | `#clients` | 도입사 로고 마퀴 ("500개 이상의 팀이 신뢰") |
+  | 03 | VALUE | `.value` | `#value` | "왜 AI 면접인가" (핵심 가치 3) |
+  | 04 | FLOOD | `.flood` | `#flood` | "가짜는 쏟아지고, 잘못된 채용은 비싸집니다" |
+  | 05 | ROLE REVERSAL | `.role-funnel` | `#role` | "수천 명은 AI가 걸러내고…" (깔때기 SVG) |
+  | 06 | HOW IT WORKS | `.how` | `#how` | "리포트 한 장이면 충분" (작동 방식+데모) |
+  | 07 | PROOF | `.proof2` | `#proof` | "숫자로 증명됩니다" (도입 효과) |
+  | 08 | VOICES | `.voices` | `#voices` | "도입한 채용팀이 먼저 말합니다" (후기) |
+  | 09 | FINAL CTA | `.final` | `#final` | "이제, 진짜 인재만 만나보세요" |
+  | 10 | FOOTER | (`<site-footer>`) | — | 공유 partial |
+
+  각 섹션 CSS는 주석 헤더(`/* 1. DECLARATION */` 등) 아래에 모여 있다. 섹션을 편집할 땐 마크업 배너와 그 CSS 주석 블록을 함께 본다. GNB 메뉴(`partials.js`)의 앵커 링크는 이 id들(`#value`·`#how`·`#proof`·`#voices`)을 가리킨다. **`.role`(구 2-컬럼)·`.tri`/`.fA`/`.fB`/`.fC`는 현재 렌더되지 않는 보관용 변형이다.**
 - **실험적/대체 레이아웃이 공존한다.** 동일 메시지의 변형 컴포넌트가 여러 개 들어 있다 — 예: ROLE REVERSAL은 `.role`(2-컬럼)과 `.role-funnel`(깔때기) 두 버전이 있고, 깔때기에도 `.tri`/`.fA`/`.fB`/`.fC` 변형 CSS가 남아 있다. 일부는 현재 마크업에서 렌더링되지 않는 "보관용" 스타일이니, 클래스를 지우기 전 실제 사용 여부를 확인한다.
 - **반응형은 컴포넌트별 `@media`로.** 전역 브레이크포인트 시스템이 아니라 각 섹션 CSS 끝에 개별 `@media(max-width:...)` 규칙이 붙어 있다. 주 브레이크포인트는 880/760/560px 대.
 - **외부 의존성은 CDN:** Pretendard 폰트(jsdelivr), Font Awesome 6.5.2 아이콘(cdnjs), `apply.html`은 `@supabase/supabase-js@2`(jsdelivr) 추가. 아이콘은 `<i class="fa-...">`로 사용.
