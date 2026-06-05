@@ -132,9 +132,9 @@
   .node .ic{width:58px;height:58px;border-radius:15px;background:linear-gradient(135deg,var(--blue),var(--blue-2));color:#fff;display:grid;place-items:center;font-size:22px;margin:14px auto 16px}
   .node h3{font-size:18px;margin-bottom:8px}
   .node p{font-size:14px;color:var(--slate)}
-  .flow .arrow{display:grid;place-items:center;color:var(--blue-2);font-size:22px;padding:0 10px;flex-shrink:0}
-  @media(max-width:720px){.node{padding:20px 12px}.node h3{font-size:15px}.node p{font-size:12.5px}.node .ic{width:46px;height:46px;font-size:18px;margin:10px auto 12px}.node .step{font-size:11px}.flow .arrow{padding:0 5px;font-size:16px}}
-  @media(max-width:560px){.flow{flex-direction:column;align-items:stretch;margin:38px 0}.node{max-width:none;padding:24px 22px;box-shadow:0 10px 28px -18px rgba(20,40,90,.22)}.node h3{font-size:17px}.node p{font-size:14px}.node .ic{width:52px;height:52px;font-size:21px;margin:12px auto 14px}.node .step{font-size:12px}.flow .arrow{transform:rotate(90deg);padding:9px 0;font-size:18px}}
+  .flow .arrow{display:grid;place-items:center;color:var(--blue-2);font-size:22px;padding:0 4px;flex-shrink:0}
+  /* 설명이 2줄로 충분히 들어가도록 880px 이하에선 세로 스택(좁은 3열 방지) */
+  @media(max-width:880px){.flow{flex-direction:column;align-items:stretch;margin:40px 0}.node{max-width:none;padding:24px 22px;box-shadow:0 10px 28px -18px rgba(20,40,90,.22)}.node h3{font-size:17px}.node p{font-size:14px}.node .ic{width:52px;height:52px;font-size:21px;margin:12px auto 14px}.node .step{font-size:12px}.flow .arrow{transform:rotate(90deg);padding:9px 0;font-size:18px}}
   /* mockup */
   .ui{max-width:860px;margin:0 auto;background:#fff;border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow);overflow:hidden}
   .ui-top{display:flex;align-items:center;gap:12px;padding:13px 18px;border-bottom:1px solid var(--line);background:#fbfcff}
@@ -467,21 +467,21 @@
         <div class="step">STEP 01</div>
         <div class="ic"><i class="fa-solid fa-paper-plane"></i></div>
         <h3>후보자 AI 면접 응시</h3>
-        <p>지원자가 온라인에서 AI 면접에 응시하고 이력서를 제출합니다. 설치 불필요.</p>
+        <p>온라인으로 AI 면접에 응시,<br>설치 없이 이력서까지 제출.</p>
       </div>
       <div class="arrow"><i class="fa-solid fa-arrow-right-long"></i></div>
       <div class="node">
         <div class="step">STEP 02</div>
         <div class="ic"><i class="fa-solid fa-magnifying-glass-chart"></i></div>
         <h3>AI 분석·검증</h3>
-        <p>이력서 주장과 실제 역량을 대조해 자동으로 검증·채점합니다.</p>
+        <p>이력서의 주장과 실제 역량을<br>대조해 자동으로 검증·채점.</p>
       </div>
       <div class="arrow"><i class="fa-solid fa-arrow-right-long"></i></div>
       <div class="node">
         <div class="step">STEP 03</div>
         <div class="ic"><i class="fa-solid fa-file-lines"></i></div>
         <h3>리포트 수신</h3>
-        <p>채용팀은 검증된 핵심 인재 리포트만 받아 판단합니다.</p>
+        <p>검증된 핵심 인재 리포트만<br>채용팀이 받아 판단합니다.</p>
       </div>
     </div>
   </div>
