@@ -227,8 +227,8 @@
   .fn-guides{opacity:.75}
   .fn-tag{position:absolute;display:inline-flex;align-items:center;gap:7px;background:#fff;border:1px solid var(--tint);font-weight:800;font-size:13px;padding:7px 15px;border-radius:999px;box-shadow:0 6px 16px -10px rgba(20,40,90,.3);transform:translate(-50%,-50%);white-space:nowrap;z-index:3}
   .fn-tag i{color:var(--blue)}
-  .fn-tag.tag-ai{left:15%;top:40.3%;color:var(--blue-d)}
-  .fn-tag.tag-team{left:15%;top:81.4%;color:var(--ink)}
+  .fn-tag.tag-ai{left:11%;top:40.6%;color:var(--blue-d)}
+  .fn-tag.tag-team{left:11%;top:80.6%;color:var(--ink)}
   @media(max-width:640px){
     .fn-guides,.fn-tag{display:none}
     .fn-svg .fl{font-size:33px}.fn-svg .ft{font-size:34px}
@@ -403,20 +403,21 @@
         <svg class="fn-svg" viewBox="0 0 1000 720" role="img" aria-label="지원자 전체를 AI가 자동 검증·필터링해 핵심 인재 리포트로 좁히고, 최종 판단만 채용팀이 내리는 깔때기">
           <!-- 좌측 점선 가이드(AI 브래킷) + 하단 점선(채용팀) -->
           <g class="fn-guides">
-            <path d="M222 132 H150 V452 H352" fill="none" stroke="#5B8DF7" stroke-width="2" stroke-dasharray="6 6" stroke-linecap="round"/>
-            <path d="M206 586 H452" fill="none" stroke="#8A93A8" stroke-width="2" stroke-dasharray="6 6" stroke-linecap="round"/>
+            <path d="M180 120 H110 V465 H360" fill="none" stroke="#5B8DF7" stroke-width="2" stroke-dasharray="6 6" stroke-linecap="round"/>
+            <path d="M195 580 H452" fill="none" stroke="#8A93A8" stroke-width="2" stroke-dasharray="6 6" stroke-linecap="round"/>
           </g>
-          <!-- 깔때기 세그먼트 (라운드 조인 = 둥근 모서리) -->
-          <path class="seg" d="M170 80 H830 L778 196 H222 Z" fill="#5C78E6" stroke="#5C78E6" stroke-width="22" stroke-linejoin="round"/>
-          <path class="seg" d="M252 236 H748 L704 344 H296 Z" fill="#4E6BE6" stroke="#4E6BE6" stroke-width="22" stroke-linejoin="round"/>
-          <path class="seg" d="M322 384 H678 L642 476 H358 Z" fill="#5673E8" stroke="#5673E8" stroke-width="22" stroke-linejoin="round"/>
-          <path class="tip" d="M414 516 H586 L500 648 Z" fill="#141d33" stroke="#141d33" stroke-width="20" stroke-linejoin="round"/>
+          <!-- 하나의 큰 역삼각형(상단 150~850, 꼭짓점 500,660)을 가로로 슬라이스 →
+               모든 단의 옆변이 같은 대각선 위에 놓여 전체가 역삼각형으로 읽힘 -->
+          <path class="seg" d="M150 70 H850 L773 200 H227 Z" fill="#5C78E6" stroke="#5C78E6" stroke-width="22" stroke-linejoin="round"/>
+          <path class="seg" d="M245 230 H755 L684 350 H316 Z" fill="#4E6BE6" stroke="#4E6BE6" stroke-width="22" stroke-linejoin="round"/>
+          <path class="seg" d="M334 380 H666 L601 490 H399 Z" fill="#5673E8" stroke="#5673E8" stroke-width="22" stroke-linejoin="round"/>
+          <path class="tip" d="M417 520 H583 L500 660 Z" fill="#141d33" stroke="#141d33" stroke-width="20" stroke-linejoin="round"/>
           <!-- 라벨 -->
-          <text class="fl" x="500" y="138">지원자 전체 - AI 자동 검증</text>
+          <text class="fl" x="500" y="135">지원자 전체 - AI 자동 검증</text>
           <text class="fl" x="500" y="290">역량 대조 · 과장·허위 탐지 통과</text>
-          <text class="fl" x="500" y="430">핵심 인재 리포트</text>
-          <text class="fl ft" x="500" y="546">최종</text>
-          <text class="fl ft" x="500" y="580">판단</text>
+          <text class="fl" x="500" y="435">핵심 인재 리포트</text>
+          <text class="fl ft" x="500" y="552">최종</text>
+          <text class="fl ft" x="500" y="586">판단</text>
         </svg>
         <span class="fn-tag tag-ai"><i class="fa-solid fa-robot"></i> AI</span>
         <span class="fn-tag tag-team"><i class="fa-solid fa-user"></i> 채용팀</span>
