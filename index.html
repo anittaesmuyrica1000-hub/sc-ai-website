@@ -224,13 +224,14 @@
   .funnel3{max-width:1000px;margin:50px auto 0;padding:0 24px}
   .fn-wrap{position:relative;max-width:1000px;margin:0 auto}
   .fn-svg{display:block;width:100%;height:auto;overflow:visible}
+  .fn-svg .seg,.fn-svg .tip{filter:drop-shadow(0 3.6px 13.5px rgba(58,111,255,.6))}
   .fn-svg .fl{fill:#fff;font-weight:700;font-size:25px;letter-spacing:-.01em;text-anchor:middle;dominant-baseline:central}
   .fn-svg .ft{font-weight:800;font-size:26px}
   .fn-guides{opacity:.75}
   .fn-tag{position:absolute;display:inline-flex;align-items:center;gap:7px;background:#fff;border:1px solid var(--tint);font-weight:800;font-size:13px;padding:7px 15px;border-radius:999px;box-shadow:0 6px 16px -10px rgba(20,40,90,.3);transform:translate(-50%,-50%);white-space:nowrap;z-index:3}
   .fn-tag i{color:var(--blue)}
-  .fn-tag.tag-ai{left:11%;top:40.6%;color:var(--blue-d)}
-  .fn-tag.tag-team{left:11%;top:80.6%;color:var(--ink)}
+  .fn-tag.tag-ai{left:13.5%;top:40.1%;color:var(--blue-d)}
+  .fn-tag.tag-team{left:12.5%;top:80.8%;color:var(--ink)}
   @media(max-width:640px){
     .fn-guides,.fn-tag{display:none}
     .fn-svg .fl{font-size:33px}.fn-svg .ft{font-size:34px}
@@ -403,17 +404,21 @@
     <div class="funnel3">
       <div class="fn-wrap">
         <svg class="fn-svg" viewBox="0 0 1000 720" role="img" aria-label="지원자 전체를 AI가 자동 검증·필터링해 핵심 인재 리포트로 좁히고, 최종 판단만 채용팀이 내리는 깔때기">
-          <!-- 세그먼트 선형 그라데이션 (0% #4577FF α90% → 100% #3A6FFF, 약 7.2°) -->
+          <!-- 깔때기 전체를 가로지르는 연속 그라데이션 (위→아래로 진해짐)
+               userSpaceOnUse: 1단 상단(y70)~3단 하단(y490)에 걸쳐 매핑돼 각 단이 리셋되지 않음
+               0% #4577FF → 100% #3A6FFF, 약 7.2° 기울기 · 불투명(안쪽 seam 라인 방지) -->
           <defs>
-            <linearGradient id="fnGrad" x1="0" y1="0" x2="0.125" y2="1">
-              <stop offset="0" stop-color="#4577FF" stop-opacity="0.9"/>
+            <linearGradient id="fnGrad" gradientUnits="userSpaceOnUse" x1="470" y1="70" x2="540" y2="490">
+              <stop offset="0" stop-color="#4577FF"/>
               <stop offset="1" stop-color="#3A6FFF"/>
             </linearGradient>
           </defs>
           <!-- 좌측 점선 가이드(AI 브래킷) + 하단 점선(채용팀) -->
           <g class="fn-guides">
-            <path d="M180 120 H110 V465 H360" fill="none" stroke="#5B8DF7" stroke-width="2" stroke-dasharray="6 6" stroke-linecap="round"/>
-            <path d="M195 580 H452" fill="none" stroke="#8A93A8" stroke-width="2" stroke-dasharray="6 6" stroke-linecap="round"/>
+            <!-- AI 브래킷: 모서리 둥근 "[" — 상단은 1단, 하단은 3단 좌측에 연결 -->
+            <path d="M198 128 H144 Q135 128 135 137 V441 Q135 450 144 450 H372" fill="none" stroke="#5B8DF7" stroke-width="2" stroke-dasharray="6 6" stroke-linecap="round" stroke-linejoin="round"/>
+            <!-- 채용팀: 칩에서 최종 판단 삼각형까지 점선 -->
+            <path d="M200 582 H454" fill="none" stroke="#8A93A8" stroke-width="2" stroke-dasharray="6 6" stroke-linecap="round"/>
           </g>
           <!-- 하나의 큰 역삼각형(상단 150~850, 꼭짓점 500,660)을 가로로 슬라이스 →
                모든 단의 옆변이 같은 대각선 위에 놓여 전체가 역삼각형으로 읽힘 -->
