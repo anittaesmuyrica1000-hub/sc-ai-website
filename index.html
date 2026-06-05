@@ -228,11 +228,11 @@
   .fn-svg .fl{fill:#fff;font-weight:700;font-size:25px;letter-spacing:-.01em;text-anchor:middle;dominant-baseline:central}
   .fn-svg .ft{font-weight:800;font-size:26px}
   .fn-guides{opacity:.75}
-  .fn-tag{position:absolute;display:inline-flex;align-items:center;gap:7px;background:#fff;border:1px solid var(--tint);font-weight:800;font-size:13px;padding:7px 15px;border-radius:999px;box-shadow:0 6px 16px -10px rgba(20,40,90,.3);transform:translateY(-50%);white-space:nowrap;z-index:3}
+  .fn-tag{position:absolute;display:inline-flex;align-items:center;gap:7px;background:#fff;border:1px solid var(--tint);font-weight:800;font-size:13px;padding:7px 15px;border-radius:999px;box-shadow:0 6px 16px -10px rgba(20,40,90,.3);transform:translate(-50%,-50%);white-space:nowrap;z-index:3}
   .fn-tag i{color:var(--blue)}
-  /* 두 칩 왼쪽 끝 정렬(left edge 동일) — translateY만 적용해 left가 좌측 기준 */
-  .fn-tag.tag-ai{left:9.5%;top:40.1%;color:var(--blue-d)}
-  .fn-tag.tag-team{left:9.5%;top:80.6%;color:var(--ink)}
+  /* 두 칩 중앙 정렬 — AI 브래킷 세로선(x131=13.1%)에 두 칩 중심을 맞춤 */
+  .fn-tag.tag-ai{left:13.1%;top:40.1%;color:var(--blue-d)}
+  .fn-tag.tag-team{left:13.1%;top:80.6%;color:var(--ink)}
   @media(max-width:640px){
     .fn-guides,.fn-tag{display:none}
     .fn-svg .fl{font-size:33px}.fn-svg .ft{font-size:34px}
