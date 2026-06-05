@@ -21,7 +21,11 @@
     background:url('hero-globe.png') center/contain no-repeat;
     /* 외곽을 자연스럽게 페이드(블러)아웃 */
     -webkit-mask-image:radial-gradient(circle at 50% 50%, #000 46%, transparent 74%);
-            mask-image:radial-gradient(circle at 50% 50%, #000 46%, transparent 74%)}
+            mask-image:radial-gradient(circle at 50% 50%, #000 46%, transparent 74%);
+    animation:heroGlobeFloat 7s ease-in-out infinite}
+  /* 지구본 부드러운 상하 플로팅 — translateX(-50%)는 중앙정렬 유지 */
+  @keyframes heroGlobeFloat{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(-16px)}}
+  @media(prefers-reduced-motion:reduce){.hero-bg::after{animation:none}}
   /* 그레인(노이즈) 질감 — 밋밋함·AI 플랫함 제거. 인라인 SVG feTurbulence */
   .hero-bg::before{content:"";position:absolute;inset:0;z-index:0;pointer-events:none;mix-blend-mode:multiply;opacity:.06;
     background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
