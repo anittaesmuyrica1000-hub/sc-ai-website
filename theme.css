@@ -20,7 +20,9 @@
 /* ===== Base ===== */
 *{margin:0;padding:0;box-sizing:border-box}
 html{scroll-behavior:smooth}
-body{font-family:'Pretendard','Apple SD Gothic Neo',-apple-system,'Segoe UI',sans-serif;color:var(--ink);background:var(--bg);line-height:1.62;-webkit-font-smoothing:antialiased}
+/* word-break:keep-all → 한국어를 어절(띄어쓰기) 단위로 줄바꿈해 단어가 글자 단위로 깨지지 않게.
+   overflow-wrap:break-word → URL·이메일 등 띄어쓰기 없는 긴 토큰은 넘치지 않게 안전망. */
+body{font-family:'Pretendard','Apple SD Gothic Neo',-apple-system,'Segoe UI',sans-serif;color:var(--ink);background:var(--bg);line-height:1.62;-webkit-font-smoothing:antialiased;word-break:keep-all;overflow-wrap:break-word}
 a{text-decoration:none;color:inherit}
 .wrap{max-width:1140px;margin:0 auto;padding:0 24px}
 section{padding:var(--sec-y) 0}
