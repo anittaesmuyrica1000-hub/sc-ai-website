@@ -21,7 +21,7 @@ Supercoder AI 웹사이트 — **AIVIEW** 제품 랜딩 페이지. AI 면접으�
 - **실험적/대체 레이아웃이 공존한다.** 동일 메시지의 변형 컴포넌트가 여러 개 들어 있다 — 예: ROLE REVERSAL은 `.role`(2-컬럼)과 `.role-funnel`(깔때기) 두 버전이 있고, 깔때기에도 `.tri`/`.fA`/`.fB`/`.fC` 변형 CSS가 남아 있다. 일부는 현재 마크업에서 렌더링되지 않는 "보관용" 스타일이니, 클래스를 지우기 전 실제 사용 여부를 확인한다.
 - **반응형은 컴포넌트별 `@media`로.** 전역 브레이크포인트 시스템이 아니라 각 섹션 CSS 끝에 개별 `@media(max-width:...)` 규칙이 붙어 있다. 주 브레이크포인트는 880/760/560px 대.
 - **외부 의존성은 CDN:** Pretendard 폰트(jsdelivr), Font Awesome 6.5.2 아이콘(cdnjs), `apply.html`은 `@supabase/supabase-js@2`(jsdelivr) 추가. 아이콘은 `<i class="fa-...">`로 사용.
-- **로컬 에셋:** `supercoder-nav.png`(헤더 로고), `supercoder-logo.png`(푸터 로고), `demo-result.png`(HOW IT WORKS 제품 데모 스크린샷). 상대경로로 직접 참조한다.
+- **로컬 에셋:** `supercoder-nav.svg`(헤더 로고 — 파란 가로 락업), `supercoder-logo.svg`(푸터 로고 — 흰색 가로 락업), `demo-result.png`(HOW IT WORKS 제품 데모 스크린샷). 상대경로로 직접 참조한다. 로고는 공식 브랜드 가이드(`supercoder logo 2022-2.ai`)에서 추출한 벡터(SVG)다 — 래스터 PNG를 쓰지 않는다.
 - **무료 신청 폼은 Supabase 저장(기능).** `apply.html` 폼은 제출 시 클라이언트에서 직접 Supabase `public.signups` 테이블에 INSERT 한다(검증 → insert → 완료 화면). `index.html` 최종 CTA는 폼이 아니라 `apply.html`로 가는 버튼이다.
 
 ## Backend (Supabase)

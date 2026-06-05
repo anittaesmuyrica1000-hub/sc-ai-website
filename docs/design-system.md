@@ -143,7 +143,7 @@
 - 내부에 `<header>` / `<footer>` 태그를 렌더하므로 아래 CSS 셀렉터가 그대로 적용된다 — **모든 페이지의 인라인 `<style>`에 nav/footer CSS를 동일하게 포함**시켜야 한다.
   - GNB: `header`(sticky, blur 배경, 하단 `--line` 보더), `.logo`/`.nav-logo-img`, `.navlinks`, `.nav-btn`.
   - 푸터: `footer`(다크 그라데이션 `#0C1430→#0E1626`), `.foot-links`(2컬럼), `.foot-col`, `.foot-bottom`, `.foot-logo-img`, `.foot-social`.
-- 로고: GNB `supercoder-nav.png`(h 30px) · 푸터 `supercoder-logo.png`(h 88px).
+- 로고: GNB `supercoder-nav.svg`(파란 락업, h 26px) · 푸터 `supercoder-logo.svg`(흰색 락업, h 24px). 공식 브랜드 가이드에서 추출한 벡터.
 
 ---
 
@@ -153,8 +153,8 @@
 |---|---|
 | 폰트 | Pretendard v1.3.9 (jsdelivr CDN) |
 | 아이콘 | Font Awesome 6.5.2 (cdnjs CDN) |
-| 로고(GNB) | `supercoder-nav.png` |
-| 로고(푸터) | `supercoder-logo.png` |
+| 로고(GNB) | `supercoder-nav.svg` (벡터) |
+| 로고(푸터) | `supercoder-logo.svg` (벡터) |
 | 제품 데모 | `demo-result.png` |
 
 ---

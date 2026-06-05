@@ -45,7 +45,7 @@ h2{font-size:clamp(28px,3.6vw,44px);font-weight:800;letter-spacing:-.03em;line-h
 header{position:sticky;top:0;z-index:60;background:rgba(255,255,255,.85);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
 nav{display:flex;align-items:center;justify-content:space-between;height:64px}
 .logo{font-weight:800;font-size:20px;letter-spacing:-.02em;display:flex;align-items:center;gap:8px;color:var(--ink)}
-.nav-logo-img{height:30px;width:auto;display:block}
+.nav-logo-img{height:26px;width:auto;display:block}
 .logo .m{width:26px;height:26px;border-radius:8px;background:linear-gradient(135deg,var(--blue),var(--blue-2));display:grid;place-items:center;color:#fff;font-size:13px}
 .navlinks{display:flex;align-items:center;gap:20px;font-size:15px;font-weight:600;color:var(--slate)}
 .navlinks a:hover{color:var(--ink)}
@@ -64,7 +64,7 @@ footer{background:linear-gradient(135deg,#0C1430 0%,#0E1626 60%);color:#8A93A8;p
 .foot-col a:hover{color:#fff}
 .foot-bottom{margin-top:46px;padding-top:30px;border-top:1px solid rgba(255,255,255,.1);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:18px}
 .foot-brand{display:flex;flex-direction:column;gap:10px}
-.foot-logo-img{height:88px;width:auto;display:block}
+.foot-logo-img{height:24px;width:auto;display:block}
 .foot-copy{color:#5C6678;font-size:13px;margin:0}
 .foot-social{display:flex;gap:20px}
 .foot-social a{color:#8A93A8;font-size:18px}
