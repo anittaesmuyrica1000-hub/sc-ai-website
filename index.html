@@ -72,17 +72,16 @@
   .flood-copy h2{font-size:clamp(26px,2.9vw,38px);letter-spacing:-.02em}
   .flood-copy .lead{margin-top:16px;max-width:420px}
   .flood-stats{list-style:none}
-  .flood-stats li{display:flex;align-items:center;gap:24px;padding:20px 0;border-bottom:1px solid var(--line)}
+  .flood-stats li{padding:18px 0;border-bottom:1px solid var(--line)}
   .flood-stats li:first-child{padding-top:0}
   .flood-stats li:last-child{border-bottom:none;padding-bottom:0}
-  .flood-stats .num{flex:0 0 auto;min-width:148px;font-size:clamp(32px,3.6vw,44px);font-weight:800;color:var(--blue);letter-spacing:-.03em;line-height:1}
-  .flood-stats .num span{font-size:.45em;font-weight:800}
-  .flood-stats .meta{display:flex;flex-direction:column;gap:5px;min-width:0}
-  .flood-stats .lbl{font-size:16px;font-weight:600;color:var(--ink)}
-  .flood-stats .src{font-size:12.5px;color:var(--slate-2);display:flex;align-items:center;gap:6px}
-  .flood-stats .src i{color:var(--blue-2)}
+  .flood-stats .stat{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
+  .flood-stats .lbl{font-size:17px;font-weight:700;color:var(--ink)}
+  .flood-stats .num{font-size:clamp(26px,2.8vw,32px);font-weight:800;color:var(--blue);letter-spacing:-.02em;line-height:1}
+  .flood-stats .num span{font-size:.5em;font-weight:800}
+  .flood-stats .src{font-size:12.5px;color:var(--slate-2);margin-top:7px}
   @media(max-width:860px){.flood-split{grid-template-columns:1fr;gap:30px;text-align:center}.flood-copy .lead{margin-left:auto;margin-right:auto}.flood-stats{max-width:520px;margin:0 auto;width:100%;text-align:left}}
-  @media(max-width:480px){.flood-stats li{gap:14px;padding:16px 0}.flood-stats .num{min-width:92px;font-size:28px}.flood-stats .lbl{font-size:14px}.flood-stats .src{font-size:11px}}
+  @media(max-width:480px){.flood-stats li{padding:15px 0}.flood-stats .lbl{font-size:15px}.flood-stats .num{font-size:25px}.flood-stats .src{font-size:11.5px}}
   /* (아카이브) .fcard — 현재 미사용 PROBLEM 변형용 카드 베이스 */
   .fcard{background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:24px 30px;display:flex;flex-direction:row;align-items:center;justify-content:center;gap:24px}
   .fcard .big{font-size:clamp(30px,4vw,40px);font-weight:800;color:var(--blue);letter-spacing:-.03em;line-height:1;flex:0 0 auto;text-align:right;min-width:120px}
@@ -393,32 +392,20 @@
       </div>
       <ul class="flood-stats">
         <li>
-          <div class="num">60%</div>
-          <div class="meta">
-            <span class="lbl">AI로 자소서 쓰는 지원자</span>
-            <span class="src"><i class="fa-solid fa-link"></i> 진학사 캐치, 취준생 1,379명</span>
-          </div>
+          <div class="stat"><span class="lbl">AI로 자소서 쓰는 지원자</span><span class="num">60%</span></div>
+          <p class="src">출처: 진학사 캐치, 취준생 1,379명</p>
         </li>
         <li>
-          <div class="num">58.9%</div>
-          <div class="meta">
-            <span class="lbl">기준 미달도 통과시킨 경험</span>
-            <span class="src"><i class="fa-solid fa-link"></i> 잡코리아, 인사담당자 794명</span>
-          </div>
+          <div class="stat"><span class="lbl">기준 미달도 통과시킨 경험</span><span class="num">58.9%</span></div>
+          <p class="src">출처: 잡코리아, 인사담당자 794명</p>
         </li>
         <li>
-          <div class="num">80.2%</div>
-          <div class="meta">
-            <span class="lbl">잘못 뽑아 후회한 경험</span>
-            <span class="src"><i class="fa-solid fa-link"></i> 사람인, 인사담당자 377명</span>
-          </div>
+          <div class="stat"><span class="lbl">잘못 뽑아 후회한 경험</span><span class="num">80.2%</span></div>
+          <p class="src">출처: 사람인, 인사담당자 377명</p>
         </li>
         <li>
-          <div class="num">1,272<span>만원</span></div>
-          <div class="meta">
-            <span class="lbl">채용 1명당 평균 비용</span>
-            <span class="src"><i class="fa-solid fa-link"></i> 사람인, 기업 499개사</span>
-          </div>
+          <div class="stat"><span class="lbl">채용 1명당 평균 비용</span><span class="num">1,272<span>만원</span></span></div>
+          <p class="src">출처: 사람인, 기업 499개사</p>
         </li>
       </ul>
     </div>
