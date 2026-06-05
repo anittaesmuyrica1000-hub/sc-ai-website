@@ -22,9 +22,15 @@
     /* 외곽을 자연스럽게 페이드(블러)아웃 */
     -webkit-mask-image:radial-gradient(circle at 50% 50%, #000 46%, transparent 74%);
             mask-image:radial-gradient(circle at 50% 50%, #000 46%, transparent 74%);
-    animation:heroGlobeSpin 24s linear infinite}
-  /* 지구본 360° 회전 — translateX(-50%)는 중앙정렬 유지 */
-  @keyframes heroGlobeSpin{from{transform:translateX(-50%) rotate(0deg)}to{transform:translateX(-50%) rotate(360deg)}}
+    animation:heroGlobeBeat 2.8s ease-in-out infinite}
+  /* 지구본 유기적 맥동(심장 박동 lub-dub + 호흡 글로우) — translateX(-50%)는 중앙정렬 유지 */
+  @keyframes heroGlobeBeat{
+    0%,100%{transform:translateX(-50%) scale(1);opacity:.5}
+    16%{transform:translateX(-50%) scale(1.055);opacity:.62}
+    30%{transform:translateX(-50%) scale(1.012);opacity:.53}
+    44%{transform:translateX(-50%) scale(1.038);opacity:.58}
+    62%{transform:translateX(-50%) scale(1);opacity:.5}
+  }
   @media(prefers-reduced-motion:reduce){.hero-bg::after{animation:none}}
   /* 그레인(노이즈) 질감 — 밋밋함·AI 플랫함 제거. 인라인 SVG feTurbulence */
   .hero-bg::before{content:"";position:absolute;inset:0;z-index:0;pointer-events:none;mix-blend-mode:multiply;opacity:.06;
