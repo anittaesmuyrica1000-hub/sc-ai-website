@@ -15,8 +15,8 @@
   /* 히어로 + 도입사 로고를 하나의 배경으로 연결: 연속 그라데이션 + 지구본 + 그레인을 래퍼에 둠 */
   .hero-bg{position:relative;overflow:hidden;background:linear-gradient(180deg,#EAF1FE 0%,#F1F6FF 52%,#F4F8FF 100%)}
   /* 도트 지구본 — 헤드라인 뒤 중앙, 은은하게. 래퍼 안에서 전체 구(球)가 잘리지 않게 배치 */
-  .hero-bg::after{content:"";position:absolute;z-index:0;left:50%;top:42vh;transform:translate(-50%,-50%);
-    width:min(500px,68vw);aspect-ratio:1019/1100;opacity:.32;pointer-events:none;
+  .hero-bg::after{content:"";position:absolute;z-index:0;left:50%;top:33vh;transform:translate(-50%,-50%);
+    width:min(470px,64vw);aspect-ratio:1019/1100;opacity:.32;pointer-events:none;
     background:url('hero-globe.png') center/contain no-repeat}
   /* 그레인(노이즈) 질감 — 밋밋함·AI 플랫함 제거. 인라인 SVG feTurbulence */
   .hero-bg::before{content:"";position:absolute;inset:0;z-index:0;pointer-events:none;mix-blend-mode:multiply;opacity:.06;
