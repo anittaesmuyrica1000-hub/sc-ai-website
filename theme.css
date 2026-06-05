@@ -79,7 +79,7 @@ footer{background:linear-gradient(135deg,#0C1430 0%,#0E1626 60%);color:#8A93A8;p
 .foot-logo-img{height:26px;width:auto;display:block}
 .foot-copy{color:#5C6678;font-size:13px;margin:0}
 /* 저작권 — 푸터 맨 아래 바 */
-.foot-bottom{margin-top:48px;padding-top:24px;border-top:1px solid rgba(255,255,255,.3);text-align:left}
+.foot-bottom{margin-top:48px;padding-top:12px;border-top:1px solid rgba(255,255,255,.2);text-align:left}
 .foot-links{display:flex;gap:64px}
 .foot-col h4{color:#7E89A1;font-size:14px;font-weight:600;margin-bottom:18px}
 .foot-col ul{list-style:none;display:grid;gap:14px}
