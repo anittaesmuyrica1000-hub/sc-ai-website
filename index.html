@@ -228,10 +228,11 @@
   .fn-svg .fl{fill:#fff;font-weight:700;font-size:25px;letter-spacing:-.01em;text-anchor:middle;dominant-baseline:central}
   .fn-svg .ft{font-weight:800;font-size:26px}
   .fn-guides{opacity:.75}
-  .fn-tag{position:absolute;display:inline-flex;align-items:center;gap:7px;background:#fff;border:1px solid var(--tint);font-weight:800;font-size:13px;padding:7px 15px;border-radius:999px;box-shadow:0 6px 16px -10px rgba(20,40,90,.3);transform:translate(-50%,-50%);white-space:nowrap;z-index:3}
+  .fn-tag{position:absolute;display:inline-flex;align-items:center;gap:7px;background:#fff;border:1px solid var(--tint);font-weight:800;font-size:13px;padding:7px 15px;border-radius:999px;box-shadow:0 6px 16px -10px rgba(20,40,90,.3);transform:translateY(-50%);white-space:nowrap;z-index:3}
   .fn-tag i{color:var(--blue)}
-  .fn-tag.tag-ai{left:13.5%;top:40.1%;color:var(--blue-d)}
-  .fn-tag.tag-team{left:12.5%;top:80.8%;color:var(--ink)}
+  /* 두 칩 왼쪽 끝 정렬(left edge 동일) — translateY만 적용해 left가 좌측 기준 */
+  .fn-tag.tag-ai{left:9.5%;top:40.1%;color:var(--blue-d)}
+  .fn-tag.tag-team{left:9.5%;top:80.6%;color:var(--ink)}
   @media(max-width:640px){
     .fn-guides,.fn-tag{display:none}
     .fn-svg .fl{font-size:33px}.fn-svg .ft{font-size:34px}
@@ -405,27 +406,28 @@
       <div class="fn-wrap">
         <svg class="fn-svg" viewBox="0 0 1000 720" role="img" aria-label="지원자 전체를 AI가 자동 검증·필터링해 핵심 인재 리포트로 좁히고, 최종 판단만 채용팀이 내리는 깔때기">
           <!-- 깔때기 전체를 가로지르는 연속 그라데이션 (위→아래로 진해짐)
-               userSpaceOnUse: 1단 상단(y70)~3단 하단(y490)에 걸쳐 매핑돼 각 단이 리셋되지 않음
-               0% #4577FF → 100% #3A6FFF, 약 7.2° 기울기 · 불투명(안쪽 seam 라인 방지) -->
+               userSpaceOnUse: 1단 상단(y62)~3단 하단(y496) 전체에 매핑(단별 리셋 없음)
+               위 #4577FF α90% → 아래 #3A6FFF α100%, 약 7.2° 기울기
+               ※ 세그먼트는 stroke 없는 둥근 fill 패스라 반투명이어도 안쪽 라인 없음 -->
           <defs>
-            <linearGradient id="fnGrad" gradientUnits="userSpaceOnUse" x1="470" y1="70" x2="540" y2="490">
-              <stop offset="0" stop-color="#4577FF"/>
+            <linearGradient id="fnGrad" gradientUnits="userSpaceOnUse" x1="470" y1="62" x2="540" y2="496">
+              <stop offset="0" stop-color="#4577FF" stop-opacity="0.9"/>
               <stop offset="1" stop-color="#3A6FFF"/>
             </linearGradient>
           </defs>
           <!-- 좌측 점선 가이드(AI 브래킷) + 하단 점선(채용팀) -->
           <g class="fn-guides">
-            <!-- AI 브래킷: 모서리 둥근 "[" — 상단은 1단, 하단은 3단 좌측에 연결 -->
-            <path d="M198 128 H144 Q135 128 135 137 V441 Q135 450 144 450 H372" fill="none" stroke="#5B8DF7" stroke-width="2" stroke-dasharray="6 6" stroke-linecap="round" stroke-linejoin="round"/>
-            <!-- 채용팀: 칩에서 최종 판단 삼각형까지 점선 -->
-            <path d="M200 582 H454" fill="none" stroke="#8A93A8" stroke-width="2" stroke-dasharray="6 6" stroke-linecap="round"/>
+            <!-- AI 브래킷: 모서리 둥근 "[" — 세로선 x131(=AI칩 중심), 팔은 깔때기와 간격을 둠 -->
+            <path d="M151 120 H141 Q131 120 131 130 V448 Q131 458 141 458 H349" fill="none" stroke="#5B8DF7" stroke-width="2" stroke-dasharray="6 6" stroke-linecap="round" stroke-linejoin="round"/>
+            <!-- 채용팀: 칩에서 최종 판단 삼각형 앞까지(간격 둠) 점선 -->
+            <path d="M195 580 H420" fill="none" stroke="#8A93A8" stroke-width="2" stroke-dasharray="6 6" stroke-linecap="round"/>
           </g>
           <!-- 하나의 큰 역삼각형(상단 150~850, 꼭짓점 500,660)을 가로로 슬라이스 →
                모든 단의 옆변이 같은 대각선 위에 놓여 전체가 역삼각형으로 읽힘 -->
-          <path class="seg" d="M150 70 H850 L773 200 H227 Z" fill="url(#fnGrad)" stroke="url(#fnGrad)" stroke-width="22" stroke-linejoin="round"/>
-          <path class="seg" d="M245 230 H755 L684 350 H316 Z" fill="url(#fnGrad)" stroke="url(#fnGrad)" stroke-width="22" stroke-linejoin="round"/>
-          <path class="seg" d="M334 380 H666 L601 490 H399 Z" fill="url(#fnGrad)" stroke="url(#fnGrad)" stroke-width="22" stroke-linejoin="round"/>
-          <path class="tip" d="M417 520 H583 L500 660 Z" fill="#141d33" stroke="#141d33" stroke-width="20" stroke-linejoin="round"/>
+          <path class="seg" d="M145.2 71.7 Q140 62 151 62 L849 62 Q860 62 854.8 71.7 L787.2 198.3 Q782 208 771 208 L229 208 Q218 208 212.8 198.3 Z" fill="url(#fnGrad)"/>
+          <path class="seg" d="M241.3 233.7 Q236 224 247 224 L753 224 Q764 224 758.7 233.7 L697.3 346.3 Q692 356 681 356 L319 356 Q308 356 302.7 346.3 Z" fill="url(#fnGrad)"/>
+          <path class="seg" d="M331.2 383.7 Q326 374 337 374 L663 374 Q674 374 668.8 383.7 L613.2 486.3 Q608 496 597 496 L403 496 Q392 496 386.8 486.3 Z" fill="url(#fnGrad)"/>
+          <path class="tip" d="M413.6 523.4 Q408 514 419 514 L581 514 Q592 514 586.4 523.4 L505.6 658.6 Q500 668 494.4 658.6 Z" fill="#141d33"/>
           <!-- 라벨 -->
           <text class="fl" x="500" y="135">지원자 전체 - AI 자동 검증</text>
           <text class="fl" x="500" y="290">역량 대조 · 과장·허위 탐지 통과</text>
