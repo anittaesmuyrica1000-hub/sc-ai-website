@@ -13,13 +13,10 @@
 
   /* 1. DECLARATION */
   .decl{background:linear-gradient(180deg,#F2F5FF 0%,#F8FAFF 55%,#fff 100%);min-height:90vh;display:flex;align-items:center;position:relative;overflow:hidden;padding:60px 0}
-  /* 부드러운 그라데이션 오브(보라→블루→시안) — 헤드라인 뒤 블러 */
-  .decl::after{content:"";position:absolute;z-index:0;width:820px;height:720px;left:50%;top:48%;transform:translate(-50%,-50%);border-radius:50%;
-    background:
-      radial-gradient(48% 46% at 50% 26%, rgba(178,128,240,.92), transparent 70%),
-      radial-gradient(54% 54% at 44% 70%, rgba(98,166,255,.88), transparent 72%),
-      radial-gradient(46% 40% at 62% 96%, rgba(88,202,232,.78), transparent 70%);
-    filter:blur(64px);opacity:.55}
+  /* 도트 지구본 — 헤드라인 뒤 중앙, 은은하게 */
+  .decl::after{content:"";position:absolute;z-index:0;left:50%;top:46%;transform:translate(-50%,-50%);
+    width:min(640px,92vw);aspect-ratio:1019/1100;opacity:.35;
+    background:url('hero-globe.png') center/contain no-repeat}
   /* 그레인(노이즈) 질감 — 밋밋함·AI 플랫함 제거. 인라인 SVG feTurbulence */
   .decl::before{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;mix-blend-mode:multiply;opacity:.06;
     background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
