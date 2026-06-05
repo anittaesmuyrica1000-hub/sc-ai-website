@@ -255,6 +255,9 @@
   .fn-svg .fn-num{fill:var(--blue);font-weight:800;font-size:34px;letter-spacing:-.02em;text-anchor:start;dominant-baseline:central}
   .fn-svg .fn-num .unit{font-size:.6em;font-weight:700;fill:var(--slate)}
   .fn-svg .fn-conn{stroke:var(--blue);stroke-width:1.5;opacity:.4;stroke-dasharray:5 6;stroke-linecap:round}
+  /* 최종 판단 → 10명 (우측 점선 + 점선 원, 좌측 '채용팀'과 대칭) */
+  .fn-svg .fn-final-ln{fill:none;stroke:#142036;stroke-opacity:.5;stroke-width:1.5;stroke-dasharray:6 6;stroke-linecap:round}
+  .fn-svg .fn-final{fill:var(--ink);font-weight:800;font-size:34px;letter-spacing:-.02em;text-anchor:middle;dominant-baseline:central}
   .fn-guides{opacity:.5}
   .fn-tag{position:absolute;display:inline-flex;align-items:center;gap:4px;height:28px;background:#fff;border:1px solid var(--tint);font-weight:800;font-size:12.5px;padding:0 13px;border-radius:999px;box-shadow:0 6px 16px -10px rgba(20,40,90,.3);transform:translate(-50%,-50%);white-space:nowrap;z-index:3}
   .fn-tag i{color:var(--blue)}
@@ -263,7 +266,7 @@
   .fn-tag.tag-team{left:12.3%;top:83.6%;color:var(--ink);border-color:rgba(20,32,54,.5)}
   .fn-tag.tag-team i{color:#142036}
   @media(max-width:640px){
-    .fn-guides,.fn-tag{display:none}
+    .fn-guides,.fn-tag,.fn-final-g{display:none}
     .fn-svg .fl{font-size:33px}.fn-svg .ft{font-size:34px}
     .fn-svg .fn-num{font-size:40px}
   }
@@ -472,6 +475,12 @@
           <text class="fn-num" x="960" y="135">5,000<tspan class="unit"> 명</tspan></text>
           <text class="fn-num" x="960" y="290">800<tspan class="unit"> 명</tspan></text>
           <text class="fn-num" x="960" y="435">40<tspan class="unit"> 명</tspan></text>
+          <!-- 최종 판단 → 10명 (우측, 좌측 '채용팀'과 대칭): 점선 + 점선 원 -->
+          <g class="fn-final-g">
+            <path class="fn-final-ln" d="M650 580 H966"/>
+            <circle class="fn-final-ln" cx="1044" cy="580" r="74"/>
+            <text class="fn-final" x="1044" y="580">10명</text>
+          </g>
         </svg>
         <span class="fn-tag tag-ai"><i class="fa-solid fa-robot"></i> AI</span>
         <span class="fn-tag tag-team"><i class="fa-solid fa-user"></i> 채용팀</span>
