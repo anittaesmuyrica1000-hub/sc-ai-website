@@ -22,7 +22,7 @@
     '          <a href="index.html#how">작동 방식</a>' +
     '          <a href="index.html#proof">도입 효과</a>' +
     '          <a href="index.html#voices">고객 후기</a>' +
-    '          <a href="apply.html" class="nav-menu-cta">무료 데모 신청</a>' +
+    '          <a href="apply.html" class="nav-menu-cta">무료 체험하기</a>' +
     '        </div>' +
     '      </div>' +
     '    </div>' +
@@ -32,31 +32,31 @@
   var FOOTER = '' +
     '<footer>' +
     '  <div class="wrap">' +
-    '    <div class="foot-links">' +
-    '      <div class="foot-col">' +
-    '        <h4>AI 면접관</h4>' +
-    '        <ul>' +
-    '          <li><a href="#">개인정보처리 방침</a></li>' +
-    '          <li><a href="#">기업용 서비스 이용약관</a></li>' +
-    '          <li><a href="#">지원자용 서비스 이용약관</a></li>' +
-    '        </ul>' +
-    '      </div>' +
-    '      <div class="foot-col">' +
-    '        <h4>글로벌 인재 채용</h4>' +
-    '        <ul>' +
-    '          <li><a href="#">개인정보처리 방침</a></li>' +
-    '          <li><a href="#">서비스 이용약관</a></li>' +
-    '        </ul>' +
-    '      </div>' +
-    '    </div>' +
-    '    <div class="foot-bottom">' +
+    '    <div class="foot-top">' +
     '      <div class="foot-brand">' +
     '        <img src="supercoder-logo.svg" class="foot-logo-img" alt="Supercoder">' +
     '        <p class="foot-copy">© 2025 Second Team. All rights reserved.</p>' +
+    '        <div class="foot-social">' +
+    '          <a href="mailto:contact@supercoder.co" aria-label="이메일"><i class="fa-solid fa-envelope"></i></a>' +
+    '          <a href="#" aria-label="LinkedIn"><i class="fa-brands fa-linkedin-in"></i></a>' +
+    '        </div>' +
     '      </div>' +
-    '      <div class="foot-social">' +
-    '        <a href="mailto:contact@supercoder.co" aria-label="이메일"><i class="fa-solid fa-envelope"></i></a>' +
-    '        <a href="#" aria-label="LinkedIn"><i class="fa-brands fa-linkedin-in"></i></a>' +
+    '      <div class="foot-links">' +
+    '        <div class="foot-col">' +
+    '          <h4>AI 면접관</h4>' +
+    '          <ul>' +
+    '            <li><a href="#">개인정보처리 방침</a></li>' +
+    '            <li><a href="#">기업용 서비스 이용약관</a></li>' +
+    '            <li><a href="#">지원자용 서비스 이용약관</a></li>' +
+    '          </ul>' +
+    '        </div>' +
+    '        <div class="foot-col">' +
+    '          <h4>글로벌 인재 채용</h4>' +
+    '          <ul>' +
+    '            <li><a href="#">개인정보처리 방침</a></li>' +
+    '            <li><a href="#">서비스 이용약관</a></li>' +
+    '          </ul>' +
+    '        </div>' +
     '      </div>' +
     '    </div>' +
     '  </div>' +

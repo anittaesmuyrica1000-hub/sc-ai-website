@@ -68,18 +68,19 @@ nav{display:flex;align-items:center;justify-content:space-between;height:64px}
 @media(max-width:600px){.logo{font-size:18px}.logo .m{width:23px;height:23px}}
 @media(max-width:480px){.navlinks .nav-btn{height:36px;padding:0 14px;font-size:13px}.nav-menu-btn{width:40px;height:36px}}
 
-/* ===== Footer (partial: <site-footer>) ===== */
-footer{background:linear-gradient(135deg,#0C1430 0%,#0E1626 60%);color:#8A93A8;padding:66px 0 42px;font-size:14px}
-.foot-links{display:grid;grid-template-columns:minmax(0,240px) minmax(0,240px);gap:64px}
-.foot-col h4{color:#7E89A1;font-size:14px;font-weight:600;margin-bottom:20px}
-.foot-col ul{list-style:none;display:grid;gap:15px}
-.foot-col li a{color:#E6EAF2;font-size:14px}
-.foot-col a:hover{color:#fff}
-.foot-bottom{margin-top:46px;padding-top:30px;border-top:1px solid rgba(255,255,255,.1);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:18px}
-.foot-brand{display:flex;flex-direction:column;gap:10px}
-.foot-logo-img{height:24px;width:auto;display:block}
+/* ===== Footer (partial: <site-footer>) — 로고 상단(좌) + 링크 컬럼(우) ===== */
+footer{background:linear-gradient(135deg,#0C1430 0%,#0E1626 60%);color:#8A93A8;padding:64px 0 44px;font-size:14px}
+.foot-top{display:flex;justify-content:space-between;align-items:flex-start;gap:48px;flex-wrap:wrap}
+.foot-brand{display:flex;flex-direction:column;gap:18px}
+.foot-logo-img{height:26px;width:auto;display:block}
 .foot-copy{color:#5C6678;font-size:13px;margin:0}
-.foot-social{display:flex;gap:20px}
+.foot-social{display:flex;gap:18px}
 .foot-social a{color:#8A93A8;font-size:18px}
 .foot-social a:hover{color:#fff}
-@media(max-width:560px){.foot-links{grid-template-columns:1fr 1fr;gap:28px}}
+.foot-links{display:flex;gap:64px}
+.foot-col h4{color:#7E89A1;font-size:14px;font-weight:600;margin-bottom:18px}
+.foot-col ul{list-style:none;display:grid;gap:14px}
+.foot-col li a{color:#E6EAF2;font-size:14px}
+.foot-col a:hover{color:#fff}
+@media(max-width:680px){.foot-top{flex-direction:column;gap:36px}.foot-links{gap:48px}}
+@media(max-width:420px){.foot-links{gap:28px}}
