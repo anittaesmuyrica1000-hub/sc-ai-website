@@ -12,8 +12,17 @@
   /* 이 페이지 고유(섹션) 스타일만 둔다. 공유 토큰·버튼·GNB·푸터는 theme.css 참고. */
 
   /* 1. DECLARATION */
-  .decl{background:linear-gradient(180deg,#EAF1FE 0%,#F4F8FF 55%,#fff 100%);min-height:90vh;display:flex;align-items:center;position:relative;overflow:hidden;padding:60px 0}
-  .decl::after{content:"";position:absolute;width:460px;height:460px;border-radius:50%;background:radial-gradient(circle,rgba(91,141,247,.16),transparent 70%);top:-120px;right:-100px}
+  .decl{background:linear-gradient(180deg,#F2F5FF 0%,#F8FAFF 55%,#fff 100%);min-height:90vh;display:flex;align-items:center;position:relative;overflow:hidden;padding:60px 0}
+  /* 부드러운 그라데이션 오브(보라→블루→시안) — 헤드라인 뒤 블러 */
+  .decl::after{content:"";position:absolute;z-index:0;width:820px;height:720px;left:50%;top:48%;transform:translate(-50%,-50%);border-radius:50%;
+    background:
+      radial-gradient(48% 46% at 50% 26%, rgba(178,128,240,.92), transparent 70%),
+      radial-gradient(54% 54% at 44% 70%, rgba(98,166,255,.88), transparent 72%),
+      radial-gradient(46% 40% at 62% 96%, rgba(88,202,232,.78), transparent 70%);
+    filter:blur(64px);opacity:.55}
+  /* 그레인(노이즈) 질감 — 밋밋함·AI 플랫함 제거. 인라인 SVG feTurbulence */
+  .decl::before{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;mix-blend-mode:multiply;opacity:.06;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
   .decl .wrap{position:relative;z-index:2;max-width:840px;text-align:center}
   /* tagchip — 섹션 상단 라벨 칩(히어로 'AI 면접 채용 검증' 등). 스코프 없이 재사용 */
   .tagchip{display:inline-flex;align-items:center;gap:8px;background:#fff;border:1px solid var(--line);border-radius:999px;padding:7px 16px;font-size:13px;font-weight:700;color:var(--slate);margin-bottom:24px;box-shadow:0 4px 12px -6px rgba(20,40,90,.15)}
