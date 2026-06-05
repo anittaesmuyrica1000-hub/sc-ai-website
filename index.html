@@ -133,8 +133,9 @@
   .node h3{font-size:18px;margin-bottom:8px}
   .node p{font-size:14px;color:var(--slate)}
   .flow .arrow{display:grid;place-items:center;color:var(--blue-2);font-size:22px;padding:0 4px;flex-shrink:0}
-  /* 설명이 2줄로 충분히 들어가도록 880px 이하에선 세로 스택(좁은 3열 방지) */
-  @media(max-width:880px){.flow{flex-direction:column;align-items:stretch;margin:40px 0}.node{max-width:none;padding:24px 22px;box-shadow:0 10px 28px -18px rgba(20,40,90,.22)}.node h3{font-size:17px}.node p{font-size:14px}.node .ic{width:52px;height:52px;font-size:21px;margin:12px auto 14px}.node .step{font-size:12px}.flow .arrow{transform:rotate(90deg);padding:9px 0;font-size:18px}}
+  /* STEP 01~03은 어떤 폭에서도 한 줄(3열) 유지 — 좁아지면 간격·패딩·폰트만 축소(VALUE/PROOF와 동일) */
+  @media(max-width:760px){.flow{margin:38px 0 34px}.node{padding:20px 11px}.node h3{font-size:15px}.node p{font-size:12.5px;line-height:1.45}.node .ic{width:46px;height:46px;font-size:18px;margin:11px auto 12px}.node .step{font-size:11px}.flow .arrow{font-size:16px;padding:0 2px}}
+  @media(max-width:480px){.node{padding:14px 7px}.node h3{font-size:12.5px}.node p{font-size:10.5px;line-height:1.4}.node p br{display:none}.node .ic{width:36px;height:36px;font-size:15px;border-radius:11px;margin:9px auto 10px}.node .step{font-size:9.5px;letter-spacing:.03em}.flow .arrow{font-size:13px;padding:0 1px}}
   /* mockup */
   .ui{max-width:860px;margin:0 auto;background:#fff;border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow);overflow:hidden}
   .ui-top{display:flex;align-items:center;gap:12px;padding:13px 18px;border-bottom:1px solid var(--line);background:#fbfcff}
@@ -164,7 +165,7 @@
   .demo-video .vtime{position:absolute;right:20px;bottom:20px;background:rgba(0,0,0,.45);color:#fff;font-size:12px;font-weight:700;padding:4px 11px;border-radius:999px}
 
   /* 6. PROOF */
-  .proof2{background:var(--soft)}
+  .proof2{background:#F4F8FF}
   .proof2 .head{text-align:center;max-width:720px;margin:0 auto}
   .proof-row{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:50px}
   .pc2{text-align:center;background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:34px 24px;box-shadow:0 12px 30px -20px rgba(20,40,90,.2)}
@@ -178,7 +179,7 @@
   @media(max-width:480px){.proof-row{gap:8px}.pc2{padding:18px 9px;border-radius:12px}.pc2 .vlabel{font-size:10.5px;gap:4px;margin-bottom:8px}.pc2 .big{font-size:clamp(22px,7vw,38px)}.pc2 p{font-size:11px;margin-top:7px}}
 
   /* 7. VOICES */
-  .voices{background:#fff}
+  .voices{background:#F4F8FF}
   .voices .head{text-align:center;max-width:720px;margin:0 auto}
   .v-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-top:50px;align-items:start}
   .vc{display:flex;flex-direction:column}
@@ -472,7 +473,7 @@
     </div>
 
     <div class="head" style="margin-bottom:6px">
-      <p class="lead" style="margin-top:0">이 리포트가 만들어지기까지, 단 3단계</p>
+      <p class="lead" style="margin-top:0;font-weight:600">이 리포트가 만들어지기까지, 단 3단계</p>
     </div>
 
     <div class="flow">
