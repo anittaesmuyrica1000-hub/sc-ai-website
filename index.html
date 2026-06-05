@@ -232,11 +232,14 @@
   .value{background:transparent;position:relative;z-index:1}
   .value .head{text-align:center;max-width:760px;margin:0 auto}
   .value-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:50px}
-  .valcard{background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:40px 30px;text-align:center;box-shadow:var(--shadow)}
+  /* flex column + metric margin-top:auto → 설명 길이와 무관하게 metric 뱃지가 카드 하단에 정렬 */
+  .valcard{background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:40px 30px;text-align:center;box-shadow:var(--shadow);display:flex;flex-direction:column;align-items:center}
   .valcard .ic{height:48px;color:var(--blue);display:grid;place-items:center;font-size:38px;margin:0 auto 18px}
   .valcard h3{font-size:20px;margin-bottom:10px;letter-spacing:-.02em}
   .valcard p{font-size:15px;color:var(--slate);line-height:1.6}
-  .valcard .metric{display:inline-block;margin-top:14px;font-size:13px;font-weight:800;color:var(--blue);background:var(--soft-2);padding:5px 13px;border-radius:999px}
+  .valcard .metric{display:inline-block;margin-top:auto;font-size:13px;font-weight:800;color:var(--blue);background:var(--soft-2);padding:5px 13px;border-radius:999px}
+  /* 설명(p)과 metric 사이 최소 간격 확보 */
+  .valcard p{margin-bottom:14px}
   /* 3개 요소는 어떤 폭에서도 한 줄(3열) 유지 — 좁아지면 간격·패딩·폰트만 축소 */
   @media(max-width:760px){.value-grid{gap:12px;margin-top:36px}.valcard{padding:26px 14px}.valcard .ic{height:40px;font-size:30px;margin-bottom:14px}.valcard h3{font-size:16px}.valcard p{font-size:13px;line-height:1.5}.valcard .metric{font-size:12px;padding:5px 10px}}
   @media(max-width:480px){.value-grid{gap:8px}.valcard{padding:18px 9px;border-radius:12px}.valcard .ic{height:32px;font-size:24px;margin-bottom:10px}.valcard h3{font-size:13.5px;margin-bottom:7px}.valcard p{font-size:11.5px;line-height:1.45}.valcard .metric{margin-top:10px;font-size:10.5px;padding:4px 8px}}
@@ -477,9 +480,9 @@
           <text class="fn-num" x="960" y="435">40<tspan class="unit"> 명</tspan></text>
           <!-- 최종 판단 → 10명 (우측, 좌측 '채용팀'과 대칭): 점선 + 점선 원 -->
           <g class="fn-final-g">
-            <path class="fn-final-ln" d="M650 580 H966"/>
-            <circle class="fn-final-ln" cx="1044" cy="580" r="74"/>
-            <text class="fn-final" x="1044" y="580">10명</text>
+            <path class="fn-final-ln" d="M650 580 H916"/>
+            <circle class="fn-final-ln" cx="994" cy="580" r="74"/>
+            <text class="fn-final" x="994" y="580">10명</text>
           </g>
         </svg>
         <span class="fn-tag tag-ai"><i class="fa-solid fa-robot"></i> AI</span>
