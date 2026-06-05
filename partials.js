@@ -35,11 +35,6 @@
     '    <div class="foot-top">' +
     '      <div class="foot-brand">' +
     '        <img src="supercoder-logo.svg" class="foot-logo-img" alt="Supercoder">' +
-    '        <p class="foot-copy">© 2025 Second Team. All rights reserved.</p>' +
-    '        <div class="foot-social">' +
-    '          <a href="mailto:contact@supercoder.co" aria-label="이메일"><i class="fa-solid fa-envelope"></i></a>' +
-    '          <a href="#" aria-label="LinkedIn"><i class="fa-brands fa-linkedin-in"></i></a>' +
-    '        </div>' +
     '      </div>' +
     '      <div class="foot-links">' +
     '        <div class="foot-col">' +
@@ -58,6 +53,9 @@
     '          </ul>' +
     '        </div>' +
     '      </div>' +
+    '    </div>' +
+    '    <div class="foot-bottom">' +
+    '      <p class="foot-copy">© 2025 Second Team. All rights reserved.</p>' +
     '    </div>' +
     '  </div>' +
     '</footer>';

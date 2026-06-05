@@ -74,14 +74,12 @@ nav{display:flex;align-items:center;justify-content:space-between;height:64px}
 
 /* ===== Footer (partial: <site-footer>) — 로고 상단(좌) + 링크 컬럼(우) ===== */
 footer{background:linear-gradient(135deg,#0C1430 0%,#0E1626 60%);color:#8A93A8;padding:64px 0 44px;font-size:14px}
-.foot-top{display:flex;justify-content:space-between;align-items:stretch;gap:48px;flex-wrap:wrap}
+.foot-top{display:flex;justify-content:space-between;align-items:flex-start;gap:48px;flex-wrap:wrap}
 .foot-brand{display:flex;flex-direction:column;align-items:flex-start;gap:18px}
 .foot-logo-img{height:26px;width:auto;display:block}
 .foot-copy{color:#5C6678;font-size:13px;margin:0}
-/* SNS 아이콘을 브랜드 컬럼 하단으로 밀어 우측 마지막 링크('지원자용 서비스 이용약관')와 정렬 */
-.foot-social{display:flex;gap:18px;margin-top:auto}
-.foot-social a{color:#8A93A8;font-size:18px}
-.foot-social a:hover{color:#fff}
+/* 저작권 — 푸터 맨 아래 바 */
+.foot-bottom{margin-top:48px;padding-top:24px;border-top:1px solid rgba(255,255,255,.4);text-align:center}
 .foot-links{display:flex;gap:64px}
 .foot-col h4{color:#7E89A1;font-size:14px;font-weight:600;margin-bottom:18px}
 .foot-col ul{list-style:none;display:grid;gap:14px}
