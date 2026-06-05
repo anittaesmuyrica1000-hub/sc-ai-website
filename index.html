@@ -38,13 +38,20 @@
   .barkeys span{flex:1;text-align:center;font-size:13px;color:var(--slate-2);font-weight:700}
   @media(max-width:880px){.decl .wrap{grid-template-columns:1fr;gap:40px}.decl{min-height:auto}}
 
-  /* HERO STRIP — 도입사 로고 (실제 브랜드 로고, 정적 행) */
+  /* HERO STRIP — 도입사 로고 (한 줄 무한 루핑 마퀴) */
   .herostrip{background:#fff;padding:28px 0 84px}
   .hs-label{font-size:17px;color:var(--slate);font-weight:700;text-align:center;margin-bottom:40px}
-  .logo-row{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:30px 56px;max-width:1080px;margin:0 auto;padding:0 24px}
-  .logo-row img{max-width:150px;max-height:60px;width:auto;height:auto;object-fit:contain;display:block}
-  @media(max-width:760px){.logo-row{gap:24px 40px}.logo-row img{max-width:120px;max-height:48px}}
-  @media(max-width:480px){.logo-row{gap:18px 30px}.logo-row img{max-width:96px;max-height:40px}}
+  .marquee{position:relative;overflow:hidden;width:100%;
+    -webkit-mask-image:linear-gradient(90deg,transparent 0,#000 10%,#000 90%,transparent 100%);
+            mask-image:linear-gradient(90deg,transparent 0,#000 10%,#000 90%,transparent 100%)}
+  .marquee-track{display:flex;align-items:center;width:max-content;animation:hs-scroll 30s linear infinite}
+  .marquee:hover .marquee-track{animation-play-state:paused}
+  /* 각 로고에 동일한 우측 여백 → 두 세트 폭이 정확히 같아 -50% 이동 시 이음매 없음 */
+  .marquee-track img{flex:0 0 auto;margin-right:64px;max-width:150px;max-height:56px;width:auto;height:auto;object-fit:contain;display:block}
+  @keyframes hs-scroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+  @media(prefers-reduced-motion:reduce){.marquee-track{animation:none}}
+  @media(max-width:760px){.marquee-track img{margin-right:44px;max-width:120px;max-height:46px}}
+  @media(max-width:480px){.marquee-track img{margin-right:32px;max-width:100px;max-height:40px}}
 
   /* ATS 연동 */
   .ats{margin-top:54px;padding-top:42px;border-top:1px solid var(--line);text-align:center}
@@ -308,12 +315,21 @@
 <!-- HERO STRIP: 도입사 로고 -->
 <div class="herostrip">
   <p class="hs-label">500개 이상의 팀이 신뢰하는 선택</p>
-  <div class="logo-row">
-    <img src="logos/kakaopay.png" alt="kakaopay">
-    <img src="logos/hyundai-autoever.png" alt="HYUNDAI AutoEver">
-    <img src="logos/woongjin.png" alt="Woongjin">
-    <img src="logos/skonec.png" alt="SKONEC entertainment">
-    <img src="logos/markany.png" alt="MarkAny">
+  <div class="marquee">
+    <div class="marquee-track">
+      <!-- set 1 -->
+      <img src="logos/kakaopay.png" alt="kakaopay">
+      <img src="logos/hyundai-autoever.png" alt="HYUNDAI AutoEver">
+      <img src="logos/woongjin.png" alt="Woongjin">
+      <img src="logos/skonec.png" alt="SKONEC entertainment">
+      <img src="logos/markany.png" alt="MarkAny">
+      <!-- set 2 (이음매 없는 루프용 복제, 스크린리더 숨김) -->
+      <img src="logos/kakaopay.png" alt="" aria-hidden="true">
+      <img src="logos/hyundai-autoever.png" alt="" aria-hidden="true">
+      <img src="logos/woongjin.png" alt="" aria-hidden="true">
+      <img src="logos/skonec.png" alt="" aria-hidden="true">
+      <img src="logos/markany.png" alt="" aria-hidden="true">
+    </div>
   </div>
 </div>
 
