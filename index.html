@@ -66,21 +66,29 @@
 
   /* 2. THE FLOOD */
   .flood{background:var(--soft)}
-  .flood .head{text-align:center;max-width:720px;margin:0 auto}
-  .flood-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;margin-top:46px;background:var(--line);border:1px solid var(--line);border-radius:var(--r);box-shadow:0 16px 42px -24px rgba(20,40,90,.22);overflow:hidden}
+  /* FLOOD — 좌:헤드라인 / 우:근거 통계 리스트 (비대칭 분할, 무박스로 가볍게) */
+  .flood-split{display:grid;grid-template-columns:.92fr 1.08fr;gap:clamp(32px,4vw,60px);align-items:center}
+  .flood-copy h2{font-size:clamp(26px,2.9vw,38px);letter-spacing:-.02em}
+  .flood-copy .lead{margin-top:16px;max-width:420px}
+  .flood-stats{list-style:none}
+  .flood-stats li{display:flex;align-items:center;gap:24px;padding:20px 0;border-bottom:1px solid var(--line)}
+  .flood-stats li:first-child{padding-top:0}
+  .flood-stats li:last-child{border-bottom:none;padding-bottom:0}
+  .flood-stats .num{flex:0 0 auto;min-width:148px;font-size:clamp(32px,3.6vw,44px);font-weight:800;color:var(--blue);letter-spacing:-.03em;line-height:1}
+  .flood-stats .num span{font-size:.45em;font-weight:800}
+  .flood-stats .meta{display:flex;flex-direction:column;gap:5px;min-width:0}
+  .flood-stats .lbl{font-size:16px;font-weight:600;color:var(--ink)}
+  .flood-stats .src{font-size:12.5px;color:var(--slate-2);display:flex;align-items:center;gap:6px}
+  .flood-stats .src i{color:var(--blue-2)}
+  @media(max-width:860px){.flood-split{grid-template-columns:1fr;gap:30px;text-align:center}.flood-copy .lead{margin-left:auto;margin-right:auto}.flood-stats{max-width:520px;margin:0 auto;width:100%;text-align:left}}
+  @media(max-width:480px){.flood-stats li{gap:14px;padding:16px 0}.flood-stats .num{min-width:92px;font-size:28px}.flood-stats .lbl{font-size:14px}.flood-stats .src{font-size:11px}}
+  /* (아카이브) .fcard — 현재 미사용 PROBLEM 변형용 카드 베이스 */
   .fcard{background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:24px 30px;display:flex;flex-direction:row;align-items:center;justify-content:center;gap:24px}
   .fcard .big{font-size:clamp(30px,4vw,40px);font-weight:800;color:var(--blue);letter-spacing:-.03em;line-height:1;flex:0 0 auto;text-align:right;min-width:120px}
   .fcard .ftxt{flex:0 1 auto;display:flex;flex-direction:column;gap:6px}
   .fcard .lbl{font-size:16px;color:var(--ink);font-weight:600}
   .fcard .src{font-size:12px;color:var(--slate-2);display:flex;align-items:center;gap:6px}
   .fcard .src i{color:var(--blue-2)}
-  /* FLOOD: 세로로 긴 카드 3개를 한 줄에 나란히 */
-  .flood-grid .fcard{background:#fff;border:none;border-radius:0;box-shadow:none;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:30px 22px;min-height:0;gap:0}
-  .flood-grid .fcard .lbl{font-size:15px;line-height:1.4;color:var(--slate);font-weight:600;margin-bottom:12px;min-height:22px;display:flex;align-items:center;justify-content:center}
-  .flood-grid .fcard .big{text-align:center;min-width:0;font-size:clamp(30px,3vw,40px);white-space:nowrap}
-  .flood-grid .fcard .src{justify-content:center;margin-top:12px;width:100%;font-size:11px}
-  @media(max-width:900px){.flood-grid{grid-template-columns:repeat(2,1fr)}}
-  @media(max-width:540px){.flood-grid{grid-template-columns:1fr}}
   @media(max-width:640px){.fcard{flex-direction:column;align-items:flex-start;gap:12px;padding:22px}.fcard .big{flex:none}}
 
   /* 3. THE PROBLEM */
@@ -376,31 +384,41 @@
 <!-- ===== SECTION 04 · FLOOD (현실→위험 — "가짜는 쏟아지고, 잘못된 채용은 비싸집니다") · #flood ===== -->
 <section class="flood" id="flood">
   <div class="wrap">
-    <div class="head">
-      <h2>가짜는 쏟아지고,<br>잘못된 채용은 비싸집니다</h2>
-      <p class="lead">AI가 써주는 이력서 속에서 진짜를 가려내지 못하면 — 그대로 비용이 됩니다.</p>
-    </div>
-    <div class="flood-grid">
-      <div class="fcard">
-        <div class="lbl">AI로 자소서 쓰는 지원자</div>
-        <div class="big">60%</div>
-        <div class="src"><i class="fa-solid fa-link"></i> 진학사 캐치, 취준생 1,379명</div>
+    <div class="flood-split">
+      <div class="flood-copy">
+        <h2>가짜는 쏟아지고,<br>잘못된 채용은 비싸집니다</h2>
+        <p class="lead">AI가 써주는 이력서 속에서 진짜를 가려내지 못하면 — 그대로 비용이 됩니다.</p>
       </div>
-      <div class="fcard">
-        <div class="lbl">기준 미달도 통과시킨 경험</div>
-        <div class="big">58.9%</div>
-        <div class="src"><i class="fa-solid fa-link"></i> 잡코리아, 인사담당자 794명</div>
-      </div>
-      <div class="fcard">
-        <div class="lbl">잘못 뽑아 후회한 경험</div>
-        <div class="big">80.2%</div>
-        <div class="src"><i class="fa-solid fa-link"></i> 사람인, 인사담당자 377명</div>
-      </div>
-      <div class="fcard">
-        <div class="lbl">채용 1명당 평균 비용</div>
-        <div class="big">1,272<span style="font-size:.45em">만원</span></div>
-        <div class="src"><i class="fa-solid fa-link"></i> 사람인, 기업 499개사</div>
-      </div>
+      <ul class="flood-stats">
+        <li>
+          <div class="num">60%</div>
+          <div class="meta">
+            <span class="lbl">AI로 자소서 쓰는 지원자</span>
+            <span class="src"><i class="fa-solid fa-link"></i> 진학사 캐치, 취준생 1,379명</span>
+          </div>
+        </li>
+        <li>
+          <div class="num">58.9%</div>
+          <div class="meta">
+            <span class="lbl">기준 미달도 통과시킨 경험</span>
+            <span class="src"><i class="fa-solid fa-link"></i> 잡코리아, 인사담당자 794명</span>
+          </div>
+        </li>
+        <li>
+          <div class="num">80.2%</div>
+          <div class="meta">
+            <span class="lbl">잘못 뽑아 후회한 경험</span>
+            <span class="src"><i class="fa-solid fa-link"></i> 사람인, 인사담당자 377명</span>
+          </div>
+        </li>
+        <li>
+          <div class="num">1,272<span>만원</span></div>
+          <div class="meta">
+            <span class="lbl">채용 1명당 평균 비용</span>
+            <span class="src"><i class="fa-solid fa-link"></i> 사람인, 기업 499개사</span>
+          </div>
+        </li>
+      </ul>
     </div>
   </div>
 </section>
