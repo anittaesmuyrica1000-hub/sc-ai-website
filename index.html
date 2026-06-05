@@ -238,7 +238,7 @@
   .fn-tag{position:absolute;display:inline-flex;align-items:center;gap:4px;height:28px;background:#fff;border:1px solid var(--tint);font-weight:800;font-size:12.5px;padding:0 13px;border-radius:999px;box-shadow:0 6px 16px -10px rgba(20,40,90,.3);transform:translate(-50%,-50%);white-space:nowrap;z-index:3}
   .fn-tag i{color:var(--blue)}
   /* 두 칩 중앙 정렬 — AI 브래킷 세로선(x140)에 중심, top%는 viewBox(48~684) 기준 */
-  .fn-tag.tag-ai{left:12.3%;top:37.9%;color:var(--blue-d)}
+  .fn-tag.tag-ai{left:12.3%;top:37.3%;color:var(--blue-d)}
   .fn-tag.tag-team{left:12.3%;top:83.6%;color:var(--ink);border-color:rgba(20,32,54,.5)}
   .fn-tag.tag-team i{color:#142036}
   @media(max-width:640px){
@@ -427,7 +427,7 @@
           <!-- 좌측 점선 가이드(AI 브래킷) + 하단 점선(채용팀) — GNB 로고 좌측 끝(viewBox x≈0)까지 배치 -->
           <g class="fn-guides">
             <!-- AI 브래킷: 모서리 둥근 "[" — 세로선 x140(칩 중심), 팔은 깔때기와 간격을 둠 -->
-            <path d="M215 120 H150 Q140 120 140 130 V448 Q140 458 150 458 H410" fill="none" stroke="#5B8DF7" stroke-width="1.5" stroke-dasharray="6 6" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M215 135 H150 Q140 135 140 145 V425 Q140 435 150 435 H410" fill="none" stroke="#5B8DF7" stroke-width="1.5" stroke-dasharray="6 6" stroke-linecap="round" stroke-linejoin="round"/>
             <!-- 채용팀: 칩에서 최종 판단 삼각형 앞까지(간격 둠) 점선 — 칩 테두리와 동일 #142036 50%(그룹 opacity .5) -->
             <path d="M190 580 H490" fill="none" stroke="#142036" stroke-width="1.5" stroke-dasharray="6 6" stroke-linecap="round"/>
           </g>
