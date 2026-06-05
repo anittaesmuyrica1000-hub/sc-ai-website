@@ -221,8 +221,9 @@
   /* ROLE FUNNEL — 깔때기 (트라페조이드 3단 + 다크 tip) */
   .role-funnel{background:#fff}
   .role-funnel .head{text-align:center;max-width:760px;margin:0 auto}
-  .funnel3{max-width:1000px;margin:50px auto 0;padding:0 24px}
-  .fn-wrap{position:relative;max-width:1000px;margin:0 auto}
+  /* 이미 부모 .wrap(패딩24) 안이므로 funnel3는 패딩 0 → 콘텐츠 좌측이 로고 라인과 정확히 일치 */
+  .funnel3{max-width:1140px;margin:50px auto 0;padding:0}
+  .fn-wrap{position:relative;max-width:1140px;margin:0 auto}
   .fn-svg{display:block;width:100%;height:auto;overflow:visible}
   .fn-svg .seg,.fn-svg .tip{filter:drop-shadow(0 3.6px 13.5px rgba(58,111,255,.6))}
   .fn-svg .fl{fill:#fff;font-weight:700;font-size:25px;letter-spacing:-.01em;text-anchor:middle;dominant-baseline:central}
@@ -230,9 +231,9 @@
   .fn-guides{opacity:.75}
   .fn-tag{position:absolute;display:inline-flex;align-items:center;gap:7px;background:#fff;border:1px solid var(--tint);font-weight:800;font-size:13px;padding:7px 15px;border-radius:999px;box-shadow:0 6px 16px -10px rgba(20,40,90,.3);transform:translate(-50%,-50%);white-space:nowrap;z-index:3}
   .fn-tag i{color:var(--blue)}
-  /* 두 칩 중앙 정렬 — AI 브래킷 세로선(x131=13.1%)에 두 칩 중심을 맞춤 */
-  .fn-tag.tag-ai{left:13.1%;top:40.1%;color:var(--blue-d)}
-  .fn-tag.tag-team{left:13.1%;top:80.6%;color:var(--ink)}
+  /* 두 칩 중앙 정렬 — AI 브래킷 세로선(x140 of 1140 ≈ 12.3%)에 두 칩 중심을 맞춤 */
+  .fn-tag.tag-ai{left:12.3%;top:40.1%;color:var(--blue-d)}
+  .fn-tag.tag-team{left:12.3%;top:80.6%;color:var(--ink)}
   @media(max-width:640px){
     .fn-guides,.fn-tag{display:none}
     .fn-svg .fl{font-size:33px}.fn-svg .ft{font-size:34px}
@@ -404,36 +405,35 @@
     </div>
     <div class="funnel3">
       <div class="fn-wrap">
-        <svg class="fn-svg" viewBox="0 0 1000 720" role="img" aria-label="지원자 전체를 AI가 자동 검증·필터링해 핵심 인재 리포트로 좁히고, 최종 판단만 채용팀이 내리는 깔때기">
+        <svg class="fn-svg" viewBox="0 0 1140 720" role="img" aria-label="지원자 전체를 AI가 자동 검증·필터링해 핵심 인재 리포트로 좁히고, 최종 판단만 채용팀이 내리는 깔때기">
           <!-- 깔때기 전체를 가로지르는 연속 그라데이션 (위→아래로 진해짐)
                userSpaceOnUse: 1단 상단(y62)~3단 하단(y496) 전체에 매핑(단별 리셋 없음)
                위 #4577FF α90% → 아래 #3A6FFF α100%, 약 7.2° 기울기
                ※ 세그먼트는 stroke 없는 둥근 fill 패스라 반투명이어도 안쪽 라인 없음 -->
           <defs>
-            <linearGradient id="fnGrad" gradientUnits="userSpaceOnUse" x1="470" y1="62" x2="540" y2="496">
+            <linearGradient id="fnGrad" gradientUnits="userSpaceOnUse" x1="540" y1="62" x2="610" y2="496">
               <stop offset="0" stop-color="#4577FF" stop-opacity="0.9"/>
               <stop offset="1" stop-color="#3A6FFF"/>
             </linearGradient>
           </defs>
-          <!-- 좌측 점선 가이드(AI 브래킷) + 하단 점선(채용팀) -->
+          <!-- 좌측 점선 가이드(AI 브래킷) + 하단 점선(채용팀) — GNB 로고 좌측 끝(viewBox x≈0)까지 배치 -->
           <g class="fn-guides">
-            <!-- AI 브래킷: 모서리 둥근 "[" — 세로선 x131(=AI칩 중심), 팔은 깔때기와 간격을 둠 -->
-            <path d="M151 120 H141 Q131 120 131 130 V448 Q131 458 141 458 H349" fill="none" stroke="#5B8DF7" stroke-width="2" stroke-dasharray="6 6" stroke-linecap="round" stroke-linejoin="round"/>
+            <!-- AI 브래킷: 모서리 둥근 "[" — 세로선 x140(칩 중심), 팔은 깔때기와 간격을 둠 -->
+            <path d="M215 120 H150 Q140 120 140 130 V448 Q140 458 150 458 H410" fill="none" stroke="#5B8DF7" stroke-width="2" stroke-dasharray="6 6" stroke-linecap="round" stroke-linejoin="round"/>
             <!-- 채용팀: 칩에서 최종 판단 삼각형 앞까지(간격 둠) 점선 -->
-            <path d="M195 580 H420" fill="none" stroke="#8A93A8" stroke-width="2" stroke-dasharray="6 6" stroke-linecap="round"/>
+            <path d="M190 580 H490" fill="none" stroke="#8A93A8" stroke-width="2" stroke-dasharray="6 6" stroke-linecap="round"/>
           </g>
-          <!-- 하나의 큰 역삼각형(상단 150~850, 꼭짓점 500,660)을 가로로 슬라이스 →
-               모든 단의 옆변이 같은 대각선 위에 놓여 전체가 역삼각형으로 읽힘 -->
-          <path class="seg" d="M145.2 71.7 Q140 62 151 62 L849 62 Q860 62 854.8 71.7 L787.2 198.3 Q782 208 771 208 L229 208 Q218 208 212.8 198.3 Z" fill="url(#fnGrad)"/>
-          <path class="seg" d="M241.3 233.7 Q236 224 247 224 L753 224 Q764 224 758.7 233.7 L697.3 346.3 Q692 356 681 356 L319 356 Q308 356 302.7 346.3 Z" fill="url(#fnGrad)"/>
-          <path class="seg" d="M331.2 383.7 Q326 374 337 374 L663 374 Q674 374 668.8 383.7 L613.2 486.3 Q608 496 597 496 L403 496 Q392 496 386.8 486.3 Z" fill="url(#fnGrad)"/>
-          <path class="tip" d="M413.6 523.4 Q408 514 419 514 L581 514 Q592 514 586.4 523.4 L505.6 658.6 Q500 668 494.4 658.6 Z" fill="#141d33"/>
-          <!-- 라벨 -->
-          <text class="fl" x="500" y="135">지원자 전체 - AI 자동 검증</text>
-          <text class="fl" x="500" y="290">역량 대조 · 과장·허위 탐지 통과</text>
-          <text class="fl" x="500" y="435">핵심 인재 리포트</text>
-          <text class="fl ft" x="500" y="552">최종</text>
-          <text class="fl ft" x="500" y="586">판단</text>
+          <!-- 하나의 큰 역삼각형을 가로로 슬라이스(1140 viewBox 기준 +70 이동, 중앙 유지) -->
+          <path class="seg" d="M215.2 71.7 Q210 62 221 62 L919 62 Q930 62 924.8 71.7 L857.2 198.3 Q852 208 841 208 L299 208 Q288 208 282.8 198.3 Z" fill="url(#fnGrad)"/>
+          <path class="seg" d="M311.3 233.7 Q306 224 317 224 L823 224 Q834 224 828.7 233.7 L767.3 346.3 Q762 356 751 356 L389 356 Q378 356 372.7 346.3 Z" fill="url(#fnGrad)"/>
+          <path class="seg" d="M401.2 383.7 Q396 374 407 374 L733 374 Q744 374 738.8 383.7 L683.2 486.3 Q678 496 667 496 L473 496 Q462 496 456.8 486.3 Z" fill="url(#fnGrad)"/>
+          <path class="tip" d="M483.6 523.4 Q478 514 489 514 L651 514 Q662 514 656.4 523.4 L575.6 658.6 Q570 668 564.4 658.6 Z" fill="#141d33"/>
+          <!-- 라벨 (x=570, 1140 viewBox 중앙) -->
+          <text class="fl" x="570" y="135">지원자 전체 - AI 자동 검증</text>
+          <text class="fl" x="570" y="290">역량 대조 · 과장·허위 탐지 통과</text>
+          <text class="fl" x="570" y="435">핵심 인재 리포트</text>
+          <text class="fl ft" x="570" y="552">최종</text>
+          <text class="fl ft" x="570" y="586">판단</text>
         </svg>
         <span class="fn-tag tag-ai"><i class="fa-solid fa-robot"></i> AI</span>
         <span class="fn-tag tag-team"><i class="fa-solid fa-user"></i> 채용팀</span>
