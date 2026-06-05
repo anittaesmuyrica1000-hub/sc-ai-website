@@ -71,7 +71,7 @@ nav{display:flex;align-items:center;justify-content:space-between;height:64px}
 /* ===== Footer (partial: <site-footer>) — 로고 상단(좌) + 링크 컬럼(우) ===== */
 footer{background:linear-gradient(135deg,#0C1430 0%,#0E1626 60%);color:#8A93A8;padding:64px 0 44px;font-size:14px}
 .foot-top{display:flex;justify-content:space-between;align-items:flex-start;gap:48px;flex-wrap:wrap}
-.foot-brand{display:flex;flex-direction:column;gap:18px}
+.foot-brand{display:flex;flex-direction:column;align-items:flex-start;gap:18px}
 .foot-logo-img{height:26px;width:auto;display:block}
 .foot-copy{color:#5C6678;font-size:13px;margin:0}
 .foot-social{display:flex;gap:18px}
