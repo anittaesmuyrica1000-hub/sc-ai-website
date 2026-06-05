@@ -13,6 +13,8 @@
   --ink:#142036; --slate:#566179; --slate-2:#8A93A8; --line:#E5EBF5;
   --bg:#fff; --green:#16A34A; --amber:#E0890B; --red:#E0584A;
   --r:16px; --shadow:0 18px 48px -22px rgba(20,40,90,.22);
+  /* 섹션 수직 리듬 토큰 — 전 섹션 공통 간격(SSOT). 데스크톱 ~92px, 뷰포트 따라 유동 축소 */
+  --sec-y:clamp(56px,7vw,96px);
 }
 
 /* ===== Base ===== */
@@ -21,7 +23,7 @@ html{scroll-behavior:smooth}
 body{font-family:'Pretendard','Apple SD Gothic Neo',-apple-system,'Segoe UI',sans-serif;color:var(--ink);background:var(--bg);line-height:1.62;-webkit-font-smoothing:antialiased}
 a{text-decoration:none;color:inherit}
 .wrap{max-width:1140px;margin:0 auto;padding:0 24px}
-section{padding:92px 0}
+section{padding:var(--sec-y) 0}
 
 /* ===== Typography helpers ===== */
 h2{font-size:clamp(28px,3.6vw,44px);font-weight:800;letter-spacing:0;line-height:1.3}
