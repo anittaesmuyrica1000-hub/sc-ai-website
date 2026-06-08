@@ -33,13 +33,8 @@
     background-size:200% auto;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
     color:transparent;animation:textGrad 5s linear infinite}
   @keyframes textGrad{to{background-position:200% center}}
-  /* '진짜' — 그라데이션 밑줄 2줄(화이트 글로우 제거) */
+  /* '진짜' — 그라데이션 글자만(화이트 글로우·밑줄 제거) */
   .decl h1 .real{position:relative;animation:textGrad 5s linear infinite}
-  .decl h1 .real::after,.decl h1 .real::before{content:"";position:absolute;left:0;right:0;height:.07em;border-radius:999px;
-    background:linear-gradient(to right,#5B8DF7,#8AA0FF,#B98DFF,#8AA0FF,#5B8DF7);background-size:200% auto;
-    animation:textGrad 5s linear infinite}
-  .decl h1 .real::after{bottom:-.12em}
-  .decl h1 .real::before{bottom:-.26em}
   .decl p{font-size:19px;color:#AEB9D4;margin:24px auto 32px;max-width:560px;line-height:1.4}
   .decl p .blue{color:#7FA6FF}
   .decl-cta{display:flex;gap:12px;flex-wrap:wrap;justify-content:center}

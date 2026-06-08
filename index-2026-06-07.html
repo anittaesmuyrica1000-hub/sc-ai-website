@@ -14,25 +14,19 @@
   /* 1. DECLARATION */
   /* 히어로 + 도입사 로고를 하나의 배경으로 연결: 연속 그라데이션 + 지구본 + 그레인을 래퍼에 둠 */
   /* 히어로+VALUE 연속 그라데이션 — 아래로 갈수록 흰색 */
-  .hero-bg{position:relative;overflow:hidden;background:linear-gradient(180deg,#EAF1FE 0%,#EFF4FF 30%,#F6F9FF 62%,#fff 100%)}
+  .hero-bg{position:relative;overflow:hidden;background:
+      radial-gradient(62% 52% at 50% 40%, rgba(90,120,255,.20) 0%, rgba(120,80,220,.10) 42%, transparent 72%),
+      linear-gradient(160deg,#070B1A 0%,#0A1330 50%,#04060E 100%)}
   /* 입자 수렴 모션 — 수많은 점(지원자)이 헤드라인 '진짜'로 좁혀듦(AI가 검증·선별). canvas는 래퍼 첫 자식 */
   .hero-bg #hero-particles{position:absolute;inset:0;z-index:0;width:100%;height:100%;pointer-events:none;
     -webkit-mask-image:radial-gradient(ellipse 72% 64% at 50% 44%, #000 26%, transparent 86%);
             mask-image:radial-gradient(ellipse 72% 64% at 50% 44%, #000 26%, transparent 86%)}
   @media(prefers-reduced-motion:reduce){.hero-bg #hero-particles{display:none}}
-  /* 히어로 강조어 그라데이션 모션 — 블루→바이올렛→블루가 가로로 흐름(background-clip:text) */
-  .decl h1 .blue{background:linear-gradient(to right,#3A6FFF,#6E83FF,#A472FF,#6E83FF,#3A6FFF);background-size:200% auto;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent;animation:textGrad 5s linear infinite}
+  /* 히어로 강조어 그라데이션 모션 — 다크 배경용 밝은 톤(시안빛 블루→바이올렛) 가로 흐름 */
+  .decl h1 .blue{background:linear-gradient(to right,#5B8DF7,#8AA0FF,#B98DFF,#8AA0FF,#5B8DF7);background-size:200% auto;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent;animation:textGrad 5s linear infinite}
   @keyframes textGrad{to{background-position:200% center}}
-  /* 히어로 '진짜' 강조 — 글자 외곽 화이트 아우터 글로우(은은한 펄스) */
-  .decl h1 .real{position:relative;animation:realGlow 2.6s ease-in-out infinite,textGrad 5s linear infinite}
-  /* '진짜' 밑줄 — 글자와 동일한 그라데이션 바 2줄(투명 글자라 일반 underline은 안 보임) */
-  .decl h1 .real::after,.decl h1 .real::before{content:"";position:absolute;left:0;right:0;height:.07em;border-radius:999px;
-    background:linear-gradient(to right,#3A6FFF,#6E83FF,#A472FF,#6E83FF,#3A6FFF);background-size:200% auto;
-    animation:textGrad 5s linear infinite}
-  .decl h1 .real::after{bottom:-.12em}   /* 첫째 줄 */
-  .decl h1 .real::before{bottom:-.26em}  /* 둘째 줄 */
-  /* 글로우는 drop-shadow로 — 그라데이션 글자 '뒤'의 외곽 후광(투명 글자 사이로 비치지 않음) */
-  @keyframes realGlow{0%,100%{filter:drop-shadow(0 0 4px rgba(255,255,255,.95)) drop-shadow(0 0 12px rgba(255,255,255,.6))}50%{filter:drop-shadow(0 0 7px #fff) drop-shadow(0 0 22px rgba(255,255,255,.85))}}
+  /* '진짜' — 그라데이션 글자만(화이트 글로우·밑줄 제거) */
+  .decl h1 .real{position:relative;animation:textGrad 5s linear infinite}
   /* 그레인(노이즈) 질감 — 밋밋함·AI 플랫함 제거. 인라인 SVG feTurbulence */
   .hero-bg::before{content:"";position:absolute;inset:0;z-index:0;pointer-events:none;mix-blend-mode:multiply;opacity:.06;
     background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
@@ -41,10 +35,14 @@
   /* tagchip — 섹션 상단 라벨 칩(히어로 'AI 면접 채용 검증' 등). 스코프 없이 재사용 */
   .tagchip{display:inline-flex;align-items:center;gap:8px;background:#fff;border:1px solid var(--line);border-radius:999px;padding:7px 16px;font-size:13px;font-weight:700;color:var(--slate);margin-bottom:24px;box-shadow:0 4px 12px -6px rgba(20,40,90,.15)}
   .tagchip i{color:var(--blue)}
-  /* 히어로 헤드카피: 반응형(clamp), 행간 130% */
-  .decl h1{font-size:clamp(34px,4.6vw,56px);font-weight:800;line-height:1.3;letter-spacing:-.04em}
+  /* 히어로(다크)에서만 tagchip 다크 변형 — 다른 섹션(FLOOD·VALUE·ROLE)은 흰 칩 유지 */
+  .decl .tagchip{background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.16);color:#C7D2E8;box-shadow:none}
+  .decl .tagchip i{color:#6E9BFF}
+  /* 히어로 헤드카피: 반응형(clamp), 행간 130% — 다크 배경이라 흰색 */
+  .decl h1{font-size:clamp(34px,4.6vw,56px);font-weight:800;line-height:1.3;letter-spacing:-.04em;color:#fff}
   .decl h1 .blue{display:inline}
-  .decl p{font-size:19px;color:var(--slate);margin:24px auto 32px;max-width:560px;line-height:1.3}
+  .decl p{font-size:19px;color:#AEB9D4;margin:24px auto 32px;max-width:560px;line-height:1.3}
+  .decl p .blue{color:#7FA6FF}
   .decl-cta{display:flex;gap:12px;flex-wrap:wrap;justify-content:center}
   /* chart card */
   .chart-card{background:#fff;border:1px solid var(--line);border-radius:20px;box-shadow:var(--shadow);padding:28px}
@@ -684,7 +682,7 @@
 // 입자 수렴 모션 — 점들이 강조 단어로 좁혀듦 (히어로 #real-word / CTA #real-cta 공용)
 (function(){
   if(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-  function run(canvasId, targetId, colorFor, maxA){
+  function run(canvasId, targetId, colorFor, maxA, glow){
     var c=document.getElementById(canvasId); if(!c||!c.getContext) return;
     var x=c.getContext('2d'), dpr=Math.min(window.devicePixelRatio||1,2),
         word=document.getElementById(targetId), tx=0, ty=0, Rmax=1;
@@ -710,21 +708,24 @@
         if(d<10){ var n=spawn(); p.x=n.x; p.y=n.y; p.sp=n.sp; p.s=n.s; p.col=n.col; dx=tx-p.x; dy=ty-p.y; d=Math.hypot(dx,dy)||1; }
         p.x+=dx/d*p.sp; p.y+=dy/d*p.sp;
         var alpha=Math.min(maxA, (d/(c.height*0.55))*(maxA*1.25));
-        x.fillStyle='rgba('+p.col[0]+','+p.col[1]+','+p.col[2]+','+alpha.toFixed(3)+')';
+        var rgb=p.col[0]+','+p.col[1]+','+p.col[2];
+        if(glow){ x.shadowColor='rgba('+rgb+','+alpha.toFixed(3)+')'; x.shadowBlur=p.s*4; }
+        x.fillStyle='rgba('+rgb+','+alpha.toFixed(3)+')';
         x.beginPath(); x.arc(p.x,p.y,p.s,0,6.2832); x.fill();
       }
+      if(glow) x.shadowBlur=0;
       requestAnimationFrame(tick);
     }
     tick();
   }
-  // 히어로: '진짜' 그라데이션 팔레트(파랑→페리윙클→보라)
-  var STOPS=[[58,111,255],[110,131,255],[164,114,255]];
+  // 히어로(다크): 화려한 스펙트럼 팔레트(시안→블루→바이올렛→핑크) + 발광 글로우
+  var STOPS=[[63,224,255],[91,141,247],[164,114,255],[255,122,217]];
   function gradCol(){ var t=Math.random()*(STOPS.length-1), i=Math.floor(t), k=t-i,
     a=STOPS[i], b=STOPS[Math.min(i+1,STOPS.length-1)];
     return [Math.round(a[0]+(b[0]-a[0])*k),Math.round(a[1]+(b[1]-a[1])*k),Math.round(a[2]+(b[2]-a[2])*k)]; }
-  run('hero-particles','real-word',gradCol,.7);
-  // CTA: 파란 배경 위라 화이트 입자(조금 더 또렷하게)
-  run('final-particles','real-cta',function(){ return [255,255,255]; },.55);
+  run('hero-particles','real-word',gradCol,.9,true);
+  // CTA: 파란 배경 위라 화이트 입자(글로우 없이)
+  run('final-particles','real-cta',function(){ return [255,255,255]; },.55,false);
 })();
 </script>
 </body>
