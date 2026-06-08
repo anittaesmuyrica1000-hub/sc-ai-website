@@ -20,9 +20,13 @@
     -webkit-mask-image:radial-gradient(ellipse 72% 64% at 50% 44%, #000 26%, transparent 86%);
             mask-image:radial-gradient(ellipse 72% 64% at 50% 44%, #000 26%, transparent 86%)}
   @media(prefers-reduced-motion:reduce){.hero-bg #hero-particles{display:none}}
+  /* 히어로 강조어 그라데이션 모션 — 블루→바이올렛→블루가 가로로 흐름(background-clip:text) */
+  .decl h1 .blue{background:linear-gradient(to right,#3A6FFF,#6E83FF,#A472FF,#6E83FF,#3A6FFF);background-size:200% auto;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent;animation:textGrad 5s linear infinite}
+  @keyframes textGrad{to{background-position:200% center}}
   /* 히어로 '진짜' 강조 — 글자 외곽 화이트 아우터 글로우(은은한 펄스) */
-  .decl h1 .real{position:relative;animation:realGlow 2.6s ease-in-out infinite}
-  @keyframes realGlow{0%,100%{text-shadow:0 0 4px #fff,0 0 10px #fff,0 0 20px rgba(255,255,255,.85),0 0 34px rgba(255,255,255,.55)}50%{text-shadow:0 0 6px #fff,0 0 14px #fff,0 0 30px #fff,0 0 52px rgba(255,255,255,.8)}}
+  .decl h1 .real{position:relative;animation:realGlow 2.6s ease-in-out infinite,textGrad 5s linear infinite}
+  /* 글로우는 drop-shadow로 — 그라데이션 글자 '뒤'의 외곽 후광(투명 글자 사이로 비치지 않음) */
+  @keyframes realGlow{0%,100%{filter:drop-shadow(0 0 4px rgba(255,255,255,.95)) drop-shadow(0 0 12px rgba(255,255,255,.6))}50%{filter:drop-shadow(0 0 7px #fff) drop-shadow(0 0 22px rgba(255,255,255,.85))}}
   /* 그레인(노이즈) 질감 — 밋밋함·AI 플랫함 제거. 인라인 SVG feTurbulence */
   .hero-bg::before{content:"";position:absolute;inset:0;z-index:0;pointer-events:none;mix-blend-mode:multiply;opacity:.06;
     background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
