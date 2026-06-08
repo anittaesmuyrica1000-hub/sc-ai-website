@@ -25,10 +25,12 @@
   @keyframes textGrad{to{background-position:200% center}}
   /* 히어로 '진짜' 강조 — 글자 외곽 화이트 아우터 글로우(은은한 펄스) */
   .decl h1 .real{position:relative;animation:realGlow 2.6s ease-in-out infinite,textGrad 5s linear infinite}
-  /* '진짜' 밑줄 — 글자와 동일한 그라데이션 바(투명 글자라 일반 underline은 안 보임) */
-  .decl h1 .real::after{content:"";position:absolute;left:0;right:0;bottom:-.12em;height:.08em;border-radius:999px;
+  /* '진짜' 밑줄 — 글자와 동일한 그라데이션 바 2줄(투명 글자라 일반 underline은 안 보임) */
+  .decl h1 .real::after,.decl h1 .real::before{content:"";position:absolute;left:0;right:0;height:.07em;border-radius:999px;
     background:linear-gradient(to right,#3A6FFF,#6E83FF,#A472FF,#6E83FF,#3A6FFF);background-size:200% auto;
     animation:textGrad 5s linear infinite}
+  .decl h1 .real::after{bottom:-.12em}   /* 첫째 줄 */
+  .decl h1 .real::before{bottom:-.26em}  /* 둘째 줄 */
   /* 글로우는 drop-shadow로 — 그라데이션 글자 '뒤'의 외곽 후광(투명 글자 사이로 비치지 않음) */
   @keyframes realGlow{0%,100%{filter:drop-shadow(0 0 4px rgba(255,255,255,.95)) drop-shadow(0 0 12px rgba(255,255,255,.6))}50%{filter:drop-shadow(0 0 7px #fff) drop-shadow(0 0 22px rgba(255,255,255,.85))}}
   /* 그레인(노이즈) 질감 — 밋밋함·AI 플랫함 제거. 인라인 SVG feTurbulence */
