@@ -361,8 +361,10 @@
     .flood .head,.role-funnel .head,.proof2 .head{
       text-align:left;max-width:none;margin:0;position:sticky;top:116px;align-self:start;
     }
-    /* 우측 요소: 위쪽 정렬·바깥 여백 제거 */
-    .flood-stats{margin:0;max-width:none}
+    /* 우측 요소: 위쪽 정렬. FLOOD 통계 카드는 ROLE 깔때기 삼각형 폭(컬럼의 ~62%)에 맞춰 좁히고 중앙 정렬 */
+    .flood-stats{margin:0 auto;max-width:400px}
+    /* FLOOD는 좌측 헤드 첫 줄이 길어 좌측 컬럼을 넓힘(줄바꿈 방지). 우측 카드는 좁혀둬서 무방 */
+    .flood .wrap{grid-template-columns:minmax(0,1.1fr) minmax(0,0.9fr)}
     .proof-row{grid-template-columns:1fr;gap:16px;margin:0}
     .role-funnel .funnel3{margin:0}
     /* PROOF 카드 가로형 — 라벨·설명 좌 / 큰 숫자 우 */
