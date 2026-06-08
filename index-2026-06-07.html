@@ -21,8 +21,8 @@
             mask-image:radial-gradient(ellipse 72% 64% at 50% 44%, #000 26%, transparent 86%)}
   @media(prefers-reduced-motion:reduce){.hero-bg #hero-particles{display:none}}
   /* 히어로 '진짜' 강조 — 글자 외곽 화이트 아우터 글로우(은은한 펄스) */
-  .decl h1 .real{position:relative;animation:realGlow 2.8s ease-in-out infinite}
-  @keyframes realGlow{0%,100%{text-shadow:0 0 7px rgba(255,255,255,.65),0 0 16px rgba(255,255,255,.45)}50%{text-shadow:0 0 13px rgba(255,255,255,.98),0 0 30px rgba(255,255,255,.75)}}
+  .decl h1 .real{position:relative;animation:realGlow 2.6s ease-in-out infinite}
+  @keyframes realGlow{0%,100%{text-shadow:0 0 4px #fff,0 0 10px #fff,0 0 20px rgba(255,255,255,.85),0 0 34px rgba(255,255,255,.55)}50%{text-shadow:0 0 6px #fff,0 0 14px #fff,0 0 30px #fff,0 0 52px rgba(255,255,255,.8)}}
   /* 그레인(노이즈) 질감 — 밋밋함·AI 플랫함 제거. 인라인 SVG feTurbulence */
   .hero-bg::before{content:"";position:absolute;inset:0;z-index:0;pointer-events:none;mix-blend-mode:multiply;opacity:.06;
     background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
@@ -674,10 +674,10 @@
     tx=(wr.left+wr.width/2 - cr.left)*dpr; ty=(wr.top+wr.height/2 - cr.top)*dpr;
   }
   function size(){ c.width=c.offsetWidth*dpr; c.height=c.offsetHeight*dpr; Rmax=Math.max(c.width,c.height)*0.62; aim(); }
-  function spawn(){ var a=Math.random()*6.2832, R=Rmax*(0.7+Math.random()*0.5);
-    return {x:tx+Math.cos(a)*R, y:ty+Math.sin(a)*R, sp:(0.5+Math.random()*0.9)*dpr, s:(0.7+Math.random()*1.1)*dpr}; }
+  function spawn(){ var a=Math.random()*6.2832, R=Rmax*(0.85+Math.random()*0.55);
+    return {x:tx+Math.cos(a)*R, y:ty+Math.sin(a)*R, sp:(1.4+Math.random()*1.9)*dpr, s:(0.6+Math.random()*1.0)*dpr}; }
   var P=[];
-  function init(){ P=[]; for(var i=0;i<58;i++){ var p=spawn(), t=Math.random();
+  function init(){ P=[]; for(var i=0;i<140;i++){ var p=spawn(), t=Math.random();
     p.x=tx+(p.x-tx)*t; p.y=ty+(p.y-ty)*t; P.push(p); } }
   size(); init();
   window.addEventListener('resize', size);
@@ -689,7 +689,7 @@
       var dx=tx-p.x, dy=ty-p.y, d=Math.hypot(dx,dy)||1;
       if(d<10){ var n=spawn(); p.x=n.x; p.y=n.y; p.sp=n.sp; p.s=n.s; dx=tx-p.x; dy=ty-p.y; d=Math.hypot(dx,dy)||1; }
       p.x+=dx/d*p.sp; p.y+=dy/d*p.sp;
-      var alpha=Math.min(.32, (d/(c.height*0.5))*.42);
+      var alpha=Math.min(.4, (d/(c.height*0.55))*.5);
       x.fillStyle='rgba(58,111,255,'+alpha.toFixed(3)+')';
       x.beginPath(); x.arc(p.x,p.y,p.s,0,6.2832); x.fill();
     }
