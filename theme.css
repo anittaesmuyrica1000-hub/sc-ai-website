@@ -72,18 +72,18 @@ nav{display:flex;align-items:center;justify-content:space-between;height:64px}
 @media(max-width:600px){.logo{font-size:18px}.logo .m{width:23px;height:23px}}
 @media(max-width:480px){.navlinks .nav-btn{height:36px;padding:0 14px;font-size:13px}.nav-menu-btn{width:40px;height:36px}}
 
-/* ===== Footer (partial: <site-footer>) — 로고 상단(좌) + 링크 컬럼(우) ===== */
-footer{background:linear-gradient(135deg,#0C1430 0%,#0E1626 60%);color:#8A93A8;padding:64px 0 44px;font-size:14px}
+/* ===== Footer (partial: <site-footer>) — GNB와 동일: 흰 배경 + 컬러 로고 ===== */
+footer{background:#fff;color:var(--slate);padding:64px 0 44px;font-size:14px;border-top:1px solid var(--line)}
 .foot-top{display:flex;justify-content:space-between;align-items:flex-start;gap:48px;flex-wrap:wrap}
 .foot-brand{display:flex;flex-direction:column;align-items:flex-start;gap:18px}
 .foot-logo-img{height:26px;width:auto;display:block}
-.foot-copy{color:#5C6678;font-size:13px;margin:0}
+.foot-copy{color:var(--slate-2);font-size:13px;margin:0}
 /* 저작권 — 푸터 맨 아래 바 */
-.foot-bottom{margin-top:48px;padding-top:12px;border-top:1px solid rgba(255,255,255,.2);text-align:left}
+.foot-bottom{margin-top:48px;padding-top:12px;border-top:1px solid var(--line);text-align:left}
 .foot-links{display:flex;gap:64px}
-.foot-col h4{color:#7E89A1;font-size:14px;font-weight:600;margin-bottom:18px}
+.foot-col h4{color:var(--ink);font-size:14px;font-weight:700;margin-bottom:18px}
 .foot-col ul{list-style:none;display:grid;gap:14px}
-.foot-col li a{color:#E6EAF2;font-size:14px}
-.foot-col a:hover{color:#fff}
+.foot-col li a{color:var(--slate);font-size:14px}
+.foot-col a:hover{color:var(--blue-d)}
 @media(max-width:680px){.foot-top{flex-direction:column;gap:36px}.foot-links{gap:48px}}
 @media(max-width:420px){.foot-links{gap:28px}}

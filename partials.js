@@ -34,7 +34,7 @@
     '  <div class="wrap">' +
     '    <div class="foot-top">' +
     '      <div class="foot-brand">' +
-    '        <img src="supercoder-logo.svg" class="foot-logo-img" alt="Supercoder">' +
+    '        <img src="supercoder-nav.svg" class="foot-logo-img" alt="Supercoder">' +
     '      </div>' +
     '      <div class="foot-links">' +
     '        <div class="foot-col">' +
