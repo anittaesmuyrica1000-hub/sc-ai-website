@@ -289,15 +289,15 @@
   .fn-svg .fn-num .unit{font-size:.6em;font-weight:700;fill:var(--slate)}
   .fn-svg .fn-conn{stroke:var(--blue);stroke-width:1.5;opacity:.4;stroke-dasharray:5 6;stroke-linecap:round}
   /* 최종 판단 → 10명 (우측 점선 + 점선 원, 좌측 '채용팀'과 대칭) */
-  .fn-svg .fn-final-ln{fill:none;stroke:#142036;stroke-opacity:.5;stroke-width:1.5;stroke-dasharray:6 6;stroke-linecap:round}
-  .fn-svg .fn-final{fill:var(--ink);font-weight:800;font-size:34px;letter-spacing:-.02em;text-anchor:middle;dominant-baseline:central}
+  .fn-svg .fn-final-ln{fill:none;stroke:#2144a5;stroke-opacity:.5;stroke-width:1.5;stroke-dasharray:6 6;stroke-linecap:round}
+  .fn-svg .fn-final{fill:#2144a5;font-weight:800;font-size:34px;letter-spacing:-.02em;text-anchor:middle;dominant-baseline:central}
   .fn-guides{opacity:.5}
   .fn-tag{position:absolute;display:inline-flex;align-items:center;gap:4px;height:28px;background:#fff;border:1px solid var(--tint);font-weight:800;font-size:12.5px;padding:0 13px;border-radius:999px;box-shadow:0 6px 16px -10px rgba(20,40,90,.3);transform:translate(-50%,-50%);white-space:nowrap;z-index:3}
   .fn-tag i{color:var(--blue)}
   /* 두 칩 중앙 정렬 — AI 브래킷 세로선(x140)에 중심, top%는 viewBox(48~684) 기준 */
   .fn-tag.tag-ai{left:12.3%;top:37.3%;color:var(--blue-d)}
-  .fn-tag.tag-team{left:12.3%;top:83.6%;color:var(--ink);border-color:rgba(20,32,54,.5)}
-  .fn-tag.tag-team i{color:#142036}
+  .fn-tag.tag-team{left:12.3%;top:83.6%;color:#2144a5;border-color:rgba(33,68,165,.5)}
+  .fn-tag.tag-team i{color:#2144a5}
   @media(max-width:640px){
     /* 좌측 정보(AI 브래킷·채용팀)·10명 모두 모바일에서도 표시 */
     .fn-svg .fl{font-size:30px}.fn-svg .ft{font-size:30px}
@@ -549,7 +549,7 @@
             <!-- AI 브래킷: 모서리 둥근 "[" — 세로선 x140(칩 중심), 팔은 깔때기와 간격을 둠 -->
             <path d="M215 135 H150 Q140 135 140 145 V425 Q140 435 150 435 H410" fill="none" stroke="#5B8DF7" stroke-width="1.5" stroke-dasharray="6 6" stroke-linecap="round" stroke-linejoin="round"/>
             <!-- 채용팀: 칩에서 최종 판단 삼각형 앞까지(간격 둠) 점선 — 칩 테두리와 동일 #142036 50%(그룹 opacity .5) -->
-            <path d="M190 580 H490" fill="none" stroke="#142036" stroke-width="1.5" stroke-dasharray="6 6" stroke-linecap="round"/>
+            <path d="M190 580 H490" fill="none" stroke="#2144a5" stroke-width="1.5" stroke-dasharray="6 6" stroke-linecap="round"/>
           </g>
           <!-- 하나의 큰 역삼각형을 가로로 슬라이스(1140 viewBox 기준 +70 이동, 중앙 유지) -->
           <path class="seg" d="M215.2 71.7 Q210 62 221 62 L919 62 Q930 62 924.8 71.7 L857.2 198.3 Q852 208 841 208 L299 208 Q288 208 282.8 198.3 Z" fill="url(#fnGrad)"/>
