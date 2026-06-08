@@ -359,7 +359,7 @@
     }
     /* 좌측 헤드카피: 왼쪽 정렬, 상단 고정 */
     .flood .head,.value .head,.role-funnel .head,.proof2 .head,.voices .head{
-      text-align:left;max-width:none;margin:0;align-self:start;
+      text-align:left;max-width:none;margin:0;position:sticky;top:116px;align-self:start;
     }
     /* 우측 요소: 위쪽 정렬·바깥 여백 제거, 카드 그리드는 세로 1열로 */
     .flood-stats{margin:0;max-width:none}
@@ -367,6 +367,16 @@
     .proof-row{grid-template-columns:1fr;gap:16px;margin:0}
     .v-grid{grid-template-columns:1fr;gap:18px;margin:0;max-width:none}
     .role-funnel .funnel3{margin:0}
+    /* (b) 우측 카드 가로형 — 아이콘 좌 / 텍스트 우, 높이 축소로 좌우 균형 */
+    .value .valcard{display:grid;grid-template-columns:auto 1fr;column-gap:20px;row-gap:4px;align-content:center;text-align:left;padding:24px 28px}
+    .value .valcard .ic{grid-column:1;grid-row:1 / span 3;margin:0;height:auto;font-size:32px;align-self:center}
+    .value .valcard h3{grid-column:2}
+    .value .valcard p{grid-column:2}
+    .value .valcard .metric{grid-column:2;margin-top:8px;justify-self:start}
+    .proof2 .pc2{display:grid;grid-template-columns:1fr auto;align-items:center;column-gap:18px;text-align:left;padding:24px 30px}
+    .proof2 .pc2 .vlabel{grid-column:1;margin-bottom:4px}
+    .proof2 .pc2 p{grid-column:1;margin-top:2px}
+    .proof2 .pc2 .big{grid-column:2;grid-row:1 / span 2;align-self:center}
   }
 </style>
 </head>
