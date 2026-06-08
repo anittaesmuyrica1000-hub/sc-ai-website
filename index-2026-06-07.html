@@ -724,8 +724,8 @@
     }
     tick();
   }
-  // 히어로(다크): 화려한 스펙트럼 팔레트(시안→블루→바이올렛→핑크) + 발광 글로우
-  var STOPS=[[63,224,255],[91,141,247],[164,114,255],[255,122,217]];
+  // 히어로/CTA(다크): 입자 팔레트 — 청록·하늘색·파랑·보라 + 발광 글로우
+  var STOPS=[[38,208,206],[143,203,255],[58,111,255],[150,110,255]]; /* 청록→하늘색→파랑→보라 */
   function gradCol(){ var t=Math.random()*(STOPS.length-1), i=Math.floor(t), k=t-i,
     a=STOPS[i], b=STOPS[Math.min(i+1,STOPS.length-1)];
     return [Math.round(a[0]+(b[0]-a[0])*k),Math.round(a[1]+(b[1]-a[1])*k),Math.round(a[2]+(b[2]-a[2])*k)]; }
