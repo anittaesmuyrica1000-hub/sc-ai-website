@@ -722,7 +722,7 @@
   function gradCol(){ var t=Math.random()*(STOPS.length-1), i=Math.floor(t), k=t-i,
     a=STOPS[i], b=STOPS[Math.min(i+1,STOPS.length-1)];
     return [Math.round(a[0]+(b[0]-a[0])*k),Math.round(a[1]+(b[1]-a[1])*k),Math.round(a[2]+(b[2]-a[2])*k)]; }
-  run('hero-particles','real-word',gradCol,.4);
+  run('hero-particles','real-word',gradCol,.7);
   // CTA: 파란 배경 위라 화이트 입자(조금 더 또렷하게)
   run('final-particles','real-cta',function(){ return [255,255,255]; },.55);
 })();
