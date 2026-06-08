@@ -706,7 +706,9 @@
     size(); init();
     window.addEventListener('resize', size);
     window.addEventListener('load', aim);
+    var visible=false, running=false;
     function tick(){
+      if(!visible){ running=false; return; }   // 화면 밖이면 루프 정지(CPU·배터리 절약)
       aim();
       x.clearRect(0,0,c.width,c.height);
       for(var i=0;i<P.length;i++){ var p=P[i];
@@ -722,7 +724,12 @@
       if(glow) x.shadowBlur=0;
       requestAnimationFrame(tick);
     }
-    tick();
+    function start(){ if(!running){ running=true; requestAnimationFrame(tick); } }
+    // 화면(뷰포트)에 들어올 때만 애니메이션 — 캔버스가 보이지 않으면 멈춤
+    if('IntersectionObserver' in window){
+      new IntersectionObserver(function(es){ visible=es[0].isIntersecting; if(visible) start(); },
+        {rootMargin:'120px'}).observe(c);
+    } else { visible=true; start(); }
   }
   // 히어로/CTA(다크): 입자 팔레트 — 청록·하늘색·파랑·보라 + 발광 글로우
   var STOPS=[[38,208,206],[143,203,255],[58,111,255],[150,110,255]]; /* 청록→하늘색→파랑→보라 */
