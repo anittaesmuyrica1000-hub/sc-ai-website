@@ -25,6 +25,10 @@
   @keyframes textGrad{to{background-position:200% center}}
   /* 히어로 '진짜' 강조 — 글자 외곽 화이트 아우터 글로우(은은한 펄스) */
   .decl h1 .real{position:relative;animation:realGlow 2.6s ease-in-out infinite,textGrad 5s linear infinite}
+  /* '진짜' 밑줄 — 글자와 동일한 그라데이션 바(투명 글자라 일반 underline은 안 보임) */
+  .decl h1 .real::after{content:"";position:absolute;left:0;right:0;bottom:-.12em;height:.08em;border-radius:999px;
+    background:linear-gradient(to right,#3A6FFF,#6E83FF,#A472FF,#6E83FF,#3A6FFF);background-size:200% auto;
+    animation:textGrad 5s linear infinite}
   /* 글로우는 drop-shadow로 — 그라데이션 글자 '뒤'의 외곽 후광(투명 글자 사이로 비치지 않음) */
   @keyframes realGlow{0%,100%{filter:drop-shadow(0 0 4px rgba(255,255,255,.95)) drop-shadow(0 0 12px rgba(255,255,255,.6))}50%{filter:drop-shadow(0 0 7px #fff) drop-shadow(0 0 22px rgba(255,255,255,.85))}}
   /* 그레인(노이즈) 질감 — 밋밋함·AI 플랫함 제거. 인라인 SVG feTurbulence */
@@ -672,6 +676,11 @@
   if(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) return;
   var x=c.getContext('2d'), dpr=Math.min(window.devicePixelRatio||1,2),
       word=document.getElementById('real-word'), tx=0, ty=0, Rmax=1;
+  // 헤드라인 '진짜' 그라데이션과 동일한 팔레트(파랑→페리윙클→보라)로 점을 채색
+  var STOPS=[[58,111,255],[110,131,255],[164,114,255]];
+  function grad(t){ t=t<0?0:t>1?1:t; var f=t*(STOPS.length-1), i=Math.floor(f), k=f-i,
+    a=STOPS[i], b=STOPS[Math.min(i+1,STOPS.length-1)];
+    return [Math.round(a[0]+(b[0]-a[0])*k),Math.round(a[1]+(b[1]-a[1])*k),Math.round(a[2]+(b[2]-a[2])*k)]; }
   function aim(){
     if(!word){ tx=c.width/2; ty=c.height*0.44; return; }
     var cr=c.getBoundingClientRect(), wr=word.getBoundingClientRect();
@@ -679,7 +688,7 @@
   }
   function size(){ c.width=c.offsetWidth*dpr; c.height=c.offsetHeight*dpr; Rmax=Math.max(c.width,c.height)*0.62; aim(); }
   function spawn(){ var a=Math.random()*6.2832, R=Rmax*(0.85+Math.random()*0.55);
-    return {x:tx+Math.cos(a)*R, y:ty+Math.sin(a)*R, sp:(1.4+Math.random()*1.9)*dpr, s:(0.6+Math.random()*1.0)*dpr}; }
+    return {x:tx+Math.cos(a)*R, y:ty+Math.sin(a)*R, sp:(1.4+Math.random()*1.9)*dpr, s:(0.6+Math.random()*1.0)*dpr, col:grad(Math.random())}; }
   var P=[];
   function init(){ P=[]; for(var i=0;i<140;i++){ var p=spawn(), t=Math.random();
     p.x=tx+(p.x-tx)*t; p.y=ty+(p.y-ty)*t; P.push(p); } }
@@ -691,10 +700,10 @@
     x.clearRect(0,0,c.width,c.height);
     for(var i=0;i<P.length;i++){ var p=P[i];
       var dx=tx-p.x, dy=ty-p.y, d=Math.hypot(dx,dy)||1;
-      if(d<10){ var n=spawn(); p.x=n.x; p.y=n.y; p.sp=n.sp; p.s=n.s; dx=tx-p.x; dy=ty-p.y; d=Math.hypot(dx,dy)||1; }
+      if(d<10){ var n=spawn(); p.x=n.x; p.y=n.y; p.sp=n.sp; p.s=n.s; p.col=n.col; dx=tx-p.x; dy=ty-p.y; d=Math.hypot(dx,dy)||1; }
       p.x+=dx/d*p.sp; p.y+=dy/d*p.sp;
       var alpha=Math.min(.4, (d/(c.height*0.55))*.5);
-      x.fillStyle='rgba(58,111,255,'+alpha.toFixed(3)+')';
+      x.fillStyle='rgba('+p.col[0]+','+p.col[1]+','+p.col[2]+','+alpha.toFixed(3)+')';
       x.beginPath(); x.arc(p.x,p.y,p.s,0,6.2832); x.fill();
     }
     requestAnimationFrame(tick);
