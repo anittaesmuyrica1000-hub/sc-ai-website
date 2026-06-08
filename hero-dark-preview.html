@@ -11,7 +11,9 @@
   /* ===== 히어로 다크버전 — index의 라이트 히어로를 다크 톤으로 오버라이드 ===== */
   /* 배경: 밝은 블루 그라데이션 → 딥 네이비 그라데이션 */
   .hero-bg{position:relative;overflow:hidden;min-height:100vh;display:flex;align-items:center;
-    background:linear-gradient(160deg,#0B1330 0%,#0F1E44 52%,#0A1024 100%)}
+    background:
+      radial-gradient(62% 52% at 50% 40%, rgba(90,120,255,.20) 0%, rgba(120,80,220,.10) 42%, transparent 72%),
+      linear-gradient(160deg,#070B1A 0%,#0A1330 50%,#04060E 100%)}
   /* 입자 캔버스 — 라이트 버전과 동일(마스크로 외곽 페이드) */
   .hero-bg #hero-particles{position:absolute;inset:0;z-index:0;width:100%;height:100%;pointer-events:none;
     -webkit-mask-image:radial-gradient(ellipse 72% 64% at 50% 44%, #000 26%, transparent 86%);
@@ -31,15 +33,13 @@
     background-size:200% auto;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
     color:transparent;animation:textGrad 5s linear infinite}
   @keyframes textGrad{to{background-position:200% center}}
-  /* '진짜' — 화이트 아우터 글로우(다크에서 더 또렷) + 그라데이션 밑줄 2줄 */
-  .decl h1 .real{position:relative;animation:realGlow 2.6s ease-in-out infinite,textGrad 5s linear infinite}
+  /* '진짜' — 그라데이션 밑줄 2줄(화이트 글로우 제거) */
+  .decl h1 .real{position:relative;animation:textGrad 5s linear infinite}
   .decl h1 .real::after,.decl h1 .real::before{content:"";position:absolute;left:0;right:0;height:.07em;border-radius:999px;
     background:linear-gradient(to right,#5B8DF7,#8AA0FF,#B98DFF,#8AA0FF,#5B8DF7);background-size:200% auto;
     animation:textGrad 5s linear infinite}
   .decl h1 .real::after{bottom:-.12em}
   .decl h1 .real::before{bottom:-.26em}
-  @keyframes realGlow{0%,100%{filter:drop-shadow(0 0 5px rgba(180,210,255,.9)) drop-shadow(0 0 16px rgba(120,160,255,.55))}
-    50%{filter:drop-shadow(0 0 9px #cfe0ff) drop-shadow(0 0 26px rgba(150,185,255,.8))}}
   .decl p{font-size:19px;color:#AEB9D4;margin:24px auto 32px;max-width:560px;line-height:1.4}
   .decl p .blue{color:#7FA6FF}
   .decl-cta{display:flex;gap:12px;flex-wrap:wrap;justify-content:center}
@@ -98,19 +98,24 @@
         if(d<10){ var n=spawn(); p.x=n.x; p.y=n.y; p.sp=n.sp; p.s=n.s; p.col=n.col; dx=tx-p.x; dy=ty-p.y; d=Math.hypot(dx,dy)||1; }
         p.x+=dx/d*p.sp; p.y+=dy/d*p.sp;
         var alpha=Math.min(maxA, (d/(c.height*0.55))*(maxA*1.25));
-        x.fillStyle='rgba('+p.col[0]+','+p.col[1]+','+p.col[2]+','+alpha.toFixed(3)+')';
+        var rgb=p.col[0]+','+p.col[1]+','+p.col[2];
+        // 발광 글로우 — 화려한 느낌(다크 배경에서 입자가 빛나듯)
+        x.shadowColor='rgba('+rgb+','+alpha.toFixed(3)+')';
+        x.shadowBlur=p.s*4;
+        x.fillStyle='rgba('+rgb+','+alpha.toFixed(3)+')';
         x.beginPath(); x.arc(p.x,p.y,p.s,0,6.2832); x.fill();
       }
+      x.shadowBlur=0;
       requestAnimationFrame(tick);
     }
     tick();
   }
-  // 다크 배경: 밝은 블루→페리윙클→보라 팔레트
-  var STOPS=[[120,160,255],[150,170,255],[185,140,255]];
+  // 다크 배경: 화려한 스펙트럼 팔레트(시안→블루→바이올렛→핑크)
+  var STOPS=[[63,224,255],[91,141,247],[164,114,255],[255,122,217]];
   function gradCol(){ var t=Math.random()*(STOPS.length-1), i=Math.floor(t), k=t-i,
     a=STOPS[i], b=STOPS[Math.min(i+1,STOPS.length-1)];
     return [Math.round(a[0]+(b[0]-a[0])*k),Math.round(a[1]+(b[1]-a[1])*k),Math.round(a[2]+(b[2]-a[2])*k)]; }
-  run('hero-particles','real-word',gradCol,.85);
+  run('hero-particles','real-word',gradCol,.9);
 })();
 </script>
 </body>
