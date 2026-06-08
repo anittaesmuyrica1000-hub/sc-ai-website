@@ -39,8 +39,8 @@ h2{font-size:clamp(28px,3.6vw,44px);font-weight:800;letter-spacing:0;line-height
 .btn-blue:hover{background:var(--blue-d);transform:translateY(-1px)}
 .btn-out{background:#fff;color:var(--ink);border:1px solid var(--line)}
 .btn-out:hover{border-color:var(--blue-2);color:var(--blue-d)}
-.btn-white{background:#fff;color:var(--blue-d)}
-.btn-white:hover{transform:translateY(-1px)}
+.btn-white{background:#fff;color:var(--blue-d);box-shadow:0 8px 20px -8px rgba(255,255,255,.55)}
+.btn-white:hover{transform:translateY(-1px);box-shadow:0 12px 26px -8px rgba(255,255,255,.75)}
 
 /* ===== Eyebrow / chip ===== */
 .eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:800;letter-spacing:.06em;color:var(--blue);text-transform:uppercase;margin-bottom:16px;background:var(--soft-2);padding:6px 14px;border-radius:999px}
