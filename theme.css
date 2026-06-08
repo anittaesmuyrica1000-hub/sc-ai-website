@@ -76,7 +76,7 @@ nav{display:flex;align-items:center;justify-content:space-between;height:64px}
 footer{background:#fff;color:var(--slate);padding:64px 0 44px;font-size:14px;border-top:1px solid var(--line)}
 .foot-top{display:flex;justify-content:space-between;align-items:flex-start;gap:48px;flex-wrap:wrap}
 .foot-brand{display:flex;flex-direction:column;align-items:flex-start;gap:18px}
-.foot-logo-img{height:26px;width:auto;display:block}
+.foot-logo-img{height:26px;width:auto;display:block;filter:grayscale(1)}
 .foot-copy{color:var(--slate-2);font-size:13px;margin:0}
 /* 저작권 — 푸터 맨 아래 바 */
 .foot-bottom{margin-top:48px;padding-top:12px;border-top:1px solid var(--line);text-align:left}
