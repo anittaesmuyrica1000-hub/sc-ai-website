@@ -20,14 +20,9 @@
     -webkit-mask-image:radial-gradient(ellipse 72% 64% at 50% 44%, #000 26%, transparent 86%);
             mask-image:radial-gradient(ellipse 72% 64% at 50% 44%, #000 26%, transparent 86%)}
   @media(prefers-reduced-motion:reduce){.hero-bg #hero-particles{display:none}}
-  /* 히어로 '진짜' 강조 — 글자 주변에서 스파클(별)이 반짝(트윙클) + 은은한 글로우 */
-  .decl h1 .real{position:relative;animation:realGlow 2.6s ease-in-out infinite}
-  @keyframes realGlow{0%,100%{text-shadow:0 0 6px rgba(58,111,255,.15)}50%{text-shadow:0 0 20px rgba(58,111,255,.45)}}
-  .decl h1 .real .spark{position:absolute;font-style:normal;color:#5B8DF7;font-size:.4em;line-height:1;pointer-events:none;opacity:0;text-shadow:0 0 7px rgba(58,111,255,.7);animation:twinkle 2.4s ease-in-out infinite}
-  .decl h1 .real .spark.s1{top:-.20em;left:-.30em}
-  .decl h1 .real .spark.s2{top:.02em;right:-.30em;font-size:.3em;animation-delay:.8s}
-  .decl h1 .real .spark.s3{bottom:-.06em;left:.12em;font-size:.28em;animation-delay:1.5s}
-  @keyframes twinkle{0%,100%{opacity:0;transform:scale(.3) rotate(0)}45%{opacity:1;transform:scale(1) rotate(90deg)}}
+  /* 히어로 '진짜' 강조 — 글자 외곽 화이트 아우터 글로우(은은한 펄스) */
+  .decl h1 .real{position:relative;animation:realGlow 2.8s ease-in-out infinite}
+  @keyframes realGlow{0%,100%{text-shadow:0 0 7px rgba(255,255,255,.65),0 0 16px rgba(255,255,255,.45)}50%{text-shadow:0 0 13px rgba(255,255,255,.98),0 0 30px rgba(255,255,255,.75)}}
   /* 그레인(노이즈) 질감 — 밋밋함·AI 플랫함 제거. 인라인 SVG feTurbulence */
   .hero-bg::before{content:"";position:absolute;inset:0;z-index:0;pointer-events:none;mix-blend-mode:multiply;opacity:.06;
     background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
@@ -383,7 +378,7 @@
   <div class="wrap">
     <div>
       <div class="tagchip"><i class="fa-solid fa-bolt"></i> AI 면접 채용 검증</div>
-      <h1><span class="blue">수천 명</span>을 검토하고,<br>책상엔 <span class="blue real" id="real-word">‘진짜’<i class="spark s1">✦</i><i class="spark s2">✦</i><i class="spark s3">✦</i></span>만 올립니다.</h1>
+      <h1><span class="blue">수천 명</span>을 검토하고,<br>책상엔 <span class="blue real" id="real-word">‘진짜’</span>만 올립니다.</h1>
       <p><span class="blue" style="font-weight:700">AI 면접</span>이 전 지원자를 검증하고,<br>검증된 핵심 인재 리포트만 채용팀에 전달합니다.</p>
       <div class="decl-cta">
         <a href="apply.html" class="btn btn-blue">무료 체험하기 <i class="fa-solid fa-arrow-right"></i></a>
