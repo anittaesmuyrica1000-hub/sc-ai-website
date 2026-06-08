@@ -91,15 +91,15 @@
   .flood{background:var(--soft)}
   /* FLOOD — 중앙 정렬: 헤드/서브카피 + 근거 통계 리스트(흰색 박스) */
   .flood .head{text-align:center;max-width:760px;margin:0 auto}
-  .flood-stats{list-style:none;max-width:460px;margin:44px auto 0;text-align:center;background:#fff;border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);padding:14px 30px}
-  .flood-stats li{width:fit-content;max-width:100%;margin-inline:auto;padding:5px 0;border-bottom:1px solid var(--line)}
+  .flood-stats{list-style:none;max-width:460px;margin:44px auto 0;text-align:center;background:#fff;border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);padding:30px 38px}
+  .flood-stats li{width:fit-content;max-width:100%;margin-inline:auto;padding:13px 0;border-bottom:1px solid var(--line)}
   .flood-stats li:first-child{padding-top:0}
   .flood-stats li:last-child{border-bottom:none;padding-bottom:0}
   .flood-stats .stat{display:flex;align-items:baseline;justify-content:center;gap:12px;flex-wrap:wrap}
-  .flood-stats .lbl{font-size:16px;font-weight:700;color:var(--ink);line-height:1.2}
-  .flood-stats .num{font-size:clamp(23px,2.3vw,28px);font-weight:800;color:var(--blue);letter-spacing:-.02em;line-height:1}
+  .flood-stats .lbl{font-size:17px;font-weight:700;color:var(--ink);line-height:1.3}
+  .flood-stats .num{font-size:clamp(26px,2.7vw,31px);font-weight:800;color:var(--blue);letter-spacing:-.02em;line-height:1}
   .flood-stats .num span{font-size:.5em;font-weight:800}
-  .flood-stats .src{font-size:12px;color:var(--slate-2);margin-top:2px}
+  .flood-stats .src{font-size:12.5px;color:var(--slate-2);margin-top:4px}
   @media(max-width:480px){.flood-stats{margin-top:34px}.flood-stats li{padding:15px 0}.flood-stats .lbl{font-size:15px}.flood-stats .num{font-size:25px}.flood-stats .src{font-size:11.5px}}
   /* (아카이브) .fcard — 현재 미사용 PROBLEM 변형용 카드 베이스 */
   .fcard{background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:24px 30px;display:flex;flex-direction:row;align-items:center;justify-content:center;gap:24px}
@@ -380,8 +380,8 @@
     .flood .head,.role-funnel .head{
       text-align:left;max-width:none;margin:0;position:sticky;top:116px;align-self:start;
     }
-    /* FLOOD 통계 카드: ROLE 깔때기 삼각형 폭(컬럼의 ~62%)에 맞춰 좁히고 중앙 정렬 */
-    .flood-stats{margin:0 auto;max-width:400px}
+    /* FLOOD 통계 카드: 헤드카피보다 아래에서 시작(오프셋) + 컬럼을 채워 영역 확대 */
+    .flood-stats{margin:104px auto 0;width:100%;max-width:520px}
     /* FLOOD는 좌측 헤드 첫 줄이 길어 좌측 컬럼을 넓힘(줄바꿈 방지) */
     .flood .wrap{grid-template-columns:minmax(0,1.1fr) minmax(0,0.9fr)}
     .role-funnel .funnel3{margin:0}
