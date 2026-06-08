@@ -345,6 +345,39 @@
   .decl p{color:#39435B;font-weight:500}
   .valcard p,.node p{color:#46506A;font-weight:500}
   .hs-label{color:#39435B}
+
+  /* ============================================================
+     2단(2-COLUMN) 레이아웃 — 2026-06-07 (Wise 참고)
+     히어로 이후 콘텐츠 섹션을 '좌: 헤드카피 / 우: 요소'로 재배치.
+     데스크톱(≥881px)에서만 2단 적용, 태블릿·모바일은 기존 1단 유지.
+     ============================================================ */
+  @media(min-width:881px){
+    /* .wrap을 2단 그리드로 — 좌(헤드) 0.82 / 우(요소) 1.18 */
+    .flood .wrap,.value .wrap,.role-funnel .wrap,.proof2 .wrap,.voices .wrap{
+      display:grid;grid-template-columns:minmax(0,.82fr) minmax(0,1.18fr);
+      gap:56px;align-items:start;max-width:1140px;
+    }
+    /* 좌측 헤드카피: 왼쪽 정렬 + 스크롤 시 따라오는 sticky */
+    .flood .head,.value .head,.role-funnel .head,.proof2 .head,.voices .head{
+      text-align:left;max-width:none;margin:0;position:sticky;top:116px;align-self:start;
+    }
+    /* 우측 요소: 위쪽 정렬·바깥 여백 제거, 카드 그리드는 세로 1열로 */
+    .flood-stats{margin:0;max-width:none}
+    .value-grid{grid-template-columns:1fr;gap:16px;margin:0}
+    .proof-row{grid-template-columns:1fr;gap:16px;margin:0}
+    .v-grid{grid-template-columns:1fr;gap:18px;margin:0;max-width:none}
+    .role-funnel .funnel3{margin:0}
+    /* (b) 우측 카드 가로형 — 아이콘 좌 / 텍스트 우, 높이 축소로 좌우 균형 */
+    .value .valcard{display:grid;grid-template-columns:auto 1fr;column-gap:20px;row-gap:4px;align-content:center;text-align:left;padding:24px 28px}
+    .value .valcard .ic{grid-column:1;grid-row:1 / span 3;margin:0;height:auto;font-size:32px;align-self:center}
+    .value .valcard h3{grid-column:2}
+    .value .valcard p{grid-column:2}
+    .value .valcard .metric{grid-column:2;margin-top:8px;justify-self:start}
+    .proof2 .pc2{display:grid;grid-template-columns:1fr auto;align-items:center;column-gap:18px;text-align:left;padding:24px 30px}
+    .proof2 .pc2 .vlabel{grid-column:1;margin-bottom:4px}
+    .proof2 .pc2 p{grid-column:1;margin-top:2px}
+    .proof2 .pc2 .big{grid-column:2;grid-row:1 / span 2;align-self:center}
+  }
 </style>
 </head>
 <body>
