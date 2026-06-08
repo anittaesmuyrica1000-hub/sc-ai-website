@@ -228,7 +228,9 @@
   @media(max-width:860px){.v-grid{grid-template-columns:1fr;max-width:560px;margin-left:auto;margin-right:auto}}
 
   /* 8. FINAL CTA */
-  .final{background:linear-gradient(135deg,var(--blue),#4E7DF4);color:#fff;text-align:center;position:relative;overflow:hidden}
+  .final{color:#fff;text-align:center;position:relative;overflow:hidden;background:
+      radial-gradient(62% 60% at 50% 46%, rgba(90,120,255,.20) 0%, rgba(120,80,220,.10) 42%, transparent 72%),
+      linear-gradient(160deg,#070B1A 0%,#0A1330 50%,#04060E 100%)}
   /* CTA 입자 수렴 모션 — 히어로와 동일, 파란 배경 위라 화이트 점. 콘텐츠는 위로 */
   .final #final-particles{position:absolute;inset:0;z-index:0;width:100%;height:100%;pointer-events:none;
     -webkit-mask-image:radial-gradient(ellipse 82% 78% at 50% 50%, #000 22%, transparent 86%);
@@ -237,8 +239,12 @@
   .final .wrap{position:relative;z-index:1}
   .final h2{color:#fff;font-size:clamp(30px,4vw,48px);font-weight:500}
   /* CTA '진짜 인재만' 강조 — 볼드만(글로우·마커 하이라이트 제거) */
-  .final h2 .real-cta{font-weight:800;white-space:nowrap}
-  .final p{color:#DCE7FF;font-size:18px;font-weight:500;margin:18px auto 30px;max-width:520px}
+  /* 강조어 — 히어로와 동일한 밝은 그라데이션 텍스트 */
+  .final h2 .real-cta{font-weight:800;white-space:nowrap;
+    background:linear-gradient(to right,#5B8DF7,#8AA0FF,#B98DFF,#8AA0FF,#5B8DF7);background-size:200% auto;
+    -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent;
+    animation:textGrad 5s linear infinite}
+  .final p{color:#AEB9D4;font-size:18px;font-weight:500;margin:18px auto 30px;max-width:520px}
   .cta-form{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;max-width:720px;margin:0 auto}
   .cta-form input{flex:1;min-width:150px;padding:14px 16px;border-radius:11px;border:none;font-size:15px;font-family:inherit;background:rgba(255,255,255,.95)}
   .cta-form input::placeholder{color:#8A93A8}
@@ -670,7 +676,7 @@
   <div class="wrap">
     <h2>다음 채용부터, <span class="real-cta" id="real-cta">진짜 인재만</span> 만나세요.</h2>
     <p>5분이면 충분합니다. 지금 무료로 확인하세요.</p>
-    <a href="apply.html" class="btn btn-white">무료 체험하기 <i class="fa-solid fa-arrow-right"></i></a>
+    <a href="apply.html" class="btn btn-blue">무료 체험하기 <i class="fa-solid fa-arrow-right"></i></a>
   </div>
 </section>
 
@@ -724,8 +730,8 @@
     a=STOPS[i], b=STOPS[Math.min(i+1,STOPS.length-1)];
     return [Math.round(a[0]+(b[0]-a[0])*k),Math.round(a[1]+(b[1]-a[1])*k),Math.round(a[2]+(b[2]-a[2])*k)]; }
   run('hero-particles','real-word',gradCol,.9,true);
-  // CTA: 파란 배경 위라 화이트 입자(글로우 없이)
-  run('final-particles','real-cta',function(){ return [255,255,255]; },.55,false);
+  // CTA(다크): 히어로와 동일한 화려한 스펙트럼 입자 + 발광 글로우
+  run('final-particles','real-cta',gradCol,.9,true);
 })();
 </script>
 </body>
