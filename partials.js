@@ -99,13 +99,26 @@
     if (e.key === 'Escape') closeMenu();
   });
 
-  /* 스크롤 시 헤더 배경 토글 — 맨 위(히어로)에선 투명, 8px 이상 내리면 .scrolled(흰 배경+블러) */
+  /* 섹션 인지형 GNB 색상(Notion 식) — 헤더 중앙선 아래에 오는 섹션에 맞춰 테마 토글.
+     · 다크 섹션(data-nav="dark") 위  → .nav-invert(흰 콘텐츠·투명 배경)
+     · 밝은 섹션 위 + 8px 이상 스크롤 → .nav-solid(흰 배경+블러·어두운 콘텐츠)
+     · 밝은 섹션 최상단(≤8px)          → 둘 다 해제(투명·어두운 콘텐츠) */
   function syncHeader() {
     var header = document.querySelector('header');
     if (!header) return;
-    header.classList.toggle('scrolled', window.scrollY > 8);
+    var navLine = window.scrollY + 33; // 헤더(64px) 중앙선의 문서 좌표
+    var overDark = false;
+    var darks = document.querySelectorAll('[data-nav="dark"]');
+    for (var i = 0; i < darks.length; i++) {
+      var r = darks[i].getBoundingClientRect();
+      var top = r.top + window.scrollY, bottom = top + r.height;
+      if (navLine >= top && navLine < bottom) { overDark = true; break; }
+    }
+    header.classList.toggle('nav-invert', overDark);
+    header.classList.toggle('nav-solid', !overDark && window.scrollY > 8);
   }
   window.addEventListener('scroll', syncHeader, { passive: true });
+  window.addEventListener('resize', syncHeader, { passive: true });
   window.addEventListener('load', syncHeader);
   syncHeader();
 })();

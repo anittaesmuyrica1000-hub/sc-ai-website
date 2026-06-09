@@ -46,10 +46,18 @@ h2{font-size:clamp(28px,3.6vw,44px);font-weight:800;letter-spacing:0;line-height
 .eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:800;letter-spacing:.06em;color:var(--blue);text-transform:uppercase;margin-bottom:16px;background:var(--soft-2);padding:6px 14px;border-radius:999px}
 
 /* ===== GNB / Header (partial: <site-header>) ===== */
-/* 기본(히어로 위)은 투명 → 스크롤 시 partials.js가 .scrolled 토글 → 흰 배경+블러.
-   border는 항상 1px 자리만 잡고 색만 transparent↔line 으로 바꿔 레이아웃 점프 방지. */
+/* 섹션 인지형 GNB — partials.js가 헤더 아래 섹션을 감지해 클래스를 토글한다(Notion 식).
+   · 기본            : 투명 배경 + 어두운 콘텐츠(밝은 섹션 최상단·apply.html 등)
+   · .nav-solid      : 밝은 섹션을 스크롤할 때 흰 배경+블러(구분선). 어두운 콘텐츠 유지.
+   · .nav-invert     : 다크 섹션(data-nav="dark", 히어로·FINAL) 위 — 콘텐츠를 흰색으로 반전, 배경은 투명.
+   border는 항상 1px 자리만 잡고 색만 바꿔 레이아웃 점프 방지. */
 header{position:sticky;top:0;z-index:60;background:transparent;border-bottom:1px solid transparent;transition:background .3s ease,backdrop-filter .3s ease,border-color .3s ease}
-header.scrolled{background:rgba(255,255,255,.85);backdrop-filter:blur(12px);border-bottom-color:var(--line)}
+header.nav-solid{background:rgba(255,255,255,.85);backdrop-filter:blur(12px);border-bottom-color:var(--line)}
+/* 다크 섹션 위 콘텐츠 반전 — 로고 흰색, 메뉴버튼 투명+흰 보더, 버거 흰색. 부드러운 전환. */
+.nav-logo-img,.nav-menu-btn,.nav-burger span{transition:.3s ease}
+header.nav-invert .nav-logo-img{filter:brightness(0) invert(1)}
+header.nav-invert .nav-menu-btn{background:transparent;border-color:rgba(255,255,255,.4)}
+header.nav-invert .nav-burger span{background:#fff}
 nav{display:flex;align-items:center;justify-content:space-between;height:64px}
 .logo{font-weight:800;font-size:20px;letter-spacing:-.02em;display:flex;align-items:center;gap:8px;color:var(--ink)}
 .nav-logo-img{height:26px;width:auto;display:block}
