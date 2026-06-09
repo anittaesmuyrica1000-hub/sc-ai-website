@@ -389,8 +389,9 @@
     }
     /* FLOOD 통계 카드: 헤드카피보다 아래에서 시작(오프셋) + 컬럼을 채워 영역 확대 */
     .flood-stats{margin:104px auto 0;width:100%;max-width:520px}
-    /* FLOOD는 좌측 헤드 첫 줄이 길어 좌측 컬럼을 넓힘(줄바꿈 방지) */
-    .flood .wrap{grid-template-columns:minmax(0,1.1fr) minmax(0,0.9fr)}
+    /* FLOOD: 좌 카피·우 통계 사이 여유 확보 — 헤드 컬럼은 헤드라인 2줄 유지폭(≥539px) 확보,
+       통계 카드는 좁혀(행은 ~291px까지 안전) 간격 80px로 숨통. */
+    .flood .wrap{grid-template-columns:minmax(0,1.24fr) minmax(0,1fr);gap:80px}
     /* ROLE 깔때기: FLOOD 통계 박스처럼 헤드카피보다 아래에서 시작(동일 오프셋) */
     .role-funnel .funnel3{margin:104px 0 0}
     /* ROLE 깔때기 확대 — 헤드 컬럼/줄바꿈은 그대로 두고 그래프만 우측 기준으로 키움(화면 밖 넘침 방지) */
@@ -475,8 +476,8 @@
   <div class="wrap">
     <div class="head">
       <div class="tagchip"><i class="fa-solid fa-triangle-exclamation"></i> 채용의 현실</div>
-      <h2>지원자의 <span class="blue">60%</span>는 AI로 씁니다.<br>당신의 1차 검토는 무엇을 거르고 있습니까?</h2>
-      <p class="lead">진짜를 못 거른 1차 검토는, 그대로 채용 비용이 됩니다.</p>
+      <h2>AI로 쓴 이력서는 좋아졌는데,<br>지원자의 <span class="blue">실력</span>도 좋아졌을까요?</h2>
+      <p class="lead">진짜를 못 거르는 1차 검토는<br>결국 채용 비용과 미스매치로 이어집니다.</p>
     </div>
     <ul class="flood-stats">
         <li>
