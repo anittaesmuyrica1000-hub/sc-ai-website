@@ -53,9 +53,13 @@ h2{font-size:clamp(28px,3.6vw,44px);font-weight:800;letter-spacing:0;line-height
    border는 항상 1px 자리만 잡고 색만 바꿔 레이아웃 점프 방지. */
 header{position:sticky;top:0;z-index:60;background:transparent;border-bottom:1px solid transparent;transition:background .3s ease,backdrop-filter .3s ease,border-color .3s ease}
 header.nav-solid{background:rgba(255,255,255,.85);backdrop-filter:blur(12px);border-bottom-color:var(--line)}
-/* 다크 섹션 위 콘텐츠 반전 — 로고 흰색, 메뉴버튼 투명+흰 보더, 버거 흰색. 부드러운 전환. */
-.nav-logo-img,.nav-menu-btn,.nav-burger span{transition:.3s ease}
-header.nav-invert .nav-logo-img{filter:brightness(0) invert(1)}
+/* 다크 섹션 위 콘텐츠 반전 — 로고는 컬러 락업으로 교체, 메뉴버튼 투명+흰 보더, 버거 흰색. */
+.nav-menu-btn,.nav-burger span{transition:.3s ease}
+/* 로고 스왑: 기본은 supercoder-nav.svg, 다크 섹션(.nav-invert)에선 컬러 PNG로 교체.
+   .logo 자손 셀렉터로 명시도를 올려 아래 .nav-logo-img{display:block} 보다 우선 적용. */
+.logo .nav-logo--color{display:none}
+header.nav-invert .logo .nav-logo--base{display:none}
+header.nav-invert .logo .nav-logo--color{display:block}
 header.nav-invert .nav-menu-btn{background:transparent;border-color:rgba(255,255,255,.4)}
 header.nav-invert .nav-burger span{background:#fff}
 nav{display:flex;align-items:center;justify-content:space-between;height:64px}
