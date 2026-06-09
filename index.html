@@ -14,9 +14,16 @@
   /* 1. DECLARATION */
   /* 히어로 + 도입사 로고를 하나의 배경으로 연결: 연속 그라데이션 + 지구본 + 그레인을 래퍼에 둠 */
   /* 히어로+VALUE 연속 그라데이션 — 아래로 갈수록 흰색 */
-  .hero-bg{position:relative;overflow:hidden;background:
+  /* 투명 GNB가 다크 히어로 위에 겹치도록 히어로를 헤더(64px) 아래로 끌어올리고,
+     그만큼 본문을 내려 헤더에 가리지 않게 한다. 스크롤하면 GNB가 .scrolled(흰 배경)로 전환. */
+  .hero-bg{position:relative;overflow:hidden;margin-top:-65px;padding-top:65px;background:
       radial-gradient(62% 52% at 50% 40%, rgba(90,120,255,.20) 0%, rgba(120,80,220,.10) 42%, transparent 72%),
       linear-gradient(160deg,#070B1A 0%,#0A1330 50%,#04060E 100%)}
+  /* 히어로 위(투명 상태)에서만 GNB를 다크 배경용으로: 로고 흰색, 메뉴버튼 투명+흰 보더.
+     스크롤 후(.scrolled) 또는 apply.html(이 인라인 미적용)에서는 원래 파란 로고로 복귀. */
+  header:not(.scrolled) .nav-logo-img{filter:brightness(0) invert(1)}
+  header:not(.scrolled) .nav-menu-btn{background:transparent;border-color:rgba(255,255,255,.4)}
+  header:not(.scrolled) .nav-burger span{background:#fff}
   /* 입자 수렴 모션 — 수많은 점(지원자)이 헤드라인 '진짜'로 좁혀듦(AI가 검증·선별). canvas는 래퍼 첫 자식 */
   .hero-bg #hero-particles{position:absolute;inset:0;z-index:0;width:100%;height:100%;pointer-events:none;
     -webkit-mask-image:radial-gradient(ellipse 72% 64% at 50% 44%, #000 26%, transparent 86%);
