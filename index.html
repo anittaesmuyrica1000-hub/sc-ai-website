@@ -415,9 +415,12 @@
     .role-funnel .wrap{gap:80px;align-items:center}
     .role-funnel .head{text-align:left;position:static;align-self:center}
     .role-funnel .funnel3{margin:0}
-    /* ROLE 깔때기 확대 — 헤드 컬럼/줄바꿈은 그대로 두고 그래프만 우측 기준으로 키움(화면 밖 넘침 방지) */
-    .role-funnel .fn-wrap{transform:scale(1.16);transform-origin:right center}
+    /* ROLE 깔때기 확대 — 우측 기준 확대(화면 밖 넘침 방지). 좁은 데스크톱(881~1179)은 헤드 겹침
+       방지를 위해 1.2, 넓은 데스크톱(≥1180)에서 1.42로 더 키움(아래 별도 미디어쿼리). */
+    .role-funnel .fn-wrap{transform:scale(1.2);transform-origin:right center}
   }
+  /* 넓은 데스크톱: 깔때기·텍스트 더 크게(좌측 헤드와 겹치지 않는 폭) */
+  @media(min-width:1180px){.role-funnel .fn-wrap{transform:scale(1.42)}}
   /* [Wise식 모바일 패딩] 고정 px 패딩 섹션 모바일 축소 + FINAL 카드 거터 16px */
   @media(max-width:560px){
     .role-funnel{padding:56px 0}
