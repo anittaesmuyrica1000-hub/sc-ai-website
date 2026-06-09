@@ -12,7 +12,7 @@
     '  <nav class="wrap">' +
     '    <a href="index.html" class="logo">' +
     '      <img src="supercoder-nav.svg" alt="Supercoder" class="nav-logo-img nav-logo--base">' +
-    '      <img src="supercoder-nav-color.png" alt="Supercoder" class="nav-logo-img nav-logo--color">' +
+    '      <img src="supercoder-nav-white.svg" alt="Supercoder" class="nav-logo-img nav-logo--invert">' +
     '    </a>' +
     '    <div class="navlinks">' +
     '      <a href="apply.html" class="btn btn-blue nav-btn">도입 문의</a>' +

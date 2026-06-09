@@ -57,11 +57,11 @@ header.nav-solid{background:rgba(255,255,255,.85);backdrop-filter:blur(12px);bor
 header.nav-hidden{transform:translateY(-100%);opacity:0;pointer-events:none}
 /* 다크 섹션 위 콘텐츠 반전 — 로고는 컬러 락업으로 교체, 메뉴버튼 투명+흰 보더, 버거 흰색. */
 .nav-menu-btn,.nav-burger span{transition:.3s ease}
-/* 로고 스왑: 기본은 supercoder-nav.svg, 다크 섹션(.nav-invert)에선 컬러 PNG로 교체.
+/* 로고 스왑: 밝은 배경은 컬러(supercoder-nav.svg), 다크 섹션(.nav-invert)에선 흰색(supercoder-nav-white.svg).
    .logo 자손 셀렉터로 명시도를 올려 아래 .nav-logo-img{display:block} 보다 우선 적용. */
-.logo .nav-logo--color{display:none}
+.logo .nav-logo--invert{display:none}
 header.nav-invert .logo .nav-logo--base{display:none}
-header.nav-invert .logo .nav-logo--color{display:block}
+header.nav-invert .logo .nav-logo--invert{display:block}
 header.nav-invert .nav-menu-btn{background:transparent;border-color:rgba(255,255,255,.4)}
 header.nav-invert .nav-burger span{background:#fff}
 nav{display:flex;align-items:center;justify-content:space-between;height:64px}
