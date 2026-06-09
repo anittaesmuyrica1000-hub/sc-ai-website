@@ -406,15 +406,15 @@
 <site-header></site-header>
 
 <!-- 히어로 + 도입사 로고를 하나의 배경(그라데이션·지구본·그레인)으로 연결하는 래퍼 -->
-<!-- data-nav="hide": 히어로 최상단에선 GNB 숨김 → 스크롤하면 흰 GNB가 슬라이드 등장 — partials.js 감지 -->
-<div class="hero-bg" data-nav="hide">
+<!-- data-nav="dark": 히어로 위에선 GNB 배경 투명(로고·메뉴 반전 표시) → 밝은 섹션에서 흰 배경 — partials.js 감지 -->
+<div class="hero-bg" data-nav="dark">
 <canvas id="hero-particles" aria-hidden="true"></canvas>
 <!-- ===== SECTION 01 · DECLARATION (히어로 — "1차 검토는 AI에게") · #hero ===== -->
 <section class="decl" id="hero">
   <div class="wrap">
     <div>
       <div class="tagchip"><i class="fa-solid fa-bolt"></i> AI 면접 채용 검증</div>
-      <h1><span class="blue">수천 명</span>을 검토하고,<br>책상엔 <span class="blue real" id="real-word">‘진짜’만</span> 올립니다.</h1>
+      <h1><span class="blue">수천 명</span>의 지원자,<br>채용팀은 <span class="blue real" id="real-word">상위 후보</span>만 보면 됩니다.</h1>
       <p><span class="blue" style="font-weight:700">AI 면접</span>이 전 지원자를 검증하고,<br>검증된 핵심 인재 리포트만 채용팀에 전달합니다.</p>
       <div class="decl-cta">
         <a href="apply.html" class="btn btn-blue">무료 체험하기 <i class="fa-solid fa-arrow-right"></i></a>
