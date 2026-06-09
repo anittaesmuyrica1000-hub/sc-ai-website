@@ -394,8 +394,10 @@
     .flood .wrap{grid-template-columns:minmax(0,1.24fr) minmax(0,1fr);gap:80px;align-items:center}
     /* FLOOD 헤드카피: 텍스트는 좌측 정렬, sticky 해제 + 수직 중앙(align-self). */
     .flood .head{text-align:left;position:static;align-self:center}
-    /* ROLE 깔때기: FLOOD 통계 박스처럼 헤드카피보다 아래에서 시작(동일 오프셋) */
-    .role-funnel .funnel3{margin:104px 0 0}
+    /* ROLE: FLOOD처럼 좌 카피·우 그래프 수직 중앙 정렬 + 간격 여유(56→80). 헤드 텍스트는 좌측. */
+    .role-funnel .wrap{gap:80px;align-items:center}
+    .role-funnel .head{text-align:left;position:static;align-self:center}
+    .role-funnel .funnel3{margin:0}
     /* ROLE 깔때기 확대 — 헤드 컬럼/줄바꿈은 그대로 두고 그래프만 우측 기준으로 키움(화면 밖 넘침 방지) */
     .role-funnel .fn-wrap{transform:scale(1.16);transform-origin:right center}
   }
