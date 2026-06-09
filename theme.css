@@ -51,8 +51,10 @@ h2{font-size:clamp(28px,3.6vw,44px);font-weight:800;letter-spacing:0;line-height
    · .nav-solid      : 밝은 섹션을 스크롤할 때 흰 배경+블러(구분선). 어두운 콘텐츠 유지.
    · .nav-invert     : 다크 섹션(data-nav="dark", 히어로·FINAL) 위 — 콘텐츠를 흰색으로 반전, 배경은 투명.
    border는 항상 1px 자리만 잡고 색만 바꿔 레이아웃 점프 방지. */
-header{position:sticky;top:0;z-index:60;background:transparent;border-bottom:1px solid transparent;transition:background .3s ease,backdrop-filter .3s ease,border-color .3s ease}
+header{position:sticky;top:0;z-index:60;background:transparent;border-bottom:1px solid transparent;transition:transform .35s ease,opacity .3s ease,background .3s ease,backdrop-filter .3s ease,border-color .3s ease}
 header.nav-solid{background:rgba(255,255,255,.85);backdrop-filter:blur(12px);border-bottom-color:var(--line)}
+/* .nav-hidden: 히어로 최상단에서 GNB를 위로 숨김(슬라이드 업+페이드). 스크롤하면 해제되어 흰 GNB 등장. */
+header.nav-hidden{transform:translateY(-100%);opacity:0;pointer-events:none}
 /* 다크 섹션 위 콘텐츠 반전 — 로고는 컬러 락업으로 교체, 메뉴버튼 투명+흰 보더, 버거 흰색. */
 .nav-menu-btn,.nav-burger span{transition:.3s ease}
 /* 로고 스왑: 기본은 supercoder-nav.svg, 다크 섹션(.nav-invert)에선 컬러 PNG로 교체.

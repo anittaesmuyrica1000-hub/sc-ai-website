@@ -109,16 +109,21 @@
   function syncHeader() {
     var header = document.querySelector('header');
     if (!header) return;
-    var navLine = window.scrollY + 33; // 헤더(64px) 중앙선의 문서 좌표
-    var overDark = false;
-    var darks = document.querySelectorAll('[data-nav="dark"]');
-    for (var i = 0; i < darks.length; i++) {
-      var r = darks[i].getBoundingClientRect();
-      var top = r.top + window.scrollY, bottom = top + r.height;
-      if (navLine >= top && navLine < bottom) { overDark = true; break; }
+    var y = window.scrollY, navLine = y + 33; // 헤더(64px) 중앙선의 문서 좌표
+    function over(sel) {
+      var els = document.querySelectorAll(sel);
+      for (var i = 0; i < els.length; i++) {
+        var r = els[i].getBoundingClientRect(), top = r.top + y, bottom = top + r.height;
+        if (navLine >= top && navLine < bottom) return true;
+      }
+      return false;
     }
-    header.classList.toggle('nav-invert', overDark);
-    header.classList.toggle('nav-solid', !overDark && window.scrollY > 8);
+    var overHide = over('[data-nav="hide"]'); // 히어로: 최상단 숨김 → 스크롤 시 흰 GNB
+    var overDark = over('[data-nav="dark"]');  // 다크 섹션: 콘텐츠 반전(컬러 로고)
+    var hidden = overHide && y < 40;           // 히어로 최상단(40px 이내)에선 GNB 숨김
+    header.classList.toggle('nav-hidden', hidden);
+    header.classList.toggle('nav-invert', overDark && !hidden);
+    header.classList.toggle('nav-solid', !hidden && !overDark && y > 8);
   }
   window.addEventListener('scroll', syncHeader, { passive: true });
   window.addEventListener('resize', syncHeader, { passive: true });
