@@ -199,17 +199,16 @@
   .demo-video:hover .play{transform:scale(1.07)}
   .demo-video .vcap{position:absolute;left:22px;bottom:20px;color:#fff;font-weight:700;font-size:14px;display:flex;align-items:center;gap:8px;text-shadow:0 1px 8px rgba(0,0,0,.5)}
   .demo-video .vtime{position:absolute;right:20px;bottom:20px;background:rgba(0,0,0,.45);color:#fff;font-size:12px;font-weight:700;padding:4px 11px;border-radius:999px}
-  /* 리포트 데모: 이미지(좌) + 정보(우) 2단 */
-  .report-split{display:grid;grid-template-columns:1fr 1fr;gap:clamp(32px,4vw,60px);align-items:center;max-width:1080px;margin:48px auto 52px}
-  .rs-media img{width:100%;height:auto;display:block;border-radius:16px;filter:drop-shadow(0 16px 34px rgba(20,40,90,.20))}
-  .rs-info{text-align:left}
-  .rs-info h3{font-size:clamp(22px,2.6vw,30px);font-weight:800;line-height:1.32;letter-spacing:-.02em;color:var(--ink)}
-  .rs-info > p{font-size:16px;color:var(--slate);margin:14px 0 22px;line-height:1.62}
-  .rs-list{list-style:none;display:grid;gap:14px;margin:0 0 28px}
-  .rs-list li{font-size:15.5px;color:var(--ink);display:flex;gap:11px;align-items:flex-start;line-height:1.5}
-  .rs-list li i{color:var(--blue);margin-top:4px;font-size:15px}
-  .rs-list li b{font-weight:700}
-  @media(max-width:880px){.report-split{grid-template-columns:1fr;gap:28px;margin:40px auto 44px}.rs-info{text-align:center}.rs-list{max-width:440px;margin-inline:auto;text-align:left}.rs-info .btn{margin:0 auto}}
+  /* 리포트 디테일: 텍스트 + 이미지 박스 좌우 교차 3행 */
+  .how-rows{max-width:1080px;margin:48px auto 8px;display:grid;gap:clamp(44px,6vw,84px)}
+  .how-row{display:grid;grid-template-columns:1fr 1fr;gap:clamp(32px,4vw,64px);align-items:center}
+  .hr-info{text-align:left}
+  .hr-info h3{font-size:clamp(22px,2.6vw,30px);font-weight:800;line-height:1.32;letter-spacing:-.02em;color:var(--ink)}
+  .hr-info p{font-size:16px;color:var(--slate);margin-top:14px;line-height:1.62}
+  /* 빈 이미지 박스(플레이스홀더) — 추후 실제 이미지로 교체 */
+  .img-box{aspect-ratio:4/3;border-radius:16px;background:var(--soft);border:1px solid var(--line);display:grid;place-items:center}
+  .img-box::after{content:"\f03e";font-family:"Font Awesome 6 Free";font-weight:900;font-size:34px;color:var(--slate-2);opacity:.35}
+  @media(max-width:880px){.how-row{grid-template-columns:1fr;gap:22px}.hr-info{text-align:center}.how-row .hr-media{order:-1}}
 
   /* 6. PROOF */
   /* 헤드카피 위 여유 공간 — 기본 섹션 패딩보다 상단을 더 넉넉히 */
@@ -622,21 +621,31 @@
       <p class="lead">검증은 AI가 끝냅니다 — 채용팀은 이 화면만 보면 됩니다.</p>
     </div>
 
-    <!-- 리포트 데모: 이미지(좌) + 담기는 정보(우) 2단 -->
-    <div class="report-split">
-      <div class="rs-media">
-        <img src="report-aiview.png" alt="AIVIEW AI 면접 검증 리포트 화면 — 지원자 종합 평가·역량 레이더·항목별 분석" loading="lazy">
+    <!-- 리포트 디테일: 텍스트 + 이미지 박스 좌우 교차 3행 (이미지는 빈 박스 — 추후 교체) -->
+    <div class="how-rows">
+      <!-- Row 1: 이미지(좌) + 인터뷰 요약(우) -->
+      <div class="how-row">
+        <div class="hr-media"><div class="img-box"></div></div>
+        <div class="hr-info">
+          <h3>인터뷰 요약</h3>
+          <p>AI 면접 대화를 핵심만 간추려, 지원자를 빠르게 파악할 수 있게 정리합니다.</p>
+        </div>
       </div>
-      <div class="rs-info">
-        <h3>검증 결과가 <span class="blue">한 장</span>에 정리됩니다</h3>
-        <p>지원자의 역량을 항목별로 검증해, 채용팀이 바로 판단할 수 있는 형태로 전달합니다.</p>
-        <ul class="rs-list">
-          <li><i class="fa-solid fa-circle-check"></i><span><b>종합 평가 점수</b> — 한눈에 보는 직무 적합도</span></li>
-          <li><i class="fa-solid fa-circle-check"></i><span><b>핵심 역량 레이더</b> — 강점·약점을 시각화</span></li>
-          <li><i class="fa-solid fa-circle-check"></i><span><b>항목별 상세 분석</b> — 판단 근거까지 함께</span></li>
-          <li><i class="fa-solid fa-circle-check"></i><span><b>면접 답변 하이라이트</b> — 검증의 근거 제시</span></li>
-        </ul>
-        <a href="apply.html" class="btn btn-blue">리포트 예시 받아보기 <i class="fa-solid fa-arrow-right"></i></a>
+      <!-- Row 2: 리포트 종합평가(좌) + 이미지(우) -->
+      <div class="how-row">
+        <div class="hr-info">
+          <h3>리포트 종합평가</h3>
+          <p>직무 적합도를 종합 점수로 환산해, 한눈에 판단할 수 있게 제시합니다.</p>
+        </div>
+        <div class="hr-media"><div class="img-box"></div></div>
+      </div>
+      <!-- Row 3: 이미지(좌) + 역량평가(우) -->
+      <div class="how-row">
+        <div class="hr-media"><div class="img-box"></div></div>
+        <div class="hr-info">
+          <h3>역량평가</h3>
+          <p>핵심 직무 역량을 항목별로 검증하고, 강점·약점을 시각화해 보여줍니다.</p>
+        </div>
       </div>
     </div>
 
