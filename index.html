@@ -14,9 +14,9 @@
   /* 1. DECLARATION */
   /* 히어로 + 도입사 로고를 하나의 배경으로 연결: 연속 그라데이션 + 지구본 + 그레인을 래퍼에 둠 */
   /* 히어로+VALUE 연속 그라데이션 — 아래로 갈수록 흰색 */
-  /* 투명 GNB가 다크 히어로 위에 겹치도록 히어로를 헤더(64px) 아래로 끌어올리고,
-     그만큼 본문을 내려 헤더에 가리지 않게 한다. 스크롤하면 GNB가 .scrolled(흰 배경)로 전환. */
-  .hero-bg{position:relative;overflow:hidden;margin-top:-65px;padding-top:65px;background:
+  /* 다크 히어로를 헤더 높이(65px)만큼 위로 끌어올려 화면 최상단(y=0)부터 채운다.
+     GNB는 최상단에서 숨김이라 상단 패딩 불필요 → 콘텐츠를 히어로 정중앙에 배치(.decl align-items:center). */
+  .hero-bg{position:relative;overflow:hidden;margin-top:-65px;background:
       radial-gradient(62% 52% at 50% 40%, rgba(90,120,255,.20) 0%, rgba(120,80,220,.10) 42%, transparent 72%),
       linear-gradient(160deg,#070B1A 0%,#0A1330 50%,#04060E 100%)}
   /* GNB 반전(흰 로고·투명 메뉴버튼)은 다크 섹션(data-nav="dark") 위에서만 적용 —
@@ -34,7 +34,7 @@
   /* 그레인(노이즈) 질감 — 밋밋함·AI 플랫함 제거. 인라인 SVG feTurbulence */
   .hero-bg::before{content:"";position:absolute;inset:0;z-index:0;pointer-events:none;mix-blend-mode:multiply;opacity:.06;
     background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
-  .decl{background:transparent;min-height:74vh;display:flex;align-items:center;position:relative;z-index:1;padding:48px 0 24px}
+  .decl{background:transparent;min-height:74vh;display:flex;align-items:center;justify-content:center;position:relative;z-index:1;padding:48px 0}
   .decl .wrap{position:relative;z-index:2;max-width:840px;text-align:center}
   /* tagchip — 섹션 상단 라벨 칩(히어로 'AI 면접 채용 검증' 등). 스코프 없이 재사용 */
   .tagchip{display:inline-flex;align-items:center;gap:8px;background:#fff;border:1px solid var(--line);border-radius:999px;padding:7px 16px;font-size:13px;font-weight:700;color:var(--slate);margin-bottom:24px;box-shadow:0 4px 12px -6px rgba(20,40,90,.15)}
