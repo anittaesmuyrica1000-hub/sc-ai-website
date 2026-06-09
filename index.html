@@ -208,6 +208,9 @@
   /* 빈 이미지 박스(플레이스홀더) — 추후 실제 이미지로 교체 */
   .img-box{aspect-ratio:4/3;border-radius:16px;background:var(--soft);border:1px solid var(--line);display:grid;place-items:center}
   .img-box::after{content:"\f03e";font-family:"Font Awesome 6 Free";font-weight:900;font-size:34px;color:var(--slate-2);opacity:.35}
+  /* 이미지 박스 — 4:3 고정(512×384), 보고서 strip은 object-fit:cover로 채우되 좌측(핵심부) 노출 */
+  .hr-media{aspect-ratio:4/3;width:100%;max-width:512px;margin-inline:auto;border-radius:14px;overflow:hidden;border:1px solid var(--line);box-shadow:0 12px 30px -16px rgba(20,40,90,.22)}
+  .hr-img{width:100%;height:100%;object-fit:cover;object-position:left center;display:block}
   @media(max-width:880px){.how-row{grid-template-columns:1fr;gap:22px}.hr-info{text-align:center}.how-row .hr-media{order:-1}}
 
   /* 6. PROOF */
@@ -620,7 +623,7 @@
     <div class="how-rows">
       <!-- Row 1: 이미지(좌) + 인터뷰 요약(우) -->
       <div class="how-row">
-        <div class="hr-media"><div class="img-box"></div></div>
+        <div class="hr-media"><img class="hr-img" src="report-interview-summary.png" alt="AIVIEW 리포트 — 인터뷰 내용 요약과 인터뷰 비디오" loading="lazy"></div>
         <div class="hr-info">
           <h3>인터뷰 요약</h3>
           <p>AI 면접 대화를 핵심만 간추려, 지원자를 빠르게 파악할 수 있게 정리합니다.</p>
@@ -632,11 +635,11 @@
           <h3>리포트 종합평가</h3>
           <p>직무 적합도를 종합 점수로 환산해, 한눈에 판단할 수 있게 제시합니다.</p>
         </div>
-        <div class="hr-media"><div class="img-box"></div></div>
+        <div class="hr-media"><img class="hr-img" src="report-overall-grade.png" alt="AIVIEW 리포트 — 종합 등급(양호)과 종합 평가" loading="lazy"></div>
       </div>
       <!-- Row 3: 이미지(좌) + 역량평가(우) -->
       <div class="how-row">
-        <div class="hr-media"><div class="img-box"></div></div>
+        <div class="hr-media"><img class="hr-img" src="report-competency.png" alt="AIVIEW 리포트 — 역량 평가 레이더 차트와 항목별 등급" loading="lazy"></div>
         <div class="hr-info">
           <h3>역량평가</h3>
           <p>핵심 직무 역량을 항목별로 검증하고, 강점·약점을 시각화해 보여줍니다.</p>
