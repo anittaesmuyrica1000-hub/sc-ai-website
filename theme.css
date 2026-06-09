@@ -46,7 +46,10 @@ h2{font-size:clamp(28px,3.6vw,44px);font-weight:800;letter-spacing:0;line-height
 .eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:800;letter-spacing:.06em;color:var(--blue);text-transform:uppercase;margin-bottom:16px;background:var(--soft-2);padding:6px 14px;border-radius:999px}
 
 /* ===== GNB / Header (partial: <site-header>) ===== */
-header{position:sticky;top:0;z-index:60;background:rgba(255,255,255,.85);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+/* 기본(히어로 위)은 투명 → 스크롤 시 partials.js가 .scrolled 토글 → 흰 배경+블러.
+   border는 항상 1px 자리만 잡고 색만 transparent↔line 으로 바꿔 레이아웃 점프 방지. */
+header{position:sticky;top:0;z-index:60;background:transparent;border-bottom:1px solid transparent;transition:background .3s ease,backdrop-filter .3s ease,border-color .3s ease}
+header.scrolled{background:rgba(255,255,255,.85);backdrop-filter:blur(12px);border-bottom-color:var(--line)}
 nav{display:flex;align-items:center;justify-content:space-between;height:64px}
 .logo{font-weight:800;font-size:20px;letter-spacing:-.02em;display:flex;align-items:center;gap:8px;color:var(--ink)}
 .nav-logo-img{height:26px;width:auto;display:block}

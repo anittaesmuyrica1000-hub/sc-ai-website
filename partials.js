@@ -98,4 +98,14 @@
   document.addEventListener('keydown', function (e) {
     if (e.key === 'Escape') closeMenu();
   });
+
+  /* 스크롤 시 헤더 배경 토글 — 맨 위(히어로)에선 투명, 8px 이상 내리면 .scrolled(흰 배경+블러) */
+  function syncHeader() {
+    var header = document.querySelector('header');
+    if (!header) return;
+    header.classList.toggle('scrolled', window.scrollY > 8);
+  }
+  window.addEventListener('scroll', syncHeader, { passive: true });
+  window.addEventListener('load', syncHeader);
+  syncHeader();
 })();
