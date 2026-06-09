@@ -63,7 +63,9 @@
   .bcol.f3::after{content:"\f062  3배";font-family:'Font Awesome 6 Free','Pretendard';font-weight:900;position:absolute;top:-30px;left:50%;transform:translateX(-50%);background:var(--blue);color:#fff;font-size:11px;padding:4px 10px;border-radius:999px;white-space:nowrap}
   .barkeys{display:flex;gap:20px;margin-top:10px}
   .barkeys span{flex:1;text-align:center;font-size:13px;color:var(--slate-2);font-weight:700}
-  @media(max-width:880px){.decl .wrap{grid-template-columns:1fr;gap:40px}.decl{min-height:auto}}
+  /* 모바일: 히어로가 화면을 채워 콘텐츠가 '화면' 정중앙에 오게(svh=주소창 보이는 가시영역 기준).
+     min-height:auto면 히어로가 콘텐츠에 붙어 화면 상단으로 치우침 → 100svh로 채움. */
+  @media(max-width:880px){.decl .wrap{grid-template-columns:1fr;gap:40px}.decl{min-height:100vh;min-height:100svh}}
 
   /* HERO STRIP — 도입사 로고 (한 줄 무한 루핑 마퀴) */
   /* 로고 루프 — 흰 배경으로 위/아래 섹션과 구분 (multiply가 흰 배경에서 가장 깔끔) */
