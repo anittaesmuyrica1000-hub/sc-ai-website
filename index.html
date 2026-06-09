@@ -418,6 +418,12 @@
     /* ROLE 깔때기 확대 — 헤드 컬럼/줄바꿈은 그대로 두고 그래프만 우측 기준으로 키움(화면 밖 넘침 방지) */
     .role-funnel .fn-wrap{transform:scale(1.16);transform-origin:right center}
   }
+  /* [Wise식 모바일 패딩] 고정 px 패딩 섹션 모바일 축소 + FINAL 카드 거터 16px */
+  @media(max-width:560px){
+    .role-funnel{padding:56px 0}
+    .proof2{padding-top:48px}
+    .final{width:min(1200px,100% - 32px);padding:52px 22px}
+  }
 </style>
 </head>
 <body>
