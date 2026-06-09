@@ -387,11 +387,13 @@
     .flood .head,.role-funnel .head{
       text-align:left;max-width:none;margin:0;position:sticky;top:116px;align-self:start;
     }
-    /* FLOOD 통계 카드: 헤드카피보다 아래에서 시작(오프셋) + 컬럼을 채워 영역 확대 */
-    .flood-stats{margin:104px auto 0;width:100%;max-width:520px}
+    /* FLOOD 통계 카드: 수평(margin auto)·수직(grid align-items:center) 중앙. 컬럼 채움. */
+    .flood-stats{margin:0 auto;width:100%;max-width:520px}
     /* FLOOD: 좌 카피·우 통계 사이 여유 확보 — 헤드 컬럼은 헤드라인 2줄 유지폭(≥539px) 확보,
-       통계 카드는 좁혀(행은 ~291px까지 안전) 간격 80px로 숨통. */
-    .flood .wrap{grid-template-columns:minmax(0,1.24fr) minmax(0,1fr);gap:80px}
+       통계 카드는 좁혀(행은 ~291px까지 안전) 간격 80px로 숨통. 두 박스 수직 중앙 정렬. */
+    .flood .wrap{grid-template-columns:minmax(0,1.24fr) minmax(0,1fr);gap:80px;align-items:center}
+    /* FLOOD 헤드카피: 공유 규칙(좌정렬·sticky)을 덮어 수평(text-align)·수직(align-self) 중앙. */
+    .flood .head{text-align:center;position:static;align-self:center}
     /* ROLE 깔때기: FLOOD 통계 박스처럼 헤드카피보다 아래에서 시작(동일 오프셋) */
     .role-funnel .funnel3{margin:104px 0 0}
     /* ROLE 깔때기 확대 — 헤드 컬럼/줄바꿈은 그대로 두고 그래프만 우측 기준으로 키움(화면 밖 넘침 방지) */
