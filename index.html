@@ -287,7 +287,8 @@
 
   /* ROLE FUNNEL — 깔때기 (트라페조이드 3단 + 다크 tip) */
   /* 섹션을 조금 위로 — 상단 패딩 축소 */
-  .role-funnel{background:var(--soft);padding-top:40px}
+  /* 위아래 여백 확보 — 우측 역삼각형 깔때기가 답답하지 않게 상·하단 패딩 넉넉히 */
+  .role-funnel{background:var(--soft);padding:clamp(88px,10vw,140px) 0}
   .role-funnel .head{text-align:center;max-width:760px;margin:0 auto}
   /* 이미 부모 .wrap(패딩24) 안이므로 funnel3는 패딩 0 → 콘텐츠 좌측이 로고 라인과 정확히 일치 */
   .funnel3{max-width:1140px;margin:36px auto 0;padding:0}
