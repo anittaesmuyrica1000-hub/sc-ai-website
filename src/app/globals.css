@@ -77,7 +77,9 @@ header.nav-invert .nav-menu-btn{background:transparent;border-color:rgba(255,255
 header.nav-invert .nav-burger span{background:#fff}
 nav{display:flex;align-items:center;justify-content:space-between;height:64px}
 .logo{font-weight:800;font-size:20px;letter-spacing:-.02em;display:flex;align-items:center;gap:8px;color:var(--ink);overflow:hidden}
-@media(max-width:560px){.logo{width:50px}}
+/* 모바일~소형 태블릿(≤760px)에서 GNB 로고를 심볼만 노출(폭 50px 클립).
+   심볼 우측 끝 48px < 워드마크 시작 53px 라 50px 클립이면 심볼만 깔끔히 보인다. */
+@media(max-width:760px){.logo{width:50px}}
 .nav-logo-img{height:26px;width:auto;display:block}
 .logo .m{width:26px;height:26px;border-radius:8px;background:linear-gradient(135deg,var(--blue),var(--blue-2));display:grid;place-items:center;color:#fff;font-size:13px}
 .navlinks{display:flex;align-items:center;gap:10px}
