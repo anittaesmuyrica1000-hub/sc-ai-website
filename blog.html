@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>블로그 · AIVIEW | AI 면접 채용 인사이트</title>
+<meta name="description" content="AIVIEW 블로그 — AI 면접·채용 검증·HR 트렌드에 대한 인사이트를 전합니다.">
+<!-- 운영 도메인: https://sc-ai-website.vercel.app — 도메인 변경 시 전체 파일 일괄 치환 -->
+<link rel="canonical" href="https://sc-ai-website.vercel.app/blog.html">
+<!-- 파비콘 / 웹 아이콘 -->
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<!-- Open Graph -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="AIVIEW">
+<meta property="og:title" content="블로그 · AIVIEW | AI 면접 채용 인사이트">
+<meta property="og:description" content="AI 면접·채용 검증·HR 트렌드에 대한 인사이트를 전합니다.">
+<meta property="og:url" content="https://sc-ai-website.vercel.app/blog.html">
+<meta property="og:image" content="https://sc-ai-website.vercel.app/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:locale" content="ko_KR">
+<!-- 외부 폰트·아이콘 CDN 사전 연결 -->
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<!-- 공유 토큰 + 컴포넌트(SSOT) -->
+<link rel="stylesheet" href="theme.css">
+<style>
+  /* 이 페이지 고유(블로그 리스트) 스타일. 공유 토큰·버튼·GNB·푸터는 theme.css 참고. */
+
+  /* BLOG HEADER */
+  .blog-head{background:linear-gradient(180deg,var(--soft-2) 0%,var(--soft) 55%,#fff 100%);padding:96px 0 0;text-align:center}
+  .blog-head h1{font-size:clamp(32px,5vw,52px);font-weight:800;letter-spacing:-.035em;line-height:1.12}
+  .blog-head .lead{max-width:560px;margin:16px auto 0}
+
+  /* 카테고리 필터 탭 */
+  .blog-filter{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin:34px 0 0;padding-bottom:8px}
+  .blog-filter button{border:1px solid var(--line);background:#fff;color:var(--slate);font-family:inherit;font-size:14px;font-weight:700;padding:9px 18px;border-radius:999px;cursor:pointer;transition:.18s}
+  .blog-filter button:hover{border-color:var(--blue-2);color:var(--blue-d)}
+  .blog-filter button.active{background:var(--ink);border-color:var(--ink);color:#fff}
+
+  /* 리스트 영역 */
+  .blog-list{padding:48px 0 var(--sec-y)}
+  .post-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:36px 32px}
+  .post-card{display:flex;flex-direction:column;background:#fff;border:1px solid var(--line);border-radius:var(--r);overflow:hidden;transition:transform .2s,box-shadow .2s;cursor:pointer}
+  .post-card:hover{transform:translateY(-4px);box-shadow:var(--shadow)}
+  .post-cover{aspect-ratio:16/9;width:100%;object-fit:cover;background:linear-gradient(135deg,var(--blue),var(--blue-2));display:block}
+  .post-cover.ph{display:grid;place-items:center;color:rgba(255,255,255,.9);font-size:30px}
+  .post-body{padding:22px 22px 26px;display:flex;flex-direction:column;flex:1}
+  .post-cat{align-self:flex-start;font-size:12px;font-weight:800;letter-spacing:.04em;color:var(--blue);background:var(--soft-2);padding:5px 11px;border-radius:999px;margin-bottom:13px}
+  .post-card h2{font-size:20px;font-weight:800;letter-spacing:-.02em;line-height:1.34;color:var(--ink)}
+  .post-excerpt{margin-top:10px;font-size:15px;color:var(--slate);line-height:1.6;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+  .post-date{margin-top:16px;font-size:13px;font-weight:600;color:var(--slate-2)}
+
+  /* 상태 */
+  .blog-state{text-align:center;padding:80px 0;color:var(--slate-2)}
+  .blog-state i{font-size:34px;margin-bottom:16px;display:block;color:var(--line)}
+  .blog-state.err i{color:var(--red);opacity:.7}
+
+  @media(max-width:760px){
+    .blog-head{padding:80px 0 0}
+    .post-grid{grid-template-columns:1fr;gap:28px}
+  }
+</style>
+</head>
+<body>
+
+<!-- GNB (공유 partial) -->
+<site-header></site-header>
+
+<!-- 블로그 헤더 (header 태그를 쓰면 theme.css의 sticky GNB 스타일이 적용되므로 section 사용) -->
+<section class="blog-head">
+  <div class="wrap">
+    <div class="eyebrow"><i class="fa-solid fa-pen-nib"></i> AIVIEW BLOG</div>
+    <h1>채용을 바꾸는<br>AI 면접 인사이트</h1>
+    <p class="lead">AI 면접, 채용 검증, HR 트렌드까지 — 더 나은 채용을 위한 이야기를 전합니다.</p>
+    <div class="blog-filter" id="filter"></div>
+  </div>
+</section>
+
+<!-- 블로그 리스트 -->
+<section class="blog-list">
+  <div class="wrap">
+    <div id="grid" class="post-grid" hidden></div>
+    <div id="state" class="blog-state">
+      <i class="fa-solid fa-spinner fa-spin"></i>
+      불러오는 중…
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER (공유 partial) -->
+<site-footer></site-footer>
+
+<script src="partials.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="blog-data.js"></script>
+<script>
+(function () {
+  var grid = document.getElementById('grid');
+  var state = document.getElementById('state');
+  var filterBox = document.getElementById('filter');
+  var db = window.AIVIEW_DB;
+  var allPosts = [];
+  var activeCat = '전체';
+
+  function showState(html, isErr) {
+    state.hidden = false;
+    state.className = 'blog-state' + (isErr ? ' err' : '');
+    state.innerHTML = html;
+  }
+
+  function render() {
+    var posts = activeCat === '전체'
+      ? allPosts
+      : allPosts.filter(function (p) { return (p.category || '기타') === activeCat; });
+
+    if (!posts.length) {
+      grid.hidden = true;
+      showState('<i class="fa-regular fa-folder-open"></i>아직 등록된 글이 없습니다.');
+      return;
+    }
+    state.hidden = true;
+    grid.hidden = false;
+    grid.innerHTML = posts.map(function (p) {
+      var cover = p.cover_url
+        ? '<img class="post-cover" src="' + esc(p.cover_url) + '" alt="" loading="lazy">'
+        : '<div class="post-cover ph"><i class="fa-solid fa-feather"></i></div>';
+      return '<article class="post-card" data-id="' + p.id + '">' +
+        cover +
+        '<div class="post-body">' +
+          '<span class="post-cat">' + esc(p.category || '기타') + '</span>' +
+          '<h2>' + esc(p.title) + '</h2>' +
+          (p.excerpt ? '<p class="post-excerpt">' + esc(p.excerpt) + '</p>' : '') +
+          '<div class="post-date">' + fmtDate(p.created_at) + '</div>' +
+        '</div>' +
+      '</article>';
+    }).join('');
+  }
+
+  function renderFilter() {
+    var cats = ['전체'];
+    allPosts.forEach(function (p) {
+      var c = p.category || '기타';
+      if (cats.indexOf(c) === -1) cats.push(c);
+    });
+    filterBox.innerHTML = cats.map(function (c) {
+      return '<button data-cat="' + esc(c) + '"' + (c === activeCat ? ' class="active"' : '') + '>' + esc(c) + '</button>';
+    }).join('');
+  }
+
+  filterBox.addEventListener('click', function (e) {
+    var btn = e.target.closest('button');
+    if (!btn) return;
+    activeCat = btn.getAttribute('data-cat');
+    filterBox.querySelectorAll('button').forEach(function (b) {
+      b.classList.toggle('active', b === btn);
+    });
+    render();
+  });
+
+  grid.addEventListener('click', function (e) {
+    var card = e.target.closest('.post-card');
+    if (card) location.href = 'post.html?id=' + encodeURIComponent(card.getAttribute('data-id'));
+  });
+
+  async function load() {
+    if (!db) { showState('<i class="fa-solid fa-triangle-exclamation"></i>데이터 연결에 실패했습니다.', true); return; }
+    try {
+      var res = await db.from('posts').select('*').eq('published', true).order('created_at', { ascending: false });
+      if (res.error) throw res.error;
+      allPosts = res.data || [];
+      renderFilter();
+      render();
+    } catch (err) {
+      console.error('posts load failed:', err);
+      showState('<i class="fa-solid fa-triangle-exclamation"></i>글을 불러오지 못했습니다. 잠시 후 다시 시도해 주세요.', true);
+    }
+  }
+
+  load();
+})();
+</script>
+</body>
+</html>

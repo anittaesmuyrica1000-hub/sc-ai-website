@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>블로그 · AIVIEW</title>
+<meta name="description" content="AIVIEW 블로그 글">
+<!-- 파비콘 / 웹 아이콘 -->
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="AIVIEW">
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<link rel="stylesheet" href="theme.css">
+<style>
+  /* 이 페이지 고유(블로그 상세) 스타일. 공유 토큰·버튼·GNB·푸터는 theme.css 참고. */
+  .post-wrap{max-width:760px;margin:0 auto;padding:88px 24px 80px}
+  .post-back{display:inline-flex;align-items:center;gap:7px;font-size:14px;font-weight:700;color:var(--slate);margin-bottom:26px}
+  .post-back:hover{color:var(--blue-d)}
+  .post-head .cat{display:inline-block;font-size:12px;font-weight:800;letter-spacing:.04em;color:var(--blue);background:var(--soft-2);padding:5px 12px;border-radius:999px}
+  .post-head h1{font-size:clamp(28px,4.4vw,42px);font-weight:800;letter-spacing:-.03em;line-height:1.24;margin:16px 0 0}
+  .post-meta{margin-top:18px;display:flex;flex-wrap:wrap;gap:14px;font-size:14px;color:var(--slate-2);font-weight:600;padding-bottom:26px;border-bottom:1px solid var(--line)}
+  .post-hero{width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:var(--r);margin:32px 0 8px;display:block}
+  .post-content{margin-top:34px;font-size:17px;line-height:1.85;color:#26324a;white-space:pre-wrap}
+  .post-content p{margin:0 0 20px}
+  .post-foot{margin-top:56px;padding-top:30px;border-top:1px solid var(--line);text-align:center}
+  .blog-state{text-align:center;padding:120px 24px;color:var(--slate-2)}
+  .blog-state i{font-size:36px;margin-bottom:18px;display:block;color:var(--line)}
+  @media(max-width:560px){.post-wrap{padding:72px 16px 60px}.post-content{font-size:16px}}
+</style>
+</head>
+<body>
+
+<!-- GNB (공유 partial) -->
+<site-header></site-header>
+
+<main>
+  <div id="state" class="blog-state">
+    <i class="fa-solid fa-spinner fa-spin"></i>
+    불러오는 중…
+  </div>
+  <article id="article" class="post-wrap" hidden></article>
+</main>
+
+<!-- FOOTER (공유 partial) -->
+<site-footer></site-footer>
+
+<script src="partials.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="blog-data.js"></script>
+<script>
+(function () {
+  var state = document.getElementById('state');
+  var article = document.getElementById('article');
+  var db = window.AIVIEW_DB;
+
+  function showState(html) {
+    state.hidden = false;
+    article.hidden = true;
+    state.innerHTML = html;
+  }
+
+  // 본문: 빈 줄 기준으로 문단 분리(esc 후 출력 → XSS 방지, 줄바꿈 보존)
+  function renderContent(text) {
+    return String(text || '').split(/\n{2,}/).map(function (para) {
+      return '<p>' + esc(para) + '</p>';
+    }).join('');
+  }
+
+  async function load() {
+    var id = new URLSearchParams(location.search).get('id');
+    if (!id) { showState('<i class="fa-solid fa-link-slash"></i>잘못된 주소입니다.'); return; }
+    if (!db) { showState('<i class="fa-solid fa-triangle-exclamation"></i>데이터 연결에 실패했습니다.'); return; }
+    try {
+      var res = await db.from('posts').select('*').eq('id', id).single();
+      if (res.error) throw res.error;
+      var p = res.data;
+      if (!p || p.published === false) { showState('<i class="fa-regular fa-file"></i>글을 찾을 수 없습니다.'); return; }
+
+      document.title = p.title + ' · AIVIEW 블로그';
+      var meta = [];
+      if (p.author) meta.push('<span><i class="fa-regular fa-user"></i> ' + esc(p.author) + '</span>');
+      meta.push('<span>' + fmtDate(p.created_at) + '</span>');
+
+      var hero = p.cover_url ? '<img class="post-hero" src="' + esc(p.cover_url) + '" alt="">' : '';
+
+      article.innerHTML =
+        '<a href="blog.html" class="post-back"><i class="fa-solid fa-arrow-left"></i> 블로그 목록</a>' +
+        '<div class="post-head">' +
+          '<span class="cat">' + esc(p.category || '기타') + '</span>' +
+          '<h1>' + esc(p.title) + '</h1>' +
+          '<div class="post-meta">' + meta.join('') + '</div>' +
+        '</div>' +
+        hero +
+        '<div class="post-content">' + renderContent(p.content) + '</div>' +
+        '<div class="post-foot"><a href="blog.html" class="btn btn-out"><i class="fa-solid fa-arrow-left"></i> 목록으로</a></div>';
+
+      state.hidden = true;
+      article.hidden = false;
+    } catch (err) {
+      console.error('post load failed:', err);
+      showState('<i class="fa-solid fa-triangle-exclamation"></i>글을 불러오지 못했습니다.');
+    }
+  }
+
+  load();
+})();
+</script>
+</body>
+</html>
