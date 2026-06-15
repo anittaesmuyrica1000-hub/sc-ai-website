@@ -116,18 +116,18 @@ footer{background:#fff;color:var(--slate);padding:64px 0 44px;font-size:14px;bor
 .legal .legal-head{padding-bottom:24px;margin-bottom:32px;border-bottom:1px solid var(--line)}
 .legal h1{font-size:clamp(26px,4vw,38px);font-weight:800;letter-spacing:-.02em;color:var(--ink)}
 .legal .legal-meta{margin-top:10px;color:var(--slate-2);font-size:14px}
-.legal .draft-note{margin:20px 0 0;padding:12px 16px;background:var(--soft);border:1px solid var(--tint);border-radius:10px;color:var(--slate);font-size:13px}
 .legal h2{font-size:19px;font-weight:700;line-height:1.4;color:var(--ink);margin:36px 0 12px}
 .legal h3{font-size:16px;font-weight:700;color:var(--ink);margin:22px 0 8px}
 .legal p,.legal li{color:var(--slate);font-size:15px;line-height:1.75}
-.legal ul,.legal ol{margin:10px 0 10px 20px;display:grid;gap:6px}
+/* 약관 번호 목록(ol=숫자, ul=점) + 항목 간격 */
+.legal ul{margin:10px 0 12px 22px;list-style:disc}
+.legal ol{margin:10px 0 12px 22px;list-style:decimal}
+.legal li{margin-bottom:6px;padding-left:2px}
+.legal li>ul,.legal li>ol{margin-top:8px}
 .legal table{width:100%;border-collapse:collapse;margin:14px 0;font-size:14px}
 .legal th,.legal td{border:1px solid var(--line);padding:10px 12px;text-align:left;vertical-align:top}
 .legal th{background:var(--soft);color:var(--ink);font-weight:700}
 .legal a{color:var(--blue);text-decoration:underline}
-/* 채워 넣을 빈칸 — 회사 고유 정보(회사명·시행일·보유기간 등). 노란 하이라이트로 눈에 띄게 */
-.legal .fill{background:#FFF4D6;border-bottom:1.5px dashed #D9A521;border-radius:3px;padding:1px 8px;color:#7A5C09;font-weight:600;white-space:nowrap}
-.legal .fill::before{content:"✎ "}
 .legal .back-link{display:inline-block;margin-top:40px;font-weight:600;color:var(--blue)}
 /* 404 전용 — 중앙 정렬 */
 .legal.notfound{text-align:center;padding-top:140px}
