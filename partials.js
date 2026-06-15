@@ -58,7 +58,7 @@
     '      </div>' +
     '    </div>' +
     '    <div class="foot-bottom">' +
-    '      <p class="foot-copy">© 2025 Second Team. All rights reserved.</p>' +
+    '      <p class="foot-copy">© 2026 Second Team. All rights reserved.</p>' +
     '    </div>' +
     '  </div>' +
     '</footer>';
