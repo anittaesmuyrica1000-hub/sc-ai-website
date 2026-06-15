@@ -7,3 +7,9 @@ node_modules/
 
 # Playwright MCP run artifacts
 .playwright-mcp/
+
+# Next.js
+/.next/
+/out/
+next-env.d.ts
+.vercel
