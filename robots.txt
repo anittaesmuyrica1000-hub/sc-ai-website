@@ -1,5 +1,5 @@
 # AIVIEW robots.txt
-# ⚠️ 도메인 확정 후 아래 Sitemap 절대경로를 실제 주소로 치환할 것
+# 운영 도메인: https://sc-ai-website.vercel.app (도메인 변경 시 Sitemap 경로 갱신)
 
 User-agent: *
 Allow: /
@@ -8,4 +8,4 @@ Allow: /
 User-agent: Yeti
 Allow: /
 
-Sitemap: https://[배포-도메인]/sitemap.xml
+Sitemap: https://sc-ai-website.vercel.app/sitemap.xml
