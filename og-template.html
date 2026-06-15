@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css">
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{width:1200px;height:630px;overflow:hidden}
+  .og{width:1200px;height:630px;position:relative;display:flex;flex-direction:column;justify-content:center;
+    padding:88px 96px;font-family:Pretendard,sans-serif;color:#fff;
+    background:
+      radial-gradient(62% 60% at 28% 38%, rgba(90,120,255,.28) 0%, rgba(120,80,220,.12) 44%, transparent 74%),
+      linear-gradient(150deg,#070B1A 0%,#0A1330 52%,#04060E 100%)}
+  .og::after{content:"";position:absolute;inset:0;mix-blend-mode:multiply;opacity:.06;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+  .logo{height:46px;margin-bottom:54px;position:relative;z-index:1;align-self:flex-start}
+  .chip{display:inline-flex;align-self:flex-start;align-items:center;gap:9px;font-size:21px;font-weight:700;
+    color:#C7D2E8;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.16);
+    border-radius:999px;padding:11px 22px;margin-bottom:34px;position:relative;z-index:1}
+  .chip b{color:#6E9BFF}
+  h1{font-size:74px;font-weight:800;line-height:1.22;letter-spacing:-.04em;position:relative;z-index:1}
+  h1 .blue{background:linear-gradient(to right,#BFE6FF,#5FB0FF);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+  p{font-size:30px;color:#AEB9D4;margin-top:30px;line-height:1.4;position:relative;z-index:1}
+</style>
+</head>
+<body>
+  <div class="og">
+    <img class="logo" src="supercoder-nav-white.svg" alt="Supercoder">
+    <span class="chip"><b>●</b> AI 면접 채용 검증 · AIVIEW</span>
+    <h1><span class="blue">수천 명</span>의 지원자,<br>채용팀은 <span class="blue">상위 후보</span>만 보면 됩니다.</h1>
+    <p>AI 면접이 자동 검증하고, 검증된 핵심 인재 리포트만 전달합니다.</p>
+  </div>
+</body>
+</html>

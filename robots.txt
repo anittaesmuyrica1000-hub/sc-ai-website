@@ -1,0 +1,11 @@
+# AIVIEW robots.txt
+# ⚠️ 도메인 확정 후 아래 Sitemap 절대경로를 실제 주소로 치환할 것
+
+User-agent: *
+Allow: /
+
+# Naver 검색 로봇(Yeti) 명시 허용
+User-agent: Yeti
+Allow: /
+
+Sitemap: https://[배포-도메인]/sitemap.xml
