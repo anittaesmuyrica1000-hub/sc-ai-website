@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- 운영 도메인: https://sc-ai-website.vercel.app — 도메인 변경 시 일괄 치환. 페이지 추가 시 <url> 갱신 -->
+<!-- 운영 도메인(확정 2026-06-15): https://sc-ai-website.vercel.app — 변경 시 <loc> 일괄 치환, 페이지 추가 시 <url> 갱신 -->
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://sc-ai-website.vercel.app/</loc>
