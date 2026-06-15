@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { createClient } from "@/lib/supabase/server";
 import { type Post } from "@/lib/types";
 import BlogList from "./BlogList";
+import NewsletterCTA from "./NewsletterCTA";
 import "./blog.css";
 
 export const metadata: Metadata = {
@@ -46,6 +47,8 @@ export default async function BlogPage() {
           <BlogList posts={posts} />
         </div>
       </section>
+
+      <NewsletterCTA />
     </main>
   );
 }

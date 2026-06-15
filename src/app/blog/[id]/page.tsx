@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
-import { type Post, fmtDate } from "@/lib/types";
+import { type Post, fmtDate, readingTime } from "@/lib/types";
+import NewsletterCTA from "../NewsletterCTA";
 import "../blog.css";
 
 export const revalidate = 60;
@@ -12,6 +13,20 @@ async function getPost(id: string): Promise<Post | null> {
   const { data } = await supabase.from("posts").select("*").eq("id", id).single();
   if (!data || (data as Post).published === false) return null;
   return data as Post;
+}
+
+async function getRelated(post: Post): Promise<Post[]> {
+  const supabase = await createClient();
+  let q = supabase
+    .from("posts")
+    .select("*")
+    .eq("published", true)
+    .neq("id", post.id)
+    .order("created_at", { ascending: false })
+    .limit(3);
+  if (post.category) q = q.eq("category", post.category);
+  const { data } = await q;
+  return (data ?? []) as Post[];
 }
 
 export async function generateMetadata({
@@ -45,6 +60,7 @@ export default async function PostPage({
   const post = await getPost(id);
   if (!post) notFound();
 
+  const related = await getRelated(post);
   const paragraphs = post.content.split(/\n{2,}/);
 
   return (
@@ -63,6 +79,7 @@ export default async function PostPage({
               </span>
             )}
             <span>{fmtDate(post.created_at)}</span>
+            <span><i className="fa-regular fa-clock" /> 읽는 시간 {readingTime(post.content)}분</span>
           </div>
         </div>
 
@@ -85,6 +102,30 @@ export default async function PostPage({
           </Link>
         </div>
       </article>
+
+      {related.length > 0 && (
+        <section className="related">
+          <h3>관련 글</h3>
+          <div className="related-grid">
+            {related.map((r) => (
+              <Link key={r.id} href={`/blog/${r.id}`} className="related-card">
+                {r.cover_url ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img className="related-cover" src={r.cover_url} alt="" loading="lazy" />
+                ) : (
+                  <div className="related-cover ph"><i className="fa-solid fa-feather" /></div>
+                )}
+                <div className="related-body">
+                  <span className="rc-cat">{r.category || "기타"}</span>
+                  <h4>{r.title}</h4>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </section>
+      )}
+
+      <NewsletterCTA />
     </main>
   );
 }
