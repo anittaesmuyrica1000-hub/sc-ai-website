@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
+import BrochureModal from "@/components/BrochureModal";
 
 /* 공유 GNB — 기존 partials.js 의 섹션 인지형 헤더 + 햄버거 메뉴를 React 로 이식.
  * 다크 섹션(data-nav="dark") 위 → nav-invert(흰 콘텐츠), 밝은 섹션 스크롤 → nav-solid,
@@ -9,6 +10,7 @@ import { useEffect, useRef, useState } from "react";
 export default function SiteHeader() {
   const headerRef = useRef<HTMLElement>(null);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [brochureOpen, setBrochureOpen] = useState(false);
 
   useEffect(() => {
     const header = headerRef.current;
@@ -55,6 +57,7 @@ export default function SiteHeader() {
   }, []);
 
   return (
+    <>
     <header ref={headerRef}>
       <nav className="wrap">
         <Link href="/" className="logo" onClick={() => setMenuOpen(false)}>
@@ -83,12 +86,20 @@ export default function SiteHeader() {
               <Link href="/#proof">도입 효과</Link>
               <Link href="/#voices">고객 후기</Link>
               <Link href="/blog">블로그</Link>
-              <Link href="/brochure">AI 면접관 서비스 소개서</Link>
-              <Link href="/apply" className="nav-menu-cta">무료 체험하기</Link>
+              <button
+                type="button"
+                className="nav-menu-cta"
+                onClick={() => { setMenuOpen(false); setBrochureOpen(true); }}
+              >
+                서비스 소개서
+              </button>
             </div>
           </div>
         </div>
       </nav>
     </header>
+
+    <BrochureModal open={brochureOpen} onClose={() => setBrochureOpen(false)} />
+    </>
   );
 }
