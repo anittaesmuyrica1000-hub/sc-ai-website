@@ -226,14 +226,14 @@
   .demo-video .vtime{position:absolute;right:20px;bottom:20px;background:rgba(0,0,0,.45);color:#fff;font-size:12px;font-weight:700;padding:4px 11px;border-radius:999px}
   /* 리포트 디테일: 텍스트 + 이미지 박스 좌우 교차 3행 */
   .how-rows{max-width:1080px;margin:48px auto 8px;display:grid;gap:clamp(44px,6vw,84px)}
-  .how-row{display:grid;grid-template-columns:1fr 1fr;gap:clamp(32px,4vw,64px);align-items:center}
+  .how-row{display:grid;grid-template-columns:1fr 1fr;gap:clamp(16px,2vw,32px);align-items:center}
   .hr-info{text-align:left}
   .hr-info h3{font-size:clamp(22px,2.6vw,30px);font-weight:800;line-height:1.32;letter-spacing:-.02em;color:var(--ink)}
   .hr-info p{font-size:16px;color:var(--slate);margin-top:14px;line-height:1.62}
   /* 리포트 이미지: 투명 PNG(자체 그림자 포함)를 그대로 노출 — 사각 박스 그림자/테두리 없음(투명 주변 검정·노이즈 방지) */
   .hr-media{width:100%;max-width:520px;margin-inline:auto}
   .hr-img{width:100%;height:auto;display:block}
-  @media(max-width:880px){.how-row{grid-template-columns:1fr;gap:22px}.hr-info{text-align:center}.how-row .hr-media{order:-1}}
+  @media(max-width:880px){.how-row{grid-template-columns:1fr;gap:12px}.hr-info{text-align:center}.how-row .hr-media{order:-1}}
 
   /* 6. PROOF */
   /* 헤드카피 위 여유 공간 — 기본 섹션 패딩보다 상단을 더 넉넉히 */
@@ -659,7 +659,7 @@
     <div class="how-rows">
       <!-- Row 1: 이미지(좌) + 인터뷰 요약(우) -->
       <div class="how-row">
-        <div class="hr-media"><picture><source srcset="report-interview-summary.webp" type="image/webp"><img class="hr-img" src="report-interview-summary.png" alt="AIVIEW 리포트 — 인터뷰 내용 요약과 인터뷰 비디오" width="1040" height="689" loading="lazy"></picture></div>
+        <div class="hr-media"><picture><source srcset="report-interview-summary.webp" type="image/webp"><img class="hr-img" src="report-interview-summary.png" alt="AIVIEW 리포트 — 인터뷰 내용 요약과 인터뷰 비디오" width="1040" height="618" loading="lazy"></picture></div>
         <div class="hr-info">
           <h3>인터뷰 요약</h3>
           <p>AI 면접 대화를 핵심만 간추려, 지원자를 빠르게 파악할 수 있게 정리합니다.</p>
@@ -671,7 +671,7 @@
           <h3>리포트 종합평가</h3>
           <p>직무 적합도를 종합 점수로 환산해, 한눈에 판단할 수 있게 제시합니다.</p>
         </div>
-        <div class="hr-media"><picture><source srcset="report-overall-grade.webp" type="image/webp"><img class="hr-img" src="report-overall-grade.png" alt="AIVIEW 리포트 — 종합 등급(양호)과 종합 평가" width="1040" height="689" loading="lazy"></picture></div>
+        <div class="hr-media"><picture><source srcset="report-overall-grade.webp" type="image/webp"><img class="hr-img" src="report-overall-grade.png" alt="AIVIEW 리포트 — 종합 등급(양호)과 종합 평가" width="1040" height="524" loading="lazy"></picture></div>
       </div>
       <!-- Row 3: 이미지(좌) + 역량평가(우) -->
       <div class="how-row">
