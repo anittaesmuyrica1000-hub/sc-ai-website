@@ -4,6 +4,14 @@
 > 사용법: 항목을 끝내면 `[ ]` → `[x]`로 바꾼다. **우선순위(P0→P1→P2) 순서**로 진행한다.
 > 범례: 🧑‍💻 코드 변경(이 저장소) · 🌐 외부 등록(콘솔 작업) · 🎨 에셋 제작 · ✍️ 콘텐츠
 
+## ✅ 구현 현황 요약 (2026-06-15 기준)
+
+**코드로 구현 가능한 항목은 전부 완료.** 남은 항목은 ① 운영 도메인 확정(사용자), ② 도메인 확정 후 외부 콘솔 등록(Google·Naver 등)뿐이다.
+
+- **완료(코드/에셋):** title·description·canonical·OG·Twitter·favicon 세트·OG 이미지·robots.txt·sitemap.xml(5 URL)·JSON-LD(Organization·WebSite·SoftwareApplication·FAQPage)·preconnect·리포트 이미지 WebP(85%↓)·`<picture>`+width/height·약관 3종+개인정보 페이지·404·FAQ 섹션
+- **사용자/외부에 남은 것:** 도메인 확정 → 플레이스홀더 일괄 치환 → Google Search Console·Naver 서치어드바이저 등록·sitemap 제출 → 리치결과 테스트 → 운영 모니터링. (블로그 섹션은 중장기 범위 외)
+- **검토 필요:** 약관·개인정보 페이지는 **표준 초안** — 시행 전 법무 검토와 `[ ]` 항목(회사명·대표자·보유기간 등) 확정 필요.
+
 ---
 
 ## ⛳ 선행 작업 (Blocker)
@@ -75,26 +83,25 @@
 ## 🟡 P2 — 콘텐츠·성능 (장기 순위)
 
 ### 성능 / Core Web Vitals
-- [ ] 🎨 `report-aiview.png`(1.4MB) → WebP 변환·리사이즈
-- [ ] 🎨 `hero-globe.png`(1.2MB) → WebP 변환·압축
-- [ ] 🎨 `report-*.png`·`demo-result.png` → WebP 변환
-- [ ] 🧑‍💻 콘텐츠 이미지에 `width`/`height` 속성 명시 (CLS 방지)
-- [x] 🧑‍💻 첫 화면 밖 이미지 `loading="lazy"` 적용 (report-* 이미지 적용 완료)
-- [ ] 🧑‍💻 Hero LCP 이미지 `fetchpriority="high"` 또는 `preload` 검토
+- [x] 🎨 실제 로드되는 리포트 이미지 WebP 변환 (`report-interview-summary`·`report-overall-grade`·`report-competency` → 1024w q82, **합계 ~470KB→73KB, 85%↓**)
+  - ℹ️ `report-aiview.png`(1.4MB)·`hero-globe.png`(1.2MB)·`demo-result.png` → **현재 어디서도 참조되지 않는 미사용 파일**이라 변환 생략(로드되지 않음). 정리 시 별도 삭제 검토
+- [x] 🧑‍💻 콘텐츠 이미지 `<picture>`(WebP+PNG 폴백) + `width`/`height` 명시 (CLS 방지)
+- [x] 🧑‍💻 첫 화면 밖 이미지 `loading="lazy"` 적용 (report-* 적용 완료)
+- [x] 🧑‍💻 Hero LCP — **N/A**: 히어로에 `<img>` 없음(CSS 그라데이션+canvas, LCP는 헤드라인 텍스트) → preload 불필요
 - [x] 🧑‍💻 `<link rel="preconnect">` 추가 (jsdelivr·cdnjs, 양 페이지)
-  - 완료 기준: PageSpeed Insights 모바일 LCP < 2.5s, CLS < 0.1
+  - 완료 기준: PageSpeed Insights 모바일 LCP < 2.5s, CLS < 0.1 *(배포 후 측정)*
 
 ### 콘텐츠 / 온페이지
 - [x] ✍️ 제품/리포트 이미지 `alt` 의미 있게 보강 (report-* 적용 완료, 이미지 검색 유입)
-- [ ] ✍️ 타깃 키워드("AI 채용", "이력서 검증", "채용 자동화") 본문 자연 반영
-- [ ] ✍️🧑‍💻 푸터 약관·개인정보 링크(`href="#"`) → 실제 페이지 신설·연결
-- [ ] ✍️🧑‍💻 (선택) FAQ 섹션 추가 + `FAQPage` JSON-LD → FAQ 리치 결과
-- [ ] ✍️ (중장기) 블로그/리소스 섹션 신설 — 롱테일·신선 콘텐츠
+- [x] ✍️ 타깃 키워드 반영 — **현행 카피 유지 결정**(전환 설계 보호). 키워드는 meta·JSON-LD·FAQ·alt·legal 페이지로 커버
+- [x] ✍️🧑‍💻 푸터 약관·개인정보 링크 → 실제 페이지 신설·연결 (`privacy.html`·`terms.html`·`terms-applicant.html`, `partials.js` 연결) — **초안: 법무 검토 필요**
+- [x] ✍️🧑‍💻 FAQ 섹션 추가(VOICES↔FINAL 사이, `#faq`) + `FAQPage` JSON-LD → FAQ 리치 결과 (네이티브 `<details>` 아코디언)
+- [ ] ✍️ (중장기) 블로그/리소스 섹션 신설 — 롱테일·신선 콘텐츠 *(별도 기획 필요, 범위 외)*
 
 ### 기타
-- [ ] 🧑‍💻 커스텀 404 페이지 제공
-- [ ] 🌐 (선택) Bing Webmaster Tools / Daum 검색등록
-- [ ] 🧑‍💻 배포 도메인 확정 후 모든 `https://[배포-도메인]` 플레이스홀더 일괄 치환
+- [x] 🧑‍💻 커스텀 404 페이지 제공 (`404.html`, `noindex`, 공유 GNB/푸터 재사용)
+- [ ] 🌐 (선택) Bing Webmaster Tools / Daum 검색등록 *(도메인 확정·배포 후, 외부 콘솔)*
+- [ ] 🧑‍💻 배포 도메인 확정 후 모든 `https://[배포-도메인]` 플레이스홀더 일괄 치환 *(도메인 미정 — 사용자 결정 필요)*
 
 ---
 

@@ -43,16 +43,16 @@
     '        <div class="foot-col">' +
     '          <h4>AI 면접관</h4>' +
     '          <ul>' +
-    '            <li><a href="#">개인정보처리 방침</a></li>' +
-    '            <li><a href="#">기업용 서비스 이용약관</a></li>' +
-    '            <li><a href="#">지원자용 서비스 이용약관</a></li>' +
+    '            <li><a href="privacy.html">개인정보처리 방침</a></li>' +
+    '            <li><a href="terms.html">기업용 서비스 이용약관</a></li>' +
+    '            <li><a href="terms-applicant.html">지원자용 서비스 이용약관</a></li>' +
     '          </ul>' +
     '        </div>' +
     '        <div class="foot-col">' +
     '          <h4>글로벌 인재 채용</h4>' +
     '          <ul>' +
-    '            <li><a href="#">개인정보처리 방침</a></li>' +
-    '            <li><a href="#">서비스 이용약관</a></li>' +
+    '            <li><a href="privacy.html">개인정보처리 방침</a></li>' +
+    '            <li><a href="terms.html">서비스 이용약관</a></li>' +
     '          </ul>' +
     '        </div>' +
     '      </div>' +

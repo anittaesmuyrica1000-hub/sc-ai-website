@@ -273,6 +273,20 @@
   .vc .who .ro{font-size:13px;color:var(--slate-2)}
   @media(max-width:860px){.v-grid{grid-template-columns:1fr;max-width:560px;margin-left:auto;margin-right:auto}}
 
+  /* 7.5 FAQ — 네이티브 <details> 아코디언. 검색용 FAQPage(JSON-LD)와 짝. */
+  .faq{background:var(--soft);padding-top:var(--sec-y)}
+  .faq .head{text-align:center;max-width:720px;margin:0 auto}
+  .faq-list{max-width:780px;margin:44px auto 0;display:grid;gap:14px}
+  .faq-item{background:#fff;border:1px solid var(--line);border-radius:14px;box-shadow:0 8px 22px -16px rgba(20,40,90,.2);overflow:hidden}
+  .faq-item summary{list-style:none;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:16px;
+    padding:20px 24px;font-size:16.5px;font-weight:700;color:var(--ink)}
+  .faq-item summary::-webkit-details-marker{display:none}
+  .faq-item summary .fq-ic{flex-shrink:0;color:var(--blue);transition:transform .25s}
+  .faq-item[open] summary .fq-ic{transform:rotate(45deg)}
+  .faq-item .fa-ans{padding:0 24px 22px;color:var(--slate);font-size:15px;line-height:1.75}
+  .faq-item .fa-ans a{color:var(--blue);text-decoration:underline}
+  @media(max-width:560px){.faq-item summary{padding:17px 18px;font-size:15.5px}.faq-item .fa-ans{padding:0 18px 18px}}
+
   /* 8. FINAL CTA */
   /* CTA: 풀블리드 → inset 둥근 사각형 카드(Wise 스타일). 폭 제한+좌우 여백, 라운드, 내부 패딩.
      width:min(1200px,100%-48px)로 큰 화면 1200px·작은 화면 좌우 24px 여백, margin auto로 중앙. */
@@ -648,7 +662,7 @@
     <div class="how-rows">
       <!-- Row 1: 이미지(좌) + 인터뷰 요약(우) -->
       <div class="how-row">
-        <div class="hr-media"><img class="hr-img" src="report-interview-summary.png" alt="AIVIEW 리포트 — 인터뷰 내용 요약과 인터뷰 비디오" loading="lazy"></div>
+        <div class="hr-media"><picture><source srcset="report-interview-summary.webp" type="image/webp"><img class="hr-img" src="report-interview-summary.png" alt="AIVIEW 리포트 — 인터뷰 내용 요약과 인터뷰 비디오" width="1024" height="356" loading="lazy"></picture></div>
         <div class="hr-info">
           <h3>인터뷰 요약</h3>
           <p>AI 면접 대화를 핵심만 간추려, 지원자를 빠르게 파악할 수 있게 정리합니다.</p>
@@ -660,11 +674,11 @@
           <h3>리포트 종합평가</h3>
           <p>직무 적합도를 종합 점수로 환산해, 한눈에 판단할 수 있게 제시합니다.</p>
         </div>
-        <div class="hr-media"><img class="hr-img" src="report-overall-grade.png" alt="AIVIEW 리포트 — 종합 등급(양호)과 종합 평가" loading="lazy"></div>
+        <div class="hr-media"><picture><source srcset="report-overall-grade.webp" type="image/webp"><img class="hr-img" src="report-overall-grade.png" alt="AIVIEW 리포트 — 종합 등급(양호)과 종합 평가" width="1024" height="172" loading="lazy"></picture></div>
       </div>
       <!-- Row 3: 이미지(좌) + 역량평가(우) -->
       <div class="how-row">
-        <div class="hr-media"><img class="hr-img" src="report-competency.png" alt="AIVIEW 리포트 — 역량 평가 레이더 차트와 항목별 등급" loading="lazy"></div>
+        <div class="hr-media"><picture><source srcset="report-competency.webp" type="image/webp"><img class="hr-img" src="report-competency.png" alt="AIVIEW 리포트 — 역량 평가 레이더 차트와 항목별 등급" width="1024" height="516" loading="lazy"></picture></div>
         <div class="hr-info">
           <h3>역량평가</h3>
           <p>핵심 직무 역량을 항목별로 검증하고, 강점·약점을 시각화해 보여줍니다.</p>
@@ -745,6 +759,38 @@
         </div>
         <div class="who"><div class="ava" style="background:linear-gradient(135deg,#16A34A,#4ADE80)"><i class="fa-solid fa-user"></i></div><div><div class="nm">AI 면접 응시 후보자</div><div class="ro">지원자 응시 만족도 92%</div></div></div>
       </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== SECTION 08.5 · FAQ (자주 묻는 질문 — 롱테일 검색·FAQPage 구조화데이터) · #faq ===== -->
+<section class="faq" id="faq">
+  <div class="wrap">
+    <div class="head">
+      <span class="eyebrow">FAQ</span>
+      <h2>자주 묻는 질문</h2>
+    </div>
+    <div class="faq-list">
+      <details class="faq-item" open>
+        <summary>AI 면접은 어떻게 진행되나요? <i class="fa-solid fa-plus fq-ic"></i></summary>
+        <div class="fa-ans">지원자는 안내에 따라 온라인으로 AI 면접에 응시합니다. AIVIEW가 응답을 분석·검증해 역량 평가와 핵심 요약이 담긴 리포트를 생성하고, 채용팀에는 검증을 통과한 상위 후보의 리포트만 전달됩니다.</div>
+      </details>
+      <details class="faq-item">
+        <summary>기존 ATS·채용 툴과 연동되나요? <i class="fa-solid fa-plus fq-ic"></i></summary>
+        <div class="fa-ans">리포트는 표준 형식으로 제공되어 기존 채용 프로세스에 바로 활용할 수 있습니다. 상세 연동 방식은 도입 상담에서 안내해 드립니다.</div>
+      </details>
+      <details class="faq-item">
+        <summary>도입까지 얼마나 걸리나요? <i class="fa-solid fa-plus fq-ic"></i></summary>
+        <div class="fa-ans">설치나 계약 없이 무료 신청 후 바로 시작할 수 있습니다. 신청하시면 영업일 기준 1일 내 담당자가 데모와 함께 안내드립니다.</div>
+      </details>
+      <details class="faq-item">
+        <summary>지원자 데이터는 안전하게 관리되나요? <i class="fa-solid fa-plus fq-ic"></i></summary>
+        <div class="fa-ans">모든 데이터는 전송 구간 암호화(HTTPS)와 접근 통제 정책 아래 관리됩니다. 수집 항목과 처리 방식은 <a href="privacy.html">개인정보처리방침</a>에서 확인하실 수 있습니다.</div>
+      </details>
+      <details class="faq-item">
+        <summary>비용은 어떻게 책정되나요? <i class="fa-solid fa-plus fq-ic"></i></summary>
+        <div class="fa-ans">채용 규모와 활용 방식에 맞춰 책정됩니다. 우선 무료로 도입 효과를 확인해 보신 뒤, 상담을 통해 안내해 드립니다.</div>
+      </details>
     </div>
   </div>
 </section>
@@ -851,6 +897,36 @@
         "priceCurrency": "KRW",
         "description": "무료 도입 신청"
       }
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "AI 면접은 어떻게 진행되나요?",
+          "acceptedAnswer": { "@type": "Answer", "text": "지원자는 안내에 따라 온라인으로 AI 면접에 응시합니다. AIVIEW가 응답을 분석·검증해 역량 평가와 핵심 요약이 담긴 리포트를 생성하고, 채용팀에는 검증을 통과한 상위 후보의 리포트만 전달됩니다." }
+        },
+        {
+          "@type": "Question",
+          "name": "기존 ATS·채용 툴과 연동되나요?",
+          "acceptedAnswer": { "@type": "Answer", "text": "리포트는 표준 형식으로 제공되어 기존 채용 프로세스에 바로 활용할 수 있습니다. 상세 연동 방식은 도입 상담에서 안내해 드립니다." }
+        },
+        {
+          "@type": "Question",
+          "name": "도입까지 얼마나 걸리나요?",
+          "acceptedAnswer": { "@type": "Answer", "text": "설치나 계약 없이 무료 신청 후 바로 시작할 수 있습니다. 신청하시면 영업일 기준 1일 내 담당자가 데모와 함께 안내드립니다." }
+        },
+        {
+          "@type": "Question",
+          "name": "지원자 데이터는 안전하게 관리되나요?",
+          "acceptedAnswer": { "@type": "Answer", "text": "모든 데이터는 전송 구간 암호화(HTTPS)와 접근 통제 정책 아래 관리됩니다. 수집 항목과 처리 방식은 개인정보처리방침에서 확인하실 수 있습니다." }
+        },
+        {
+          "@type": "Question",
+          "name": "비용은 어떻게 책정되나요?",
+          "acceptedAnswer": { "@type": "Answer", "text": "채용 규모와 활용 방식에 맞춰 책정됩니다. 우선 무료로 도입 효과를 확인해 보신 뒤, 상담을 통해 안내해 드립니다." }
+        }
+      ]
     }
   ]
 }
