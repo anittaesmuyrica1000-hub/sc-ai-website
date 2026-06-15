@@ -83,6 +83,7 @@ export default function SiteHeader() {
               <Link href="/#proof">도입 효과</Link>
               <Link href="/#voices">고객 후기</Link>
               <Link href="/blog">블로그</Link>
+              <Link href="/brochure">AI 면접관 서비스 소개서</Link>
               <Link href="/apply" className="nav-menu-cta">무료 체험하기</Link>
             </div>
           </div>

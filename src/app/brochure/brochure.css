@@ -1,0 +1,12 @@
+/* 소개서 다운로드 페이지 — apply 폼 레이아웃/필드 스타일을 재사용하고(아래 import),
+   소개서 전용(다운로드 완료, 항목 리스트) 스타일만 추가한다. */
+
+/* 완료(다운로드) 화면 */
+.bro-done .dot{background:var(--soft-2);color:var(--blue)}
+.bro-done .btn{width:100%;justify-content:center;margin-top:4px}
+.bro-done .sub-note{margin-top:14px;font-size:13.5px;color:var(--slate-2)}
+
+/* 좌측 카피 — 소개서에 담긴 내용 리스트 */
+.bro-toc{margin-top:30px;display:grid;gap:12px}
+.bro-toc li{display:flex;align-items:flex-start;gap:10px;font-size:15px;color:var(--ink);font-weight:600;list-style:none}
+.bro-toc i{color:var(--blue);margin-top:3px}
