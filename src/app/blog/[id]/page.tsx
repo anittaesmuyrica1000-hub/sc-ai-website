@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { type Post, fmtDate, readingTime } from "@/lib/types";
+import { PostBody } from "@/lib/postBody";
 import NewsletterCTA from "../NewsletterCTA";
 import "../blog.css";
 
@@ -61,7 +62,6 @@ export default async function PostPage({
   if (!post) notFound();
 
   const related = await getRelated(post);
-  const paragraphs = post.content.split(/\n{2,}/);
 
   return (
     <main>
@@ -88,13 +88,7 @@ export default async function PostPage({
           <img className="post-hero" src={post.cover_url} alt="" />
         )}
 
-        <div className="post-content">
-          {paragraphs.map((para, i) => (
-            <p key={i} style={{ whiteSpace: "pre-wrap" }}>
-              {para}
-            </p>
-          ))}
-        </div>
+        <PostBody content={post.content} />
 
         <div className="post-foot">
           <Link href="/blog" className="btn btn-out">

@@ -85,6 +85,15 @@
 .post-meta{margin-top:18px;display:flex;flex-wrap:wrap;gap:14px;font-size:14px;color:var(--slate-2);font-weight:600;padding-bottom:26px;border-bottom:1px solid var(--line)}
 .post-hero{width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:var(--r);margin:32px 0 8px;display:block}
 .post-content{margin-top:34px;font-size:17px;line-height:1.85;color:#26324a}
-.post-content p{margin:0 0 20px}
+.post-content p{margin:0 0 22px}
+.post-content h2{font-size:clamp(22px,2.6vw,28px);font-weight:800;letter-spacing:-.02em;line-height:1.35;color:var(--ink);margin:42px 0 16px}
+.post-content h3{font-size:19px;font-weight:700;color:var(--ink);margin:32px 0 12px}
+.post-content .post-list{margin:0 0 22px;padding-left:4px;list-style:none;display:grid;gap:10px}
+.post-content .post-list li{position:relative;padding-left:26px}
+.post-content .post-list li::before{content:"";position:absolute;left:6px;top:13px;width:7px;height:7px;border-radius:50%;background:var(--blue)}
+.post-content blockquote{margin:0 0 24px;padding:4px 0 4px 22px;border-left:3px solid var(--blue);color:var(--ink);font-weight:600;font-size:18px;line-height:1.7;white-space:pre-wrap}
+.post-figure{margin:8px 0 28px}
+.post-figure img{width:100%;border-radius:var(--r);display:block}
+.post-figure figcaption{margin-top:10px;font-size:13.5px;color:var(--slate-2);text-align:center}
 .post-foot{margin-top:56px;padding-top:30px;border-top:1px solid var(--line);text-align:center}
 @media(max-width:560px){.post-wrap{padding:72px 16px 60px}.post-content{font-size:16px}}

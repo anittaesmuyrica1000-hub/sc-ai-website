@@ -203,8 +203,9 @@ export default function AdminClient({
               <textarea
                 value={form.content}
                 onChange={(e) => setField("content", e.target.value)}
-                placeholder="본문을 입력하세요. 빈 줄로 문단을 나눕니다."
+                placeholder={"본문을 입력하세요. 빈 줄로 문단을 나눕니다.\n\n## 소제목\n### 작은 소제목\n![이미지 설명](https://이미지주소)\n- 목록 항목\n> 인용문"}
               />
+              <div className="hint">빈 줄로 문단 구분 · `## 소제목` · `![설명](이미지URL)` · `- 목록` · `&gt; 인용` 지원</div>
             </div>
             <label className="check">
               <input
