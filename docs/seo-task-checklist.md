@@ -6,19 +6,19 @@
 
 ## ✅ 구현 현황 요약 (2026-06-15 기준)
 
-**코드로 구현 가능한 항목은 전부 완료.** 남은 항목은 ① 운영 도메인 확정(사용자), ② 도메인 확정 후 외부 콘솔 등록(Google·Naver 등)뿐이다.
+**배포·도메인 확정·플레이스홀더 치환까지 완료.** 남은 항목은 외부 콘솔 등록(Google·Naver)뿐 — 소유확인 코드만 받으면 삽입·재배포는 가능.
 
-- **완료(코드/에셋):** title·description·canonical·OG·Twitter·favicon 세트·OG 이미지·robots.txt·sitemap.xml(5 URL)·JSON-LD(Organization·WebSite·SoftwareApplication·FAQPage)·preconnect·리포트 이미지 WebP(85%↓)·`<picture>`+width/height·약관 3종+개인정보 페이지·404·FAQ 섹션
-- **사용자/외부에 남은 것:** 도메인 확정 → 플레이스홀더 일괄 치환 → Google Search Console·Naver 서치어드바이저 등록·sitemap 제출 → 리치결과 테스트 → 운영 모니터링. (블로그 섹션은 중장기 범위 외)
+- **운영 도메인:** https://sc-ai-website.vercel.app (Vercel 프로덕션, HTTPS 자동) — 2026-06-15 배포
+- **완료(코드/에셋):** title·description·canonical·OG·Twitter·favicon 세트·OG 이미지·robots.txt·sitemap.xml(5 URL)·JSON-LD(Organization·WebSite·SoftwareApplication·FAQPage)·preconnect·리포트 이미지 WebP(85%↓)·`<picture>`+width/height·약관 3종+개인정보 페이지·404·FAQ 섹션·**도메인 플레이스홀더 일괄 치환·배포**
+- **외부에 남은 것:** Google Search Console·Naver 서치어드바이저 **소유확인 → sitemap 제출 → 색인 요청** → 리치결과 테스트 → 운영 모니터링. (블로그 섹션은 중장기 범위 외)
 - **검토 필요:** 약관·개인정보 페이지는 **표준 초안** — 시행 전 법무 검토와 `[ ]` 항목(회사명·대표자·보유기간 등) 확정 필요.
 
 ---
 
 ## ⛳ 선행 작업 (Blocker)
 
-- [ ] **배포 도메인 확정** — Vercel 프로젝트·코드 내 자사 도메인 참조가 없어 운영 URL 미정. 확정 전까지 아래 모든 `https://[배포-도메인]`은 채울 수 없음
-  - 완료 기준: 운영 도메인 1개로 결정(예: `https://aiview.xxx`)
-- [ ] **HTTPS 적용 확인** — 배포 시 자동(확인만)
+- [x] **배포 도메인 확정** — Vercel 프로덕션 배포: **https://sc-ai-website.vercel.app** (juhee-team/sc-ai-website)
+- [x] **HTTPS 적용 확인** — Vercel 자동 적용(전 페이지 200 확인)
 
 ---
 
@@ -101,7 +101,7 @@
 ### 기타
 - [x] 🧑‍💻 커스텀 404 페이지 제공 (`404.html`, `noindex`, 공유 GNB/푸터 재사용)
 - [ ] 🌐 (선택) Bing Webmaster Tools / Daum 검색등록 *(도메인 확정·배포 후, 외부 콘솔)*
-- [ ] 🧑‍💻 배포 도메인 확정 후 모든 `https://[배포-도메인]` 플레이스홀더 일괄 치환 *(도메인 미정 — 사용자 결정 필요)*
+- [x] 🧑‍💻 모든 `https://[배포-도메인]` 플레이스홀더 → `https://sc-ai-website.vercel.app` 일괄 치환·배포 완료
 
 ---
 
