@@ -7,7 +7,7 @@ export default function SiteFooter() {
       <div className="wrap">
         <div className="foot-top">
           <div className="foot-brand">
-            <img src="/supercoder-nav-gray.svg" className="foot-logo-img" alt="Supercoder" />
+            <img src="/supercoder-nav.svg" className="foot-logo-img" alt="Supercoder" />
           </div>
           <div className="foot-links">
             <div className="foot-col">

@@ -64,9 +64,9 @@ Vercel 신규 배포 연결 · Supabase 환경변수 분리 · 스키마 점검�
     `/apply.html`→`/apply` 308 redirect, 미존재 경로 커스텀 404. Supabase 연동·env 정상.
 
 ### 남은 작업 / TODO
-- [ ] Vercel **Preview** 환경 env 2건 등록(대시보드 Settings → Environment Variables).
+- [x] Vercel **Preview** 환경 env 2건 등록 완료(Vercel REST API `POST /v10/projects/.../env`, target=preview 전 브랜치). → Production·Preview·Development 3환경 모두 설정됨.
 - [ ] `nextjs-migration` → `main` 병합 및 GitHub push (Git 연동 배포 일관성).
-- [ ] admin 운영: Supabase Auth 관리자 계정(이메일+비밀번호) 생성 + `admins` 테이블 이메일 등록.
+- [x] admin 운영: 관리자 계정 이미 존재(`admin@supercoder.co` — `auth.users` 인증 완료·비밀번호 설정·로그인 이력 있음, `admins` 테이블 등록됨). `/admin`에서 바로 로그인 가능. (비번 분실 시 Supabase 대시보드 Authentication에서 재설정.)
 - [ ] (선택) apply/소개서 폼 실제 제출 1건으로 INSERT E2E 확인.
 
 ---
