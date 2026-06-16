@@ -26,7 +26,7 @@
     '          <a href="index.html#proof">도입 효과</a>' +
     '          <a href="index.html#voices">고객 후기</a>' +
     '          <a href="blog.html">블로그</a>' +
-    '          <a href="apply.html" class="nav-menu-cta">무료 체험하기</a>' +
+    '          <a href="brochure-aiview.pdf" target="_blank" rel="noopener" class="nav-menu-cta">서비스 소개서</a>' +
     '        </div>' +
     '      </div>' +
     '    </div>' +

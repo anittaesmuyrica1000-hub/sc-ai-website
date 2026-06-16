@@ -25,9 +25,32 @@
   .post-head h1{font-size:clamp(28px,4.4vw,42px);font-weight:800;letter-spacing:-.03em;line-height:1.24;margin:16px 0 0}
   .post-meta{margin-top:18px;display:flex;flex-wrap:wrap;gap:14px;font-size:14px;color:var(--slate-2);font-weight:600;padding-bottom:26px;border-bottom:1px solid var(--line)}
   .post-hero{width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:var(--r);margin:32px 0 8px;display:block}
-  .post-content{margin-top:34px;font-size:17px;line-height:1.85;color:#26324a;white-space:pre-wrap}
-  .post-content p{margin:0 0 20px}
+  /* 본문 = 읽기용 본문 폰트(차분한 색·넉넉한 행간) */
+  .post-content{margin-top:34px;font-size:17px;line-height:1.85;color:#26324a}
+  .post-content p{margin:0 0 22px}
+  /* 소제목 = 제목 폰트(굵게·진한 잉크색·좁은 자간)로 본문과 뚜렷이 구분 */
+  .post-content h2{font-size:clamp(22px,2.6vw,28px);font-weight:800;letter-spacing:-.02em;line-height:1.35;color:var(--ink);margin:42px 0 16px}
+  .post-content h3{font-size:19px;font-weight:700;letter-spacing:-.01em;color:var(--ink);margin:32px 0 12px}
+  .post-content strong{font-weight:800;color:var(--ink)}
+  .post-content a{color:var(--blue-d);font-weight:600;text-decoration:underline;text-underline-offset:2px;text-decoration-color:var(--blue-2)}
+  .post-content a:hover{color:var(--blue)}
+  .post-content ul.post-list{margin:0 0 22px;padding-left:4px;list-style:none;display:grid;gap:10px}
+  .post-content ul.post-list li{position:relative;padding-left:26px}
+  .post-content ul.post-list li::before{content:"";position:absolute;left:6px;top:13px;width:7px;height:7px;border-radius:50%;background:var(--blue)}
+  .post-content blockquote{margin:0 0 24px;padding:4px 0 4px 22px;border-left:3px solid var(--blue);color:var(--ink);font-weight:600;font-size:18px;line-height:1.7}
+  .post-figure{margin:8px 0 28px}
+  .post-figure img{width:100%;border-radius:var(--r);display:block}
+  .post-figure figcaption{margin-top:10px;font-size:13.5px;color:var(--slate-2);text-align:center}
+  /* 표 — 통계 비교용 */
+  .post-table-wrap{margin:8px 0 28px;overflow-x:auto;border:1px solid var(--line);border-radius:12px}
+  .post-table{width:100%;border-collapse:collapse;font-size:15px;line-height:1.55}
+  .post-table th,.post-table td{padding:13px 16px;text-align:left;border-bottom:1px solid var(--line)}
+  .post-table thead th{background:var(--soft-2);color:var(--ink);font-weight:800;font-size:13.5px;white-space:nowrap}
+  .post-table tbody tr:last-child td{border-bottom:none}
+  .post-table tbody tr:nth-child(even){background:var(--soft)}
+  .post-table td:first-child{font-weight:700;color:var(--ink)}
   .post-foot{margin-top:56px;padding-top:30px;border-top:1px solid var(--line);text-align:center}
+  @media(max-width:560px){.post-table th,.post-table td{padding:11px 13px;font-size:14px}}
   .blog-state{text-align:center;padding:120px 24px;color:var(--slate-2)}
   .blog-state i{font-size:36px;margin-bottom:18px;display:block;color:var(--line)}
   @media(max-width:560px){.post-wrap{padding:72px 16px 60px}.post-content{font-size:16px}}
@@ -64,10 +87,62 @@
     state.innerHTML = html;
   }
 
-  // 본문: 빈 줄 기준으로 문단 분리(esc 후 출력 → XSS 방지, 줄바꿈 보존)
+  // 인라인 마크다운(**굵게**, [텍스트](url)) → HTML. esc 후 토큰만 치환(XSS 안전).
+  function inline(s) {
+    var t = esc(s);
+    t = t.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+    t = t.replace(/\[([^\]]+)\]\((https?:[^)\s]+)\)/g,
+      '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>');
+    return t;
+  }
+
+  function isTable(lines) {
+    if (lines.length < 2) return false;
+    var allPipe = lines.every(function (l) { return l.trim().charAt(0) === '|'; });
+    var sep = lines[1];
+    return allPipe && sep.indexOf('-') >= 0 && /^[\s|:\-]+$/.test(sep);
+  }
+
+  function splitRow(line) {
+    return line.trim().replace(/^\|/, '').replace(/\|$/, '').split('|')
+      .map(function (c) { return c.trim(); });
+  }
+
+  // 본문: 빈 줄로 블록 분리 후 간이 마크다운 렌더(소제목·표·목록·인용·이미지·문단)
   function renderContent(text) {
-    return String(text || '').split(/\n{2,}/).map(function (para) {
-      return '<p>' + esc(para) + '</p>';
+    var blocks = String(text || '').split(/\n{2,}/)
+      .map(function (b) { return b.trim(); })
+      .filter(Boolean);
+
+    return blocks.map(function (block) {
+      var img = block.match(/^!\[(.*?)\]\((.*?)\)$/);
+      if (img) {
+        var cap = img[1] ? '<figcaption>' + inline(img[1]) + '</figcaption>' : '';
+        return '<figure class="post-figure"><img src="' + esc(img[2]) +
+          '" alt="' + esc(img[1]) + '" loading="lazy">' + cap + '</figure>';
+      }
+      if (/^###\s+/.test(block)) return '<h3>' + inline(block.replace(/^###\s+/, '')) + '</h3>';
+      if (/^##\s+/.test(block)) return '<h2>' + inline(block.replace(/^##\s+/, '')) + '</h2>';
+
+      var lines = block.split('\n');
+
+      if (isTable(lines)) {
+        var head = splitRow(lines[0]).map(function (c) { return '<th>' + inline(c) + '</th>'; }).join('');
+        var body = lines.slice(2).map(function (r) {
+          return '<tr>' + splitRow(r).map(function (c) { return '<td>' + inline(c) + '</td>'; }).join('') + '</tr>';
+        }).join('');
+        return '<div class="post-table-wrap"><table class="post-table"><thead><tr>' +
+          head + '</tr></thead><tbody>' + body + '</tbody></table></div>';
+      }
+      if (lines.every(function (l) { return /^[-*]\s+/.test(l); })) {
+        return '<ul class="post-list">' + lines.map(function (l) {
+          return '<li>' + inline(l.replace(/^[-*]\s+/, '')) + '</li>';
+        }).join('') + '</ul>';
+      }
+      if (lines.every(function (l) { return /^>\s?/.test(l); })) {
+        return '<blockquote>' + inline(lines.map(function (l) { return l.replace(/^>\s?/, ''); }).join('\n')) + '</blockquote>';
+      }
+      return '<p>' + inline(block).replace(/\n/g, '<br>') + '</p>';
     }).join('');
   }
 
