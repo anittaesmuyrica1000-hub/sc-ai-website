@@ -50,19 +50,24 @@ Vercel 신규 배포 연결 · Supabase 환경변수 분리 · 스키마 점검�
   - 홈·apply·privacy·terms·terms-applicant 200, blog SSR 글 로드 OK, post 상세 본문·메타 렌더 OK, admin 로그인 게이트 OK.
 - 포팅 완료된 원본 파일(.html, theme.css, partials.js, blog-data.js 등) 제거.
 
-### 6. Vercel / Supabase 구성
+### 6. Vercel / Supabase 구성 (배포 완료)
 - 기존 프로젝트 확인: `sc-ai-website` (id `prj_iA3dSllyREa7UHyhyBDkrEn9pcNi`, team `juhee-team`, 운영 URL https://sc-ai-website.vercel.app).
 - Vercel CLI로 로컬 디렉터리 ↔ 기존 프로젝트 **link** 완료(`.vercel/project.json`).
 - 환경변수 등록: `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`
   - ✅ Production · Development 등록 완료.
-  - ⏳ Preview 환경 등록 진행 중(`--value … --yes`로 재시도 필요).
+  - ⏳ Preview 환경: CLI v54 `--yes` 버그로 미등록(대시보드에서 추가 권장 — 프로덕션엔 영향 없음).
+- **배포 트러블슈팅 & 해결:**
+  1. 1차 배포 실패 — `npm install exited 1 (Invalid Version)`. 원인: 손상된 npm 캐시로 생성된 불완전 `package-lock.json`(35패키지). → 클린 캐시로 lockfile 재생성(66패키지) 후 해결.
+  2. 2차 배포 후 전 라우트 404. 원인: **프로젝트 Framework Preset = `null`**(구 정적 사이트 잔재). → `vercel.json`에 `framework: nextjs` 명시 + 프로젝트 설정 API로 `framework=nextjs` PATCH 후 해결.
+- ✅ **프로덕션 배포 성공** (dpl `2s8edrlrd`, https://sc-ai-website.vercel.app):
+  - `/` 200(히어로·입자·FAQ), `/apply` 200, `/blog` 200(**실제 Supabase 글 SSR 확인**), `/terms` 200,
+    `/apply.html`→`/apply` 308 redirect, 미존재 경로 커스텀 404. Supabase 연동·env 정상.
 
 ### 남은 작업 / TODO
-- [ ] Vercel **Preview** 환경 env 2건 등록 마무리.
-- [ ] 프로덕션 배포 실행(`vercel --prod`) 및 라이브 URL 동작 확인.
-- [ ] `nextjs-migration` → `main` 병합 및 push (Git 연동 배포 일관성).
-- [ ] admin 운영을 위한 Supabase Auth 관리자 계정(이메일+비밀번호) 생성 + `admins` 테이블 등록 확인.
-- [ ] 배포 후 `og:image`/canonical 등 메타 실제 도메인 기준 점검.
+- [ ] Vercel **Preview** 환경 env 2건 등록(대시보드 Settings → Environment Variables).
+- [ ] `nextjs-migration` → `main` 병합 및 GitHub push (Git 연동 배포 일관성).
+- [ ] admin 운영: Supabase Auth 관리자 계정(이메일+비밀번호) 생성 + `admins` 테이블 이메일 등록.
+- [ ] (선택) apply/소개서 폼 실제 제출 1건으로 INSERT E2E 확인.
 
 ---
 
