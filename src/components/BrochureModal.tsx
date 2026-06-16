@@ -29,14 +29,14 @@ export default function BrochureModal({
   if (!open) return null;
 
   return (
-    <div className="modal-overlay" onClick={onClose} role="dialog" aria-modal="true" aria-label="서비스 소개서 신청">
+    <div className="modal-overlay" onClick={onClose} role="dialog" aria-modal="true" aria-label="서비스소개서 신청">
       <div className="modal-card apply-card" onClick={(e) => e.stopPropagation()}>
         <button type="button" className="modal-close" aria-label="닫기" onClick={onClose}>
           <i className="fa-solid fa-xmark" />
         </button>
         <div className="modal-head">
-          <div className="eyebrow"><i className="fa-solid fa-file-lines" /> 서비스 소개서</div>
-          <h2>AI 면접관 서비스 소개서</h2>
+          <div className="eyebrow"><i className="fa-solid fa-file-lines" /> 서비스소개서</div>
+          <h2>AI 면접관 서비스소개서</h2>
           <p>정보를 남겨주시면 소개서를 바로 받아보실 수 있습니다.</p>
         </div>
         <BrochureForm />

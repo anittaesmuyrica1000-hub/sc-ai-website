@@ -88,10 +88,9 @@ export default function SiteHeader() {
               <Link href="/blog">블로그</Link>
               <button
                 type="button"
-                className="nav-menu-cta"
                 onClick={() => { setMenuOpen(false); setBrochureOpen(true); }}
               >
-                서비스 소개서
+                서비스소개서
               </button>
             </div>
           </div>
