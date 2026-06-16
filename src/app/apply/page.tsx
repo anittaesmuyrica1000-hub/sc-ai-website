@@ -290,67 +290,17 @@ function ApplyForm() {
             </div>
           )}
           </div>
-
-          {/* 우: AI 채용 마케팅 패널 */}
-          <aside className="apply-aside">
-            <span className="aside-brand">
-              <i className="fa-solid fa-bolt" /> AIVIEW
-            </span>
-            <h2>
-              AI 면접으로 검증된
-              <br />
-              핵심 인재만 만나보세요
-            </h2>
-            <p className="aside-lead">
-              안녕하세요 :) 수천 명의 지원자를 AI가 먼저 검증하고, 검증을 통과한
-              핵심 인재 리포트만 채용팀에 전해드립니다.
-            </p>
-
-            <div className="cand-row">
-              {[
-                { img: "8278854", name: "지원자 A", fit: "적합 92" },
-                { img: "8278977", name: "지원자 B", fit: "적합 88" },
-                { img: "7845277", name: "지원자 C", fit: "적합 85" },
-              ].map((c) => (
-                <div className="cand" key={c.img}>
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src={`https://images.pexels.com/photos/${c.img}/pexels-photo-${c.img}.jpeg?auto=compress&cs=tinysrgb&w=600`}
-                    alt="검증된 지원자"
-                    loading="lazy"
-                  />
-                  <span className="cand-tag">
-                    <i className="fa-solid fa-check" />
-                  </span>
-                  <div className="cand-name">
-                    {c.name} <small>{c.fit}</small>
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            <div className="verify-chip">
-              <span className="vc-ico">
-                <i className="fa-solid fa-shield-halved" />
-              </span>
-              <span>
-                <span className="vc-t">AI 검증 완료 · 핵심 인재 리포트</span>
-                <br />
-                <span className="vc-s">역량·진위·커뮤니케이션을 한 장으로</span>
-              </span>
-            </div>
-
-            <div className="chat-bubble">
-              <i className="fa-solid fa-comment-dots" />
-              <span>
-                <span className="cb-t">궁금한 건 채팅으로 문의하세요</span>
-                <br />
-                <span className="cb-s">평균 몇 분 내 답변드립니다</span>
-              </span>
-            </div>
-          </aside>
         </div>
       </div>
+
+      {/* 채팅 문의 버블(고정) — 마케팅 패널은 제거하고 이 안내만 유지 */}
+      <a className="chat-fab" href="#applyCard" aria-label="채팅 문의">
+        <i className="fa-solid fa-comment-dots" />
+        <span>
+          <span className="cb-t">궁금한 건 채팅으로 문의하세요</span>
+          <span className="cb-s">평균 몇 분 내 답변드립니다</span>
+        </span>
+      </a>
     </section>
   );
 }
