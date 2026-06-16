@@ -235,7 +235,7 @@
   /* 리포트 이미지: 투명 PNG(자체 그림자 포함)를 그대로 노출 — 사각 박스 그림자/테두리 없음(투명 주변 검정·노이즈 방지) */
   .hr-media{width:100%;max-width:520px;margin-inline:auto}
   .hr-img{width:100%;height:auto;display:block}
-  @media(max-width:880px){.how-row{grid-template-columns:1fr;gap:12px}.hr-info{text-align:center}.how-row .hr-media{order:-1}}
+  @media(max-width:880px){.how-rows{gap:44px}.how-row{grid-template-columns:1fr;gap:6px}.hr-info{text-align:center}.how-row .hr-media{order:-1}.hr-info h3{font-size:20px}.hr-info p{margin-top:8px}}
 
   /* 6. PROOF */
   /* 헤드카피 위 여유 공간 — 기본 섹션 패딩보다 상단을 더 넉넉히 */
@@ -260,7 +260,7 @@
   /* VOICES는 흰색 — 앞 PROOF(연블루 #F4F8FF)와 배경을 나눠 섹션 경계가 드러나게 */
   .voices{background:#fff;padding-top:40px}
   .voices .head{text-align:center;max-width:720px;margin:0 auto}
-  .v-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-top:50px;align-items:start}
+  .v-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:24px;margin-top:50px;align-items:start;max-width:940px;margin-left:auto;margin-right:auto}
   .vc{display:flex;flex-direction:column}
   .vc .bubble{position:relative;background:#fff;border:1px solid var(--line);border-radius:18px;padding:26px 26px 24px;box-shadow:var(--shadow)}
   .vc .bubble::after{content:"";position:absolute;left:40px;bottom:-9px;width:17px;height:17px;background:#fff;border-right:1px solid var(--line);border-bottom:1px solid var(--line);transform:rotate(45deg)}
@@ -735,29 +735,36 @@
   <div class="wrap">
     <div class="head">
       <h2>먼저 써본 채용팀의 이야기</h2>
-      <p class="lead">채용팀 신뢰도와 <span class="blue" style="font-weight:700">후보자 만족도</span>, 둘 다 잡았습니다.</p>
+      <p class="lead">실제 도입 고객사가 전한 <span class="blue" style="font-weight:700">AI 면접 채용</span> 경험입니다.</p>
     </div>
     <div class="v-grid">
       <div class="vc">
         <div class="bubble">
           <div class="qm"><i class="fa-solid fa-quote-left"></i></div>
-          <blockquote>“300장을 넘기던 1차 검토가 사라졌습니다. 이제 우리는 검증된 후보 20명과의 ‘대화’에만 집중합니다.”</blockquote>
+          <blockquote>“슈퍼코더를 통해 채용 프로세스를 혁신적으로 효율화했습니다. 기존에는 개발자들이 직접 면접을 진행하며 적지 않은 리소스를 썼지만, AI 면접으로 대체하면서 이제 개발자들은 본업에 집중하면서도 우수한 인재를 놓치지 않게 되었습니다.”</blockquote>
         </div>
-        <div class="who"><div class="ava">김</div><div><div class="nm">김○○ 채용팀장</div><div class="ro">국내 대기업 인사본부</div></div></div>
+        <div class="who"><div class="ava">A</div><div><div class="nm">아키스케치</div><div class="ro">Supercoder 도입 고객</div></div></div>
       </div>
       <div class="vc">
         <div class="bubble">
           <div class="qm"><i class="fa-solid fa-quote-left"></i></div>
-          <blockquote>“이력서 너머의 진짜 실력이 보입니다. 입사 후 ‘기대와 달랐다’는 미스매치가 눈에 띄게 줄었어요.”</blockquote>
+          <blockquote>“슈퍼코더 AI 화상 인터뷰로 채용 브랜딩을 강화하고 채용 과정을 효율화했습니다. 표준화된 질문으로 지원자에게 회사를 효과적으로 전달하고, 직무 적합성과 의지를 면밀히 파악할 수 있었습니다. 객관적인 평가로 채용 효율도 크게 높였습니다.”</blockquote>
         </div>
-        <div class="who"><div class="ava">이</div><div><div class="nm">이○○ 인재문화팀 리더</div><div class="ro">성장기업 People팀</div></div></div>
+        <div class="who"><div class="ava">G</div><div><div class="nm">가온프라임</div><div class="ro">Supercoder 도입 고객</div></div></div>
       </div>
       <div class="vc">
         <div class="bubble">
           <div class="qm"><i class="fa-solid fa-quote-left"></i></div>
-          <blockquote>“긴장되는 대면 면접보다 편했어요. 제 역량을 충분히 보여줄 수 있어 오히려 공정하다고 느꼈습니다.”</blockquote>
+          <blockquote>“회사가 성장하고 개발팀을 확장하는 과정에서 Supercoder가 큰 도움이 되었습니다. 개발자 채용 지원뿐 아니라 개발 과정 전반에 걸친 컨설팅과 가이드까지 제공해, 성장하는 우리 팀에게 매우 가치 있는 지원이었습니다.”</blockquote>
         </div>
-        <div class="who"><div class="ava" style="background:linear-gradient(135deg,#16A34A,#4ADE80)"><i class="fa-solid fa-user"></i></div><div><div class="nm">AI 면접 응시 후보자</div><div class="ro">지원자 응시 만족도 92%</div></div></div>
+        <div class="who"><div class="ava">S</div><div><div class="nm">식파마</div><div class="ro">Supercoder 도입 고객</div></div></div>
+      </div>
+      <div class="vc">
+        <div class="bubble">
+          <div class="qm"><i class="fa-solid fa-quote-left"></i></div>
+          <blockquote>“내년에도 개발자의 약 70%를 Supercoder를 통해 채용할 계획입니다. 처음엔 확신이 없었지만 함께 일해 보니 비용 대비 만족도가 높았고, 실제로 채용 속도가 예상보다 거의 두 배 빨라졌습니다.”</blockquote>
+        </div>
+        <div class="who"><div class="ava">M</div><div><div class="nm">마크애니</div><div class="ro">Supercoder 도입 고객</div></div></div>
       </div>
     </div>
   </div>
