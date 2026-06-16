@@ -26,7 +26,7 @@
     '          <a href="index.html#proof">도입 효과</a>' +
     '          <a href="index.html#voices">고객 후기</a>' +
     '          <a href="blog.html">블로그</a>' +
-    '          <a href="brochure-aiview.pdf" target="_blank" rel="noopener" class="nav-menu-cta">서비스 소개서</a>' +
+    '          <a href="#" id="navBrochure">서비스소개서</a>' +
     '        </div>' +
     '      </div>' +
     '    </div>' +
@@ -64,6 +64,46 @@
     '  </div>' +
     '</footer>';
 
+  // 서비스소개서 리드 모달 — GNB '서비스소개서' 클릭 시 열림. 스타일은 theme.css(.bro-*).
+  var BROCHURE_MODAL = '' +
+    '<div class="bro-modal" id="broModal" role="dialog" aria-modal="true" aria-label="서비스소개서 신청">' +
+    '  <div class="bro-card">' +
+    '    <button type="button" class="bro-close" id="broClose" aria-label="닫기"><i class="fa-solid fa-xmark"></i></button>' +
+    '    <div id="broInner">' +
+    '      <div class="bro-head">' +
+    '        <div class="eyebrow"><i class="fa-solid fa-file-lines"></i> 서비스소개서</div>' +
+    '        <h2>AI 면접관 서비스소개서</h2>' +
+    '        <p>정보를 남겨주시면 소개서를 바로 받아보실 수 있습니다.</p>' +
+    '      </div>' +
+    '      <form id="broForm" novalidate>' +
+    '        <div class="b-row">' +
+    '          <div class="b-field"><label for="bro-name">이름 <span class="req">*</span></label>' +
+    '            <input type="text" id="bro-name" placeholder="홍길동"><div class="b-err">이름을 입력해 주세요.</div></div>' +
+    '          <div class="b-field"><label for="bro-company">회사 <span class="req">*</span></label>' +
+    '            <input type="text" id="bro-company" placeholder="회사명"><div class="b-err">회사를 입력해 주세요.</div></div>' +
+    '        </div>' +
+    '        <div class="b-field"><label for="bro-email">업무 이메일 <span class="req">*</span></label>' +
+    '          <input type="email" id="bro-email" placeholder="you@company.com"><div class="b-err">올바른 이메일을 입력해 주세요.</div></div>' +
+    '        <div class="b-row">' +
+    '          <div class="b-field"><label for="bro-role">직무 / 직책</label>' +
+    '            <input type="text" id="bro-role" placeholder="예: 인사팀장"></div>' +
+    '          <div class="b-field"><label for="bro-phone">연락처</label>' +
+    '            <input type="tel" id="bro-phone" placeholder="010-0000-0000"></div>' +
+    '        </div>' +
+    '        <div class="b-field"><label for="bro-size">연간 채용 규모 <span class="req">*</span></label>' +
+    '          <select id="bro-size"><option value="" selected disabled>선택해 주세요</option>' +
+    '            <option value="1-10">1~10명</option><option value="11-50">11~50명</option>' +
+    '            <option value="51-200">51~200명</option><option value="200+">200명 이상</option></select>' +
+    '          <div class="b-err">채용 규모를 선택해 주세요.</div></div>' +
+    '        <label class="bro-agree" id="bro-agree-wrap">' +
+    '          <input type="checkbox" id="bro-agree"><span><a href="privacy.html" target="_blank" rel="noopener">개인정보 수집·이용</a>에 동의합니다. (필수)</span></label>' +
+    '        <div class="bro-formerr" id="broErr"></div>' +
+    '        <button type="submit" class="btn btn-blue" id="broSubmit">소개서 받기 <i class="fa-solid fa-download"></i></button>' +
+    '      </form>' +
+    '    </div>' +
+    '  </div>' +
+    '</div>';
+
   function define(name, html) {
     if (customElements.get(name)) return;
     customElements.define(name, class extends HTMLElement {
@@ -73,6 +113,102 @@
 
   define('site-header', HEADER);
   define('site-footer', FOOTER);
+
+  /* 서비스소개서 리드 모달 — body에 1회 주입 후 이벤트 바인딩.
+     Supabase REST 로 직접 INSERT(브라우저에서 supabase-js 미로드 페이지에서도 동작). */
+  (function setupBrochure() {
+    var SUPABASE_URL = 'https://ymzlcghqamkynuvotzgh.supabase.co';
+    var SUPABASE_KEY = 'sb_publishable_QZ9NGClQjBIuPWz7CR8_wA_Acv9anJQ';
+    var BROCHURE_FILE = 'brochure-aiview.pdf';
+    var emailRe = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
+
+    function ready(fn) {
+      if (document.readyState !== 'loading') fn();
+      else document.addEventListener('DOMContentLoaded', fn);
+    }
+
+    ready(function () {
+      if (document.getElementById('broModal')) return;
+      var holder = document.createElement('div');
+      holder.innerHTML = BROCHURE_MODAL;
+      document.body.appendChild(holder.firstChild);
+
+      var modal = document.getElementById('broModal');
+      var inner = document.getElementById('broInner');
+
+      function open() { modal.classList.add('open'); document.body.style.overflow = 'hidden'; }
+      function close() { modal.classList.remove('open'); document.body.style.overflow = ''; }
+
+      // GNB '서비스소개서' 클릭(위임) → 모달 열기
+      document.addEventListener('click', function (e) {
+        var t = e.target.closest && e.target.closest('#navBrochure');
+        if (t) { e.preventDefault(); open(); }
+      });
+      document.getElementById('broClose').addEventListener('click', close);
+      modal.addEventListener('click', function (e) { if (e.target === modal) close(); });
+      document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && modal.classList.contains('open')) close(); });
+
+      var form = document.getElementById('broForm');
+      var errBox = document.getElementById('broErr');
+      var btn = document.getElementById('broSubmit');
+
+      function val(id) { var el = document.getElementById(id); return el ? el.value.trim() : ''; }
+
+      form.addEventListener('input', function (e) {
+        var box = e.target.closest('.b-field') || e.target.closest('.bro-agree');
+        if (box) box.classList.remove('invalid');
+      });
+
+      form.addEventListener('submit', async function (e) {
+        e.preventDefault();
+        errBox.classList.remove('show');
+        form.querySelectorAll('.invalid').forEach(function (el) { el.classList.remove('invalid'); });
+
+        var checks = [
+          ['bro-name', val('bro-name') !== ''],
+          ['bro-company', val('bro-company') !== ''],
+          ['bro-email', emailRe.test(val('bro-email'))],
+          ['bro-size', val('bro-size') !== '']
+        ];
+        var valid = true;
+        checks.forEach(function (c) {
+          if (!c[1]) { valid = false; var el = document.getElementById(c[0]); var box = el && el.closest('.b-field'); if (box) box.classList.add('invalid'); }
+        });
+        if (!document.getElementById('bro-agree').checked) { valid = false; document.getElementById('bro-agree-wrap').classList.add('invalid'); }
+        if (!valid) { var f = form.querySelector('.invalid input, .invalid select'); if (f) f.focus(); return; }
+
+        var payload = {
+          name: val('bro-name'), company: val('bro-company'), email: val('bro-email'),
+          role: val('bro-role') || null, phone: val('bro-phone') || null, size: val('bro-size')
+        };
+
+        btn.disabled = true;
+        btn.innerHTML = '전송 중… <i class="fa-solid fa-spinner fa-spin"></i>';
+        try {
+          var res = await fetch(SUPABASE_URL + '/rest/v1/brochure_requests', {
+            method: 'POST',
+            headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY, 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
+            body: JSON.stringify(payload)
+          });
+          if (!res.ok) throw new Error('insert failed: ' + res.status);
+          inner.innerHTML =
+            '<div class="bro-done">' +
+            '  <div class="dot"><i class="fa-solid fa-file-arrow-down"></i></div>' +
+            '  <h2>소개서가 준비되었습니다.</h2>' +
+            '  <p>아래 버튼으로 소개서를 내려받으세요.<br>입력하신 이메일로도 보내드립니다.</p>' +
+            '  <a href="' + BROCHURE_FILE + '" download class="btn btn-blue"><i class="fa-solid fa-download"></i> 소개서 다운로드</a>' +
+            '  <p class="sub-note">담당자가 도입 관련 안내로 곧 연락드릴 수 있습니다.</p>' +
+            '</div>';
+        } catch (err) {
+          btn.disabled = false;
+          btn.innerHTML = '소개서 받기 <i class="fa-solid fa-download"></i>';
+          errBox.textContent = '요청 처리 중 문제가 발생했습니다. 잠시 후 다시 시도해 주세요.';
+          errBox.classList.add('show');
+          console.error('brochure request failed:', err);
+        }
+      });
+    });
+  })();
 
   /* GNB 메뉴(햄버거) 토글 — 커스텀 엘리먼트가 innerHTML로 렌더되므로 위임 방식으로 바인딩 */
   function closeMenu() {
