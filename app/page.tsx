@@ -212,7 +212,7 @@ export default function HomePage() {
               <div className="hr-media"><picture><source srcSet="/report-overall-grade.webp" type="image/webp" /><img className="hr-img" src="/report-overall-grade.png" alt="AIVIEW 리포트 — 종합 등급(양호)과 종합 평가" width={1040} height={524} loading="lazy" /></picture></div>
             </div>
             <div className="how-row">
-              <div className="hr-media"><picture><source srcSet="/report-competency.webp" type="image/webp" /><img className="hr-img" src="/report-competency.png" alt="AIVIEW 리포트 — 역량 평가 레이더 차트와 항목별 등급" width={1040} height={747} loading="lazy" /></picture></div>
+              <div className="hr-media"><img className="hr-img" src="/report-competency.png" alt="AIVIEW 리포트 — 역량 평가 레이더 차트와 항목별 등급" width={1208} height={868} loading="lazy" /></div>
               <div className="hr-info">
                 <h3>역량평가</h3>
                 <p>핵심 직무 역량을 항목별로 검증하고, 강점·약점을 시각화해 보여줍니다.</p>
