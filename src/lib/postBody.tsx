@@ -64,6 +64,26 @@ export function PostBody({ content }: { content: string }) {
   return (
     <div className="post-content">
       {blocks.map((block, i) => {
+        // ::: 요약 ... :::  → 상단 핵심 요약 박스(TL;DR)
+        if (/^:::\s*요약/.test(block)) {
+          const items = block
+            .split("\n")
+            .slice(1)
+            .filter((l) => l.trim() && l.trim() !== ":::")
+            .map((l) => l.replace(/^[-*]\s*/, ""));
+          return (
+            <div key={i} className="post-tldr">
+              <div className="tldr-head">
+                <i className="fa-solid fa-bolt" /> 핵심 요약
+              </div>
+              <ul>
+                {items.map((it, j) => (
+                  <li key={j}>{renderInline(it)}</li>
+                ))}
+              </ul>
+            </div>
+          );
+        }
         const img = block.match(/^!\[(.*?)\]\((.*?)\)$/);
         if (img) {
           const [, alt, src] = img;

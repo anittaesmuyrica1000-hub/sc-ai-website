@@ -28,6 +28,12 @@
   /* 본문 = 읽기용 본문 폰트(차분한 색·넉넉한 행간) */
   .post-content{margin-top:34px;font-size:17px;line-height:1.85;color:#26324a}
   .post-content p{margin:0 0 22px}
+  /* 핵심 요약 박스(상단 TL;DR) */
+  .post-content .post-tldr{background:var(--soft-2);border:1px solid var(--tint);border-radius:14px;padding:20px 22px;margin:0 0 30px}
+  .post-content .post-tldr .tldr-head{font-size:13px;font-weight:800;letter-spacing:.02em;color:var(--blue-d);margin-bottom:12px;display:flex;align-items:center;gap:7px}
+  .post-content .post-tldr ul{list-style:none;display:grid;gap:9px;margin:0;padding:0}
+  .post-content .post-tldr li{position:relative;padding-left:24px;font-size:15.5px;line-height:1.55;color:var(--ink);font-weight:500}
+  .post-content .post-tldr li::before{content:"";position:absolute;left:7px;top:9px;width:6px;height:6px;border-radius:50%;background:var(--blue)}
   /* 소제목 = 본문보다 크지만 페이지 제목(h1)보다 확실히 작게 */
   .post-content h2{font-size:clamp(18px,2vw,22px);font-weight:700;letter-spacing:-.015em;line-height:1.4;color:var(--ink);margin:38px 0 14px}
   .post-content h3{font-size:16.5px;font-weight:700;letter-spacing:-.01em;color:var(--ink);margin:28px 0 10px}
@@ -115,6 +121,13 @@
       .filter(Boolean);
 
     return blocks.map(function (block) {
+      // ::: 요약 ... :::  → 상단 핵심 요약 박스
+      if (/^:::\s*요약/.test(block)) {
+        var items = block.split('\n').slice(1)
+          .filter(function (l) { return l.trim() && l.trim() !== ':::'; })
+          .map(function (l) { return '<li>' + inline(l.replace(/^[-*]\s*/, '')) + '</li>'; }).join('');
+        return '<div class="post-tldr"><div class="tldr-head"><i class="fa-solid fa-bolt"></i> 핵심 요약</div><ul>' + items + '</ul></div>';
+      }
       var img = block.match(/^!\[(.*?)\]\((.*?)\)$/);
       if (img) {
         var cap = img[1] ? '<figcaption>' + inline(img[1]) + '</figcaption>' : '';
