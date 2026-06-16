@@ -1,0 +1,38 @@
+  /* 이 페이지 고유(신청 폼) 스타일만 둔다. 공유 토큰·버튼·GNB·푸터는 theme.css 참고. */
+
+  /* APPLY */
+  .apply{background:linear-gradient(180deg,#EAF1FE 0%,#F4F8FF 48%,#fff 100%);padding:60px 0 92px;min-height:calc(100vh - 64px)}
+  .apply-grid{max-width:540px;margin:0 auto}
+  .apply-formcol{display:flex;flex-direction:column}
+
+  .apply-card{background:#fff;border:1px solid var(--line);border-radius:20px;box-shadow:var(--shadow);padding:34px}
+  .apply-card .ct{font-size:20px;font-weight:800;letter-spacing:-.02em;margin-bottom:4px}
+  .apply-card .cs{font-size:14px;color:var(--slate);margin-bottom:24px}
+  .field{margin-bottom:16px}
+  .field label{display:block;font-size:13px;font-weight:700;color:var(--ink);margin-bottom:7px}
+  .field label .req{color:var(--blue);margin-left:2px}
+  .field input,.field select,.field textarea{width:100%;padding:13px 14px;border:1px solid var(--line);border-radius:11px;font-size:15px;font-family:inherit;color:var(--ink);background:#fff;transition:.15s}
+  .field input::placeholder,.field textarea::placeholder{color:var(--slate-2)}
+  .field input:focus,.field select:focus,.field textarea:focus{outline:none;border-color:var(--blue-2);box-shadow:0 0 0 3px rgba(91,141,247,.16)}
+  .field textarea{resize:vertical;min-height:86px}
+  .field-row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  .field.invalid input,.field.invalid select{border-color:var(--red);box-shadow:0 0 0 3px rgba(224,88,74,.13)}
+  .field .err{display:none;color:var(--red);font-size:12.5px;margin-top:6px}
+  .field.invalid .err{display:block}
+  .agree{display:flex;align-items:flex-start;gap:9px;font-size:13.5px;color:var(--slate);margin:8px 0 22px;line-height:1.5}
+  .agree input{width:auto;margin-top:3px;flex-shrink:0;accent-color:var(--blue)}
+  .agree a{color:var(--blue);text-decoration:underline}
+  .agree.invalid{color:var(--red)}
+  .apply-card .btn{width:100%;justify-content:center;font-size:16px;padding:15px}
+  .apply-card .btn[disabled]{opacity:.6;cursor:default;transform:none}
+  .form-err{display:none;background:#FDECEA;border:1px solid #F3C2BC;color:#B23B2E;font-size:13.5px;font-weight:600;border-radius:10px;padding:11px 14px;margin-bottom:14px}
+  .form-err.show{display:block}
+
+  .apply-done{display:none;text-align:center;padding:24px 8px 14px}
+  .apply-done .dot{width:76px;height:76px;border-radius:50%;background:var(--soft-2);color:var(--green);display:grid;place-items:center;font-size:36px;margin:0 auto 22px}
+  .apply-done h2{font-size:24px;margin-bottom:12px}
+  .apply-done p{color:var(--slate);font-size:15.5px;margin-bottom:26px}
+
+  @media(max-width:560px){
+    .field-row{grid-template-columns:1fr}.apply-card{padding:24px}.apply{padding:40px 0 64px}
+  }

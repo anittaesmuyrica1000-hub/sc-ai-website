@@ -4,103 +4,69 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project
 
-Supercoder AI 웹사이트 — **AIVIEW** 제품 랜딩 페이지. AI 면접으로 지원자를 자동 검증하고, 채용팀에는 검증된 핵심 인재 리포트만 전달하는 B2B 채용 SaaS의 마케팅 페이지다. 카피·UI는 전부 한국어.
+Supercoder AI 웹사이트 — **AIVIEW** 제품 랜딩 + 블로그/도입문의. AI 면접으로 지원자를 자동 검증하고, 채용팀에는 검증된 핵심 인재 리포트만 전달하는 B2B 채용 SaaS의 마케팅 웹앱이다. 카피·UI는 전부 한국어.
 
 - Remote: https://github.com/anittaesmuyrica1000-hub/sc-ai-website.git
 - Default branch: `main`
+- 운영 도메인: https://sc-ai-website.vercel.app
 
 ## Architecture
 
-**정적 멀티 페이지.** 빌드 시스템·프레임워크·패키지 매니저가 없다. 각 페이지는 HTML 파일 하나이며, **공유 CSS는 `theme.css`** 한 곳에 두고 페이지 고유(섹션) CSS만 인라인 `<style>`에 남긴다.
+**Next.js 15 (App Router) + React 19 + TypeScript.** 정적 HTML 멀티페이지에서 마이그레이션됨(2026-06). Vercel 배포, Supabase 백엔드.
 
-- **페이지:** `index.html`(랜딩), `apply.html`(무료 신청 — 폼·검증·완료 상태). 모든 CTA는 `apply.html`로 연결된다.
-- **공유 컴포넌트 CSS는 `theme.css` (SSOT, Single Source of Truth).** 디자인 토큰(`:root` 변수: `--blue`, `--ink`, `--soft`, `--r`, `--shadow` 등)·버튼(`.btn*`)·`.eyebrow`·GNB(`header`/`nav`)·푸터(`footer`) 스타일이 모두 여기 있다. 모든 페이지가 `<link rel="stylesheet" href="theme.css">`(docs 하위는 `../theme.css`)로 링크한다. **공유 컴포넌트를 바꿀 땐 `theme.css`만 고치면 전 페이지가 함께 바뀐다** — 페이지마다 복붙하지 않는다.
-- **공유 GNB/푸터 마크업은 `partials.js`.** `<site-header>`/`<site-footer>` 커스텀 엘리먼트로 nav·footer **마크업**을 한 곳에서 관리(내부에 `<header>`/`<footer>` 태그를 렌더하므로 `theme.css`의 셀렉터가 그대로 적용). 빌드/`fetch` 없이 `file://`·정적서버 양쪽에서 동작. → 마크업은 `partials.js`, 스타일은 `theme.css` 가 단일 출처.
-- **디자인 시스템 규격은 `docs/design-system.md`(문서) + `docs/design-system.html`(라이브 컴포넌트 갤러리).** 색/반경/그림자/폰트는 하드코딩하지 말고 `theme.css`의 토큰을 따른다.
-- **섹션 = 페이지 구조 (정의된 이름·번호·id).** 본문은 번호가 매겨진 블록의 세로 스택이다. `index.html`의 각 블록 위에는 `<!-- ===== SECTION NN · NAME (설명) · #id ===== -->` 형식의 일관된 배너 주석이 있고, 마크업은 그 배너로 구분한다. 정식 섹션 목록:
-
-  | # | 코드명(NAME) | 클래스 | id | 헤드라인/내용 |
-  |---|---|---|---|---|
-  | 01 | DECLARATION | `.decl` | `#hero` | "1차 검토는 AI에게…" (히어로) |
-  | 02 | CLIENTS | `.herostrip` | `#clients` | 도입사 로고 마퀴 ("500개 이상의 팀이 신뢰") |
-  | 03 | VALUE | `.value` | `#value` | "왜 AI 면접인가" (핵심 가치 3) |
-  | 04 | FLOOD | `.flood` | `#flood` | "가짜는 쏟아지고, 잘못된 채용은 비싸집니다" |
-  | 05 | ROLE REVERSAL | `.role-funnel` | `#role` | "수천 명은 AI가 걸러내고…" (깔때기 SVG) |
-  | 06 | HOW IT WORKS | `.how` | `#how` | "리포트 한 장이면 충분" (작동 방식+데모) |
-  | 07 | PROOF | `.proof2` | `#proof` | "숫자로 증명됩니다" (도입 효과) |
-  | 08 | VOICES | `.voices` | `#voices` | "도입한 채용팀이 먼저 말합니다" (후기) |
-  | 09 | FINAL CTA | `.final` | `#final` | "이제, 진짜 인재만 만나보세요" |
-  | 10 | FOOTER | (`<site-footer>`) | — | 공유 partial |
-
-  각 섹션 CSS는 주석 헤더(`/* 1. DECLARATION */` 등) 아래에 모여 있다. 섹션을 편집할 땐 마크업 배너와 그 CSS 주석 블록을 함께 본다. GNB 메뉴(`partials.js`)의 앵커 링크는 이 id들(`#value`·`#how`·`#proof`·`#voices`)을 가리킨다. **`.role`(구 2-컬럼)·`.tri`/`.fA`/`.fB`/`.fC`는 현재 렌더되지 않는 보관용 변형이다.**
-- **실험적/대체 레이아웃이 공존한다.** 동일 메시지의 변형 컴포넌트가 여러 개 들어 있다 — 예: ROLE REVERSAL은 `.role`(2-컬럼)과 `.role-funnel`(깔때기) 두 버전이 있고, 깔때기에도 `.tri`/`.fA`/`.fB`/`.fC` 변형 CSS가 남아 있다. 일부는 현재 마크업에서 렌더링되지 않는 "보관용" 스타일이니, 클래스를 지우기 전 실제 사용 여부를 확인한다.
-- **반응형은 컴포넌트별 `@media`로.** 전역 브레이크포인트 시스템이 아니라 각 섹션 CSS 끝에 개별 `@media(max-width:...)` 규칙이 붙어 있다. 주 브레이크포인트는 880/760/560px 대.
-- **외부 의존성은 CDN:** Pretendard 폰트(jsdelivr), Font Awesome 6.5.2 아이콘(cdnjs), `apply.html`은 `@supabase/supabase-js@2`(jsdelivr) 추가. 아이콘은 `<i class="fa-...">`로 사용.
-- **로컬 에셋:** `supercoder-nav.svg`(헤더 로고 — 파란 가로 락업), `supercoder-logo.svg`(푸터 로고 — 흰색 가로 락업), `demo-result.png`(HOW IT WORKS 제품 데모 스크린샷). 상대경로로 직접 참조한다. 로고는 공식 브랜드 가이드(`supercoder logo 2022-2.ai`)에서 추출한 벡터(SVG)다 — 래스터 PNG를 쓰지 않는다.
-- **무료 신청 폼은 Supabase 저장(기능).** `apply.html` 폼은 제출 시 클라이언트에서 직접 Supabase `public.signups` 테이블에 INSERT 한다(검증 → insert → 완료 화면). `index.html` 최종 CTA는 폼이 아니라 `apply.html`로 가는 버튼이다.
+- **라우트(`app/`):**
+  - `app/page.tsx` — 랜딤(index). 서버 컴포넌트. 섹션 CSS는 `app/landing.css`.
+  - `app/apply/` — 도입 문의 폼. `page.tsx`(서버, metadata) + `ApplyForm.tsx`(클라이언트, Supabase insert).
+  - `app/blog/` — 블로그 목록. `page.tsx`(서버, Supabase에서 published 글 SSR) + `BlogClient.tsx`(클라이언트, 카테고리 필터).
+  - `app/blog/[id]/` — 블로그 상세. 서버 컴포넌트, `generateMetadata`로 글별 OG. 본문은 `lib/postRender.ts`(간이 마크다운)로 렌더.
+  - `app/admin/` — 블로그 관리. `page.tsx`(noindex) + `AdminClient.tsx`(**Supabase Auth 로그인 게이트** + CRUD).
+  - `app/privacy`, `app/terms`, `app/terms-applicant` — 법적 페이지(서버). `app/not-found.tsx` — 404.
+- **공유 디자인 토큰·컴포넌트 CSS는 `app/globals.css` (SSOT).** `:root` 변수(`--blue`,`--ink`,`--soft`,`--r`,`--shadow` 등)·버튼(`.btn*`)·`.eyebrow`·GNB(`header`/`nav`)·푸터(`footer`)·모달(`.bro-*`)·챗봇(`.cbot*`)·법적 페이지(`.legal`)가 모두 여기. 루트 `layout.tsx`에서 1회 import. **공유 컴포넌트를 바꿀 땐 `app/globals.css`만 고치면 전 페이지가 함께 바뀐다.**
+- **페이지 고유 CSS는 라우트 폴더에 co-located** (`app/landing.css`, `app/apply/apply.css`, `app/blog/blog.css`, `app/blog/[id]/post.css`, `app/admin/admin.css`). 해당 page에서 import. 클래스는 전역 스코프(원본 정적 사이트와 동일 동작).
+- **공유 컴포넌트(`components/`):** `SiteHeader`(섹션 인지형 GNB·메뉴), `SiteFooter`, `BrochureModal`(서비스소개서 리드 — `#navBrochure` 클릭 위임), `Chatbot`(FAQ 챗봇), `HeroParticles`(canvas 입자 모션, 히어로·CTA 공용). 모두 `layout.tsx`에 마운트되거나 page에서 사용. `"use client"`.
+- **섹션 = 랜딩 구조 (정의된 이름·번호·id).** `app/page.tsx`는 번호 매겨진 섹션 스택이다. 정식 목록: 01 DECLARATION(`#hero`), 02 CLIENTS(`#clients`), 03 VALUE(`#value`), 04 FLOOD(`#flood`), 05 ROLE REVERSAL(`#role`, 깔때기 SVG), 06 HOW IT WORKS(`#how`), 07 PROOF(`#proof`), 08 VOICES(`#voices`), 08.5 FAQ(`#faq`), 09 FINAL CTA(`#final`). GNB 메뉴 앵커는 `#value`·`#how`·`#proof`·`#voices`.
+- **섹션 인지형 GNB:** `[data-nav="dark"]` 섹션(히어로·FINAL) 위에선 헤더 반전(흰 로고). 색 전환 클래스(`header.nav-invert`/`.nav-solid`)는 `globals.css`(SSOT), 감지 로직은 `SiteHeader.tsx`의 `syncHeader`.
+- **외부 의존성은 CDN(`layout.tsx`의 `<head>`):** Pretendard 폰트(jsdelivr), Font Awesome 6.5.2(cdnjs). 아이콘은 `<i className="fa-...">`. Supabase는 `@supabase/supabase-js`(npm).
+- **정적 에셋은 `public/`** (로고 SVG, 리포트 PNG/webp, 파비콘, `brochure-aiview.pdf`, `logos/`, `charts/`, `robots.txt`, `sitemap.xml`). 절대경로(`/supercoder-nav.svg`)로 참조.
+- **구 `.html` URL은 `next.config.mjs` redirects로 클린 URL에 308 매핑**(`/apply.html`→`/apply` 등). 기존 인바운드 링크·SEO 보존.
 
 ## Backend (Supabase)
 
 - **프로젝트:** `supercoder-aiview` (ref `ymzlcghqamkynuvotzgh`, region ap-northeast-2). org `uwuwftckkxbtbqjlsrav`.
-- **테이블:** `public.signups` — 컬럼: `id, created_at, name, company, email, role, phone, size, memo`. RLS 활성, **anon `insert`만 허용**(SELECT 정책 없음 → 익명 읽기 불가, 쓰기 전용).
-- **연결 방식:** 정적 페이지라 백엔드 없이 `apply.html`에 **publishable(공개) 키 + 프로젝트 URL을 인라인**한다. publishable 키는 공개용이라 노출돼도 안전(RLS가 INSERT로 제한). 로컬(`file://`·localhost)·배포 모두 동일 프로젝트/데이터에 연결된다.
-- **service_role 키는 절대 클라이언트/깃에 넣지 않는다.** 신청 데이터 조회·관리는 Supabase 대시보드 또는 MCP(`execute_sql`)로 한다.
+- **연결:** `lib/supabase.ts` — `NEXT_PUBLIC_SUPABASE_URL` / `NEXT_PUBLIC_SUPABASE_ANON_KEY` 환경변수(.env.local · Vercel)에서 publishable(공개) 키 주입. publishable 키는 RLS로 보호되어 노출 안전. **`.env.example` 참고. service_role 키는 절대 클라이언트/깃에 넣지 않는다.**
+- **테이블 / RLS:**
+  - `signups` — 도입 문의(apply). anon `insert`만 허용.
+  - `brochure_requests` — 서비스소개서 리드(모달). anon `insert`만 허용.
+  - `subscribers` — 뉴스레터(예비). anon `insert`만 허용.
+  - `posts` — 블로그. anon `select` 허용(공개 읽기). **`insert`/`update`/`delete`는 `authenticated` + `admins` 테이블에 이메일이 있는 관리자만**(RLS). → admin 페이지는 **Supabase Auth 로그인 필수**. (anon 키만으로는 쓰기 불가.)
+  - `admins` — 관리자 이메일 목록. authenticated self-select.
+- **신규 관리자 추가:** Supabase Auth에 사용자(이메일+비밀번호) 생성 + `admins`에 같은 이메일 INSERT(대시보드/MCP).
 
-## Running / Preview
-
-빌드 단계 없음. 브라우저에서 바로 열거나 정적 서버로 띄운다:
+## Running / Build
 
 ```bash
-open index.html                 # macOS에서 바로 열기
-python3 -m http.server 8000     # http://localhost:8000 로 서빙 (CDN/이미지 경로 확인용 권장)
+npm install
+npm run dev      # http://localhost:3000 개발 서버
+npm run build    # 프로덕션 빌드(타입체크·린트 포함)
+npm start        # 빌드 후 프로덕션 서버
 ```
 
-테스트·린트·빌드 명령은 없다(정적 HTML).
+`.env.local`에 Supabase 환경변수 필요(`.env.example` 복사). 배포는 Vercel(push 시 자동) + 동일 환경변수 등록.
 
 ## 작업 규칙 (Workflow Rules)
 
 ### 사용자 응답은 한국어로 (MUST)
-
-사용자에게 설명·요약·진행 보고를 할 때는 **항상 한국어**로 작성한다. (코드·식별자·로그 등 원문은 그대로 둔다.)
+사용자에게 설명·요약·진행 보고를 할 때는 **항상 한국어**로 작성한다. (코드·식별자·로그 등 원문은 그대로.)
 
 ### UI 컴포넌트 재사용 / 단일 출처 (MUST)
+UI 구현 시 **기존 컴포넌트·토큰을 먼저 재사용**한다. 공유 스타일은 `app/globals.css`, 공유 마크업은 `components/`. 페이지별로 복붙하지 않는다 — 한 곳을 고치면 관련 UI가 전부 바뀌도록. 재사용할 게 없으면 새로 만들기 전에 사용자에게 먼저 물어본다.
 
-UI를 구현할 때는 **기존 컴포넌트를 먼저 재사용**한다. 새 스타일을 만들기 전에 `theme.css`(공유 컴포넌트)·`partials.js`(GNB/푸터)·`docs/design-system.html`(갤러리)에 이미 있는지 확인한다.
+### 구현 후 검증 (MUST)
+commit/push 전에 **항상** `npm run build`로 타입·린트·빌드를 통과시킨다. 화면 변경은 `npm run dev`로 확인하고, 필요 시 스크린샷은 `screenshots/`에 저장한다.
 
-- **컴포넌트는 단일 출처에서 정의한다.** 같은 컴포넌트가 여러 페이지에 쓰이면 CSS는 `theme.css`, 마크업은 `partials.js`에만 둔다. 페이지별로 복붙하지 않는다 — **한 곳을 고치면 관련 UI가 전부 동일하게 바뀌도록** 한다.
-- **재사용할 컴포넌트가 없으면 새로 만들기 전에 사용자에게 먼저 물어본다.** (이 항목은 "질문 없이 진행" 기본 방침의 예외다.) 승인 후 만들면 `theme.css`/갤러리에 함께 반영한다.
-- 컴포넌트를 수정했으면 그 컴포넌트를 쓰는 **모든 페이지를 Playwright로 함께 확인**한다(아래 테스트 규칙).
-
-### 구현 후 로컬 Playwright 테스트 (MUST)
-
-구현이 끝나면 **commit/push 전에 항상** 로컬에서 Playwright로 검증한다:
-
-1. 정적 서버를 띄운다 — `python3 -m http.server 8000` (백그라운드).
-2. Playwright(`mcp__playwright__*`)로 `http://localhost:8000`에 접속해 변경한 화면을 확인한다.
-3. 스크린샷은 **반드시 `screenshots/` 폴더**에 저장한다. `browser_take_screenshot`의 `filename`에 **`screenshots/` 경로를 포함**해서 호출한다 — 예: `filename: "screenshots/apply-desktop.png"`. (경로를 안 주면 프로젝트 루트에 떨어진다. 검증됨: `filename`에 `screenshots/`를 붙이면 정확히 그 폴더에만 저장된다.) 파일명은 의미 있게 — `screenshots/<섹션-또는-기능>-<desktop|mobile>.png`.
-4. 혹시 루트에 PNG가 생성됐다면 commit 전에 `screenshots/`로 옮긴다.
-5. 콘솔 에러·레이아웃 깨짐이 없는지 확인한 뒤에야 다음의 push 단계로 넘어간다.
-
-- 데스크톱뿐 아니라 주요 반응형 브레이크포인트(880/760/560px)도 필요 시 캡처한다.
-- `screenshots/`는 git에 커밋해 변경 이력의 시각적 근거로 남긴다.
-
-### 새 기능 추가 시 자동 push (MUST)
-
-새로운 기능이 추가되거나 구현이 완료되면 **항상** 다음 순서로 `main` 브랜치에 push 한다:
-
-1. `git add -A`
-2. 의미 있는 메시지로 commit — `git commit -m "<설명>"`
-3. `git push origin main`
-
-- 기능 단위로 작업이 끝날 때마다 별도 지시가 없어도 자동 적용한다.
-- secret(`.env` 등)은 절대 commit 하지 않는다 — `.gitignore` 제외 여부를 항상 확인한다.
-
-## 보안 / Secrets
-
-- `.env`는 `.gitignore`에 포함되어 git에 추적되지 않는다. `GITHUB_TOKEN`, `GITHUB_USERNAME` 등 자격증명은 `.env`에만 보관한다.
+### 새 기능 추가 시 push (MUST)
+기능 완료 시 `git add -A` → 의미 있는 commit → `git push`. secret(`.env*`)은 절대 commit하지 않는다(.gitignore 확인).
 
 ## MCP 연결 (Connected Integrations)
-
-- **Vercel** — `plugin:vercel:vercel` (배포/프로젝트 관리)
-- **Supabase** — `supabase` (DB/백엔드)
-- **Figma** — `plugin:figma:figma` (디자인 ↔ 코드)
+- **Vercel** — 배포/프로젝트 관리
+- **Supabase** — DB/백엔드

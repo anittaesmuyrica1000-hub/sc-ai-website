@@ -1,17 +1,13 @@
-# 배포에서 제외 — 비밀/개발 산출물/미사용 에셋
+# 배포 업로드에서 제외 — 비밀/개발 산출물
 .env
+.env.local
 .git
 .playwright-mcp/
 screenshots/
 docs/
 *.md
 
-# 개발용 프리뷰/생성 템플릿(사이트와 무관)
-og-template.html
-hero-bg-previews.html
-hero-dark-preview.html
-
-# 현재 마크업에서 참조되지 않는 미사용 대용량 이미지
-report-aiview.png
-hero-globe.png
-demo-result.png
+# 현재 페이지에서 참조되지 않는 미사용 대용량 이미지(public 내)
+public/report-aiview.png
+public/hero-globe.png
+public/demo-result.png

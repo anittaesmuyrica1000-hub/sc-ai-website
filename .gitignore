@@ -2,8 +2,15 @@
 node_modules/
 .env
 .env.local
+.env*.local
 .vercel
 .claude/
+
+# Next.js
+/.next/
+/out/
+next-env.d.ts
+*.tsbuildinfo
 
 # Playwright MCP run artifacts
 .playwright-mcp/
