@@ -6,10 +6,13 @@ import { esc } from "./format";
 function inline(s: string): string {
   let t = esc(s);
   t = t.replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>");
-  t = t.replace(
-    /\[([^\]]+)\]\((https?:[^)\s]+)\)/g,
-    '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>'
-  );
+  // 외부 링크(http/https)는 새 탭, 내부 상대경로(/apply 등)는 같은 탭으로 렌더
+  t = t.replace(/\[([^\]]+)\]\((https?:\/\/[^)\s]+|\/[^)\s]+)\)/g, (_m, text, url) => {
+    const external = /^https?:/.test(url);
+    return external
+      ? `<a href="${url}" target="_blank" rel="noopener noreferrer">${text}</a>`
+      : `<a href="${url}">${text}</a>`;
+  });
   return t;
 }
 
@@ -65,7 +68,9 @@ export function renderContent(text: string | null | undefined): string {
       if (lines.every((l) => /^>\s?/.test(l))) {
         return "<blockquote>" + inline(lines.map((l) => l.replace(/^>\s?/, "")).join("\n")) + "</blockquote>";
       }
-      return "<p>" + inline(block).replace(/\n/g, "<br>") + "</p>";
+      // '출처'로 시작하는 문단은 본문보다 약하게(투명도↓) 표시
+      const isSrc = /^출처[\s:：]/.test(block) || block.trim() === "출처";
+      return '<p' + (isSrc ? ' class="post-src"' : "") + ">" + inline(block).replace(/\n/g, "<br>") + "</p>";
     })
     .join("");
 }
