@@ -308,9 +308,9 @@ function ApplyForm() {
 
             <div className="cand-row">
               {[
-                { img: "18848929", name: "지원자 A", fit: "적합 92" },
-                { img: "8617513", name: "지원자 B", fit: "적합 88" },
-                { img: "7845327", name: "지원자 C", fit: "적합 85" },
+                { img: "8278854", name: "지원자 A", fit: "적합 92" },
+                { img: "8278977", name: "지원자 B", fit: "적합 88" },
+                { img: "7845277", name: "지원자 C", fit: "적합 85" },
               ].map((c) => (
                 <div className="cand" key={c.img}>
                   {/* eslint-disable-next-line @next/next/no-img-element */}
