@@ -5,6 +5,7 @@ import { createClient } from "@/lib/supabase/server";
 import { type Post, fmtDate, readingTime } from "@/lib/types";
 import { PostBody } from "@/lib/postBody";
 import NewsletterCTA from "../NewsletterCTA";
+import ShareBar from "./ShareBar";
 import "../blog.css";
 
 export const revalidate = 60;
@@ -80,6 +81,7 @@ export default async function PostPage({
             )}
             <span>{fmtDate(post.created_at)}</span>
             <span><i className="fa-regular fa-clock" /> 읽는 시간 {readingTime(post.content)}분</span>
+            <ShareBar title={post.title} />
           </div>
         </div>
 

@@ -83,6 +83,13 @@
 .post-head .cat{display:inline-block;font-size:12px;font-weight:800;letter-spacing:.04em;color:var(--blue);background:var(--soft-2);padding:5px 12px;border-radius:999px}
 .post-head h1{font-size:clamp(28px,4.4vw,42px);font-weight:800;letter-spacing:-.03em;line-height:1.24;margin:16px 0 0}
 .post-meta{margin-top:18px;display:flex;flex-wrap:wrap;gap:14px;font-size:14px;color:var(--slate-2);font-weight:600;padding-bottom:26px;border-bottom:1px solid var(--line)}
+/* 공유 바 — 메타 줄 오른쪽에 배치 */
+.share-bar{display:inline-flex;align-items:center;gap:8px;margin-left:auto}
+.share-bar .share-label{font-size:13px;font-weight:700;color:var(--slate-2)}
+.share-btn{width:32px;height:32px;display:grid;place-items:center;border:1px solid var(--line);background:#fff;color:var(--slate);border-radius:9px;cursor:pointer;font-size:13px;transition:.16s}
+.share-btn:hover{border-color:var(--blue-2);color:var(--blue-d);background:var(--soft)}
+.share-copied{font-size:12.5px;font-weight:700;color:var(--green)}
+@media(max-width:560px){.share-bar{margin-left:0;width:100%}}
 .post-hero{width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:var(--r);margin:32px 0 8px;display:block}
 .post-content{margin-top:34px;font-size:17px;line-height:1.85;color:#26324a}
 .post-content p{margin:0 0 22px}
@@ -95,5 +102,18 @@
 .post-figure{margin:8px 0 28px}
 .post-figure img{width:100%;border-radius:var(--r);display:block}
 .post-figure figcaption{margin-top:10px;font-size:13.5px;color:var(--slate-2);text-align:center}
+/* 본문 인라인 강조 + 출처 링크 */
+.post-content strong{font-weight:800;color:var(--ink)}
+.post-content a{color:var(--blue-d);font-weight:600;text-decoration:underline;text-underline-offset:2px;text-decoration-thickness:1px;text-decoration-color:var(--blue-2)}
+.post-content a:hover{color:var(--blue);text-decoration-color:var(--blue)}
+/* 본문 표(통계 비교) — flex.team 패턴 */
+.post-table-wrap{margin:8px 0 28px;overflow-x:auto;border:1px solid var(--line);border-radius:12px}
+.post-table{width:100%;border-collapse:collapse;font-size:15px;line-height:1.55}
+.post-table th,.post-table td{padding:13px 16px;text-align:left;border-bottom:1px solid var(--line)}
+.post-table thead th{background:var(--soft-2);color:var(--ink);font-weight:800;font-size:13.5px;letter-spacing:-.01em;white-space:nowrap}
+.post-table tbody tr:last-child td{border-bottom:none}
+.post-table tbody tr:nth-child(even){background:var(--soft)}
+.post-table td:first-child{font-weight:700;color:var(--ink)}
+@media(max-width:560px){.post-table th,.post-table td{padding:11px 13px;font-size:14px}}
 .post-foot{margin-top:56px;padding-top:30px;border-top:1px solid var(--line);text-align:center}
 @media(max-width:560px){.post-wrap{padding:72px 16px 60px}.post-content{font-size:16px}}
