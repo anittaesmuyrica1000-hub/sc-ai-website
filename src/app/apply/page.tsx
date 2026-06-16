@@ -292,15 +292,6 @@ function ApplyForm() {
           </div>
         </div>
       </div>
-
-      {/* 채팅 문의 버블(고정) — 마케팅 패널은 제거하고 이 안내만 유지 */}
-      <a className="chat-fab" href="#applyCard" aria-label="채팅 문의">
-        <i className="fa-solid fa-comment-dots" />
-        <span>
-          <span className="cb-t">궁금한 건 채팅으로 문의하세요</span>
-          <span className="cb-s">평균 몇 분 내 답변드립니다</span>
-        </span>
-      </a>
     </section>
   );
 }

@@ -167,3 +167,36 @@ footer{background:#fff;color:var(--slate);padding:64px 0 44px;font-size:14px;bor
 .bro-done p{color:var(--slate);font-size:14.5px;line-height:1.6;margin-bottom:20px}
 .bro-done .sub-note{font-size:12.5px;color:var(--slate-2);margin-top:14px}
 @media(max-width:480px){.bro-card{padding:26px 20px}.bro-card .b-row{grid-template-columns:1fr}}
+
+/* ===== 채팅 도우미(챗봇) — partials.js 주입, 전 페이지 공용 ===== */
+.cbot{position:fixed;right:24px;bottom:24px;z-index:120;display:flex;flex-direction:column;align-items:flex-end;gap:12px}
+.cbot-fab{display:flex;align-items:center;gap:11px;background:var(--ink);color:#fff;border:0;cursor:pointer;border-radius:16px 16px 4px 16px;padding:13px 18px;box-shadow:0 14px 34px rgba(15,23,42,.28);max-width:300px;font-family:inherit;transition:transform .18s,box-shadow .18s}
+.cbot-fab:hover{transform:translateY(-2px);box-shadow:0 18px 40px rgba(15,23,42,.34)}
+.cbot-fab .cbot-fab-ico{color:#8FB4FF;font-size:18px;flex-shrink:0}
+.cbot-fab .cb-t{display:block;font-size:13.5px;font-weight:700;text-align:left}
+.cbot-fab .cb-s{display:block;font-size:11.5px;color:rgba(255,255,255,.7);margin-top:2px;text-align:left}
+.cbot.open .cbot-fab{display:none}
+.cbot-panel{width:360px;max-width:calc(100vw - 32px);height:520px;max-height:calc(100vh - 120px);background:#fff;border:1px solid var(--line);border-radius:18px;box-shadow:0 30px 70px -20px rgba(15,23,42,.4);display:flex;flex-direction:column;overflow:hidden}
+.cbot-panel[hidden]{display:none}
+.cbot-head{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:15px 16px;background:var(--ink);color:#fff}
+.cbot-head-id{display:flex;align-items:center;gap:10px}
+.cbot-ava{width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,var(--blue),var(--blue-2));display:grid;place-items:center;font-size:16px;color:#fff;flex-shrink:0}
+.cbot-name{font-size:15px;font-weight:800}
+.cbot-status{font-size:11.5px;color:rgba(255,255,255,.65)}
+.cbot-close{background:rgba(255,255,255,.12);border:0;color:#fff;width:30px;height:30px;border-radius:8px;cursor:pointer;display:grid;place-items:center}
+.cbot-close:hover{background:rgba(255,255,255,.22)}
+.cbot-body{flex:1;overflow-y:auto;padding:18px 16px;display:flex;flex-direction:column;gap:12px;background:var(--soft)}
+.cbot-msg{max-width:85%;font-size:14px;line-height:1.55;padding:11px 14px;border-radius:14px;word-break:break-word}
+.cbot-msg.bot{align-self:flex-start;background:#fff;border:1px solid var(--line);color:var(--ink);border-bottom-left-radius:4px}
+.cbot-msg.user{align-self:flex-end;background:var(--blue);color:#fff;border-bottom-right-radius:4px}
+.cbot-msg a{color:var(--blue-d);text-decoration:underline;font-weight:700}
+.cbot-msg.user a{color:#fff}
+.cbot-quick{display:flex;flex-wrap:wrap;gap:8px;padding:10px 14px;border-top:1px solid var(--line);background:#fff}
+.cbot-quick button{font-family:inherit;font-size:12.5px;font-weight:600;color:var(--blue-d);background:var(--soft-2);border:1px solid var(--tint);border-radius:999px;padding:7px 12px;cursor:pointer;transition:.15s}
+.cbot-quick button:hover{background:var(--tint)}
+.cbot-input{display:flex;gap:8px;padding:12px 14px;border-top:1px solid var(--line);background:#fff}
+.cbot-input input{flex:1;border:1px solid var(--line);border-radius:10px;padding:11px 12px;font-size:14px;font-family:inherit;outline:none;color:var(--ink)}
+.cbot-input input:focus{border-color:var(--blue-2);box-shadow:0 0 0 3px rgba(91,141,247,.16)}
+.cbot-input button{width:42px;border:0;border-radius:10px;background:var(--blue);color:#fff;cursor:pointer;font-size:15px}
+.cbot-input button:hover{background:var(--blue-d)}
+@media(max-width:560px){.cbot{right:14px;bottom:14px}.cbot-fab .cb-s{display:none}.cbot-panel{height:72vh}}

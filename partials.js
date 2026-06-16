@@ -210,6 +210,128 @@
     });
   })();
 
+  /* 채팅 도우미(챗봇) — body에 1회 주입. FAQ 기반 응답 + 도입 문의 연결.
+     백엔드 없이 동작(정적/Next 공용). 스타일은 theme.css(.cbot*). */
+  (function setupChatbot() {
+    // 로컬 esc — blog-data.js(window.esc) 미로드 페이지에서도 동작
+    function esc(s) {
+      return String(s == null ? '' : s)
+        .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+    }
+    var KB = [
+      { q: 'AI 면접은 어떻게 진행되나요?', a: '지원자는 안내에 따라 온라인으로 AI 면접에 응시합니다. AIVIEW가 응답을 분석·검증해 역량 평가와 핵심 요약 리포트를 만들고, 채용팀에는 검증을 통과한 상위 후보의 리포트만 전달됩니다.', k: ['면접', '진행', '어떻게', '응시', '방식'] },
+      { q: '기존 ATS·채용 툴과 연동되나요?', a: '네, 주요 ATS·채용 툴과의 연동을 지원합니다. 구체적인 연동 방식은 도입 문의 시 환경에 맞게 안내해 드려요.', k: ['ats', '연동', '툴', '통합', '연결'] },
+      { q: '도입까지 얼마나 걸리나요?', a: '환경에 따라 다르지만 빠르게 시작하실 수 있습니다. 도입 문의를 남겨주시면 일정과 함께 안내드려요.', k: ['도입', '기간', '얼마나', '시작', '언제', '소요'] },
+      { q: '지원자 데이터는 안전한가요?', a: '지원자 데이터는 안전하게 암호화되어 관리되며 관련 법규를 준수합니다. 자세한 보안 정책은 개인정보처리방침에서 확인하실 수 있어요.', k: ['데이터', '보안', '안전', '개인정보', '보호'] },
+      { q: '비용은 어떻게 되나요?', a: '채용 규모와 활용 범위에 따라 맞춤 견적으로 안내드립니다. 도입 문의를 남겨주시면 상세 견적을 드려요.', k: ['비용', '가격', '요금', '견적', '얼마'] }
+    ];
+    var GREETING = '안녕하세요! AIVIEW 도우미예요. 🙂<br>AI 면접 도입에 대해 궁금한 점을 물어보세요.';
+    var FALLBACK = '정확한 안내를 위해 <a href="apply.html">도입 문의</a>를 남겨주시면 담당자가 영업일 기준 1일 내 연락드려요. 아래 자주 묻는 질문도 참고해 보세요!';
+
+    var WIDGET = '' +
+      '<div class="cbot" id="cbot">' +
+      '  <button type="button" class="cbot-fab" id="cbotFab" aria-label="채팅 문의 열기">' +
+      '    <span class="cbot-fab-ico"><i class="fa-solid fa-comment-dots"></i></span>' +
+      '    <span><span class="cb-t">궁금한 건 채팅으로 문의하세요</span><span class="cb-s">평균 몇 분 내 답변드립니다</span></span>' +
+      '  </button>' +
+      '  <div class="cbot-panel" id="cbotPanel" hidden>' +
+      '    <div class="cbot-head">' +
+      '      <div class="cbot-head-id"><span class="cbot-ava"><i class="fa-solid fa-headset"></i></span>' +
+      '        <div><div class="cbot-name">AIVIEW 도우미</div><div class="cbot-status">보통 몇 분 내 답변</div></div></div>' +
+      '      <button type="button" class="cbot-close" id="cbotClose" aria-label="닫기"><i class="fa-solid fa-xmark"></i></button>' +
+      '    </div>' +
+      '    <div class="cbot-body" id="cbotBody"></div>' +
+      '    <div class="cbot-quick" id="cbotQuick"></div>' +
+      '    <form class="cbot-input" id="cbotForm">' +
+      '      <input type="text" id="cbotText" placeholder="메시지를 입력하세요" autocomplete="off">' +
+      '      <button type="submit" aria-label="전송"><i class="fa-solid fa-paper-plane"></i></button>' +
+      '    </form>' +
+      '  </div>' +
+      '</div>';
+
+    function ready(fn) {
+      if (document.readyState !== 'loading') fn();
+      else document.addEventListener('DOMContentLoaded', fn);
+    }
+
+    ready(function () {
+      if (document.getElementById('cbot')) return;
+      var holder = document.createElement('div');
+      holder.innerHTML = WIDGET;
+      document.body.appendChild(holder.firstChild);
+
+      var root = document.getElementById('cbot');
+      var fab = document.getElementById('cbotFab');
+      var panel = document.getElementById('cbotPanel');
+      var body = document.getElementById('cbotBody');
+      var quick = document.getElementById('cbotQuick');
+      var form = document.getElementById('cbotForm');
+      var input = document.getElementById('cbotText');
+      var started = false;
+
+      function scrollDown() { body.scrollTop = body.scrollHeight; }
+      function addMsg(who, html) {
+        var m = document.createElement('div');
+        m.className = 'cbot-msg ' + who;
+        m.innerHTML = html; // 콘텐츠는 내부 정의(KB)라 안전
+        body.appendChild(m);
+        scrollDown();
+      }
+      function botReply(html) { setTimeout(function () { addMsg('bot', html); }, 280); }
+
+      function renderQuick() {
+        quick.innerHTML = '';
+        KB.forEach(function (item) {
+          var b = document.createElement('button');
+          b.type = 'button';
+          b.textContent = item.q;
+          b.addEventListener('click', function () { handle(item.q); });
+          quick.appendChild(b);
+        });
+      }
+
+      function answerFor(text) {
+        var t = text.toLowerCase();
+        for (var i = 0; i < KB.length; i++) {
+          if (t.indexOf(KB[i].q.toLowerCase()) >= 0) return KB[i].a;
+        }
+        for (var j = 0; j < KB.length; j++) {
+          for (var n = 0; n < KB[j].k.length; n++) {
+            if (t.indexOf(KB[j].k[n].toLowerCase()) >= 0) return KB[j].a;
+          }
+        }
+        return FALLBACK;
+      }
+      function handle(text) {
+        addMsg('user', esc(text));
+        botReply(answerFor(text));
+      }
+
+      function open() {
+        root.classList.add('open');
+        panel.removeAttribute('hidden');
+        if (!started) {
+          started = true;
+          botReply(GREETING);
+          renderQuick();
+        }
+        setTimeout(function () { input.focus(); }, 120);
+      }
+      function close() { root.classList.remove('open'); panel.setAttribute('hidden', ''); }
+
+      fab.addEventListener('click', open);
+      document.getElementById('cbotClose').addEventListener('click', close);
+      form.addEventListener('submit', function (e) {
+        e.preventDefault();
+        var v = input.value.trim();
+        if (!v) return;
+        input.value = '';
+        handle(v);
+      });
+    });
+  })();
+
   /* GNB 메뉴(햄버거) 토글 — 커스텀 엘리먼트가 innerHTML로 렌더되므로 위임 방식으로 바인딩 */
   function closeMenu() {
     var menu = document.getElementById('navMenu');

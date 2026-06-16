@@ -579,11 +579,11 @@ export default function Home() {
           <div className="head">
             <h2>먼저 써본 채용팀의 이야기</h2>
             <p className="lead">
-              채용팀 신뢰도와{" "}
+              실제 도입 고객사가 전한{" "}
               <span className="blue" style={{ fontWeight: 700 }}>
-                후보자 만족도
-              </span>
-              , 둘 다 잡았습니다.
+                AI 면접 채용
+              </span>{" "}
+              경험입니다.
             </p>
           </div>
           <div className="v-grid">
@@ -593,15 +593,16 @@ export default function Home() {
                   <i className="fa-solid fa-quote-left"></i>
                 </div>
                 <blockquote>
-                  “300장을 넘기던 1차 검토가 사라졌습니다. 이제 우리는 검증된 후보 20명과의 ‘대화’에만
-                  집중합니다.”
+                  “슈퍼코더를 통해 채용 프로세스를 혁신적으로 효율화했습니다. 기존에는 개발자들이 직접
+                  면접을 진행하며 적지 않은 리소스를 썼지만, AI 면접으로 대체하면서 이제 개발자들은
+                  본업에 집중하면서도 우수한 인재를 놓치지 않게 되었습니다.”
                 </blockquote>
               </div>
               <div className="who">
-                <div className="ava">김</div>
+                <div className="ava">A</div>
                 <div>
-                  <div className="nm">김○○ 채용팀장</div>
-                  <div className="ro">국내 대기업 인사본부</div>
+                  <div className="nm">아키스케치</div>
+                  <div className="ro">Supercoder 도입 고객</div>
                 </div>
               </div>
             </div>
@@ -611,15 +612,16 @@ export default function Home() {
                   <i className="fa-solid fa-quote-left"></i>
                 </div>
                 <blockquote>
-                  “이력서 너머의 진짜 실력이 보입니다. 입사 후 ‘기대와 달랐다’는 미스매치가 눈에 띄게
-                  줄었어요.”
+                  “슈퍼코더 AI 화상 인터뷰로 채용 브랜딩을 강화하고 채용 과정을 효율화했습니다. 표준화된
+                  질문으로 지원자에게 회사를 효과적으로 전달하고, 직무 적합성과 의지를 면밀히 파악할 수
+                  있었습니다. 객관적인 평가로 채용 효율도 크게 높였습니다.”
                 </blockquote>
               </div>
               <div className="who">
-                <div className="ava">이</div>
+                <div className="ava">G</div>
                 <div>
-                  <div className="nm">이○○ 인재문화팀 리더</div>
-                  <div className="ro">성장기업 People팀</div>
+                  <div className="nm">가온프라임</div>
+                  <div className="ro">Supercoder 도입 고객</div>
                 </div>
               </div>
             </div>
@@ -629,20 +631,35 @@ export default function Home() {
                   <i className="fa-solid fa-quote-left"></i>
                 </div>
                 <blockquote>
-                  “긴장되는 대면 면접보다 편했어요. 제 역량을 충분히 보여줄 수 있어 오히려 공정하다고
-                  느꼈습니다.”
+                  “회사가 성장하고 개발팀을 확장하는 과정에서 Supercoder가 큰 도움이 되었습니다. 개발자
+                  채용 지원뿐 아니라 개발 과정 전반에 걸친 컨설팅과 가이드까지 제공해, 성장하는 우리
+                  팀에게 매우 가치 있는 지원이었습니다.”
                 </blockquote>
               </div>
               <div className="who">
-                <div
-                  className="ava"
-                  style={{ background: "linear-gradient(135deg,#16A34A,#4ADE80)" }}
-                >
-                  <i className="fa-solid fa-user"></i>
-                </div>
+                <div className="ava">S</div>
                 <div>
-                  <div className="nm">AI 면접 응시 후보자</div>
-                  <div className="ro">지원자 응시 만족도 92%</div>
+                  <div className="nm">식파마</div>
+                  <div className="ro">Supercoder 도입 고객</div>
+                </div>
+              </div>
+            </div>
+            <div className="vc">
+              <div className="bubble">
+                <div className="qm">
+                  <i className="fa-solid fa-quote-left"></i>
+                </div>
+                <blockquote>
+                  “내년에도 개발자의 약 70%를 Supercoder를 통해 채용할 계획입니다. 처음엔 확신이 없었지만
+                  함께 일해 보니 비용 대비 만족도가 높았고, 실제로 채용 속도가 예상보다 거의 두 배
+                  빨라졌습니다.”
+                </blockquote>
+              </div>
+              <div className="who">
+                <div className="ava">M</div>
+                <div>
+                  <div className="nm">마크애니</div>
+                  <div className="ro">Supercoder 도입 고객</div>
                 </div>
               </div>
             </div>
