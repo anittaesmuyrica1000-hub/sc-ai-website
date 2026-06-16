@@ -5,10 +5,10 @@ import ApplyForm from "./ApplyForm";
 export const metadata: Metadata = {
   title: "무료 신청 · AI 면접 채용 검증",
   description:
-    "AIVIEW 무료 도입 신청. AI 면접으로 지원자를 자동 검증하고, 채용팀에 검증된 핵심 인재 리포트를 전달받으세요.",
+    "AI면접 무료 도입 신청. AI 면접으로 지원자를 자동 검증하고, 채용팀에 검증된 핵심 인재 리포트를 전달받으세요.",
   alternates: { canonical: "/apply" },
   openGraph: {
-    title: "무료 신청 · AIVIEW | AI 면접 채용 검증",
+    title: "무료 신청 · AI면접 | AI 면접 채용 검증",
     description: "AI 면접으로 지원자를 자동 검증하고, 채용팀에 검증된 핵심 인재 리포트를 전달받으세요.",
     url: "/apply",
   },

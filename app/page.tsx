@@ -15,17 +15,17 @@ const JSON_LD = {
   "@graph": [
     {
       "@type": "Organization",
-      name: "AIVIEW",
+      name: "AI면접",
       url: "https://sc-ai-website.vercel.app/",
       logo: "https://sc-ai-website.vercel.app/apple-touch-icon.png",
       description:
         "AI 면접으로 지원자를 자동 검증하고 채용팀에 검증된 핵심 인재 리포트를 전달하는 B2B 채용 SaaS",
       sameAs: [],
     },
-    { "@type": "WebSite", name: "AIVIEW", url: "https://sc-ai-website.vercel.app/", inLanguage: "ko-KR" },
+    { "@type": "WebSite", name: "AI면접", url: "https://sc-ai-website.vercel.app/", inLanguage: "ko-KR" },
     {
       "@type": "SoftwareApplication",
-      name: "AIVIEW",
+      name: "AI면접",
       applicationCategory: "BusinessApplication",
       operatingSystem: "Web",
       description: "AI 면접 기반 채용 검증 솔루션. 지원자를 자동 검증하고 핵심 인재 리포트를 제공합니다.",
@@ -34,7 +34,7 @@ const JSON_LD = {
     {
       "@type": "FAQPage",
       mainEntity: [
-        { "@type": "Question", name: "AI 면접은 어떻게 진행되나요?", acceptedAnswer: { "@type": "Answer", text: "지원자는 안내에 따라 온라인으로 AI 면접에 응시합니다. AIVIEW가 응답을 분석·검증해 역량 평가와 핵심 요약이 담긴 리포트를 생성하고, 채용팀에는 검증을 통과한 상위 후보의 리포트만 전달됩니다." } },
+        { "@type": "Question", name: "AI 면접은 어떻게 진행되나요?", acceptedAnswer: { "@type": "Answer", text: "지원자는 안내에 따라 온라인으로 AI 면접에 응시합니다. AI면접이 응답을 분석·검증해 역량 평가와 핵심 요약이 담긴 리포트를 생성하고, 채용팀에는 검증을 통과한 상위 후보의 리포트만 전달됩니다." } },
         { "@type": "Question", name: "기존 ATS·채용 툴과 연동되나요?", acceptedAnswer: { "@type": "Answer", text: "리포트는 표준 형식으로 제공되어 기존 채용 프로세스에 바로 활용할 수 있습니다. 상세 연동 방식은 도입 상담에서 안내해 드립니다." } },
         { "@type": "Question", name: "도입까지 얼마나 걸리나요?", acceptedAnswer: { "@type": "Answer", text: "설치나 계약 없이 무료 신청 후 바로 시작할 수 있습니다. 신청하시면 영업일 기준 1일 내 담당자가 데모와 함께 안내드립니다." } },
         { "@type": "Question", name: "지원자 데이터는 안전하게 관리되나요?", acceptedAnswer: { "@type": "Answer", text: "모든 데이터는 전송 구간 암호화(HTTPS)와 접근 통제 정책 아래 관리됩니다. 수집 항목과 처리 방식은 개인정보처리방침에서 확인하실 수 있습니다." } },
@@ -198,7 +198,7 @@ export default function HomePage() {
 
           <div className="how-rows">
             <div className="how-row">
-              <div className="hr-media"><picture><source srcSet="/report-interview-summary.webp" type="image/webp" /><img className="hr-img" src="/report-interview-summary.png" alt="AIVIEW 리포트 — 인터뷰 내용 요약과 인터뷰 비디오" width={1040} height={618} loading="lazy" /></picture></div>
+              <div className="hr-media"><picture><source srcSet="/report-interview-summary.webp" type="image/webp" /><img className="hr-img" src="/report-interview-summary.png" alt="AI면접 리포트 — 인터뷰 내용 요약과 인터뷰 비디오" width={1040} height={618} loading="lazy" /></picture></div>
               <div className="hr-info">
                 <h3>인터뷰 요약</h3>
                 <p>AI 면접 대화를 핵심만 간추려, 지원자를 빠르게 파악할 수 있게 정리합니다.</p>
@@ -209,10 +209,10 @@ export default function HomePage() {
                 <h3>리포트 종합평가</h3>
                 <p>직무 적합도를 종합 점수로 환산해, 한눈에 판단할 수 있게 제시합니다.</p>
               </div>
-              <div className="hr-media"><picture><source srcSet="/report-overall-grade.webp" type="image/webp" /><img className="hr-img" src="/report-overall-grade.png" alt="AIVIEW 리포트 — 종합 등급(양호)과 종합 평가" width={1040} height={524} loading="lazy" /></picture></div>
+              <div className="hr-media"><picture><source srcSet="/report-overall-grade.webp" type="image/webp" /><img className="hr-img" src="/report-overall-grade.png" alt="AI면접 리포트 — 종합 등급(양호)과 종합 평가" width={1040} height={524} loading="lazy" /></picture></div>
             </div>
             <div className="how-row">
-              <div className="hr-media"><img className="hr-img" src="/report-competency.png" alt="AIVIEW 리포트 — 역량 평가 레이더 차트와 항목별 등급" width={1208} height={868} loading="lazy" /></div>
+              <div className="hr-media"><img className="hr-img" src="/report-competency.png" alt="AI면접 리포트 — 역량 평가 레이더 차트와 항목별 등급" width={1208} height={868} loading="lazy" /></div>
               <div className="hr-info">
                 <h3>역량평가</h3>
                 <p>핵심 직무 역량을 항목별로 검증하고, 강점·약점을 시각화해 보여줍니다.</p>
@@ -314,7 +314,7 @@ export default function HomePage() {
           <div className="faq-list">
             <details className="faq-item" open>
               <summary>AI 면접은 어떻게 진행되나요? <i className="fa-solid fa-plus fq-ic"></i></summary>
-              <div className="fa-ans">지원자는 안내에 따라 온라인으로 AI 면접에 응시합니다. AIVIEW가 응답을 분석·검증해 역량 평가와 핵심 요약이 담긴 리포트를 생성하고, 채용팀에는 검증을 통과한 상위 후보의 리포트만 전달됩니다.</div>
+              <div className="fa-ans">지원자는 안내에 따라 온라인으로 AI 면접에 응시합니다. AI면접이 응답을 분석·검증해 역량 평가와 핵심 요약이 담긴 리포트를 생성하고, 채용팀에는 검증을 통과한 상위 후보의 리포트만 전달됩니다.</div>
             </details>
             <details className="faq-item">
               <summary>기존 ATS·채용 툴과 연동되나요? <i className="fa-solid fa-plus fq-ic"></i></summary>

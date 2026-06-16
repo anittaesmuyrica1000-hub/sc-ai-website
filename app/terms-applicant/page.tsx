@@ -4,7 +4,7 @@ import Link from "next/link";
 export const metadata: Metadata = {
   title: "지원자용 서비스 이용약관",
   description:
-    "AIVIEW(에이아이뷰) AI 면접 서비스 지원자용 이용약관 — 응시 절차, 면접데이터 처리, 지원자의 권리·의무, 책임 제한 등을 규정합니다.",
+    "AI면접 AI 면접 서비스 지원자용 이용약관 — 응시 절차, 면접데이터 처리, 지원자의 권리·의무, 책임 제한 등을 규정합니다.",
   alternates: { canonical: "/terms-applicant" },
 };
 

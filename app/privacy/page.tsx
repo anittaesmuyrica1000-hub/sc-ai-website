@@ -4,7 +4,7 @@ import Link from "next/link";
 export const metadata: Metadata = {
   title: "개인정보처리방침",
   description:
-    "AIVIEW(에이아이뷰) 개인정보처리방침 — 정보 수집·이용, 공유, 데이터 보안, 접근·정정·삭제 권리를 안내합니다.",
+    "AI면접 개인정보처리방침 — 정보 수집·이용, 공유, 데이터 보안, 접근·정정·삭제 권리를 안내합니다.",
   alternates: { canonical: "/privacy" },
 };
 

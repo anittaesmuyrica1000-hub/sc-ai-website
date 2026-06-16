@@ -243,7 +243,7 @@ function Editor({ email }: { email: string }) {
               </div>
               <div className="field">
                 <label htmlFor="f-author">작성자</label>
-                <input type="text" id="f-author" placeholder="예: AIVIEW 팀" value={form.author} onChange={(e) => set("author", e.target.value)} />
+                <input type="text" id="f-author" placeholder="예: AI면접 팀" value={form.author} onChange={(e) => set("author", e.target.value)} />
               </div>
             </div>
             <div className="field">

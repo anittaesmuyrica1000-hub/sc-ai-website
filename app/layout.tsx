@@ -10,12 +10,12 @@ const SITE_URL = "https://sc-ai-website.vercel.app";
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: "AIVIEW · AI 면접으로 검증된 인재만 | 채용 자동화 SaaS",
-    template: "%s · AIVIEW",
+    default: "AI면접 · AI 면접으로 검증된 인재만 | 채용 자동화 SaaS",
+    template: "%s · AI면접",
   },
   description:
-    "AI 면접이 지원자를 자동 검증하고, 채용팀에는 검증된 핵심 인재 리포트만 전달합니다. 가짜 이력서·과장 스펙을 걸러내는 채용 검증 솔루션 AIVIEW.",
-  applicationName: "AIVIEW",
+    "AI 면접이 지원자를 자동 검증하고, 채용팀에는 검증된 핵심 인재 리포트만 전달합니다. 가짜 이력서·과장 스펙을 걸러내는 채용 검증 솔루션 AI면접.",
+  applicationName: "AI면접",
   verification: {
     google: "oDEbTQ1eeTf8wR4lAn7m-QV6q2LII3NbrfRuzsIxgUs",
   },
@@ -28,16 +28,16 @@ export const metadata: Metadata = {
   },
   openGraph: {
     type: "website",
-    siteName: "AIVIEW",
+    siteName: "AI면접",
     locale: "ko_KR",
     url: SITE_URL,
-    title: "AI 면접으로 검증된 인재만 만나세요 · AIVIEW",
+    title: "AI 면접으로 검증된 인재만 만나세요 · AI면접",
     description: "AI 면접이 지원자를 자동 검증하고, 채용팀에는 검증된 핵심 인재 리포트만 전달합니다.",
     images: [{ url: "/og-image.png", width: 1200, height: 630 }],
   },
   twitter: {
     card: "summary_large_image",
-    title: "AI 면접으로 검증된 인재만 만나세요 · AIVIEW",
+    title: "AI 면접으로 검증된 인재만 만나세요 · AI면접",
     description: "AI 면접이 자동 검증하고, 검증된 핵심 인재 리포트만 전달합니다.",
     images: ["/og-image.png"],
   },

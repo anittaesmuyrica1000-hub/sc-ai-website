@@ -4,7 +4,7 @@ import Link from "next/link";
 export const metadata: Metadata = {
   title: "서비스 이용약관(기업용)",
   description:
-    "AIVIEW(에이아이뷰) AI 면접 서비스 기업용(채용사) 이용약관 — 이용계약, 권리·의무, 유료서비스·크레딧, 환불, 책임 등을 규정합니다.",
+    "AI면접 AI 면접 서비스 기업용(채용사) 이용약관 — 이용계약, 권리·의무, 유료서비스·크레딧, 환불, 책임 등을 규정합니다.",
   alternates: { canonical: "/terms" },
 };
 
