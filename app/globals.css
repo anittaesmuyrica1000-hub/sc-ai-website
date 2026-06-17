@@ -91,7 +91,7 @@ header.nav-invert .nav-login{background:transparent;color:#fff;border-color:rgba
 header.nav-invert .nav-login:hover{border-color:#fff;color:#fff}
 @media(max-width:760px){.nav-login{display:none}}
 /* 중앙 페이지 메뉴(블로그·서비스소개서) — 헤더 정중앙 고정 */
-.nav-center{position:absolute;left:50%;top:0;transform:translateX(-50%);height:64px;display:flex;align-items:center;gap:30px}
+.nav-center{display:flex;align-items:center;gap:24px;margin-right:8px}
 .nav-center a{font-size:15px;font-weight:600;color:var(--ink);white-space:nowrap;cursor:pointer;transition:color .2s}
 .nav-center a:hover{color:var(--blue-d)}
 /* 다크 섹션 위에선 흰색 */
