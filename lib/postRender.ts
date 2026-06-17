@@ -65,12 +65,15 @@ export function renderContent(text: string | null | undefined): string {
       if (lines.every((l) => /^[-*]\s+/.test(l))) {
         return '<ul class="post-list">' + lines.map((l) => "<li>" + inline(l.replace(/^[-*]\s+/, "")) + "</li>").join("") + "</ul>";
       }
+      const isSrc = (txt: string) => /^출처[\s:：]/.test(txt.trim()) || txt.trim() === "출처";
       if (lines.every((l) => /^>\s?/.test(l))) {
-        return "<blockquote>" + inline(lines.map((l) => l.replace(/^>\s?/, "")).join("\n")) + "</blockquote>";
+        const inner = lines.map((l) => l.replace(/^>\s?/, "")).join("\n");
+        // '출처' 인용구는 인용 스타일 대신 약한 출처 표기로
+        if (isSrc(inner)) return '<p class="post-src">' + inline(inner).replace(/\n/g, "<br>") + "</p>";
+        return "<blockquote>" + inline(inner) + "</blockquote>";
       }
       // '출처'로 시작하는 문단은 본문보다 약하게(투명도↓) 표시
-      const isSrc = /^출처[\s:：]/.test(block) || block.trim() === "출처";
-      return '<p' + (isSrc ? ' class="post-src"' : "") + ">" + inline(block).replace(/\n/g, "<br>") + "</p>";
+      return '<p' + (isSrc(block) ? ' class="post-src"' : "") + ">" + inline(block).replace(/\n/g, "<br>") + "</p>";
     })
     .join("");
 }
