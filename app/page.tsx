@@ -64,7 +64,7 @@ export default function HomePage() {
                 검증된 핵심 인재 리포트만 채용팀에 전달합니다.
               </p>
               <div className="decl-cta">
-                <Link href="/apply" className="btn btn-blue">무료 체험하기 <i className="fa-solid fa-arrow-right"></i></Link>
+                <Link href="/apply" className="btn btn-blue">무료 상담 신청 <i className="fa-solid fa-arrow-right"></i></Link>
               </div>
             </div>
           </div>
@@ -259,7 +259,7 @@ export default function HomePage() {
           <div className="proof-row">
             <div className="pc2"><div className="vlabel"><i className="fa-solid fa-bolt"></i> 속도</div><div className="big">0<span style={{ fontSize: ".5em" }}>시간</span></div><p>채용팀 1차 검토 시간<br />(응시 → AI 면접 → 리포트)</p></div>
             <div className="pc2"><div className="vlabel"><i className="fa-solid fa-piggy-bank"></i> 비용 절감</div><div className="big">1,272<span style={{ fontSize: ".5em" }}>만원</span></div><p>잘못된 채용 1건 · 그대로 손실</p><p className="psrc">출처: 사람인, 기업 499개사</p></div>
-            <div className="pc2"><div className="vlabel"><i className="fa-solid fa-circle-check"></i> 검증</div><div className="big">100<span style={{ fontSize: ".5em" }}>%</span></div><p>핵심 직무 역량 기준<br />정확한 검증</p></div>
+            <div className="pc2"><div className="vlabel"><i className="fa-solid fa-circle-check"></i> 일관성</div><div className="big">100<span style={{ fontSize: ".5em" }}>%</span></div><p>모든 지원자를 동일 기준으로<br />일관되게 검증</p></div>
           </div>
         </div>
       </section>
@@ -342,7 +342,7 @@ export default function HomePage() {
         <div className="wrap">
           <h2>다음 채용부터,<br /><span className="real-cta" id="real-cta">검증된 후보</span>만 만나세요.</h2>
           <p>5분이면 충분합니다. AI가 먼저 검증하고 핵심 후보만 전달합니다.</p>
-          <Link href="/apply" className="btn btn-blue">무료 체험하기 <i className="fa-solid fa-arrow-right"></i></Link>
+          <Link href="/apply" className="btn btn-blue">무료 상담 신청 <i className="fa-solid fa-arrow-right"></i></Link>
         </div>
       </section>
 

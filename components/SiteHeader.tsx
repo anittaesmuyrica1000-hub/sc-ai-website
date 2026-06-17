@@ -79,7 +79,6 @@ export default function SiteHeader() {
           <div className="nav-inline">
             <Link href="/blog">블로그</Link>
             <a href="#" className="js-brochure">서비스소개서</a>
-            <Link href="/admin">로그인</Link>
           </div>
 
           {/* 주 CTA — 항상 노출 */}
@@ -101,7 +100,6 @@ export default function SiteHeader() {
             <div className="nav-menu" id="navMenu" hidden={!menuOpen}>
               <Link href="/blog" onClick={close}>블로그</Link>
               <a href="#" className="js-brochure" onClick={close}>서비스소개서</a>
-              <Link href="/admin" onClick={close}>로그인</Link>
               <Link href="/apply" className="nav-menu-cta" onClick={close}>도입 문의</Link>
             </div>
           </div>

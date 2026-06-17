@@ -111,7 +111,10 @@ footer{background:#fff;color:var(--slate);padding:64px 0 44px;font-size:14px;bor
 .foot-logo-img{height:26px;width:auto;display:block;opacity:.7}
 .foot-copy{color:var(--slate-2);font-size:13px;margin:0}
 /* 저작권 — 푸터 맨 아래 바 */
-.foot-bottom{margin-top:48px;padding-top:12px;border-top:1px solid var(--line);text-align:left}
+.foot-bottom{margin-top:48px;padding-top:16px;border-top:1px solid var(--line);text-align:left}
+/* 사업자 정보 — 소형·약한 색, 여러 줄 가능 */
+.foot-biz{display:flex;flex-wrap:wrap;gap:3px 14px;color:var(--slate-2);font-size:12.5px;line-height:1.6;margin-bottom:10px}
+.foot-biz span{white-space:nowrap}
 .foot-links{display:flex;gap:64px}
 .foot-col h4{color:var(--slate-2);font-size:14px;font-weight:600;margin-bottom:18px}
 .foot-col ul{list-style:none;display:grid;gap:14px}
