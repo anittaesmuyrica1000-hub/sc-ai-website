@@ -203,6 +203,11 @@
   .hr-media{position:relative;width:100%;max-width:700px;margin-inline:auto}
   .hr-media::before{content:"";position:absolute;inset:-8% -6%;z-index:0;background:radial-gradient(58% 58% at 50% 46%, rgba(46,108,240,.13), rgba(46,108,240,0) 70%);pointer-events:none}
   .hr-img{position:relative;z-index:1;width:100%;height:auto;display:block}
+  /* 리포트 종합평가(2번째 행): 가로로 넓고 낮은 비율 → 더 넓게 키워 다른 행과 높이를 맞춤(데스크톱) */
+  @media(min-width:881px){
+    .how-row:nth-child(2){grid-template-columns:minmax(0,1.72fr) minmax(0,0.82fr)}
+    .how-row:nth-child(2) .hr-media{max-width:920px}
+  }
   @media(max-width:880px){.how-rows{gap:56px;margin-top:40px}.how-row{grid-template-columns:1fr;gap:18px}.hr-info{text-align:center}.how-row .hr-media{order:-1}.hr-info h3{font-size:21px}.hr-info p{margin-top:8px}.hr-points{justify-items:start;max-width:340px;margin-left:auto;margin-right:auto;text-align:left}}
 
   /* 6. PROOF */
