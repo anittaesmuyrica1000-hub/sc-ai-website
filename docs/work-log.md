@@ -1,77 +1,59 @@
 # 작업 내역 (Work Log)
 
-날짜별 주요 작업 기록. 최신 항목이 위로 온다.
+날짜별 작업 요약. 최신 항목이 위로 온다. 운영 사이트: https://sc-ai-website.vercel.app
+(블로그는 Supabase에서 매 요청마다 조회 — DB 변경은 재배포 없이 즉시 반영, 코드/이미지 자산 변경은 배포 후 반영)
 
 ---
 
-## 2026-06-16 — 정적 HTML → Next.js 웹앱 마이그레이션 + Vercel/Supabase 구성
+## 2026-06-17
 
-### 개요
-기존 빌드 없는 정적 멀티페이지 HTML 사이트(index/apply/blog/post/admin/legal)를
-**Next.js 15 (App Router) + React 19 + TypeScript** 웹앱으로 전환하고,
-Vercel 신규 배포 연결 · Supabase 환경변수 분리 · 스키마 점검을 진행했다.
-작업 브랜치: `nextjs-migration` (커밋 `22864e1`).
+### 블로그 마무리 보정
+- **'출처' 표기 약하게**: 본문 끝 출처 문단/인용구를 투명도↓(opacity .5)·작은 글씨로 표시해 본문보다 약하게(`lib/postRender.ts` + `app/blog/[id]/post.css`의 `.post-src`). 인용구(`>`)로 작성된 출처도 인용 스타일 대신 약한 출처로 렌더.
+- **마크다운 내부 링크 수정**: `[무료로 도입 효과를 확인](/apply)`처럼 상대경로 링크가 raw 텍스트로 보이던 문제 수정 → 내부 링크(같은 탭)·외부 링크(새 탭)로 정상 렌더(`lib/postRender.ts`).
+- 본 작업 내역 문서 정리.
 
-### 1. 사전 분석 / 확인 필요 사항 점검
-- 전체 소스 구조 파악: `index.html`(943줄), `apply/blog/post/admin.html`, `partials.js`(GNB·푸터·소개서 모달·챗봇·스크롤 GNB), `theme.css`(공유 토큰/컴포넌트 SSOT), `blog-data.js`.
-- Supabase 스키마·RLS 점검 결과 **중요 발견**:
-  - `posts` 테이블 RLS는 이미 **쓰기(insert/update/delete) = `authenticated` + `admins` 테이블 등록 관리자**로 제한되어 있음.
-  - 그런데 기존 `admin.html`은 **로그인 없이 anon 키로 쓰기 시도** → 현 RLS상 실제 동작 불가 상태였음.
-  - → Next.js 버전 admin에 **Supabase Auth 로그인 게이트**를 추가해 정상화.
-- 테이블 현황: `signups`(anon insert), `brochure_requests`(anon insert), `subscribers`(anon insert, 예비), `posts`(anon select / admin write), `admins`(self-select).
+---
 
-### 2. 프로젝트 스캐폴딩
-- `package.json`(next/react/supabase-js), `tsconfig.json`, `next.config.mjs`, `.env.example`, `.env.local`.
-- `.gitignore`에 Next 산출물(`.next/`, `next-env.d.ts` 등) 추가.
-- 정적 에셋 → `public/`로 이동(로고 SVG, 리포트 PNG/webp, 파비콘, `brochure-aiview.pdf`, `logos/`, `charts/`, `robots.txt`, `sitemap.xml`).
-- `next.config.mjs`에 구 `.html` URL → 클린 URL **308 redirect**(`/apply.html`→`/apply` 등) — SEO·기존 링크 보존.
+## 2026-06-16
 
-### 3. 공유 레이어
-- `theme.css` → `app/globals.css`(SSOT, 루트 layout에서 1회 import).
-- `lib/supabase.ts` — `NEXT_PUBLIC_SUPABASE_URL` / `NEXT_PUBLIC_SUPABASE_ANON_KEY` 환경변수 주입(키 하드코딩 제거, env 분리).
-- `lib/format.ts`(esc·fmtDate), `lib/postRender.ts`(블로그 간이 마크다운 렌더).
-- `partials.js` → React 컴포넌트로 분해:
-  - `components/SiteHeader.tsx` — 섹션 인지형 GNB(스크롤 색 전환) + 메뉴 토글.
-  - `components/SiteFooter.tsx`, `components/BrochureModal.tsx`(소개서 리드), `components/Chatbot.tsx`(FAQ 챗봇), `components/HeroParticles.tsx`(canvas 입자 모션).
-- `app/layout.tsx` — `<html lang="ko">`, 폰트/FA CDN, Metadata API(title 템플릿·OG·twitter·favicon·google-site-verification), 공유 컴포넌트 마운트.
+### A. 정적 HTML → Next.js 웹앱 마이그레이션 (대규모)
+- 빌드 없는 정적 멀티페이지 HTML → **Next.js 15 (App Router) + React 19 + TypeScript**로 전환.
+- 전 페이지 라우트화: `/`(랜딩), `/apply`, `/blog`, `/blog/[id]`, `/admin`, `/privacy`, `/terms`, `/terms-applicant`, 404.
+- `theme.css` → `app/globals.css`(SSOT), 페이지별 CSS는 라우트에 co-located.
+- `partials.js` → React 컴포넌트: `SiteHeader`(섹션 인지형 GNB)·`SiteFooter`·`BrochureModal`·`Chatbot`·`HeroParticles`(canvas).
+- 구 `.html` URL → 클린 URL 308 redirect(`next.config.mjs`), 블로그/상세는 서버 SSR(SEO).
+- **확인 필요 발견**: `posts` 쓰기 RLS가 "인증 관리자만"이라 기존 admin은 동작 불가 → **Supabase Auth 로그인 게이트** 추가. (관리자 계정 `admin@supercoder.co`는 이미 존재·로그인 가능.)
 
-### 4. 페이지 마이그레이션 (HTML → JSX, 페이지 CSS는 라우트에 co-located)
-- `app/page.tsx` (+`landing.css`) — 랜딩 전 섹션(히어로·깔때기 SVG·HOW·PROOF·VOICES·FAQ·CTA) + JSON-LD 구조화데이터.
-- `app/apply/` — `page.tsx`(서버, metadata) + `ApplyForm.tsx`(클라이언트, signups insert, 쿼리 프리필).
-- `app/blog/` — `page.tsx`(서버 SSR: published 글 조회) + `BlogClient.tsx`(카테고리 필터, 카드=크롤 가능한 `<Link>`).
-- `app/blog/[id]/` — 서버 컴포넌트, `generateMetadata`로 글별 OG, 본문 마크다운 렌더, 미존재 시 `notFound()`.
-- `app/admin/` — `page.tsx`(noindex) + `AdminClient.tsx`(**Supabase Auth 로그인** → posts CRUD).
-- `app/privacy`, `app/terms`, `app/terms-applicant`(법적 전문 verbatim 보존), `app/not-found.tsx`(404).
-- `public/sitemap.xml` 클린 URL로 갱신.
+### B. Vercel 배포 / Supabase 구성
+- 기존 Vercel 프로젝트 `sc-ai-website`(team `juhee-team`)에 link.
+- 환경변수 분리: `NEXT_PUBLIC_SUPABASE_URL` / `NEXT_PUBLIC_SUPABASE_ANON_KEY` — Production·Preview·Development 3환경 등록.
+- 배포 트러블슈팅: 손상 lockfile 재생성, Framework Preset `null`→`nextjs`(vercel.json + API).
+- **프로덕션 배포 성공** → https://sc-ai-website.vercel.app, `main` 병합·GitHub push 완료.
 
-### 5. 검증
-- `npm run build` 통과(9개 라우트, 타입체크·린트 포함). `HeroParticles` TS strict 오류 1건 수정.
-- `npm start` 프로덕션 서버로 전 라우트 200/SSR/리다이렉트(308)/404 확인:
-  - 홈·apply·privacy·terms·terms-applicant 200, blog SSR 글 로드 OK, post 상세 본문·메타 렌더 OK, admin 로그인 게이트 OK.
-- 포팅 완료된 원본 파일(.html, theme.css, partials.js, blog-data.js 등) 제거.
+### C. 브랜딩·UI 보정
+- **푸터 로고**: "Supercoder AI" → 'AI' 제거한 회색 "Supercoder"(`public/supercoder-footer.svg`, 브랜드 회색으로 리컬러).
+- **HOW IT WORKS** 섹션 역량평가 이미지 교체(`report-competency.png`).
+- **고객 후기 회사명 익명화**: 아키스케치·가온프라임·식파마·마크애니 → A·B·C·D사("Supercoder 도입 고객" 라벨 유지).
+- **'AIVIEW' → 'AI면접' 전면 교체**: 사이트 카피·메타데이터·JSON-LD(코드), DB `posts.author`, 차트 SVG 6종 라벨("AI면접 채용 데이터"). 조사·표기 보정 포함(AIVIEW가→AI면접이, (에이아이뷰) 제거).
 
-### 6. Vercel / Supabase 구성 (배포 완료)
-- 기존 프로젝트 확인: `sc-ai-website` (id `prj_iA3dSllyREa7UHyhyBDkrEn9pcNi`, team `juhee-team`, 운영 URL https://sc-ai-website.vercel.app).
-- Vercel CLI로 로컬 디렉터리 ↔ 기존 프로젝트 **link** 완료(`.vercel/project.json`).
-- 환경변수 등록: `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`
-  - ✅ Production · Development 등록 완료.
-  - ⏳ Preview 환경: CLI v54 `--yes` 버그로 미등록(대시보드에서 추가 권장 — 프로덕션엔 영향 없음).
-- **배포 트러블슈팅 & 해결:**
-  1. 1차 배포 실패 — `npm install exited 1 (Invalid Version)`. 원인: 손상된 npm 캐시로 생성된 불완전 `package-lock.json`(35패키지). → 클린 캐시로 lockfile 재생성(66패키지) 후 해결.
-  2. 2차 배포 후 전 라우트 404. 원인: **프로젝트 Framework Preset = `null`**(구 정적 사이트 잔재). → `vercel.json`에 `framework: nextjs` 명시 + 프로젝트 설정 API로 `framework=nextjs` PATCH 후 해결.
-- ✅ **프로덕션 배포 성공** (dpl `2s8edrlrd`, https://sc-ai-website.vercel.app):
-  - `/` 200(히어로·입자·FAQ), `/apply` 200, `/blog` 200(**실제 Supabase 글 SSR 확인**), `/terms` 200,
-    `/apply.html`→`/apply` 308 redirect, 미존재 경로 커스텀 404. Supabase 연동·env 정상.
-
-### 남은 작업 / TODO
-- [x] Vercel **Preview** 환경 env 2건 등록 완료(Vercel REST API `POST /v10/projects/.../env`, target=preview 전 브랜치). → Production·Preview·Development 3환경 모두 설정됨.
-- [ ] `nextjs-migration` → `main` 병합 및 GitHub push (Git 연동 배포 일관성).
-- [x] admin 운영: 관리자 계정 이미 존재(`admin@supercoder.co` — `auth.users` 인증 완료·비밀번호 설정·로그인 이력 있음, `admins` 테이블 등록됨). `/admin`에서 바로 로그인 가능. (비번 분실 시 Supabase 대시보드 Authentication에서 재설정.)
-- [ ] (선택) apply/소개서 폼 실제 제출 1건으로 INSERT E2E 확인.
+### D. 블로그 콘텐츠 정비
+- **SEO 제목 6개 보정** — 실제 검색 키워드 검증(WebSearch) 후 적용:
+  - 잘못된 채용 비용 → **채용 실패 비용**, 가짜 이력서에 **평판조회** 추가, 채용 현실에 **자소서 AI** 반영, 채용 트렌드에 **스킬 기반·AI 채용** 반영 등.
+- **블로그 이미지 전면 교체** (본문 이미지는 모두 **가로 비율** + 비인물/주제 적합):
+  | 글 | 커버 | 본문 이미지 |
+  |---|---|---|
+  | 채용 트렌드 | 차트(trend.svg) | 서류 더미 |
+  | 채용 현실(자소서 AI) | 차트(reality.svg) | AI로 자소서 작성(ChatGPT 화면) |
+  | AI 면접이란 | 차트(ai-interview.svg) | 공정 평가(저울) |
+  | 가짜 이력서/검증 | 인물(매력적) | (이미지 삭제) |
+  | 채용 실패 비용 | 차트(cost.svg) | 가로 계산기 |
+  | 면접 일정 조율 | **카페 화상면접** | 가로 달력/데스크 |
+  - 기존 동양인 인물 사진(면접 장면 등) → 매력적 인물(커버) 및 사물·그래프·오피스(본문)로 교체.
+- **새 글 2개 추가**:
+  1. "1차 서류 검토를 AI 면접으로 바꾸면? **채용팀 업무 자동화** 인사이트" (카테고리: 채용 자동화)
+  2. "채용에 AI 도입하는 기업들 — 사례와 2026 도입률로 보는 변화" (잡코리아 설문·마이다스인 등 실데이터 인용)
 
 ---
 
 ## 이전 (정적 운영 시기, ~2026-06-15)
-정적 HTML로 운영하던 시기의 상세 내역은 git 히스토리 참조
-(고객후기·챗봇·도입문의 폼화·블로그/소개서 모달·SEO 등). 관련 기획 문서:
-`docs/free-signup-page-plan.md`, `docs/seo-improvement-plan.md`, `docs/seo-task-checklist.md`.
+정적 HTML 운영 시기 내역은 git 히스토리 참조. 관련 기획 문서: `docs/free-signup-page-plan.md`, `docs/seo-improvement-plan.md`, `docs/seo-task-checklist.md`.
