@@ -196,87 +196,38 @@ export default function HomePage() {
             <p className="lead">검증은 AI가 끝냅니다 — 채용팀은 이 화면만 보면 됩니다.</p>
           </div>
 
-          <div className="how-grid">
-            {/* 01 인터뷰 요약 */}
-            <div className="how-card">
-              <div className="sch-fig">
-                <svg viewBox="0 0 400 196" role="img" aria-label="인터뷰 요약 도식">
-                  <rect x="6" y="20" width="180" height="135" rx="12" fill="#16233f" />
-                  <circle cx="96" cy="87" r="24" fill="#fff" /><path d="M89 76 L108 87 L89 98 Z" fill="#2E6CF0" />
-                  <rect x="18" y="140" width="64" height="7" rx="3.5" fill="#fff" opacity="0.5" />
-                  <rect x="206" y="24" width="188" height="128" rx="12" fill="#fff" stroke="#E5EBF5" />
-                  <rect x="224" y="46" width="56" height="9" rx="4.5" fill="#2E6CF0" />
-                  <rect x="224" y="68" width="152" height="9" rx="4.5" fill="#E5EBF5" />
-                  <rect x="224" y="88" width="136" height="9" rx="4.5" fill="#E5EBF5" />
-                  <rect x="224" y="108" width="152" height="9" rx="4.5" fill="#E5EBF5" />
-                  <rect x="224" y="128" width="108" height="9" rx="4.5" fill="#E5EBF5" />
-                </svg>
+          <div className="how-rows">
+            <div className="how-row">
+              <div className="hr-media"><img className="hr-img" src="/diagram-interview.png" alt="인터뷰 요약 도식" width={1080} height={570} loading="lazy" /></div>
+              <div className="hr-info">
+                <span className="hr-eyebrow">리포트 01</span>
+                <h3>인터뷰 요약</h3>
+                <p>AI 면접 대화를 핵심만 간추려, 지원자를 빠르게 파악할 수 있게 정리합니다.</p>
               </div>
-              <h3>인터뷰 요약</h3>
-              <p>AI 면접 대화를 핵심만 간추려, 지원자를 빠르게 파악할 수 있게 정리합니다.</p>
             </div>
-
-            {/* 02 종합평가 */}
-            <div className="how-card">
-              <div className="sch-fig">
-                <svg viewBox="0 0 400 196" role="img" aria-label="종합 평가 도식">
-                  <g transform="rotate(-90 96 98)">
-                    <circle cx="96" cy="98" r="56" fill="none" stroke="#E5EBF5" strokeWidth="15" />
-                    <circle cx="96" cy="98" r="56" fill="none" stroke="#2E6CF0" strokeWidth="15" strokeLinecap="round" strokeDasharray="282 352" />
-                  </g>
-                  <text x="96" y="95" fontSize="27" fontWeight="800" fill="#142036" textAnchor="middle">양호</text>
-                  <text x="96" y="116" fontSize="12" fontWeight="700" fill="#8A93A8" textAnchor="middle">종합 등급</text>
-                  <text x="206" y="50" fontSize="12.5" fontWeight="700" fill="#566179">직무 적합도</text>
-                  <rect x="206" y="58" width="180" height="9" rx="4.5" fill="#E5EBF5" /><rect x="206" y="58" width="156" height="9" rx="4.5" fill="#2E6CF0" />
-                  <text x="206" y="98" fontSize="12.5" fontWeight="700" fill="#566179">안정성</text>
-                  <rect x="206" y="106" width="180" height="9" rx="4.5" fill="#E5EBF5" /><rect x="206" y="106" width="116" height="9" rx="4.5" fill="#5B8DF7" />
-                  <text x="206" y="146" fontSize="12.5" fontWeight="700" fill="#566179">성장 가능성</text>
-                  <rect x="206" y="154" width="180" height="9" rx="4.5" fill="#E5EBF5" /><rect x="206" y="154" width="138" height="9" rx="4.5" fill="#5B8DF7" />
-                </svg>
+            <div className="how-row">
+              <div className="hr-media"><img className="hr-img" src="/diagram-grade.png" alt="종합 등급 도식" width={1080} height={570} loading="lazy" /></div>
+              <div className="hr-info">
+                <span className="hr-eyebrow">리포트 02</span>
+                <h3>종합평가</h3>
+                <p>직무 적합도를 종합 점수로 환산해, 한눈에 판단할 수 있게 제시합니다.</p>
               </div>
-              <h3>종합평가</h3>
-              <p>직무 적합도를 종합 점수로 환산해, 한눈에 판단할 수 있게 제시합니다.</p>
             </div>
-
-            {/* 03 역량평가 (레이더) */}
-            <div className="how-card">
-              <div className="sch-fig">
-                <svg viewBox="0 0 400 300" role="img" aria-label="역량 평가 레이더 차트 도식">
-                  <rect x="8" y="8" width="384" height="284" rx="16" fill="#fff" stroke="#E5EBF5" />
-                  <rect x="24" y="22" width="96" height="28" rx="14" fill="#EAF1FE" /><text x="40" y="41" fontSize="13" fontWeight="800" fill="#1F54CC">역량 평가</text>
-                  <text x="368" y="43" fontSize="18" fontWeight="800" fill="#2E6CF0" textAnchor="end">82점</text>
-                  <polygon points="200,102 274,156 246,243 154,243 126,156" fill="none" stroke="#EAF1FE" strokeWidth="2" strokeLinejoin="round" />
-                  <polygon points="200,141 235,166 222,209 178,209 165,166" fill="none" stroke="#EAF1FE" strokeWidth="2" strokeLinejoin="round" />
-                  <polygon points="200,108 253,163 239,234 172,218 141,161" fill="rgba(46,108,240,0.12)" stroke="#2E6CF0" strokeWidth="6" strokeLinejoin="round" strokeLinecap="round" />
-                  <g fill="#566179" fontSize="12.5" fontWeight="700">
-                    <text x="200" y="94" textAnchor="middle">의사소통</text>
-                    <text x="282" y="156" textAnchor="start">문제해결</text>
-                    <text x="240" y="262" textAnchor="middle">직무지식</text>
-                    <text x="160" y="262" textAnchor="middle">협업</text>
-                    <text x="118" y="156" textAnchor="end">성실성</text>
-                  </g>
-                </svg>
+            <div className="how-row">
+              <div className="hr-media"><img className="hr-img" src="/diagram-competency.png" alt="역량 평가 도식" width={1080} height={570} loading="lazy" /></div>
+              <div className="hr-info">
+                <span className="hr-eyebrow">리포트 03</span>
+                <h3>역량평가</h3>
+                <p>핵심 직무 역량을 항목별로 검증하고, 강점·약점을 시각화해 보여줍니다.</p>
               </div>
-              <h3>역량평가</h3>
-              <p>핵심 직무 역량을 항목별로 검증하고, 강점·약점을 시각화해 보여줍니다.</p>
             </div>
-
-            {/* 04 강점·약점 */}
-            <div className="how-card">
-              <div className="sch-fig">
-                <svg viewBox="0 0 400 196" role="img" aria-label="강점 약점 분석 도식">
-                  <rect x="6" y="18" width="184" height="150" rx="14" fill="#fff" stroke="#E5EBF5" />
-                  <circle cx="32" cy="46" r="11" fill="#E8F6EE" /><path d="M27 46 l4 4 l7 -8" stroke="#16A34A" strokeWidth="2.4" fill="none" strokeLinecap="round" strokeLinejoin="round" />
-                  <text x="50" y="51" fontSize="14" fontWeight="800" fill="#16A34A">강점</text>
-                  <rect x="26" y="76" width="140" height="9" rx="4.5" fill="#E5EBF5" /><rect x="26" y="98" width="150" height="9" rx="4.5" fill="#E5EBF5" /><rect x="26" y="120" width="120" height="9" rx="4.5" fill="#E5EBF5" />
-                  <rect x="210" y="18" width="184" height="150" rx="14" fill="#fff" stroke="#E5EBF5" />
-                  <circle cx="236" cy="46" r="11" fill="#FDF3E3" /><text x="236" y="51" fontSize="14" fontWeight="900" fill="#E0890B" textAnchor="middle">!</text>
-                  <text x="254" y="51" fontSize="14" fontWeight="800" fill="#E0890B">약점</text>
-                  <rect x="230" y="76" width="140" height="9" rx="4.5" fill="#E5EBF5" /><rect x="230" y="98" width="120" height="9" rx="4.5" fill="#E5EBF5" /><rect x="230" y="120" width="148" height="9" rx="4.5" fill="#E5EBF5" />
-                </svg>
+            <div className="how-row">
+              <div className="hr-media"><img className="hr-img" src="/diagram-strength.png" alt="강점·약점 분석 도식" width={1080} height={570} loading="lazy" /></div>
+              <div className="hr-info">
+                <span className="hr-eyebrow">리포트 04</span>
+                <h3>강점·약점 분석</h3>
+                <p>지원자의 강점과 보완할 점을 한눈에 정리해, 면접에서 무엇을 확인할지 알려줍니다.</p>
               </div>
-              <h3>강점·약점 분석</h3>
-              <p>지원자의 강점과 보완할 점을 한눈에 정리해, 면접에서 무엇을 확인할지 알려줍니다.</p>
             </div>
           </div>
 
