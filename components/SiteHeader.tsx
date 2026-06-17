@@ -4,21 +4,22 @@ import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 
 /**
- * 공유 GNB(헤더) — 기존 partials.js의 <site-header> + 섹션 인지형 색상 로직 포팅.
- * 마크업/클래스는 theme.css(header.nav-*) 셀렉터가 그대로 적용되도록 동일하게 유지.
- * '서비스소개서' 클릭은 BrochureModal이 #navBrochure 위임 클릭으로 처리한다.
+ * 공유 GNB(헤더) — 페이지 네비 중심(블로그·서비스소개서·로그인) + 도입문의 CTA.
+ * 섹션 앵커(왜 AI 면접인가/작동 방식/…)는 제거(스크롤 점프 방식 폐기).
+ * 데스크톱은 인라인 링크, 모바일은 햄버거 메뉴. 섹션 인지형 색상(nav-invert 등) 유지.
+ * '서비스소개서'는 BrochureModal이 .js-brochure 위임 클릭으로 처리한다.
  */
 export default function SiteHeader() {
   const headerRef = useRef<HTMLElement>(null);
   const [menuOpen, setMenuOpen] = useState(false);
 
-  // 섹션 인지형 GNB 색상(Notion 식) — 헤더 중앙선 아래 섹션에 맞춰 테마 토글
+  // 섹션 인지형 GNB 색상 — 헤더 중앙선 아래 섹션에 맞춰 테마 토글
   useEffect(() => {
     function syncHeader() {
       const header = headerRef.current;
       if (!header) return;
       const y = window.scrollY;
-      const navLine = y + 33; // 헤더(64px) 중앙선의 문서 좌표
+      const navLine = y + 33;
       function over(sel: string) {
         const els = document.querySelectorAll(sel);
         for (let i = 0; i < els.length; i++) {
@@ -63,6 +64,8 @@ export default function SiteHeader() {
     };
   }, [menuOpen]);
 
+  const close = () => setMenuOpen(false);
+
   return (
     <header ref={headerRef}>
       <nav className="wrap">
@@ -70,8 +73,19 @@ export default function SiteHeader() {
           <img src="/supercoder-nav.svg" alt="Supercoder" className="nav-logo-img nav-logo--base" />
           <img src="/supercoder-nav-white.svg" alt="Supercoder" className="nav-logo-img nav-logo--invert" />
         </Link>
+
         <div className="navlinks">
+          {/* 데스크톱: 인라인 페이지 링크 */}
+          <div className="nav-inline">
+            <Link href="/blog">블로그</Link>
+            <a href="#" className="js-brochure">서비스소개서</a>
+            <Link href="/admin">로그인</Link>
+          </div>
+
+          {/* 주 CTA — 항상 노출 */}
           <Link href="/apply" className="btn btn-blue nav-btn">도입 문의</Link>
+
+          {/* 모바일: 햄버거 메뉴 */}
           <div className="nav-menu-wrap">
             <button
               type="button"
@@ -85,12 +99,10 @@ export default function SiteHeader() {
               <span className="nav-burger"><span></span><span></span><span></span></span>
             </button>
             <div className="nav-menu" id="navMenu" hidden={!menuOpen}>
-              <Link href="/#value" onClick={() => setMenuOpen(false)}>왜 AI 면접인가</Link>
-              <Link href="/#how" onClick={() => setMenuOpen(false)}>작동 방식</Link>
-              <Link href="/#proof" onClick={() => setMenuOpen(false)}>도입 효과</Link>
-              <Link href="/#voices" onClick={() => setMenuOpen(false)}>고객 후기</Link>
-              <Link href="/blog" onClick={() => setMenuOpen(false)}>블로그</Link>
-              <a href="#" id="navBrochure">서비스소개서</a>
+              <Link href="/blog" onClick={close}>블로그</Link>
+              <a href="#" className="js-brochure" onClick={close}>서비스소개서</a>
+              <Link href="/admin" onClick={close}>로그인</Link>
+              <Link href="/apply" className="nav-menu-cta" onClick={close}>도입 문의</Link>
             </div>
           </div>
         </div>

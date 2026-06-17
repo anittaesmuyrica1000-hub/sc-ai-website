@@ -25,7 +25,7 @@ export default function BrochureModal() {
   // GNB '서비스소개서' 클릭(위임) → 모달 열기
   useEffect(() => {
     function onClick(e: MouseEvent) {
-      const t = (e.target as HTMLElement)?.closest?.("#navBrochure");
+      const t = (e.target as HTMLElement)?.closest?.(".js-brochure, #navBrochure");
       if (t) {
         e.preventDefault();
         setOpen(true);

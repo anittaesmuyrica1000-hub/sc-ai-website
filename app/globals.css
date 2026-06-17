@@ -73,8 +73,15 @@ nav{display:flex;align-items:center;justify-content:space-between;height:64px}
 @media(max-width:760px){.logo{width:50px}}
 .nav-logo-img{height:26px;width:auto;display:block}
 .logo .m{width:26px;height:26px;border-radius:8px;background:linear-gradient(135deg,var(--blue),var(--blue-2));display:grid;place-items:center;color:#fff;font-size:13px}
-.navlinks{display:flex;align-items:center;gap:10px}
+.navlinks{display:flex;align-items:center;gap:18px}
 .navlinks .nav-btn{height:40px;padding:0 20px;font-size:14px;color:#fff}
+/* 데스크톱 인라인 페이지 링크(블로그·서비스소개서·로그인) */
+.nav-inline{display:flex;align-items:center;gap:26px;margin-right:6px}
+.nav-inline a{font-size:15px;font-weight:600;color:var(--ink);white-space:nowrap;cursor:pointer;transition:color .2s}
+.nav-inline a:hover{color:var(--blue-d)}
+/* 다크 섹션 위에선 흰색 */
+header.nav-invert .nav-inline a{color:rgba(255,255,255,.92)}
+header.nav-invert .nav-inline a:hover{color:#fff}
 /* 햄버거 메뉴 버튼 — 도입 문의 버튼과 같은 높이·라운드로 한 쌍처럼 보이게 */
 .nav-menu-wrap{position:relative;display:flex}
 .nav-menu-btn{display:inline-flex;align-items:center;justify-content:center;width:44px;height:40px;border-radius:11px;background:#fff;border:1px solid var(--line);cursor:pointer;transition:.2s}
@@ -93,6 +100,9 @@ nav{display:flex;align-items:center;justify-content:space-between;height:64px}
 .nav-menu .nav-menu-cta:hover{background:var(--blue-d);color:#fff}
 @media(max-width:600px){.logo{font-size:18px}.logo .m{width:23px;height:23px}}
 @media(max-width:480px){.navlinks .nav-btn{height:36px;padding:0 14px;font-size:13px}.nav-menu-btn{width:40px;height:36px}}
+/* 반응형 GNB: 데스크톱(≥761) 인라인 링크 노출·햄버거 숨김 / 모바일(≤760) 반대 (소스 순서상 뒤에 둬 우선 적용) */
+@media(min-width:761px){.nav-menu-wrap{display:none}}
+@media(max-width:760px){.nav-inline{display:none}}
 
 /* ===== Footer (partial: <site-footer>) — GNB와 동일: 흰 배경 + 컬러 로고 ===== */
 footer{background:#fff;color:var(--slate);padding:64px 0 44px;font-size:14px;border-top:1px solid var(--line)}
