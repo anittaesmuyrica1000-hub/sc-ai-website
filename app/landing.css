@@ -18,7 +18,7 @@
   /* 히어로 강조어 그라데이션 모션 — 다크 배경용 밝은 톤(시안빛 블루→바이올렛) 가로 흐름 */
   /* 헤드라인: 키워드(수천 명·상위 후보)는 화이트, 나머지는 하늘색 그라데이션 */
   .decl h1 .hl{color:#fff;-webkit-text-fill-color:#fff;position:relative}
-  .decl h1 .sky{background:linear-gradient(to right,#CFEBFF,#8FCBFF,#CFEBFF);background-size:200% auto;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent;animation:textGrad 5s linear infinite}
+  .decl h1 .sky{color:#5C88FF;-webkit-text-fill-color:#5C88FF;background:none;animation:none}
   @keyframes textGrad{to{background-position:200% center}}
   /* 그레인(노이즈) 질감 — 밋밋함·AI 플랫함 제거. 인라인 SVG feTurbulence */
   .hero-bg::before{content:"";position:absolute;inset:0;z-index:0;pointer-events:none;mix-blend-mode:multiply;opacity:.06;
