@@ -235,9 +235,10 @@
   /* VOICES는 흰색 — 앞 PROOF(연블루 #F4F8FF)와 배경을 나눠 섹션 경계가 드러나게 */
   .voices{background:#fff;padding-top:40px}
   .voices .head{text-align:center;max-width:720px;margin:0 auto}
-  .v-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;margin-top:50px;align-items:start;max-width:1040px;margin-left:auto;margin-right:auto}
+  .v-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;margin-top:50px;align-items:stretch;max-width:1040px;margin-left:auto;margin-right:auto}
   .vc{display:flex;flex-direction:column}
-  .vc .bubble{position:relative;background:#fff;border:1px solid var(--line);border-radius:18px;padding:26px 26px 24px;box-shadow:var(--shadow)}
+  /* 말풍선 높이를 통일해 하단(이름 줄)을 맞춤 */
+  .vc .bubble{flex:1;position:relative;background:#fff;border:1px solid var(--line);border-radius:18px;padding:26px 26px 24px;box-shadow:var(--shadow)}
   .vc .bubble::after{content:"";position:absolute;left:40px;bottom:-9px;width:17px;height:17px;background:#fff;border-right:1px solid var(--line);border-bottom:1px solid var(--line);transform:rotate(45deg)}
   .vc .qm{color:var(--blue-2);font-size:24px;line-height:1;margin-bottom:10px}
   .vc blockquote{font-size:16px;font-weight:400;line-height:1.65;letter-spacing:-.01em;color:var(--ink)}
