@@ -202,13 +202,7 @@
   /* 리포트 이미지: 그림자·박스 없이 플랫하게(이미지 그림자 여백은 크롭으로 제거됨) */
   .hr-media{position:relative;width:100%;max-width:700px;margin-inline:auto}
   .hr-img{display:block;width:100%;height:auto}
-  /* 이미지가 오른쪽인 짝수 행(텍스트 좌·이미지 우)은 큰 컬럼을 오른쪽(이미지)에 둬 좌우 행 이미지 크기를 통일 */
-  @media(min-width:881px){
-    .how-row:nth-child(even){grid-template-columns:minmax(0,0.88fr) minmax(0,1.12fr)}
-    /* 리포트 종합평가(2행)는 가로로 낮은 비율 → 텍스트 컬럼은 다른 행과 동일(0.88)로 정렬, 이미지만 크게 */
-    .how-row:nth-child(2){grid-template-columns:minmax(0,0.88fr) minmax(0,1.6fr)}
-    .how-row:nth-child(2) .hr-media{max-width:940px}
-  }
+  /* 모든 행: 이미지(좌)·텍스트(우)로 통일 — 좌우 교차 없음 */
   @media(max-width:880px){.how-rows{gap:36px;margin-top:40px}.how-row{grid-template-columns:1fr;gap:18px}.hr-info{text-align:center}.how-row .hr-media{order:-1}.hr-info h3{font-size:21px}.hr-info p{margin-top:8px}.hr-points{justify-items:start;max-width:340px;margin-left:auto;margin-right:auto;text-align:left}}
 
   /* 6. PROOF */
