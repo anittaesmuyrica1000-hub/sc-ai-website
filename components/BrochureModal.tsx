@@ -179,7 +179,7 @@ export default function BrochureModal() {
                 </label>
                 {formErr && <div className="bro-formerr show">{formErr}</div>}
                 <button type="submit" className="btn btn-blue" disabled={sending}>
-                  {sending ? <>전송 중… <i className="fa-solid fa-spinner fa-spin"></i></> : <>소개서 받기 <i className="fa-solid fa-download"></i></>}
+                  {sending ? <>전송 중… <i className="fa-solid fa-spinner fa-spin"></i></> : <>회사 메일로 소개서 받기 <i className="fa-solid fa-paper-plane"></i></>}
                 </button>
               </form>
             </>
