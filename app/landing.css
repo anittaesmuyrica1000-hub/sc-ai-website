@@ -202,6 +202,14 @@
   /* 리포트 이미지: 그림자·박스 없이 플랫하게(이미지 그림자 여백은 크롭으로 제거됨) */
   .hr-media{position:relative;width:100%;max-width:700px;margin-inline:auto}
   .hr-img{display:block;width:100%;height:auto}
+  /* 리포트 도식 카드(샘플: 역량평가 레이더) — 참고 스타일(soft 카드 + 추상 SVG) */
+  .sch{background:var(--soft);border:1px solid var(--line);border-radius:20px;padding:22px 24px 10px;width:100%;max-width:560px;margin-inline:auto}
+  .sch-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:2px}
+  .sch-chip{display:inline-flex;align-items:center;gap:7px;font-size:13px;font-weight:800;color:var(--blue-d);background:#fff;border:1px solid var(--tint);padding:6px 13px;border-radius:999px}
+  .sch-chip i{color:var(--blue)}
+  .sch-score{font-size:24px;font-weight:800;color:var(--blue);letter-spacing:-.02em}
+  .sch-score span{font-size:.5em;font-weight:700;color:var(--slate-2);margin-left:2px}
+  .sch-radar{display:block;width:100%;height:auto}
   /* 모든 행: 이미지(좌)·텍스트(우)로 통일 — 좌우 교차 없음 */
   @media(max-width:880px){.how-rows{gap:36px;margin-top:40px}.how-row{grid-template-columns:1fr;gap:18px}.hr-info{text-align:center}.how-row .hr-media{order:-1}.hr-info h3{font-size:21px}.hr-info p{margin-top:8px}.hr-points{justify-items:start;max-width:340px;margin-left:auto;margin-right:auto;text-align:left}}
 

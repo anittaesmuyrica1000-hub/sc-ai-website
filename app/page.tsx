@@ -214,7 +214,30 @@ export default function HomePage() {
               </div>
             </div>
             <div className="how-row">
-              <div className="hr-media"><img className="hr-img" src="/report-competency.png" alt="AI면접 리포트 — 역량 평가 레이더 차트와 항목별 등급" width={1028} height={688} loading="lazy" /></div>
+              <div className="hr-media">
+                <div className="sch" role="img" aria-label="역량 평가 레이더 차트 도식">
+                  <div className="sch-head"><span className="sch-chip"><i className="fa-solid fa-chart-pie"></i> 역량 평가</span><span className="sch-score">A<span>등급</span></span></div>
+                  <svg className="sch-radar" viewBox="0 0 400 350">
+                    <polygon points="200,60 324,150 276,295 124,295 76,150" fill="none" stroke="#E5EBF5" strokeWidth="1.5" />
+                    <polygon points="200,104 282,164 250,259 150,259 118,164" fill="none" stroke="#E5EBF5" strokeWidth="1.5" />
+                    <polygon points="200,147 241,177 225,225 175,225 159,177" fill="none" stroke="#E5EBF5" strokeWidth="1.5" />
+                    <g stroke="#DCE8FE" strokeWidth="1.5">
+                      <line x1="200" y1="190" x2="200" y2="60" /><line x1="200" y1="190" x2="324" y2="150" /><line x1="200" y1="190" x2="276" y2="295" /><line x1="200" y1="190" x2="124" y2="295" /><line x1="200" y1="190" x2="76" y2="150" />
+                    </g>
+                    <polygon points="200,70 289,161 265,279 154,253 101,158" fill="rgba(46,108,240,0.18)" stroke="#2E6CF0" strokeWidth="2.5" strokeLinejoin="round" />
+                    <g fill="#2E6CF0">
+                      <circle cx="200" cy="70" r="4" /><circle cx="289" cy="161" r="4" /><circle cx="265" cy="279" r="4" /><circle cx="154" cy="253" r="4" /><circle cx="101" cy="158" r="4" />
+                    </g>
+                    <g fill="#566179" fontSize="14.5" fontWeight="700">
+                      <text x="200" y="44" textAnchor="middle">의사소통</text>
+                      <text x="336" y="150" textAnchor="start">문제해결</text>
+                      <text x="284" y="320" textAnchor="middle">직무지식</text>
+                      <text x="116" y="320" textAnchor="middle">협업</text>
+                      <text x="64" y="150" textAnchor="end">성실성</text>
+                    </g>
+                  </svg>
+                </div>
+              </div>
               <div className="hr-info">
                 <span className="hr-eyebrow">리포트 03</span>
                 <h3>역량평가</h3>
