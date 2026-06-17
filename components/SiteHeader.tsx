@@ -84,6 +84,9 @@ export default function SiteHeader() {
             <a href="#" className="js-brochure">서비스소개서</a>
           </div>
 
+          {/* 로그인(보조 버튼) — 도입 문의 왼쪽 */}
+          <Link href="/admin" className="btn btn-out nav-login">로그인</Link>
+
           {/* 주 CTA — 항상 노출 */}
           <Link href="/apply" className="btn btn-blue nav-btn">도입 문의</Link>
 
@@ -103,6 +106,7 @@ export default function SiteHeader() {
             <div className="nav-menu" id="navMenu" hidden={!menuOpen}>
               <Link href="/blog" onClick={close}>블로그</Link>
               <a href="#" className="js-brochure" onClick={close}>서비스소개서</a>
+              <Link href="/admin" onClick={close}>로그인</Link>
               <Link href="/apply" className="nav-menu-cta" onClick={close}>도입 문의</Link>
             </div>
           </div>

@@ -75,6 +75,11 @@ nav{display:flex;align-items:center;justify-content:space-between;height:64px}
 .logo .m{width:26px;height:26px;border-radius:8px;background:linear-gradient(135deg,var(--blue),var(--blue-2));display:grid;place-items:center;color:#fff;font-size:13px}
 .navlinks{display:flex;align-items:center;gap:18px}
 .navlinks .nav-btn{height:40px;padding:0 20px;font-size:14px;color:#fff}
+/* 로그인 — 보조 버튼(도입 문의 왼쪽). 다크 섹션 위에선 투명+흰 보더 */
+.navlinks .nav-login{height:40px;padding:0 18px;font-size:14px}
+header.nav-invert .nav-login{background:transparent;color:#fff;border-color:rgba(255,255,255,.45)}
+header.nav-invert .nav-login:hover{border-color:#fff;color:#fff}
+@media(max-width:760px){.nav-login{display:none}}
 /* 데스크톱 인라인 페이지 링크(블로그·서비스소개서·로그인) */
 .nav-inline{display:flex;align-items:center;gap:26px;margin-right:6px}
 .nav-inline a{font-size:15px;font-weight:600;color:var(--ink);white-space:nowrap;cursor:pointer;transition:color .2s}
