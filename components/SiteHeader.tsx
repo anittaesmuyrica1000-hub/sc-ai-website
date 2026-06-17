@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 /**
  * 공유 GNB(헤더) — 페이지 네비 중심(블로그·서비스소개서·로그인) + 도입문의 CTA.
@@ -12,6 +13,7 @@ import Link from "next/link";
 export default function SiteHeader() {
   const headerRef = useRef<HTMLElement>(null);
   const [menuOpen, setMenuOpen] = useState(false);
+  const pathname = usePathname();
 
   // 섹션 인지형 GNB 색상 — 헤더 중앙선 아래 섹션에 맞춰 테마 토글
   useEffect(() => {
@@ -44,7 +46,8 @@ export default function SiteHeader() {
       window.removeEventListener("scroll", syncHeader);
       window.removeEventListener("resize", syncHeader);
     };
-  }, []);
+    // pathname 변경(클라이언트 라우팅) 시 재실행 — 페이지마다 헤더 색상(로고 반전) 재계산
+  }, [pathname]);
 
   // 메뉴 바깥 클릭 / ESC 로 닫기
   useEffect(() => {

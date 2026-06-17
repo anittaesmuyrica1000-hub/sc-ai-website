@@ -263,13 +263,9 @@
             mask-image:radial-gradient(ellipse 82% 78% at 50% 50%, #000 22%, transparent 86%)}
   @media(prefers-reduced-motion:reduce){.final #final-particles{display:none}}
   .final .wrap{position:relative;z-index:1}
-  .final h2{color:#fff;font-size:clamp(30px,4vw,48px);font-weight:500}
-  /* CTA '진짜 인재만' 강조 — 볼드만(글로우·마커 하이라이트 제거) */
-  /* 강조어 — 히어로와 동일한 밝은 그라데이션 텍스트 */
-  .final h2 .real-cta{font-weight:800;white-space:nowrap;
-    background:linear-gradient(to right,#8FCBFF,#3A6FFF,#8FCBFF);background-size:200% auto;
-    -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent;
-    animation:textGrad 5s linear infinite}
+  .final h2{color:#fff;font-size:clamp(30px,4vw,48px);font-weight:400}
+  /* CTA 강조어 — 히어로 헤드카피와 동일: 화이트 엑스트라볼드(그라데이션 제거) */
+  .final h2 .real-cta{font-weight:800;white-space:nowrap;color:#fff;-webkit-text-fill-color:#fff}
   .final p{color:#AEB9D4;font-size:18px;font-weight:500;margin:18px auto 30px;max-width:520px}
   .cta-form{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;max-width:720px;margin:0 auto}
   .cta-form input{flex:1;min-width:150px;padding:14px 16px;border-radius:11px;border:none;font-size:15px;font-family:inherit;background:rgba(255,255,255,.95)}
