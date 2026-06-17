@@ -203,9 +203,10 @@
   .hr-media{position:relative;width:100%;max-width:700px;margin-inline:auto}
   .hr-media::before{content:"";position:absolute;inset:-8% -6%;z-index:0;background:radial-gradient(58% 58% at 50% 46%, rgba(46,108,240,.13), rgba(46,108,240,0) 70%);pointer-events:none}
   .hr-img{position:relative;z-index:1;width:100%;height:auto;display:block}
-  /* 리포트 종합평가(2번째 행): 텍스트(좌)·이미지(우) 순서라 큰 컬럼을 '오른쪽(이미지)'에 줘야 함.
-     가로로 넓고 낮은 비율 → 이미지 컬럼을 크게 키워 다른 행과 높이를 맞춤(데스크톱) */
+  /* 이미지가 오른쪽인 짝수 행(텍스트 좌·이미지 우)은 큰 컬럼을 오른쪽(이미지)에 둬 좌우 행 이미지 크기를 통일 */
   @media(min-width:881px){
+    .how-row:nth-child(even){grid-template-columns:minmax(0,0.88fr) minmax(0,1.12fr)}
+    /* 리포트 종합평가(2행)는 가로로 낮은 비율 → 이미지 컬럼을 더 크게 키워 높이 맞춤 */
     .how-row:nth-child(2){grid-template-columns:minmax(0,0.8fr) minmax(0,1.72fr)}
     .how-row:nth-child(2) .hr-media{max-width:940px}
   }
@@ -234,12 +235,12 @@
   /* VOICES는 흰색 — 앞 PROOF(연블루 #F4F8FF)와 배경을 나눠 섹션 경계가 드러나게 */
   .voices{background:#fff;padding-top:40px}
   .voices .head{text-align:center;max-width:720px;margin:0 auto}
-  .v-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:24px;margin-top:50px;align-items:start;max-width:940px;margin-left:auto;margin-right:auto}
+  .v-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;margin-top:50px;align-items:start;max-width:1040px;margin-left:auto;margin-right:auto}
   .vc{display:flex;flex-direction:column}
   .vc .bubble{position:relative;background:#fff;border:1px solid var(--line);border-radius:18px;padding:26px 26px 24px;box-shadow:var(--shadow)}
   .vc .bubble::after{content:"";position:absolute;left:40px;bottom:-9px;width:17px;height:17px;background:#fff;border-right:1px solid var(--line);border-bottom:1px solid var(--line);transform:rotate(45deg)}
   .vc .qm{color:var(--blue-2);font-size:24px;line-height:1;margin-bottom:10px}
-  .vc blockquote{font-size:16.5px;font-weight:600;line-height:1.6;letter-spacing:-.01em}
+  .vc blockquote{font-size:16px;font-weight:400;line-height:1.65;letter-spacing:-.01em;color:var(--ink)}
   .vc .who{display:flex;align-items:center;gap:12px;margin-top:24px;padding-left:14px}
   .vc .ava{width:46px;height:46px;border-radius:50%;background:linear-gradient(135deg,var(--blue),var(--blue-2));color:#fff;display:grid;place-items:center;font-weight:800;font-size:17px;flex-shrink:0}
   .vc .who .nm{font-weight:800;font-size:15px}

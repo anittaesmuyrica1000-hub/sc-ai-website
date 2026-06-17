@@ -83,7 +83,7 @@ nav{position:relative;display:flex;align-items:center;justify-content:space-betw
 @media(max-width:760px){.logo{width:50px}}
 .nav-logo-img{height:26px;width:auto;display:block}
 .logo .m{width:26px;height:26px;border-radius:8px;background:linear-gradient(135deg,var(--blue),var(--blue-2));display:grid;place-items:center;color:#fff;font-size:13px}
-.navlinks{display:flex;align-items:center;gap:18px}
+.navlinks{display:flex;align-items:center;gap:8px}
 .navlinks .nav-btn{height:40px;padding:0 20px;font-size:14px;color:#fff}
 /* 로그인 — 보조 버튼(도입 문의 왼쪽). 다크 섹션 위에선 투명+흰 보더 */
 .navlinks .nav-login{height:40px;padding:0 18px;font-size:14px}
