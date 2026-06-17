@@ -199,10 +199,9 @@
   .hr-points{list-style:none;margin:20px 0 0;display:grid;gap:11px}
   .hr-points li{position:relative;padding-left:28px;font-size:15.5px;color:var(--ink);font-weight:500;line-height:1.5}
   .hr-points li::before{content:"\f058";font-family:"Font Awesome 6 Free";font-weight:900;position:absolute;left:0;top:1px;color:var(--blue);font-size:15px}
-  /* 리포트 이미지: 투명 PNG(자체 그림자 포함). 더 크게 + 뒤에 은은한 블루 글로우로 깊이감 */
+  /* 리포트 이미지: 그림자·박스 없이 플랫하게(이미지 그림자 여백은 크롭으로 제거됨) */
   .hr-media{position:relative;width:100%;max-width:700px;margin-inline:auto}
-  .hr-media::before{content:"";position:absolute;inset:-8% -6%;z-index:0;background:radial-gradient(58% 58% at 50% 46%, rgba(46,108,240,.13), rgba(46,108,240,0) 70%);pointer-events:none}
-  .hr-img{position:relative;z-index:1;width:100%;height:auto;display:block}
+  .hr-img{display:block;width:100%;height:auto}
   /* 이미지가 오른쪽인 짝수 행(텍스트 좌·이미지 우)은 큰 컬럼을 오른쪽(이미지)에 둬 좌우 행 이미지 크기를 통일 */
   @media(min-width:881px){
     .how-row:nth-child(even){grid-template-columns:minmax(0,0.88fr) minmax(0,1.12fr)}

@@ -198,7 +198,7 @@ export default function HomePage() {
 
           <div className="how-rows">
             <div className="how-row">
-              <div className="hr-media"><picture><source srcSet="/report-interview-summary.webp" type="image/webp" /><img className="hr-img" src="/report-interview-summary.png" alt="AI면접 리포트 — 인터뷰 내용 요약과 인터뷰 비디오" width={1040} height={618} loading="lazy" /></picture></div>
+              <div className="hr-media"><img className="hr-img" src="/report-interview-summary.png" alt="AI면접 리포트 — 인터뷰 내용 요약과 인터뷰 비디오" width={930} height={507} loading="lazy" /></div>
               <div className="hr-info">
                 <span className="hr-eyebrow">리포트 01</span>
                 <h3>인터뷰 요약</h3>
@@ -221,10 +221,10 @@ export default function HomePage() {
                   <li>후보 간 객관적 비교</li>
                 </ul>
               </div>
-              <div className="hr-media"><picture><source srcSet="/report-overall-grade.webp" type="image/webp" /><img className="hr-img" src="/report-overall-grade.png" alt="AI면접 리포트 — 종합 등급(양호)과 종합 평가" width={1040} height={524} loading="lazy" /></picture></div>
+              <div className="hr-media"><img className="hr-img" src="/report-overall-grade.png" alt="AI면접 리포트 — 종합 등급(양호)과 종합 평가" width={930} height={413} loading="lazy" /></div>
             </div>
             <div className="how-row">
-              <div className="hr-media"><img className="hr-img" src="/report-competency.png" alt="AI면접 리포트 — 역량 평가 레이더 차트와 항목별 등급" width={1208} height={868} loading="lazy" /></div>
+              <div className="hr-media"><img className="hr-img" src="/report-competency.png" alt="AI면접 리포트 — 역량 평가 레이더 차트와 항목별 등급" width={1080} height={740} loading="lazy" /></div>
               <div className="hr-info">
                 <span className="hr-eyebrow">리포트 03</span>
                 <h3>역량평가</h3>
@@ -247,7 +247,7 @@ export default function HomePage() {
                   <li>합류 후 온보딩에도 활용</li>
                 </ul>
               </div>
-              <div className="hr-media"><img className="hr-img" src="/report-strength.png" alt="AI면접 리포트 — 강점·약점 분석" width={1208} height={868} loading="lazy" /></div>
+              <div className="hr-media"><img className="hr-img" src="/report-strength.png" alt="AI면접 리포트 — 강점·약점 분석" width={1080} height={740} loading="lazy" /></div>
             </div>
           </div>
 
