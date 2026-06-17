@@ -200,22 +200,40 @@ export default function HomePage() {
             <div className="how-row">
               <div className="hr-media"><picture><source srcSet="/report-interview-summary.webp" type="image/webp" /><img className="hr-img" src="/report-interview-summary.png" alt="AI면접 리포트 — 인터뷰 내용 요약과 인터뷰 비디오" width={1040} height={618} loading="lazy" /></picture></div>
               <div className="hr-info">
+                <span className="hr-eyebrow">리포트 01</span>
                 <h3>인터뷰 요약</h3>
                 <p>AI 면접 대화를 핵심만 간추려, 지원자를 빠르게 파악할 수 있게 정리합니다.</p>
+                <ul className="hr-points">
+                  <li>핵심 질의응답만 자동 요약</li>
+                  <li>인터뷰 영상과 함께 바로 확인</li>
+                  <li>긴 면접을 1분 안에 파악</li>
+                </ul>
               </div>
             </div>
             <div className="how-row">
               <div className="hr-info">
+                <span className="hr-eyebrow">리포트 02</span>
                 <h3>리포트 종합평가</h3>
                 <p>직무 적합도를 종합 점수로 환산해, 한눈에 판단할 수 있게 제시합니다.</p>
+                <ul className="hr-points">
+                  <li>직무 적합도 종합 점수화</li>
+                  <li>합격·보류 판단 근거 제시</li>
+                  <li>후보 간 객관적 비교</li>
+                </ul>
               </div>
               <div className="hr-media"><picture><source srcSet="/report-overall-grade.webp" type="image/webp" /><img className="hr-img" src="/report-overall-grade.png" alt="AI면접 리포트 — 종합 등급(양호)과 종합 평가" width={1040} height={524} loading="lazy" /></picture></div>
             </div>
             <div className="how-row">
               <div className="hr-media"><img className="hr-img" src="/report-competency.png" alt="AI면접 리포트 — 역량 평가 레이더 차트와 항목별 등급" width={1208} height={868} loading="lazy" /></div>
               <div className="hr-info">
+                <span className="hr-eyebrow">리포트 03</span>
                 <h3>역량평가</h3>
                 <p>핵심 직무 역량을 항목별로 검증하고, 강점·약점을 시각화해 보여줍니다.</p>
+                <ul className="hr-points">
+                  <li>핵심 역량 항목별 점수화</li>
+                  <li>강점·약점 레이더 시각화</li>
+                  <li>데이터 기반 검증 근거 제공</li>
+                </ul>
               </div>
             </div>
           </div>
