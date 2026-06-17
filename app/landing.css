@@ -211,6 +211,14 @@
   .sch-score span{font-size:.5em;font-weight:700;color:var(--slate-2);margin-left:2px}
   .sch-radar{display:block;width:100%;height:auto}
   /* 모든 행: 이미지(좌)·텍스트(우)로 통일 — 좌우 교차 없음 */
+  /* 리포트 도식 2×2 카드 그리드 */
+  .how-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;max-width:1000px;margin:54px auto 8px}
+  .how-card{background:var(--soft);border:1px solid var(--line);border-radius:20px;padding:30px 30px 28px;display:flex;flex-direction:column}
+  .sch-fig{height:210px;display:grid;place-items:center;margin-bottom:18px}
+  .sch-fig svg{width:100%;height:100%}
+  .how-card h3{font-size:clamp(19px,2.2vw,22px);font-weight:800;letter-spacing:-.02em;color:var(--ink)}
+  .how-card p{font-size:15px;color:var(--slate);margin-top:8px;line-height:1.6}
+  @media(max-width:760px){.how-grid{grid-template-columns:1fr;gap:18px;margin-top:36px}.sch-fig{height:185px}}
   @media(max-width:880px){.how-rows{gap:36px;margin-top:40px}.how-row{grid-template-columns:1fr;gap:18px}.hr-info{text-align:center}.how-row .hr-media{order:-1}.hr-info h3{font-size:21px}.hr-info p{margin-top:8px}.hr-points{justify-items:start;max-width:340px;margin-left:auto;margin-right:auto;text-align:left}}
 
   /* 6. PROOF */
