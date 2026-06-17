@@ -56,8 +56,8 @@ export default function HomePage() {
             <div>
               <div className="tagchip"><i className="fa-solid fa-bolt"></i> AI 면접 채용 검증</div>
               <h1>
-                <span className="blue">수천 명</span>의 지원자,<br />채용팀은{" "}
-                <span className="blue real" id="real-word">상위 후보</span>만 보면 됩니다.
+                <span className="hl">수천 명</span><span className="sky">의 지원자,</span><br /><span className="sky">채용팀은 </span>
+                <span className="hl" id="real-word">상위 후보</span><span className="sky">만 보면 됩니다.</span>
               </h1>
               <p>
                 <span className="blue" style={{ fontWeight: 700 }}>AI 면접</span>이 전 지원자를 검증하고,<br />

@@ -16,10 +16,10 @@
             mask-image:radial-gradient(ellipse 72% 64% at 50% 44%, #000 26%, transparent 86%)}
   @media(prefers-reduced-motion:reduce){.hero-bg #hero-particles{display:none}}
   /* 히어로 강조어 그라데이션 모션 — 다크 배경용 밝은 톤(시안빛 블루→바이올렛) 가로 흐름 */
-  .decl h1 .blue{background:linear-gradient(to right,#BFE6FF,#5FB0FF,#BFE6FF);background-size:200% auto;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent;animation:textGrad 5s linear infinite}
+  /* 헤드라인: 키워드(수천 명·상위 후보)는 화이트, 나머지는 하늘색 그라데이션 */
+  .decl h1 .hl{color:#fff;-webkit-text-fill-color:#fff;position:relative}
+  .decl h1 .sky{background:linear-gradient(to right,#CFEBFF,#8FCBFF,#CFEBFF);background-size:200% auto;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent;animation:textGrad 5s linear infinite}
   @keyframes textGrad{to{background-position:200% center}}
-  /* '진짜' — 그라데이션 글자만(화이트 글로우·밑줄 제거) */
-  .decl h1 .real{position:relative;animation:textGrad 5s linear infinite}
   /* 그레인(노이즈) 질감 — 밋밋함·AI 플랫함 제거. 인라인 SVG feTurbulence */
   .hero-bg::before{content:"";position:absolute;inset:0;z-index:0;pointer-events:none;mix-blend-mode:multiply;opacity:.06;
     background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
@@ -33,9 +33,9 @@
   .decl .tagchip i{color:#6E9BFF}
   /* 히어로 헤드카피: 반응형(clamp), 행간 130% — 다크 배경이라 흰색 */
   .decl h1{font-size:clamp(34px,4.6vw,56px);font-weight:800;line-height:1.3;letter-spacing:-.04em;color:#fff}
-  .decl h1 .blue{display:inline}
+  .decl h1 .hl,.decl h1 .sky{display:inline}
   .decl p{font-size:19px;color:#AEB9D4;margin:24px auto 32px;max-width:560px;line-height:1.3}
-  .decl p .blue{color:#7FA6FF}
+  .decl p .blue{color:#fff}
   .decl-cta{display:flex;gap:12px;flex-wrap:wrap;justify-content:center}
   /* chart card */
   .chart-card{background:#fff;border:1px solid var(--line);border-radius:20px;box-shadow:var(--shadow);padding:28px}
