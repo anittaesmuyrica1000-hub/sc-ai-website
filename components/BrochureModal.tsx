@@ -3,9 +3,8 @@
 import { useEffect, useRef, useState } from "react";
 import { supabase } from "@/lib/supabase";
 
-// 서비스소개서 리드 모달 — GNB '서비스소개서'(#navBrochure) 클릭 시 열림.
-// 스타일은 theme.css(.bro-*). 제출 시 brochure_requests 테이블에 INSERT(anon 허용).
-const BROCHURE_FILE = "/brochure-aiview.pdf";
+// 서비스소개서 리드 모달 — GNB '서비스소개서'(.js-brochure) 클릭 시 열림. 스타일은 theme.css(.bro-*).
+// 제출 시 send-brochure 엣지펑션 호출 → 회사 이메일 검증 후 보안 링크를 이메일로만 전송(가짜 이메일 방지).
 const emailRe = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
 
 type Fields = { name: string; company: string; email: string; role: string; phone: string; size: string };
@@ -82,9 +81,19 @@ export default function BrochureModal() {
     };
 
     setSending(true);
+    setFormErr("");
     try {
-      const res = await supabase.from("brochure_requests").insert(payload);
-      if (res.error) throw res.error;
+      const { error } = await supabase.functions.invoke("send-brochure", { body: payload });
+      if (error) {
+        let m = "요청 처리 중 문제가 발생했습니다. 잠시 후 다시 시도해 주세요.";
+        try {
+          const j = await (error as { context?: Response }).context?.json?.();
+          if (j?.message) m = j.message as string;
+        } catch {}
+        setSending(false);
+        setFormErr(m);
+        return;
+      }
       setDone(true);
     } catch (err) {
       setSending(false);
@@ -113,13 +122,10 @@ export default function BrochureModal() {
         <div id="broInner">
           {done ? (
             <div className="bro-done">
-              <div className="dot"><i className="fa-solid fa-file-arrow-down"></i></div>
-              <h2>소개서가 준비되었습니다.</h2>
-              <p>아래 버튼으로 소개서를 내려받으세요.<br />입력하신 이메일로도 보내드립니다.</p>
-              <a href={BROCHURE_FILE} download className="btn btn-blue">
-                <i className="fa-solid fa-download"></i> 소개서 다운로드
-              </a>
-              <p className="sub-note">담당자가 도입 관련 안내로 곧 연락드릴 수 있습니다.</p>
+              <div className="dot"><i className="fa-solid fa-envelope-circle-check"></i></div>
+              <h2>소개서를 보내드렸습니다.</h2>
+              <p>입력하신 <b>회사 이메일</b>로 소개서 다운로드 링크를<br />보내드렸어요. 메일함을 확인해 주세요.</p>
+              <p className="sub-note">메일이 안 보이면 스팸함도 확인해 주세요. 담당자가 도입 관련 안내로 곧 연락드릴 수 있습니다.</p>
             </div>
           ) : (
             <>
@@ -142,7 +148,7 @@ export default function BrochureModal() {
                   </div>
                 </div>
                 <div className={`b-field${invalid.email ? " invalid" : ""}`}>
-                  <label htmlFor="bro-email">업무 이메일 <span className="req">*</span></label>
+                  <label htmlFor="bro-email">회사 이메일 <span className="req">*</span></label>
                   <input type="email" id="bro-email" placeholder="you@company.com" value={fields.email} onChange={(e) => set("email", e.target.value)} />
                   <div className="b-err">올바른 이메일을 입력해 주세요.</div>
                 </div>

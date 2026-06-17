@@ -223,6 +223,8 @@ function Editor({ email }: { email: string }) {
       </div>
       <div className="admin-note"><i className="fa-solid fa-circle-info"></i> 관리자 인증으로 보호되는 페이지입니다. (검색 비노출)</div>
 
+      <BrochureManager />
+
       <div className="admin-grid">
         {/* 등록/수정 폼 */}
         <div className="card">
@@ -309,5 +311,75 @@ function Editor({ email }: { email: string }) {
         </div>
       </div>
     </main>
+  );
+}
+
+// 서비스소개서(PDF) 업로드·현재본 관리 — 비공개 Storage 버킷 + brochure_files
+function BrochureManager() {
+  const [current, setCurrent] = useState<string | null>(null);
+  const [busy, setBusy] = useState(false);
+  const [msg, setMsg] = useState<{ text: string; ok: boolean } | null>(null);
+
+  const load = useCallback(async () => {
+    const { data } = await supabase
+      .from("brochure_files")
+      .select("path")
+      .eq("is_current", true)
+      .order("created_at", { ascending: false })
+      .limit(1)
+      .maybeSingle();
+    setCurrent(data?.path ?? null);
+  }, []);
+
+  useEffect(() => {
+    load();
+  }, [load]);
+
+  async function onUpload(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (file.type !== "application/pdf") {
+      setMsg({ text: "PDF 파일만 업로드할 수 있습니다.", ok: false });
+      e.target.value = "";
+      return;
+    }
+    setBusy(true);
+    setMsg(null);
+    try {
+      const path = `aiview-brochure-${new Date().toISOString().replace(/[^0-9]/g, "")}.pdf`;
+      const up = await supabase.storage.from("brochures").upload(path, file, {
+        upsert: true,
+        contentType: "application/pdf",
+      });
+      if (up.error) throw up.error;
+      await supabase.from("brochure_files").update({ is_current: false }).eq("is_current", true);
+      const ins = await supabase.from("brochure_files").insert({ label: file.name, path, is_current: true });
+      if (ins.error) throw ins.error;
+      setMsg({ text: "소개서가 업로드되었습니다. 이제 잠재고객 회사 이메일로 자동 전송됩니다.", ok: true });
+      await load();
+    } catch (err) {
+      console.error("brochure upload failed:", err);
+      setMsg({ text: "업로드에 실패했습니다. 관리자 권한 또는 파일을 확인해 주세요.", ok: false });
+    } finally {
+      setBusy(false);
+      e.target.value = "";
+    }
+  }
+
+  return (
+    <div className="card" style={{ marginBottom: 24 }}>
+      <h2>서비스소개서 (PDF)</h2>
+      {msg && <div className={`form-msg ${msg.ok ? "ok" : "err"}`}>{msg.text}</div>}
+      <div className="sub" style={{ fontSize: 13, margin: "4px 0 14px" }}>
+        현재 등록: {current ? <b>{current}</b> : "없음"}
+      </div>
+      <label className="btn btn-blue" style={{ cursor: busy ? "default" : "pointer", opacity: busy ? 0.6 : 1 }}>
+        {busy ? "업로드 중…" : "소개서 PDF 업로드"}
+        <input type="file" accept="application/pdf" hidden onChange={onUpload} disabled={busy} />
+      </label>
+      <div className="hint" style={{ marginTop: 10 }}>
+        잠재고객이 회사 이메일을 입력하면 이 파일의 보안 링크(7일 만료)가 이메일로 자동 전송됩니다. 화면에는 노출되지 않습니다.
+      </div>
+    </div>
   );
 }
