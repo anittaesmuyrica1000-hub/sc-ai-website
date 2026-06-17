@@ -31,10 +31,7 @@ export default function SiteFooter() {
           <div className="foot-biz">
             <span>(주)세컨드팀</span>
             <span>대표 김도현</span>
-            <span>사업자등록번호 220-88-12345</span>
-            <span>통신판매업신고 제2026-서울강남-01234호</span>
             <span>서울특별시 강남구 테헤란로 152, 강남파이낸스센터 10층</span>
-            <span>대표전화 02-1234-5678</span>
             <span>이메일 support@supercoder.co</span>
           </div>
           <p className="foot-copy">© 2026 Second Team. All rights reserved.</p>
