@@ -30,8 +30,8 @@ export default function SiteFooter() {
         <div className="foot-bottom">
           <div className="foot-biz">
             <span>(주)세컨드팀</span>
-            <span>대표 김도현</span>
-            <span>서울특별시 강남구 테헤란로 152, 강남파이낸스센터 10층</span>
+            <span>대표 최재웅</span>
+            <span>서울 서초구 효령로55길 19 4층</span>
             <span>이메일 support@supercoder.co</span>
           </div>
           <p className="foot-copy">© 2026 Second Team. All rights reserved.</p>
