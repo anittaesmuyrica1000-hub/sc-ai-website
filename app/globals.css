@@ -55,6 +55,16 @@ h2{font-size:clamp(28px,3.6vw,44px);font-weight:800;letter-spacing:0;line-height
    border는 항상 1px 자리만 잡고 색만 바꿔 레이아웃 점프 방지. */
 header{position:sticky;top:0;z-index:60;background:transparent;border-bottom:1px solid transparent;transition:transform .35s ease,opacity .3s ease,background .3s ease,backdrop-filter .3s ease,border-color .3s ease}
 header.nav-solid{background:rgba(255,255,255,.85);backdrop-filter:blur(12px);border-bottom-color:var(--line)}
+/* 호버 시 흰 배경(반투명+블러) */
+header:hover{background:rgba(255,255,255,.97);backdrop-filter:blur(12px);border-bottom-color:var(--line)}
+/* 다크 섹션 위에서 호버 시 콘텐츠를 어둡게(컬러 로고·어두운 메뉴/로그인) */
+header.nav-invert:hover .logo .nav-logo--base{display:block}
+header.nav-invert:hover .logo .nav-logo--invert{display:none}
+header.nav-invert:hover .nav-center a{color:var(--ink)}
+header.nav-invert:hover .nav-center a:hover{color:var(--blue-d)}
+header.nav-invert:hover .nav-login{background:#fff;color:var(--ink);border-color:var(--line)}
+header.nav-invert:hover .nav-menu-btn{background:#fff;border-color:var(--line)}
+header.nav-invert:hover .nav-burger span{background:var(--ink)}
 /* .nav-hidden: 히어로 최상단에서 GNB를 위로 숨김(슬라이드 업+페이드). 스크롤하면 해제되어 흰 GNB 등장. */
 header.nav-hidden{transform:translateY(-100%);opacity:0;pointer-events:none}
 /* 다크 섹션 위 콘텐츠 반전 — 로고는 컬러 락업으로 교체, 메뉴버튼 투명+흰 보더, 버거 흰색. */
@@ -66,7 +76,7 @@ header.nav-invert .logo .nav-logo--base{display:none}
 header.nav-invert .logo .nav-logo--invert{display:block}
 header.nav-invert .nav-menu-btn{background:transparent;border-color:rgba(255,255,255,.4)}
 header.nav-invert .nav-burger span{background:#fff}
-nav{display:flex;align-items:center;justify-content:space-between;height:64px}
+nav{position:relative;display:flex;align-items:center;justify-content:space-between;height:64px}
 .logo{font-weight:800;font-size:20px;letter-spacing:-.02em;display:flex;align-items:center;gap:8px;color:var(--ink);overflow:hidden}
 /* 모바일~소형 태블릿(≤760px): GNB 로고를 심볼만 노출(폭 50px로 클립 — 심볼 우측 끝 48px < 워드마크 시작 53px).
    컬러·흰색 로고 둘 다 심볼 우측이 48px라 공통 적용 가능. */
@@ -80,13 +90,13 @@ nav{display:flex;align-items:center;justify-content:space-between;height:64px}
 header.nav-invert .nav-login{background:transparent;color:#fff;border-color:rgba(255,255,255,.45)}
 header.nav-invert .nav-login:hover{border-color:#fff;color:#fff}
 @media(max-width:760px){.nav-login{display:none}}
-/* 데스크톱 인라인 페이지 링크(블로그·서비스소개서·로그인) */
-.nav-inline{display:flex;align-items:center;gap:26px;margin-right:6px}
-.nav-inline a{font-size:15px;font-weight:600;color:var(--ink);white-space:nowrap;cursor:pointer;transition:color .2s}
-.nav-inline a:hover{color:var(--blue-d)}
+/* 중앙 페이지 메뉴(블로그·서비스소개서) — 헤더 정중앙 고정 */
+.nav-center{position:absolute;left:50%;top:0;transform:translateX(-50%);height:64px;display:flex;align-items:center;gap:30px}
+.nav-center a{font-size:15px;font-weight:600;color:var(--ink);white-space:nowrap;cursor:pointer;transition:color .2s}
+.nav-center a:hover{color:var(--blue-d)}
 /* 다크 섹션 위에선 흰색 */
-header.nav-invert .nav-inline a{color:rgba(255,255,255,.92)}
-header.nav-invert .nav-inline a:hover{color:#fff}
+header.nav-invert .nav-center a{color:rgba(255,255,255,.92)}
+header.nav-invert .nav-center a:hover{color:#fff}
 /* 햄버거 메뉴 버튼 — 도입 문의 버튼과 같은 높이·라운드로 한 쌍처럼 보이게 */
 .nav-menu-wrap{position:relative;display:flex}
 .nav-menu-btn{display:inline-flex;align-items:center;justify-content:center;width:44px;height:40px;border-radius:11px;background:#fff;border:1px solid var(--line);cursor:pointer;transition:.2s}
@@ -107,7 +117,7 @@ header.nav-invert .nav-inline a:hover{color:#fff}
 @media(max-width:480px){.navlinks .nav-btn{height:36px;padding:0 14px;font-size:13px}.nav-menu-btn{width:40px;height:36px}}
 /* 반응형 GNB: 데스크톱(≥761) 인라인 링크 노출·햄버거 숨김 / 모바일(≤760) 반대 (소스 순서상 뒤에 둬 우선 적용) */
 @media(min-width:761px){.nav-menu-wrap{display:none}}
-@media(max-width:760px){.nav-inline{display:none}}
+@media(max-width:760px){.nav-center{display:none}}
 
 /* ===== Footer (partial: <site-footer>) — GNB와 동일: 흰 배경 + 컬러 로고 ===== */
 footer{background:#fff;color:var(--slate);padding:64px 0 44px;font-size:14px;border-top:1px solid var(--line)}

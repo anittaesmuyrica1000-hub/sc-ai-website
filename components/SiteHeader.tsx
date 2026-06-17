@@ -77,17 +77,15 @@ export default function SiteHeader() {
           <img src="/supercoder-nav-white.svg" alt="Supercoder" className="nav-logo-img nav-logo--invert" />
         </Link>
 
+        {/* 중앙: 페이지 메뉴 (데스크톱) */}
+        <div className="nav-center">
+          <Link href="/blog">블로그</Link>
+          <a href="#" className="js-brochure">서비스소개서</a>
+        </div>
+
+        {/* 우측: 로그인 + 도입 문의 + (모바일)햄버거 */}
         <div className="navlinks">
-          {/* 데스크톱: 인라인 페이지 링크 */}
-          <div className="nav-inline">
-            <Link href="/blog">블로그</Link>
-            <a href="#" className="js-brochure">서비스소개서</a>
-          </div>
-
-          {/* 로그인(보조 버튼) — 도입 문의 왼쪽 */}
           <Link href="/admin" className="btn btn-out nav-login">로그인</Link>
-
-          {/* 주 CTA — 항상 노출 */}
           <Link href="/apply" className="btn btn-blue nav-btn">도입 문의</Link>
 
           {/* 모바일: 햄버거 메뉴 */}
