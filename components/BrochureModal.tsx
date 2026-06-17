@@ -130,7 +130,6 @@ export default function BrochureModal() {
           ) : (
             <>
               <div className="bro-head">
-                <div className="eyebrow"><i className="fa-solid fa-file-lines"></i> 서비스소개서</div>
                 <h2>AI 면접관 서비스소개서</h2>
                 <p>정보를 남겨주시면 소개서를 바로 받아보실 수 있습니다.</p>
               </div>
