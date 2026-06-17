@@ -257,7 +257,7 @@ export default function HomePage() {
             <p className="lead">시간은 줄이고, 검증은 높이고 — 도입 효과를 숫자로 보여드립니다.</p>
           </div>
           <div className="proof-row">
-            <div className="pc2"><div className="vlabel"><i className="fa-solid fa-bolt"></i> 속도</div><div className="big">0<span style={{ fontSize: ".5em" }}>시간</span></div><p>채용팀 1차 검토 시간<br />(응시 → AI 면접 → 리포트)</p></div>
+            <div className="pc2"><div className="vlabel"><i className="fa-solid fa-bolt"></i> 속도</div><div className="big">동시</div><p>수천 명을 한 번에 1차 검증<br />(응시 → AI 면접 → 리포트)</p></div>
             <div className="pc2"><div className="vlabel"><i className="fa-solid fa-piggy-bank"></i> 비용 절감</div><div className="big">1,272<span style={{ fontSize: ".5em" }}>만원</span></div><p>잘못된 채용 1건 · 그대로 손실</p><p className="psrc">출처: 사람인, 기업 499개사</p></div>
             <div className="pc2"><div className="vlabel"><i className="fa-solid fa-circle-check"></i> 일관성</div><div className="big">100<span style={{ fontSize: ".5em" }}>%</span></div><p>모든 지원자를 동일 기준으로<br />일관되게 검증</p></div>
           </div>
