@@ -189,7 +189,7 @@
   .demo-video .vcap{position:absolute;left:22px;bottom:20px;color:#fff;font-weight:700;font-size:14px;display:flex;align-items:center;gap:8px;text-shadow:0 1px 8px rgba(0,0,0,.5)}
   .demo-video .vtime{position:absolute;right:20px;bottom:20px;background:rgba(0,0,0,.45);color:#fff;font-size:12px;font-weight:700;padding:4px 11px;border-radius:999px}
   /* 리포트 디테일: 텍스트 + 이미지 박스 좌우 교차 3행 */
-  .how-rows{max-width:1140px;margin:60px auto 8px;display:grid;gap:clamp(36px,4vw,64px)}
+  .how-rows{max-width:1140px;margin:60px auto 8px;display:grid;gap:clamp(56px,6vw,96px)}
   /* 이미지 측 비중↑(더 크게), 행 간격·중앙정렬 */
   .how-row{display:grid;grid-template-columns:minmax(0,1.12fr) minmax(0,0.88fr);gap:clamp(28px,4vw,72px);align-items:center}
   .hr-info{text-align:left}
