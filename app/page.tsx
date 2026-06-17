@@ -206,12 +206,12 @@ export default function HomePage() {
               </div>
             </div>
             <div className="how-row">
-              <div className="hr-media"><img className="hr-img" src="/diagram-grade.png" alt="종합 등급 도식" width={1080} height={570} loading="lazy" /></div>
               <div className="hr-info">
                 <span className="hr-eyebrow">리포트 02</span>
                 <h3>종합평가</h3>
                 <p>직무 적합도를 종합 점수로 환산해, 한눈에 판단할 수 있게 제시합니다.</p>
               </div>
+              <div className="hr-media"><img className="hr-img" src="/diagram-grade.png" alt="종합 등급 도식" width={1080} height={570} loading="lazy" /></div>
             </div>
             <div className="how-row">
               <div className="hr-media"><img className="hr-img" src="/diagram-competency.png" alt="역량 평가 도식" width={1080} height={570} loading="lazy" /></div>
@@ -222,12 +222,12 @@ export default function HomePage() {
               </div>
             </div>
             <div className="how-row">
-              <div className="hr-media"><img className="hr-img" src="/diagram-strength.png" alt="강점·약점 분석 도식" width={1080} height={570} loading="lazy" /></div>
               <div className="hr-info">
                 <span className="hr-eyebrow">리포트 04</span>
                 <h3>강점·약점 분석</h3>
                 <p>지원자의 강점과 보완할 점을 한눈에 정리해, 면접에서 무엇을 확인할지 알려줍니다.</p>
               </div>
+              <div className="hr-media"><img className="hr-img" src="/diagram-strength.png" alt="강점·약점 분석 도식" width={1080} height={570} loading="lazy" /></div>
             </div>
           </div>
 
