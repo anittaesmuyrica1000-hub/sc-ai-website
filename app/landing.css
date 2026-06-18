@@ -190,10 +190,8 @@
   .demo-video .vtime{position:absolute;right:20px;bottom:20px;background:rgba(0,0,0,.45);color:#fff;font-size:12px;font-weight:700;padding:4px 11px;border-radius:999px}
   /* 리포트 디테일: 텍스트 + 이미지 박스 좌우 교차 3행 */
   .how-rows{max-width:1140px;margin:60px auto 8px;display:grid;gap:clamp(56px,6vw,96px)}
-  /* 이미지 측 비중↑(더 크게), 행 간격·중앙정렬 */
-  .how-row{display:grid;grid-template-columns:minmax(0,1.12fr) minmax(0,0.88fr);gap:clamp(28px,4vw,72px);align-items:center}
-  /* 짝수 행(02·04): 좌-텍스트/우-이미지 — 이미지(오른쪽 컬럼)를 크게 */
-  @media(min-width:881px){.how-row:nth-child(even){grid-template-columns:minmax(0,0.88fr) minmax(0,1.12fr)}}
+  /* 모든 행: 좌-텍스트 / 우-도식 이미지, 좌우 동일 너비 */
+  .how-row{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(28px,4vw,72px);align-items:center}
   .hr-info{text-align:left}
   .hr-eyebrow{display:inline-block;font-size:12.5px;font-weight:800;letter-spacing:.06em;color:var(--blue);background:var(--soft-2);padding:6px 13px;border-radius:999px;margin-bottom:16px}
   .hr-info h3{font-size:clamp(24px,2.9vw,34px);font-weight:800;line-height:1.3;letter-spacing:-.02em;color:var(--ink)}
@@ -221,7 +219,7 @@
   .how-card h3{font-size:clamp(19px,2.2vw,22px);font-weight:800;letter-spacing:-.02em;color:var(--ink)}
   .how-card p{font-size:15px;color:var(--slate);margin-top:8px;line-height:1.6}
   @media(max-width:760px){.how-grid{grid-template-columns:1fr;gap:18px;margin-top:36px}.sch-fig{height:185px}}
-  @media(max-width:880px){.how-rows{gap:36px;margin-top:40px}.how-row{grid-template-columns:1fr;gap:18px}.hr-info{text-align:center}.how-row .hr-media{order:-1}.hr-info h3{font-size:21px}.hr-info p{margin-top:8px}.hr-points{justify-items:start;max-width:340px;margin-left:auto;margin-right:auto;text-align:left}}
+  @media(max-width:880px){.how-rows{gap:36px;margin-top:40px}.how-row{grid-template-columns:1fr;gap:18px}.hr-info{text-align:center}.hr-info h3{font-size:21px}.hr-info p{margin-top:8px}.hr-points{justify-items:start;max-width:340px;margin-left:auto;margin-right:auto;text-align:left}}
 
   /* 6. PROOF */
   /* 헤드카피 위 여유 공간 — 기본 섹션 패딩보다 상단을 더 넉넉히 */

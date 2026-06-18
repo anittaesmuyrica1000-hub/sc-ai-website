@@ -198,12 +198,12 @@ export default function HomePage() {
 
           <div className="how-rows">
             <div className="how-row">
-              <div className="hr-media"><img className="hr-img" src="/diagram-interview.png" alt="인터뷰 요약 도식" width={1080} height={570} loading="lazy" /></div>
               <div className="hr-info">
                 <span className="hr-eyebrow">리포트 01</span>
                 <h3>인터뷰 요약</h3>
                 <p>AI 면접 대화를 핵심만 자동으로 간추립니다. 긴 영상을 다시 보지 않아도 지원자를 1분 만에 파악할 수 있습니다.</p>
               </div>
+              <div className="hr-media"><img className="hr-img" src="/diagram-interview.png" alt="인터뷰 요약 도식" width={1080} height={570} loading="lazy" /></div>
             </div>
             <div className="how-row">
               <div className="hr-info">
@@ -214,12 +214,12 @@ export default function HomePage() {
               <div className="hr-media"><img className="hr-img" src="/diagram-grade.png" alt="종합 등급 도식" width={1080} height={570} loading="lazy" /></div>
             </div>
             <div className="how-row">
-              <div className="hr-media"><img className="hr-img" src="/diagram-competency.png" alt="역량 평가 도식" width={1080} height={570} loading="lazy" /></div>
               <div className="hr-info">
                 <span className="hr-eyebrow">리포트 03</span>
                 <h3>역량평가</h3>
                 <p><strong>핵심 역량</strong>을 항목별로 평가해 차트로 보여줍니다. 어느 역량이 두드러지고 어디가 부족한지 한눈에 비교할 수 있습니다.</p>
               </div>
+              <div className="hr-media"><img className="hr-img" src="/diagram-competency.png" alt="역량 평가 도식" width={1080} height={570} loading="lazy" /></div>
             </div>
             <div className="how-row">
               <div className="hr-info">
