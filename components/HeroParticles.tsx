@@ -56,9 +56,9 @@ export default function HeroParticles({ canvasId, targetId }: { canvasId: string
     }
     size(); init();
 
-    let visible = false, running = false, raf = 0;
+    let visible = false, running = false, paused = false, raf = 0;
     function tick() {
-      if (!visible) { running = false; return; }
+      if (!visible || paused) { running = false; return; }
       aim();
       x.clearRect(0, 0, c!.width, c!.height);
       for (let i = 0; i < P.length; i++) {
@@ -75,10 +75,15 @@ export default function HeroParticles({ canvasId, targetId }: { canvasId: string
       if (glow) x.shadowBlur = 0;
       raf = requestAnimationFrame(tick);
     }
-    function start() { if (!running) { running = true; raf = requestAnimationFrame(tick); } }
+    function start() { if (!running && !paused) { running = true; raf = requestAnimationFrame(tick); } }
 
     const onResize = () => size();
+    // 모달 등 오버레이가 열리면 입자 애니메이션 정지(블러 backdrop과 겹쳐 생기는 버벅임 방지)
+    const onPause = () => { paused = true; };
+    const onResume = () => { paused = false; if (visible) start(); };
     window.addEventListener("resize", onResize);
+    window.addEventListener("app:overlay-open", onPause);
+    window.addEventListener("app:overlay-close", onResume);
     let io: IntersectionObserver | null = null;
     if ("IntersectionObserver" in window) {
       io = new IntersectionObserver((es) => { visible = es[0].isIntersecting; if (visible) start(); }, { rootMargin: "120px" });
@@ -87,6 +92,8 @@ export default function HeroParticles({ canvasId, targetId }: { canvasId: string
 
     return () => {
       window.removeEventListener("resize", onResize);
+      window.removeEventListener("app:overlay-open", onPause);
+      window.removeEventListener("app:overlay-close", onResume);
       cancelAnimationFrame(raf);
       io?.disconnect();
       visible = false;

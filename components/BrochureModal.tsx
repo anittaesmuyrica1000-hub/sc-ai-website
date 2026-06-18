@@ -37,11 +37,13 @@ export default function BrochureModal() {
   useEffect(() => {
     if (open) {
       document.body.style.overflow = "hidden";
+      window.dispatchEvent(new Event("app:overlay-open")); // 히어로 입자 애니메이션 일시정지
       const onKey = (e: KeyboardEvent) => e.key === "Escape" && close();
       document.addEventListener("keydown", onKey);
       return () => {
         document.removeEventListener("keydown", onKey);
         document.body.style.overflow = "";
+        window.dispatchEvent(new Event("app:overlay-close")); // 닫히면 재개
       };
     }
     document.body.style.overflow = "";
