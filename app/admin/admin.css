@@ -17,6 +17,12 @@
   .field textarea{resize:vertical;min-height:200px;line-height:1.7}
   .field-row{display:grid;grid-template-columns:1fr 1fr;gap:13px}
   .field .hint{font-size:12px;color:var(--slate-2);margin-top:5px}
+  .cover-edit{display:flex;align-items:center;gap:14px;margin-bottom:10px}
+  .cover-preview{width:120px;height:72px;border-radius:10px;object-fit:cover;flex-shrink:0;border:1px solid var(--line)}
+  .cover-preview.empty{display:grid;place-items:center;color:#fff;font-size:20px;background:linear-gradient(135deg,var(--blue),var(--blue-2));border:none}
+  .cover-controls{display:flex;flex-wrap:wrap;gap:8px}
+  .cover-controls .btn{font-size:13px;padding:9px 14px}
+  .cover-controls input[type=file]{position:absolute;width:0;height:0;opacity:0}
   .check{display:flex;align-items:center;gap:8px;font-size:14px;font-weight:600;color:var(--ink);margin:4px 0 18px}
   .check input{width:auto;accent-color:var(--blue)}
   .form-actions{display:flex;gap:10px}

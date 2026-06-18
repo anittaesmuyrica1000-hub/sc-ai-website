@@ -108,6 +108,7 @@ function Editor({ email }: { email: string }) {
   const [msg, setMsg] = useState<{ text: string; ok: boolean } | null>(null);
   const [saving, setSaving] = useState(false);
   const [loadErr, setLoadErr] = useState(false);
+  const [uploadingCover, setUploadingCover] = useState(false);
 
   const isEdit = form.id !== "";
 
@@ -154,6 +155,41 @@ function Editor({ email }: { email: string }) {
   function resetForm() {
     setForm(EMPTY);
     setMsg(null);
+  }
+
+  // 커버 이미지 업로드 — public 버킷 blog-covers에 올리고 공개 URL을 cover_url에 세팅
+  async function onCoverUpload(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (!file.type.startsWith("image/")) {
+      showMsg("이미지 파일만 업로드할 수 있습니다.", false);
+      e.target.value = "";
+      return;
+    }
+    if (file.size > 5 * 1024 * 1024) {
+      showMsg("이미지는 5MB 이하만 업로드할 수 있습니다.", false);
+      e.target.value = "";
+      return;
+    }
+    setUploadingCover(true);
+    try {
+      const ext = (file.name.split(".").pop() || "jpg").toLowerCase();
+      const path = `cover-${new Date().toISOString().replace(/[^0-9]/g, "")}.${ext}`;
+      const up = await supabase.storage.from("blog-covers").upload(path, file, {
+        upsert: true,
+        contentType: file.type,
+      });
+      if (up.error) throw up.error;
+      const { data } = supabase.storage.from("blog-covers").getPublicUrl(path);
+      set("cover_url", data.publicUrl);
+      showMsg("커버 이미지가 업로드되었습니다.", true);
+    } catch (err) {
+      console.error("cover upload failed:", err);
+      showMsg("이미지 업로드에 실패했습니다. 관리자 권한 또는 파일을 확인해 주세요.", false);
+    } finally {
+      setUploadingCover(false);
+      e.target.value = "";
+    }
   }
 
   async function onSubmit(e: React.FormEvent) {
@@ -249,9 +285,23 @@ function Editor({ email }: { email: string }) {
               </div>
             </div>
             <div className="field">
-              <label htmlFor="f-cover">커버 이미지 URL</label>
-              <input type="url" id="f-cover" placeholder="https://..." value={form.cover_url} onChange={(e) => set("cover_url", e.target.value)} />
-              <div className="hint">비워두면 기본 그라데이션 썸네일이 표시됩니다.</div>
+              <label htmlFor="f-cover">커버 이미지</label>
+              <div className="cover-edit">
+                {form.cover_url ? (
+                  <img className="cover-preview" src={form.cover_url} alt="" />
+                ) : (
+                  <div className="cover-preview empty"><i className="fa-solid fa-image"></i></div>
+                )}
+                <div className="cover-controls">
+                  <label className="btn btn-out" style={{ cursor: uploadingCover ? "default" : "pointer", opacity: uploadingCover ? 0.6 : 1 }}>
+                    {uploadingCover ? "업로드 중…" : <><i className="fa-solid fa-arrow-up-from-bracket"></i> 이미지 업로드</>}
+                    <input type="file" accept="image/*" hidden onChange={onCoverUpload} disabled={uploadingCover} />
+                  </label>
+                  {form.cover_url && <button type="button" className="btn btn-out" onClick={() => set("cover_url", "")}>제거</button>}
+                </div>
+              </div>
+              <input type="url" id="f-cover" placeholder="또는 이미지 URL 직접 입력 (https://...)" value={form.cover_url} onChange={(e) => set("cover_url", e.target.value)} />
+              <div className="hint">이미지를 업로드하거나 URL을 직접 입력하세요. 비워두면 기본 그라데이션 썸네일이 표시됩니다. (5MB 이하)</div>
             </div>
             <div className="field">
               <label htmlFor="f-excerpt">요약</label>
