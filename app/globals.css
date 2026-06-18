@@ -118,6 +118,9 @@ header.nav-invert .nav-center a:hover{color:#fff}
 /* 반응형 GNB: 데스크톱(≥761) 인라인 링크 노출·햄버거 숨김 / 모바일(≤760) 반대 (소스 순서상 뒤에 둬 우선 적용) */
 @media(min-width:761px){.nav-menu-wrap{display:none}}
 @media(max-width:760px){.nav-center{display:none}}
+/* 모바일: 다크 섹션(히어로·FINAL CTA) 위 헤더를 반투명 남색 바로 — 투명일 때
+   CTA 콘텐츠(로고·도입문의·햄버거)와 겹쳐 보이던 충돌 해소(밝은 섹션 nav-solid와 동일 원리) */
+@media(max-width:760px){header.nav-invert{background:rgba(8,13,28,.82);backdrop-filter:blur(10px);border-bottom-color:rgba(255,255,255,.10)}}
 
 /* ===== Footer (partial: <site-footer>) — GNB와 동일: 흰 배경 + 컬러 로고 ===== */
 footer{background:#fff;color:var(--slate);padding:64px 0 44px;font-size:14px;border-top:1px solid var(--line)}
