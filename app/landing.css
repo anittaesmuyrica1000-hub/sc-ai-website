@@ -190,8 +190,10 @@
   .demo-video .vtime{position:absolute;right:20px;bottom:20px;background:rgba(0,0,0,.45);color:#fff;font-size:12px;font-weight:700;padding:4px 11px;border-radius:999px}
   /* 리포트 디테일: 텍스트 + 이미지 박스 좌우 교차 3행 */
   .how-rows{max-width:1140px;margin:60px auto 8px;display:grid;gap:clamp(56px,6vw,96px)}
-  /* 모든 행: 좌-텍스트 / 우-도식 이미지, 좌우 동일 너비 */
+  /* 좌우 동일 너비. DOM 순서는 항상 텍스트→이미지(모바일 일관성) */
   .how-row{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(28px,4vw,72px);align-items:center}
+  /* 데스크톱만 지그재그: 짝수 행은 이미지 좌·텍스트 우로 교차 */
+  @media(min-width:881px){.how-row:nth-child(even) .hr-info{order:2}.how-row:nth-child(even) .hr-media{order:1}}
   .hr-info{text-align:left}
   .hr-eyebrow{display:inline-block;font-size:12.5px;font-weight:800;letter-spacing:.06em;color:var(--blue);background:var(--soft-2);padding:6px 13px;border-radius:999px;margin-bottom:16px}
   .hr-info h3{font-size:clamp(24px,2.9vw,34px);font-weight:800;line-height:1.3;letter-spacing:-.02em;color:var(--ink)}
