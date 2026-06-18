@@ -201,7 +201,7 @@ export default function HomePage() {
               <div className="hr-info">
                 <span className="hr-eyebrow">리포트 01</span>
                 <h3>인터뷰 요약</h3>
-                <p>AI 면접 대화를 핵심만 자동으로 간추립니다. 긴 영상을 다시 보지 않아도 지원자를 1분 만에 파악할 수 있습니다.</p>
+                <p>긴 영상을 다시 볼 필요 없이, 대화의 핵심만 자동 요약합니다.</p>
               </div>
               <div className="hr-media"><img className="hr-img" src="/diagram-interview.png" alt="인터뷰 요약 도식" width={1080} height={570} loading="lazy" /></div>
             </div>
@@ -209,7 +209,7 @@ export default function HomePage() {
               <div className="hr-info">
                 <span className="hr-eyebrow">리포트 02</span>
                 <h3>종합평가</h3>
-                <p>주요 평가 항목을 종합해 <strong>등급</strong>으로 제시합니다. 복잡한 점수 대신 한눈에 들어오는 등급으로, 합격·보류·탈락을 빠르게 가를 수 있습니다.</p>
+                <p>복잡한 점수 대신 <strong>등급</strong>으로, 합격·보류·탈락을 빠르게 가릅니다.</p>
               </div>
               <div className="hr-media"><img className="hr-img" src="/diagram-grade.png" alt="종합 등급 도식" width={1080} height={570} loading="lazy" /></div>
             </div>
@@ -217,7 +217,7 @@ export default function HomePage() {
               <div className="hr-info">
                 <span className="hr-eyebrow">리포트 03</span>
                 <h3>역량평가</h3>
-                <p><strong>핵심 역량</strong>을 항목별로 평가해 차트로 보여줍니다. 어느 역량이 두드러지고 어디가 부족한지 한눈에 비교할 수 있습니다.</p>
+                <p><strong>핵심 역량</strong>의 강점과 약점을 차트로 한눈에 비교합니다.</p>
               </div>
               <div className="hr-media"><img className="hr-img" src="/diagram-competency.png" alt="역량 평가 도식" width={1080} height={570} loading="lazy" /></div>
             </div>
@@ -225,7 +225,7 @@ export default function HomePage() {
               <div className="hr-info">
                 <span className="hr-eyebrow">리포트 04</span>
                 <h3>강점·약점 분석</h3>
-                <p>강점과 보완할 점을 명확히 구분해 정리합니다. 대면 면접에서 무엇을 더 확인할지 질문 포인트까지 짚어 줍니다.</p>
+                <p>강점과 약점을 구분해, 대면 면접에서 확인할 포인트까지 짚어줍니다.</p>
               </div>
               <div className="hr-media"><img className="hr-img" src="/diagram-strength.png" alt="강점·약점 분석 도식" width={1080} height={570} loading="lazy" /></div>
             </div>
