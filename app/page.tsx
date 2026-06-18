@@ -209,7 +209,7 @@ export default function HomePage() {
               <div className="hr-info">
                 <span className="hr-eyebrow">리포트 02</span>
                 <h3>종합평가</h3>
-                <p>직무 적합도·안정성·성장 가능성을 종합해 <strong>등급</strong>으로 제시합니다. 복잡한 점수 대신 한눈에 들어오는 등급으로, 합격·보류·탈락을 빠르게 가를 수 있습니다.</p>
+                <p>주요 평가 항목을 종합해 <strong>등급</strong>으로 제시합니다. 복잡한 점수 대신 한눈에 들어오는 등급으로, 합격·보류·탈락을 빠르게 가를 수 있습니다.</p>
               </div>
               <div className="hr-media"><img className="hr-img" src="/diagram-grade.png" alt="종합 등급 도식" width={1080} height={570} loading="lazy" /></div>
             </div>
