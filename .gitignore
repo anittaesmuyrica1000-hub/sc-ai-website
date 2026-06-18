@@ -6,6 +6,13 @@ node_modules/
 .vercel
 .claude/
 
+# 서비스 계정 키 등 비밀 자격증명 (절대 커밋 금지)
+aiview-mail-*.json
+*-service-account*.json
+*.serviceaccount.json
+gcp-*.json
+*.pem
+
 # Next.js
 /.next/
 /out/
