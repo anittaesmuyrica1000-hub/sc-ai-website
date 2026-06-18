@@ -14,6 +14,11 @@ export default function SiteHeader() {
   const headerRef = useRef<HTMLElement>(null);
   const [menuOpen, setMenuOpen] = useState(false);
   const pathname = usePathname();
+  const lastYRef = useRef(0);
+  const menuOpenRef = useRef(false);
+  useEffect(() => {
+    menuOpenRef.current = menuOpen;
+  }, [menuOpen]);
 
   // 섹션 인지형 GNB 색상 — 헤더 중앙선 아래 섹션에 맞춰 테마 토글
   useEffect(() => {
@@ -34,7 +39,21 @@ export default function SiteHeader() {
       }
       const overHide = over('[data-nav="hide"]');
       const overDark = over('[data-nav="dark"]');
-      const hidden = overHide && y < 40;
+
+      // 모바일: 스크롤 방향 기반 자동 숨김(아래로 내리면 숨김, 위로 올리면 표시).
+      // 데스크톱은 항상 표시. 메뉴 열림 중엔 숨기지 않음. 상단(≤80px)에선 항상 표시.
+      const isMobile = window.matchMedia("(max-width: 760px)").matches;
+      const delta = y - lastYRef.current;
+      let autoHide = header.classList.contains("nav-hidden");
+      if (!isMobile || menuOpenRef.current || y <= 80) {
+        autoHide = false;
+      } else if (Math.abs(delta) > 4) {
+        if (delta > 0) autoHide = true;
+        else autoHide = false;
+      }
+      lastYRef.current = y;
+
+      const hidden = (overHide && y < 40) || autoHide;
       header.classList.toggle("nav-hidden", hidden);
       header.classList.toggle("nav-invert", overDark && !hidden);
       header.classList.toggle("nav-solid", !hidden && !overDark && y > 8);
