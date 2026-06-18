@@ -46,7 +46,16 @@ export default function Chatbot() {
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    if (bodyRef.current) bodyRef.current.scrollTop = bodyRef.current.scrollHeight;
+    const body = bodyRef.current;
+    if (!body) return;
+    // 답변이 잘 보이도록: 마지막 사용자 질문을 본문 맨 위로 올려 그 아래 답변이 꽉 차게 노출.
+    // (질문이 없으면 — 인사말 등 — 기존처럼 맨 아래로)
+    const raf = requestAnimationFrame(() => {
+      const users = body.querySelectorAll<HTMLElement>(".cbot-msg.user");
+      const lastUser = users[users.length - 1];
+      body.scrollTop = lastUser ? Math.max(0, lastUser.offsetTop - 14) : body.scrollHeight;
+    });
+    return () => cancelAnimationFrame(raf);
   }, [msgs]);
 
   function botReply(html: string) {
