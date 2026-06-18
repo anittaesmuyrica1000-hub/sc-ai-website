@@ -60,8 +60,8 @@ export default function HomePage() {
                 <span className="hl" id="real-word">상위 후보</span><span className="sky">만 보면 됩니다.</span>
               </h1>
               <p>
-                <span style={{ fontWeight: 700, color: "#fff" }}>AI 면접</span>이 전 지원자를 검증하고,<br />
-                검증된 <span style={{ fontWeight: 700, color: "#fff" }}>핵심 인재 리포트</span>만 채용팀에 전달합니다.
+                <span style={{ fontWeight: 700, color: "#fff" }}>AI 면접이</span> 전 지원자를 검증하고,<br />
+                검증된 <span style={{ fontWeight: 700, color: "#fff" }}>핵심 인재 리포트만 채용팀에 전달합니다.</span>
               </p>
               <div className="decl-cta">
                 <Link href="/apply" className="btn btn-blue">무료 상담 신청 <i className="fa-solid fa-arrow-right"></i></Link>
