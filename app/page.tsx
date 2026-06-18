@@ -265,7 +265,7 @@ export default function HomePage() {
         <div className="wrap">
           <div className="head">
             <h2>AI 면접 하나로,<br />1차 검토가 <span className="blue">이렇게 바뀝니다</span></h2>
-            <p className="lead">시간은 줄이고, 검증은 높이고 — 도입 효과를 숫자로 보여드립니다.</p>
+            <p className="lead">도입 효과를 숫자로 보여드립니다.</p>
           </div>
           <div className="proof-row">
             <div className="pc2"><div className="vlabel"><i className="fa-solid fa-bolt"></i> 속도</div><div className="big">동시</div><p>수천 명을 한 번에 1차 검증<br />(응시 → AI 면접 → 리포트)</p></div>
