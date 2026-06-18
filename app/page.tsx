@@ -225,7 +225,7 @@ export default function HomePage() {
               <div className="hr-info">
                 <span className="hr-eyebrow">리포트 04</span>
                 <h3>강점·약점 분석</h3>
-                <p>지원자의 강점과 보완이 필요한 점을 명확히 구분해 정리합니다. 대면 면접에서 무엇을 더 확인하고 검증해야 할지, 질문 포인트까지 짚어 줍니다.</p>
+                <p>강점과 보완할 점을 명확히 구분해 정리합니다. 대면 면접에서 무엇을 더 확인할지 질문 포인트까지 짚어 줍니다.</p>
               </div>
               <div className="hr-media"><img className="hr-img" src="/diagram-strength.png" alt="강점·약점 분석 도식" width={1080} height={570} loading="lazy" /></div>
             </div>
