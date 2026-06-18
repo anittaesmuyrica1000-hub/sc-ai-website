@@ -202,7 +202,7 @@ export default function HomePage() {
               <div className="hr-info">
                 <span className="hr-eyebrow">리포트 01</span>
                 <h3>인터뷰 요약</h3>
-                <p>AI 면접 전체 대화를 핵심 내용만 자동으로 간추려 정리합니다. 긴 영상을 다시 돌려보지 않아도, 지원자가 어떤 사람인지 1분 만에 파악할 수 있습니다.</p>
+                <p>AI 면접 대화를 핵심만 자동으로 간추립니다. 긴 영상을 다시 보지 않아도 지원자를 1분 만에 파악할 수 있습니다.</p>
               </div>
             </div>
             <div className="how-row">
