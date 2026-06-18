@@ -13,8 +13,8 @@
   --ink:#142036; --slate:#566179; --slate-2:#8A93A8; --line:#E5EBF5;
   --bg:#fff; --green:#16A34A; --amber:#E0890B; --red:#E0584A;
   --r:16px; --shadow:0 18px 48px -22px rgba(20,40,90,.22);
-  /* 섹션 수직 리듬 토큰 — 전 섹션 공통 간격(SSOT). 데스크톱 ~96px, 모바일 하한 48px(Wise 리듬) */
-  --sec-y:clamp(48px,7vw,96px);
+  /* 섹션 수직 리듬 토큰 — 전 섹션 공통 간격(SSOT). 데스크톱 ~120px, 모바일 하한 72px(Wise식 여백 리듬) */
+  --sec-y:clamp(72px,9vw,120px);
 }
 
 /* ===== Base ===== */

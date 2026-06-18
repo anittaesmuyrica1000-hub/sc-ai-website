@@ -192,8 +192,8 @@ export default function HomePage() {
       <section className="how" id="how">
         <div className="wrap">
           <div className="head">
-            <h2>그 ‘결정’, 이 <span className="blue">리포트 한 장</span>이면 충분합니다</h2>
-            <p className="lead">검증은 AI가 끝냅니다 — 채용팀은 이 화면만 보면 됩니다.</p>
+            <h2>이 <span className="blue">리포트 한 장</span>이면 충분합니다</h2>
+            <p className="lead">검증은 AI가 끝냅니다. 결과만 확인하세요.</p>
           </div>
 
           <div className="how-rows">
