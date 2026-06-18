@@ -166,7 +166,9 @@ footer{background:#fff;color:var(--slate);padding:64px 0 44px;font-size:14px;bor
 .legal.notfound .btn{margin-top:28px}
 
 /* ===== 서비스소개서 리드 모달 (partials.js가 주입, 전 페이지 공용) ===== */
-.bro-modal{position:fixed;inset:0;z-index:200;display:none;align-items:center;justify-content:center;padding:20px;background:rgba(15,23,42,.5);backdrop-filter:blur(2px)}
+/* backdrop-filter 제거: 입력 시마다 화면 전체 블러를 재계산해 타이핑이 버벅이던 문제 해소.
+   대신 약간 더 진한 반투명 배경으로 분리감 유지. */
+.bro-modal{position:fixed;inset:0;z-index:200;display:none;align-items:center;justify-content:center;padding:20px;background:rgba(15,23,42,.62)}
 .bro-modal.open{display:flex}
 .bro-card{position:relative;width:100%;max-width:460px;max-height:92vh;overflow:auto;background:#fff;border-radius:20px;box-shadow:0 30px 70px -20px rgba(15,23,42,.4);padding:32px 30px}
 .bro-close{position:absolute;top:14px;right:14px;width:34px;height:34px;border-radius:9px;border:1px solid var(--line);background:#fff;color:var(--slate);cursor:pointer;display:grid;place-items:center;font-size:15px;transition:.15s}
