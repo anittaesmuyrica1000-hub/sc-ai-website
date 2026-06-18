@@ -218,7 +218,7 @@ export default function HomePage() {
               <div className="hr-info">
                 <span className="hr-eyebrow">리포트 03</span>
                 <h3>역량평가</h3>
-                <p>의사소통·문제해결·직무 지식·협업·태도·성실성 등 <strong>핵심 역량</strong>을 항목별로 평가해 차트로 보여줍니다. 어느 역량이 두드러지고 어디가 부족한지 한눈에 비교할 수 있습니다.</p>
+                <p><strong>핵심 역량</strong>을 항목별로 평가해 차트로 보여줍니다. 어느 역량이 두드러지고 어디가 부족한지 한눈에 비교할 수 있습니다.</p>
               </div>
             </div>
             <div className="how-row">
