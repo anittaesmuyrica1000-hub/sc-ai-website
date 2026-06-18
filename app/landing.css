@@ -221,7 +221,9 @@
   .how-card h3{font-size:clamp(19px,2.2vw,22px);font-weight:800;letter-spacing:-.02em;color:var(--ink)}
   .how-card p{font-size:15px;color:var(--slate);margin-top:8px;line-height:1.6}
   @media(max-width:760px){.how-grid{grid-template-columns:1fr;gap:18px;margin-top:36px}.sch-fig{height:185px}}
-  @media(max-width:880px){.how-rows{gap:36px;margin-top:40px}.how-row{grid-template-columns:1fr;gap:18px}.hr-info{text-align:center}.hr-info h3{font-size:21px}.hr-info p{margin-top:8px}.hr-points{justify-items:start;max-width:340px;margin-left:auto;margin-right:auto;text-align:left}}
+  /* 모바일: 리포트 01~04를 한 화면에 하나씩 보이도록 — 리포트 간 여백 크게,
+     텍스트↔이미지 간격·본문 가독성도 확대(답답함 해소) */
+  @media(max-width:880px){.how-rows{gap:clamp(80px,18vw,120px);margin-top:48px}.how-row{grid-template-columns:1fr;gap:28px}.hr-info{text-align:center}.hr-info h3{font-size:22px}.hr-info p{margin-top:12px;font-size:16px;line-height:1.72}.hr-eyebrow{margin-bottom:14px}.hr-points{justify-items:start;max-width:340px;margin-left:auto;margin-right:auto;text-align:left}}
 
   /* 6. PROOF */
   /* 헤드카피 위 여유 공간 — 기본 섹션 패딩보다 상단을 더 넉넉히 */
