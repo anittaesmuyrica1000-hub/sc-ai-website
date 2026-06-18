@@ -61,7 +61,7 @@ export default function HomePage() {
               </h1>
               <p>
                 <span className="blue" style={{ fontWeight: 700 }}>AI 면접</span>이 전 지원자를 검증하고,<br />
-                검증된 핵심 인재 리포트만 채용팀에 전달합니다.
+                검증된 <span style={{ fontWeight: 700 }}>핵심 인재 리포트</span>만 채용팀에 전달합니다.
               </p>
               <div className="decl-cta">
                 <Link href="/apply" className="btn btn-blue">무료 상담 신청 <i className="fa-solid fa-arrow-right"></i></Link>
