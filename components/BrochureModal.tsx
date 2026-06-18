@@ -1,10 +1,9 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { supabase } from "@/lib/supabase";
 
 // 서비스소개서 리드 모달 — GNB '서비스소개서'(.js-brochure) 클릭 시 열림. 스타일은 theme.css(.bro-*).
-// 제출 시 send-brochure 엣지펑션 호출 → 회사 이메일 검증 후 보안 링크를 이메일로만 전송(가짜 이메일 방지).
+// 제출 시 /api/send-brochure(Next API + Gmail SMTP) 호출 → 회사 이메일로 보안 링크를 전송(가짜 이메일 방지).
 const emailRe = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
 
 type Fields = { name: string; company: string; email: string; role: string; phone: string; size: string };
@@ -83,15 +82,15 @@ export default function BrochureModal() {
     setSending(true);
     setFormErr("");
     try {
-      const { error } = await supabase.functions.invoke("send-brochure", { body: payload });
-      if (error) {
-        let m = "요청 처리 중 문제가 발생했습니다. 잠시 후 다시 시도해 주세요.";
-        try {
-          const j = await (error as { context?: Response }).context?.json?.();
-          if (j?.message) m = j.message as string;
-        } catch {}
+      const res = await fetch("/api/send-brochure", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+      const j = await res.json().catch(() => null);
+      if (!res.ok || !j?.ok) {
         setSending(false);
-        setFormErr(m);
+        setFormErr(j?.message || "요청 처리 중 문제가 발생했습니다. 잠시 후 다시 시도해 주세요.");
         return;
       }
       setDone(true);
