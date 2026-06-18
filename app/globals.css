@@ -219,13 +219,23 @@ footer{background:#fff;color:var(--slate);padding:64px 0 44px;font-size:14px;bor
 .cbot-msg.user{align-self:flex-end;background:var(--blue);color:#fff;border-bottom-right-radius:4px}
 .cbot-msg a{color:var(--blue-d);text-decoration:underline;font-weight:700}
 .cbot-msg.user a{color:#fff}
-.cbot-quick{display:flex;flex-wrap:nowrap;gap:8px;padding:10px 14px;border-top:1px solid var(--line);background:#fff;overflow-x:auto;-ms-overflow-style:none;scrollbar-width:none}
+.cbot-quick{display:flex;flex-direction:column;align-items:flex-end;gap:8px;padding:12px 14px;border-top:1px solid var(--line);background:#fff;max-height:210px;overflow-y:auto;-ms-overflow-style:none;scrollbar-width:none}
 .cbot-quick::-webkit-scrollbar{display:none}
-.cbot-quick button{font-family:inherit;font-size:12.5px;font-weight:600;color:var(--blue-d);background:var(--soft-2);border:1px solid var(--tint);border-radius:999px;padding:7px 12px;cursor:pointer;transition:.15s;white-space:nowrap;flex-shrink:0}
-.cbot-quick button:hover{background:var(--tint)}
+.cbot-quick button{display:inline-flex;align-items:center;gap:9px;max-width:100%;font-family:inherit;font-size:13px;font-weight:600;color:var(--ink);background:#fff;border:1px solid var(--line);border-radius:999px;padding:10px 15px;cursor:pointer;transition:.15s;box-shadow:0 2px 8px rgba(15,23,42,.05);text-align:left}
+.cbot-quick button:hover{border-color:var(--blue-2);background:var(--soft)}
+.cbot-quick button i{color:var(--blue);font-size:13px;flex-shrink:0}
+.cbot-quick button span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .cbot-input{display:flex;gap:8px;padding:12px 14px;border-top:1px solid var(--line);background:#fff}
 .cbot-input input{flex:1;border:1px solid var(--line);border-radius:10px;padding:11px 12px;font-size:14px;font-family:inherit;outline:none;color:var(--ink)}
 .cbot-input input:focus{border-color:var(--blue-2);box-shadow:0 0 0 3px rgba(91,141,247,.16)}
 .cbot-input button{width:42px;border:0;border-radius:10px;background:var(--blue);color:#fff;cursor:pointer;font-size:15px}
 .cbot-input button:hover{background:var(--blue-d)}
-@media(max-width:560px){.cbot{right:12px;left:12px;bottom:12px;pointer-events:none}.cbot-fab,.cbot-panel{pointer-events:auto}.cbot-fab{align-self:flex-end}.cbot-fab .cb-s{display:none}.cbot-panel{width:100%;max-width:100%;height:72vh}}
+@media(max-width:560px){
+  .cbot{right:14px;bottom:14px}
+  .cbot-fab .cb-s{display:none}
+  /* 모바일: 패널을 화면 전체로(참고앱 스타일). 노치/홈바 안전영역 보정 */
+  .cbot-panel{position:fixed;inset:0;width:100%;max-width:none;height:100%;max-height:none;border-radius:0}
+  .cbot-head{padding-top:calc(15px + env(safe-area-inset-top))}
+  .cbot-quick{max-height:50vh}
+  .cbot-input{padding-bottom:calc(12px + env(safe-area-inset-bottom))}
+}
