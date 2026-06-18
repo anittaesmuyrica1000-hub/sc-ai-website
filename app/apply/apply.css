@@ -2,8 +2,26 @@
 
   /* APPLY */
   .apply{background:linear-gradient(180deg,#EAF1FE 0%,#F4F8FF 48%,#fff 100%);padding:60px 0 92px;min-height:calc(100vh - 64px)}
-  .apply-grid{max-width:540px;margin:0 auto}
+  /* 2단: 좌-인트로(메시지·가치) / 우-폼 카드. 모바일은 세로 스택 */
+  .apply-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(32px,5vw,72px);max-width:1080px;margin:0 auto;align-items:start}
   .apply-formcol{display:flex;flex-direction:column}
+
+  /* 좌측 인트로 */
+  .apply-intro{padding-top:6px}
+  .apply-intro h1{font-size:clamp(25px,2.7vw,34px);font-weight:800;line-height:1.34;letter-spacing:-.02em;color:var(--ink)}
+  .apply-intro p{font-size:16px;color:var(--slate);line-height:1.72;margin-top:20px}
+  .apply-points{list-style:none;margin-top:30px;display:grid;gap:16px;padding-left:18px;border-left:3px solid var(--tint)}
+  .apply-points li{display:flex;align-items:center;gap:12px;font-size:15px;font-weight:600;color:var(--ink)}
+  .apply-points .ic{width:38px;height:38px;border-radius:10px;background:var(--soft-2);color:var(--blue);display:grid;place-items:center;font-size:16px;flex-shrink:0}
+  @media(max-width:860px){
+    .apply-grid{grid-template-columns:1fr;max-width:540px;gap:30px}
+    .apply-intro{text-align:center;padding-top:0}
+    .apply-intro h1{font-size:22px;line-height:1.4;word-break:keep-all}
+    .apply-intro h1 br{display:none}
+    .apply-intro p{margin-top:14px}
+    .apply-points{max-width:360px;margin-left:auto;margin-right:auto;text-align:left}
+  }
+  @media(max-width:420px){.apply-intro h1{font-size:20px}}
 
   .apply-card{background:#fff;border:1px solid var(--line);border-radius:20px;box-shadow:var(--shadow);padding:34px}
   .apply-card .ct{font-size:22px;font-weight:800;letter-spacing:-.02em;color:var(--ink);margin-bottom:4px}
