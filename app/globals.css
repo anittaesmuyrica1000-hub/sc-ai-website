@@ -225,7 +225,7 @@ footer{background:#fff;color:var(--slate);padding:64px 0 44px;font-size:14px;bor
 .cbot-quick button i{color:var(--blue);font-size:13px;flex-shrink:0}
 .cbot-quick button span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .cbot-input{display:flex;gap:8px;padding:12px 14px;border-top:1px solid var(--line);background:#fff}
-.cbot-input input{flex:1;border:1px solid var(--line);border-radius:10px;padding:11px 12px;font-size:14px;font-family:inherit;outline:none;color:var(--ink)}
+.cbot-input input{flex:1;border:1px solid var(--line);border-radius:10px;padding:11px 12px;font-size:16px;font-family:inherit;outline:none;color:var(--ink)}
 .cbot-input input:focus{border-color:var(--blue-2);box-shadow:0 0 0 3px rgba(91,141,247,.16)}
 .cbot-input button{width:42px;border:0;border-radius:10px;background:var(--blue);color:#fff;cursor:pointer;font-size:15px}
 .cbot-input button:hover{background:var(--blue-d)}
