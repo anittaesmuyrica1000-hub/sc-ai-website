@@ -44,7 +44,7 @@
   .post-row .meta .s{font-size:12.5px;color:var(--slate-2);margin-top:3px}
   .post-row .meta .s .draft{color:var(--amber);font-weight:700}
   .row-actions{display:flex;gap:6px;flex-shrink:0}
-  .icon-btn{width:34px;height:34px;border-radius:9px;border:1px solid var(--line);background:#fff;color:var(--slate);cursor:pointer;transition:.15s;font-size:13px}
+  .icon-btn{width:32px;height:32px;border-radius:8px;border:none;background:none;color:var(--slate);cursor:pointer;transition:.15s;font-size:14px}
   .icon-btn:hover{border-color:var(--blue-2);color:var(--blue-d)}
   .icon-btn.del:hover{border-color:var(--red);color:var(--red)}
   .list-state{padding:60px 24px;text-align:center;color:var(--slate-2);font-size:14px}
@@ -105,12 +105,8 @@
   .dash-stats{display:grid;grid-template-columns:repeat(5,1fr);gap:14px}
   .stat-card{display:flex;flex-direction:column;align-items:flex-start;gap:3px;background:#fff;border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);padding:18px;cursor:pointer;text-align:left;transition:.15s;font-family:inherit}
   .stat-card:hover{transform:translateY(-2px);border-color:var(--blue-2)}
-  .stat-ic{width:38px;height:38px;border-radius:11px;display:grid;place-items:center;font-size:16px;margin-bottom:8px}
-  .stat-ic.s-blue{background:#E7EFFF;color:#2E6CF0}
-  .stat-ic.s-violet{background:#EEE9FF;color:#6D4AE0}
-  .stat-ic.s-green{background:#E6F6EC;color:#1B9C4D}
-  .stat-ic.s-amber{background:#FFF1D9;color:#C9870E}
-  .stat-ic.s-red{background:#FDEAE7;color:#D6453B}
+  .stat-ic{font-size:22px;line-height:1;color:var(--blue);margin-bottom:12px;background:none}
+  .stat-ic.s-blue,.stat-ic.s-violet,.stat-ic.s-green,.stat-ic.s-amber,.stat-ic.s-red{background:none;color:var(--blue)}
   .stat-v{font-size:26px;font-weight:800;letter-spacing:-.02em;color:var(--ink);line-height:1.1}
   .stat-v.sm{font-size:18px;word-break:break-all}
   .stat-l{font-size:13px;color:var(--slate);font-weight:600;margin-top:2px}
@@ -123,11 +119,8 @@
   .upd-list{list-style:none}
   .upd-list li{display:flex;align-items:center;gap:12px;padding:13px 24px;border-bottom:1px solid var(--line)}
   .upd-list li:last-child{border-bottom:none}
-  .upd-ic{width:34px;height:34px;border-radius:9px;display:grid;place-items:center;font-size:13px;flex-shrink:0}
-  .upd-ic.u-blue{background:#E7EFFF;color:#2E6CF0}
-  .upd-ic.u-amber{background:#FFF1D9;color:#C9870E}
-  .upd-ic.u-red{background:#FDEAE7;color:#D6453B}
-  .upd-ic.u-green{background:#E6F6EC;color:#1B9C4D}
+  .upd-ic{width:22px;display:grid;place-items:center;font-size:15px;flex-shrink:0;color:var(--blue);background:none}
+  .upd-ic.u-blue,.upd-ic.u-amber,.upd-ic.u-red,.upd-ic.u-green{background:none;color:var(--blue)}
   .upd-meta{flex:1;min-width:0}
   .upd-t{font-size:13.5px;font-weight:600;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .upd-s{font-size:12px;color:var(--slate-2);margin-top:2px}
@@ -137,7 +130,7 @@
   .quick-cards{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin-top:18px}
   .quick-card{display:flex;flex-direction:column;align-items:flex-start;gap:5px;background:#fff;border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);padding:18px;cursor:pointer;text-align:left;transition:.15s;font-family:inherit}
   .quick-card:hover{transform:translateY(-2px);border-color:var(--blue-2)}
-  .qc-ic{width:36px;height:36px;border-radius:10px;background:var(--soft-2);color:var(--blue);display:grid;place-items:center;font-size:15px;margin-bottom:6px}
+  .qc-ic{font-size:20px;line-height:1;color:var(--blue);margin-bottom:10px;background:none}
   .qc-l{font-size:14.5px;font-weight:800;color:var(--ink)}
   .qc-d{font-size:12px;color:var(--slate);line-height:1.5;flex:1}
   .qc-go{font-size:12.5px;font-weight:700;color:var(--blue);margin-top:8px}
@@ -201,6 +194,8 @@
 
   /* 데이터 테이블 */
   .adm-table-wrap{overflow-x:auto}
+  /* 카드 안 표는 헤더(패딩 24px)와 맞춰 좌우 여백 확보 */
+  .list-card .adm-table-wrap{padding:0 12px 8px}
   .adm-table{width:100%;border-collapse:collapse;font-size:13.5px}
   .adm-table th{text-align:left;padding:12px;border-bottom:2px solid var(--line);color:var(--slate);font-weight:700;font-size:12px;white-space:nowrap}
   .adm-table td{padding:12px;border-bottom:1px solid var(--line);color:var(--ink);vertical-align:middle}
