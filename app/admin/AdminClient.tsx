@@ -5,7 +5,7 @@ import type { Session } from "@supabase/supabase-js";
 import { supabase, type Post, type Faq, type Signup, type BrochureRequest, SIGNUP_STATUSES } from "@/lib/supabase";
 import { fmtDate } from "@/lib/format";
 
-type Section = "dash" | "blog" | "faq" | "brochure" | "signups";
+type Section = "dash" | "blog" | "faq" | "brochure" | "signups" | "settings";
 
 function fmtDateTime(s?: string) {
   if (!s) return "—";
@@ -89,10 +89,11 @@ function LoginForm() {
 
 const NAV: { key: Section; label: string; icon: string }[] = [
   { key: "dash", label: "대시보드", icon: "fa-gauge-high" },
-  { key: "blog", label: "블로그 관리", icon: "fa-feather" },
-  { key: "faq", label: "FAQ 관리", icon: "fa-circle-question" },
-  { key: "brochure", label: "서비스 소개서", icon: "fa-file-pdf" },
-  { key: "signups", label: "도입문의 관리", icon: "fa-inbox" },
+  { key: "blog", label: "블로그", icon: "fa-feather" },
+  { key: "faq", label: "FAQ", icon: "fa-circle-question" },
+  { key: "brochure", label: "소개서", icon: "fa-file-pdf" },
+  { key: "signups", label: "도입문의", icon: "fa-inbox" },
+  { key: "settings", label: "설정", icon: "fa-gear" },
 ];
 const TITLE: Record<Section, { h: string; d: string }> = {
   dash: { h: "대시보드", d: "전체 현황을 한눈에 확인합니다." },
@@ -100,18 +101,25 @@ const TITLE: Record<Section, { h: string; d: string }> = {
   faq: { h: "FAQ 관리", d: "자주 묻는 질문을 추가하고 수정합니다." },
   brochure: { h: "AI 면접 서비스 소개서", d: "도입문의 페이지와 웹사이트에서 제공되는 서비스 소개서를 관리합니다." },
   signups: { h: "도입문의 관리", d: "고객이 남긴 도입문의 기록을 확인하고 상담 상태를 관리합니다." },
+  settings: { h: "설정", d: "관리자 계정과 기본 설정을 관리합니다." },
 };
 
 function Console({ email }: { email: string }) {
   const [section, setSection] = useState<Section>("dash");
   const [navOpen, setNavOpen] = useState(false);
+  const [acctOpen, setAcctOpen] = useState(false);
+  const [newCount, setNewCount] = useState(0);
+
+  useEffect(() => {
+    supabase.from("signups").select("id", { count: "exact", head: true }).eq("status", "신규").then(({ count }) => setNewCount(count ?? 0));
+  }, [section]);
 
   return (
     <div className="adm">
       <aside className={`adm-side${navOpen ? " open" : ""}`}>
         <div className="adm-brand">
           <img src="/supercoder-nav.svg" alt="Supercoder" />
-          <span className="adm-badge">ADMIN</span>
+          <span className="adm-brand-txt">Admin</span>
         </div>
         <nav className="adm-nav">
           {NAV.map((n) => (
@@ -119,10 +127,11 @@ function Console({ email }: { email: string }) {
               <i className={`fa-solid ${n.icon}`}></i> {n.label}
             </button>
           ))}
-          <a className="adm-nav-link" href="/" target="_blank" rel="noopener noreferrer">
-            <i className="fa-solid fa-arrow-up-right-from-square"></i> 사이트로 이동
-          </a>
         </nav>
+        <div className="adm-side-foot">
+          <a className="adm-nav-link" href="/" target="_blank" rel="noopener noreferrer"><i className="fa-solid fa-arrow-up-right-from-square"></i> 사이트로 이동</a>
+          <button className="adm-nav-link" type="button" onClick={() => supabase.auth.signOut()}><i className="fa-solid fa-right-from-bracket"></i> 로그아웃</button>
+        </div>
       </aside>
       {navOpen && <div className="adm-backdrop" onClick={() => setNavOpen(false)} />}
 
@@ -134,8 +143,27 @@ function Console({ email }: { email: string }) {
             <div className="sub">{TITLE[section].d}</div>
           </div>
           <div className="adm-bar-acct">
-            <span className="adm-email" title={email}>{email}</span>
-            <button type="button" className="btn btn-out" onClick={() => supabase.auth.signOut()}>로그아웃</button>
+            <button className="adm-bell" title="신규 도입문의" onClick={() => setSection("signups")}>
+              <i className="fa-regular fa-bell"></i>
+              {newCount > 0 && <span className="adm-bell-dot">{newCount > 9 ? "9+" : newCount}</span>}
+            </button>
+            <div className="adm-acct">
+              <button className="adm-acct-btn" onClick={() => setAcctOpen((v) => !v)}>
+                <span className="adm-avatar">관</span>
+                <span className="adm-acct-name">관리자</span>
+                <i className="fa-solid fa-chevron-down"></i>
+              </button>
+              {acctOpen && (
+                <>
+                  <div className="adm-acct-bg" onClick={() => setAcctOpen(false)} />
+                  <div className="adm-acct-menu">
+                    <div className="adm-acct-email">{email}</div>
+                    <button onClick={() => { setAcctOpen(false); setSection("settings"); }}><i className="fa-solid fa-gear"></i> 설정</button>
+                    <button onClick={() => supabase.auth.signOut()}><i className="fa-solid fa-right-from-bracket"></i> 로그아웃</button>
+                  </div>
+                </>
+              )}
+            </div>
           </div>
         </div>
         <div className="adm-body">
@@ -144,6 +172,7 @@ function Console({ email }: { email: string }) {
           {section === "faq" && <FaqManager />}
           {section === "brochure" && <BrochureSection />}
           {section === "signups" && <SignupsManager />}
+          {section === "settings" && <Settings email={email} />}
         </div>
       </div>
     </div>
@@ -152,65 +181,195 @@ function Console({ email }: { email: string }) {
 
 /* ===================== 대시보드 ===================== */
 
+const QUICK: { key: Section; label: string; desc: string; icon: string }[] = [
+  { key: "blog", label: "블로그 관리", desc: "블로그 글을 작성하고 수정·삭제합니다.", icon: "fa-feather" },
+  { key: "faq", label: "FAQ 관리", desc: "FAQ를 추가하고 노출 여부·순서를 관리합니다.", icon: "fa-circle-question" },
+  { key: "brochure", label: "소개서 관리", desc: "AI 면접 서비스 소개서 PDF를 업로드·교체합니다.", icon: "fa-file-pdf" },
+  { key: "signups", label: "도입문의 관리", desc: "도입문의를 확인하고 상담 상태를 관리합니다.", icon: "fa-inbox" },
+  { key: "settings", label: "설정", desc: "관리자 계정과 기본 설정을 관리합니다.", icon: "fa-gear" },
+];
+
+type UpdateItem = { type: string; title: string; time: string; icon: string; color: string };
+type DashData = {
+  today: number | null; todayDelta: number | null; week: number | null; weekDelta: number | null;
+  pubBlog: number | null; totBlog: number | null; pubFaq: number | null; totFaq: number | null;
+  brochure: string | null; brochureAt: string | null; recent: Signup[]; updates: UpdateItem[];
+};
+
 function Dashboard({ onGo }: { onGo: (s: Section) => void }) {
-  const [stats, setStats] = useState<{ blog: number | null; faq: number | null; signups: number | null; leads: number | null }>({ blog: null, faq: null, signups: null, leads: null });
-  const [recent, setRecent] = useState<Signup[]>([]);
+  const [d, setD] = useState<DashData>({ today: null, todayDelta: null, week: null, weekDelta: null, pubBlog: null, totBlog: null, pubFaq: null, totFaq: null, brochure: null, brochureAt: null, recent: [], updates: [] });
 
   useEffect(() => {
     (async () => {
-      const count = async (table: string) => {
-        const { count, error } = await supabase.from(table).select("*", { count: "exact", head: true });
-        return error ? null : (count ?? 0);
-      };
-      const [blog, faq, signups, leads] = await Promise.all([count("posts"), count("faq"), count("signups"), count("brochure_requests")]);
-      setStats({ blog, faq, signups, leads });
-      const r = await supabase.from("signups").select("*").order("created_at", { ascending: false }).limit(5);
-      if (!r.error) setRecent((r.data as Signup[]) || []);
+      const now = Date.now();
+      const dayStart = new Date(new Date().setHours(0, 0, 0, 0)).getTime();
+      const out: DashData = { today: null, todayDelta: null, week: null, weekDelta: null, pubBlog: null, totBlog: null, pubFaq: null, totFaq: null, brochure: null, brochureAt: null, recent: [], updates: [] };
+
+      try {
+        const r = await supabase.from("signups").select("*").order("created_at", { ascending: false });
+        if (!r.error && r.data) {
+          const rows = r.data as Signup[];
+          const at = (s: Signup) => new Date(s.created_at).getTime();
+          out.today = rows.filter((s) => at(s) >= dayStart).length;
+          out.todayDelta = out.today - rows.filter((s) => at(s) >= dayStart - 86400000 && at(s) < dayStart).length;
+          out.week = rows.filter((s) => at(s) >= now - 7 * 86400000).length;
+          out.weekDelta = out.week - rows.filter((s) => at(s) >= now - 14 * 86400000 && at(s) < now - 7 * 86400000).length;
+          out.recent = rows.slice(0, 5);
+        }
+      } catch {}
+
+      try {
+        const r = await supabase.from("posts").select("id,title,published,created_at,updated_at").order("created_at", { ascending: false });
+        if (!r.error && r.data) {
+          const rows = r.data as Post[];
+          out.totBlog = rows.length;
+          out.pubBlog = rows.filter((p) => p.published !== false).length;
+          [...rows].sort((a, b) => new Date(b.updated_at || b.created_at).getTime() - new Date(a.updated_at || a.created_at).getTime()).slice(0, 3)
+            .forEach((p) => out.updates.push({ type: "블로그", title: p.title, time: p.updated_at || p.created_at, icon: "fa-feather", color: "u-blue" }));
+        }
+      } catch {}
+
+      try {
+        const r = await supabase.from("faq").select("id,question,published,created_at,updated_at");
+        if (!r.error && r.data) {
+          const rows = r.data as Faq[];
+          out.totFaq = rows.length;
+          out.pubFaq = rows.filter((f) => f.published !== false).length;
+          [...rows].sort((a, b) => new Date(b.updated_at || b.created_at || 0).getTime() - new Date(a.updated_at || a.created_at || 0).getTime()).slice(0, 2)
+            .forEach((f) => out.updates.push({ type: "FAQ", title: f.question, time: f.updated_at || f.created_at || "", icon: "fa-circle-question", color: "u-amber" }));
+        }
+      } catch {}
+
+      try {
+        const r = await supabase.from("brochure_files").select("label,created_at").eq("is_current", true).order("created_at", { ascending: false }).limit(1).maybeSingle();
+        if (r.data) { out.brochure = r.data.label; out.brochureAt = r.data.created_at; out.updates.push({ type: "소개서", title: r.data.label, time: r.data.created_at, icon: "fa-file-pdf", color: "u-red" }); }
+      } catch {}
+
+      out.recent.slice(0, 2).forEach((s) => out.updates.push({ type: "도입문의", title: `${s.company} 도입문의 접수`, time: s.created_at, icon: "fa-inbox", color: "u-green" }));
+      out.updates.sort((a, b) => new Date(b.time).getTime() - new Date(a.time).getTime());
+      out.updates = out.updates.slice(0, 5);
+      setD(out);
     })();
   }, []);
 
-  const cards = [
-    { key: "blog" as Section, label: "블로그 글", v: stats.blog, icon: "fa-feather" },
-    { key: "faq" as Section, label: "FAQ", v: stats.faq, icon: "fa-circle-question" },
-    { key: "signups" as Section, label: "도입문의", v: stats.signups, icon: "fa-inbox" },
-    { key: "brochure" as Section, label: "소개서 리드", v: stats.leads, icon: "fa-file-pdf" },
+  const delta = (n: number | null) => (n == null ? "" : n > 0 ? `+${n}` : `${n}`);
+
+  const stats = [
+    { label: "오늘 신규 도입문의", v: d.today == null ? "—" : `${d.today}건`, sub: d.todayDelta == null ? "어제 대비 —" : `어제 대비 ${delta(d.todayDelta)}`, icon: "fa-envelope", chip: "s-blue", go: "signups" as Section },
+    { label: "이번 주 도입문의", v: d.week == null ? "—" : `${d.week}건`, sub: d.weekDelta == null ? "지난주 대비 —" : `지난주 대비 ${delta(d.weekDelta)}`, icon: "fa-users", chip: "s-violet", go: "signups" as Section },
+    { label: "공개 중인 블로그", v: d.pubBlog == null ? "—" : `${d.pubBlog}개`, sub: d.totBlog == null ? "" : `전체 ${d.totBlog}개`, icon: "fa-feather", chip: "s-green", go: "blog" as Section },
+    { label: "공개 중인 FAQ", v: d.pubFaq == null ? "—" : `${d.pubFaq}개`, sub: d.totFaq == null ? "전체 FAQ" : `전체 ${d.totFaq}개`, icon: "fa-circle-question", chip: "s-amber", go: "faq" as Section },
+    { label: "소개서 (현재 버전)", v: d.brochure || "없음", sub: d.brochureAt ? `${fmtDate(d.brochureAt)} 업로드` : "업로드 필요", icon: "fa-file-pdf", chip: "s-red", go: "brochure" as Section, small: true },
   ];
 
   return (
     <>
-      <div className="dash-cards">
-        {cards.map((c) => (
-          <button key={c.key} className="dash-card" onClick={() => onGo(c.key)}>
-            <div className="dc-ic"><i className={`fa-solid ${c.icon}`}></i></div>
-            <div className="dc-v">{c.v == null ? "—" : c.v}</div>
-            <div className="dc-l">{c.label}</div>
+      <div className="dash-stats">
+        {stats.map((s, i) => (
+          <button key={i} className="stat-card" onClick={() => onGo(s.go)}>
+            <div className={`stat-ic ${s.chip}`}><i className={`fa-solid ${s.icon}`}></i></div>
+            <div className={`stat-v${s.small ? " sm" : ""}`}>{s.v}</div>
+            <div className="stat-l">{s.label}</div>
+            <div className="stat-sub">{s.sub}</div>
           </button>
         ))}
       </div>
-      <div className="card list-card" style={{ marginTop: 24 }}>
-        <div className="list-head"><h2>최근 도입문의</h2><button className="btn btn-out" onClick={() => onGo("signups")}>전체 보기</button></div>
-        {recent.length === 0 ? (
-          <div className="list-state">아직 접수된 도입문의가 없습니다. (마이그레이션·관리자 권한 적용 후 표시)</div>
-        ) : (
-          <div className="adm-table-wrap">
-            <table className="adm-table">
-              <thead><tr><th>접수일</th><th>이름</th><th>회사</th><th>이메일</th><th>상태</th></tr></thead>
-              <tbody>
-                {recent.map((s) => (
-                  <tr key={s.id}>
-                    <td className="nowrap">{fmtDate(s.created_at)}</td>
-                    <td className="nowrap">{s.name}</td>
-                    <td>{s.company}</td>
-                    <td><a href={`mailto:${s.email}`}>{s.email}</a></td>
-                    <td className="nowrap"><StatusBadge value={s.status} /></td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        )}
+
+      <div className="dash-panels">
+        <div className="card list-card">
+          <div className="list-head"><h2>최근 도입문의</h2><button className="link-btn" onClick={() => onGo("signups")}>전체 보기 →</button></div>
+          {d.recent.length === 0 ? (
+            <div className="list-state">표시할 도입문의가 없습니다.</div>
+          ) : (
+            <div className="adm-table-wrap">
+              <table className="adm-table compact">
+                <thead><tr><th>접수일</th><th>회사명</th><th>담당자</th><th>상태</th></tr></thead>
+                <tbody>
+                  {d.recent.map((s) => (
+                    <tr key={s.id}>
+                      <td className="nowrap">{fmtDate(s.created_at)}</td>
+                      <td>{s.company}</td>
+                      <td className="nowrap">{s.name}</td>
+                      <td className="nowrap"><StatusBadge value={s.status} /></td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </div>
+
+        <div className="card list-card">
+          <div className="list-head"><h2>최근 업데이트된 콘텐츠</h2></div>
+          {d.updates.length === 0 ? (
+            <div className="list-state">최근 변경 내역이 없습니다.</div>
+          ) : (
+            <ul className="upd-list">
+              {d.updates.map((u, i) => (
+                <li key={i}>
+                  <span className={`upd-ic ${u.color}`}><i className={`fa-solid ${u.icon}`}></i></span>
+                  <div className="upd-meta"><div className="upd-t">{u.title}</div><div className="upd-s">{u.type}</div></div>
+                  <div className="upd-time">{fmtDate(u.time)}</div>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+      </div>
+
+      <div className="quick-cards">
+        {QUICK.map((q) => (
+          <button key={q.key} className="quick-card" onClick={() => onGo(q.key)}>
+            <div className="qc-ic"><i className={`fa-solid ${q.icon}`}></i></div>
+            <div className="qc-l">{q.label}</div>
+            <div className="qc-d">{q.desc}</div>
+            <div className="qc-go">바로가기 →</div>
+          </button>
+        ))}
       </div>
     </>
+  );
+}
+
+/* ===================== 설정 ===================== */
+
+function Settings({ email }: { email: string }) {
+  const [pw, setPw] = useState("");
+  const [pw2, setPw2] = useState("");
+  const [msg, setMsg] = useState<{ text: string; ok: boolean } | null>(null);
+  const [busy, setBusy] = useState(false);
+
+  async function changePw(e: React.FormEvent) {
+    e.preventDefault();
+    if (pw.length < 8) { setMsg({ text: "비밀번호는 8자 이상이어야 합니다.", ok: false }); return; }
+    if (pw !== pw2) { setMsg({ text: "두 비밀번호가 일치하지 않습니다.", ok: false }); return; }
+    setBusy(true);
+    try {
+      const { error } = await supabase.auth.updateUser({ password: pw });
+      if (error) throw error;
+      setMsg({ text: "비밀번호가 변경되었습니다.", ok: true }); setPw(""); setPw2("");
+    } catch (err) { console.error(err); setMsg({ text: "변경에 실패했습니다. 다시 시도해 주세요.", ok: false }); }
+    finally { setBusy(false); }
+  }
+
+  return (
+    <div className="settings-grid">
+      <div className="card">
+        <h2>계정 정보</h2>
+        <div className="set-row"><span>로그인 이메일</span><b>{email}</b></div>
+        <div className="set-row"><span>권한</span><b>관리자</b></div>
+        <div className="hint" style={{ marginTop: 12 }}>새 관리자 추가는 Supabase Auth에 사용자를 만들고 admins 테이블에 이메일을 등록하면 됩니다.</div>
+      </div>
+      <div className="card">
+        <h2>비밀번호 변경</h2>
+        {msg && <div className={`form-msg ${msg.ok ? "ok" : "err"}`}>{msg.text}</div>}
+        <form onSubmit={changePw}>
+          <div className="field"><label>새 비밀번호</label><input type="password" value={pw} onChange={(e) => setPw(e.target.value)} placeholder="8자 이상" /></div>
+          <div className="field"><label>새 비밀번호 확인</label><input type="password" value={pw2} onChange={(e) => setPw2(e.target.value)} /></div>
+          <div className="form-actions"><button className="btn btn-blue" disabled={busy}>{busy ? "변경 중…" : "비밀번호 변경"}</button></div>
+        </form>
+      </div>
+    </div>
   );
 }
 
