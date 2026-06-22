@@ -135,15 +135,15 @@ function Console({ email }: { email: string }) {
             </button>
           ))}
         </nav>
-        <button type="button" className="adm-side-toggle" onClick={toggleCollapse} title={collapsed ? "메뉴 펼치기" : "메뉴 접기"} aria-label="메뉴 접기/펼치기">
-          <i className="fa-solid fa-angles-left"></i><span className="adm-label">메뉴 접기</span>
-        </button>
       </aside>
       {navOpen && <div className="adm-backdrop" onClick={() => setNavOpen(false)} />}
 
       <div className="adm-main">
         <div className="adm-bar">
           <button type="button" className="adm-burger" aria-label="메뉴" onClick={() => setNavOpen((v) => !v)}><i className="fa-solid fa-bars"></i></button>
+          <button type="button" className="adm-collapse" onClick={toggleCollapse} title={collapsed ? "메뉴 펼치기" : "메뉴 접기"} aria-label="메뉴 접기/펼치기">
+            <i className={`fa-solid ${collapsed ? "fa-angles-right" : "fa-angles-left"}`}></i>
+          </button>
           <div className="adm-bar-title">
             <h1>{TITLE[section].h}</h1>
             <div className="sub">{TITLE[section].d}</div>
