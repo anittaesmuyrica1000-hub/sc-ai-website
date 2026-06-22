@@ -18,7 +18,7 @@
   /* 히어로 강조어 그라데이션 모션 — 다크 배경용 밝은 톤(시안빛 블루→바이올렛) 가로 흐름 */
   /* 헤드라인: 키워드(수천 명·상위 후보)는 화이트, 나머지는 하늘색 그라데이션 */
   .decl h1 .hl{color:#fff;-webkit-text-fill-color:#fff;font-weight:800;position:relative}
-  .decl h1 .sky{color:#fff;-webkit-text-fill-color:#fff;font-weight:400;background:none;animation:none}
+  .decl h1 .sky{color:#fff;-webkit-text-fill-color:#fff;font-weight:800;background:none;animation:none}
   @keyframes textGrad{to{background-position:200% center}}
   /* 그레인(노이즈) 질감 — 밋밋함·AI 플랫함 제거. 인라인 SVG feTurbulence */
   .hero-bg::before{content:"";position:absolute;inset:0;z-index:0;pointer-events:none;mix-blend-mode:multiply;opacity:.06;
@@ -55,9 +55,9 @@
   /* 모바일: 히어로가 화면을 채워 콘텐츠가 '화면' 정중앙에 오게(svh=주소창 보이는 가시영역 기준).
      min-height:auto면 히어로가 콘텐츠에 붙어 화면 상단으로 치우침 → 100svh로 채움. */
   @media(max-width:880px){.decl .wrap{grid-template-columns:1fr;gap:40px}.decl{min-height:100vh;min-height:100svh}}
-  /* 모바일: 헤드라인이 길어 둘째 줄이 3줄로 넘치지 않도록 폰트 축소(단어 유지·2줄 고정) */
-  @media(max-width:560px){.decl h1{font-size:27px;line-height:1.32}}
-  @media(max-width:400px){.decl h1{font-size:25px}}
+  /* 모바일: 볼드 헤드라인 — 작아 보이지 않게 키움(2줄 유지 한도 내 최대) */
+  @media(max-width:560px){.decl h1{font-size:31px;line-height:1.3}}
+  @media(max-width:400px){.decl h1{font-size:28px}}
 
   /* HERO STRIP — 도입사 로고 (한 줄 무한 루핑 마퀴) */
   /* 로고 루프 — 흰 배경으로 위/아래 섹션과 구분 (multiply가 흰 배경에서 가장 깔끔) */
