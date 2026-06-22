@@ -21,7 +21,7 @@ export default function ApplyPage() {
         <div className="apply-grid">
           <div className="apply-intro">
             <h1>AI 면접으로 채용 효율을 <br />높여보세요</h1>
-            <p>30분 데모를 통해 우리 회사에 맞는 활용 방안을 확인할 수 있습니다.</p>
+            <p>지원자 검증부터 채용 결정까지, AI로 더 빠르게.</p>
             <ul className="apply-points">
               <li><i className="fa-solid fa-circle-check"></i> 지원자 자동 AI 평가</li>
               <li><i className="fa-solid fa-circle-check"></i> 핵심 인재 리포트 제공</li>
