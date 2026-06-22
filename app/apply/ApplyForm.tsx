@@ -136,10 +136,13 @@ export default function ApplyForm() {
           <textarea id="f-memo" placeholder="궁금한 점이나 도입 배경을 자유롭게 적어주세요." value={fields.memo} onChange={(e) => set("memo", e.target.value)} />
         </div>
 
-        <label className={`agree${agreeInvalid ? " invalid" : ""}`}>
-          <input type="checkbox" checked={agree} onChange={(e) => { setAgree(e.target.checked); setAgreeInvalid(false); }} />
-          <span><Link href="/privacy">개인정보 수집·이용</Link>에 동의합니다. (필수)</span>
-        </label>
+        <div className={`agree${agreeInvalid ? " invalid" : ""}`}>
+          <label className="agree-main">
+            <input type="checkbox" checked={agree} onChange={(e) => { setAgree(e.target.checked); setAgreeInvalid(false); }} />
+            <span><b>[필수]</b> 개인정보 수집 및 이용 동의</span>
+          </label>
+          <a className="agree-more" href="/privacy" target="_blank" rel="noopener noreferrer">자세히보기 <i className="fa-solid fa-chevron-right"></i></a>
+        </div>
 
         {formErr && <div className="form-err show">{formErr}</div>}
         <button type="submit" className="btn btn-blue" disabled={loading}>
