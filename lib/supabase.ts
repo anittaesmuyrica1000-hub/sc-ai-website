@@ -25,3 +25,39 @@ export type Post = {
   author?: string | null;
   published: boolean;
 };
+
+// FAQ 타입 (어드민 관리 + 랜딩 노출)
+export type Faq = {
+  id: string;
+  question: string;
+  answer: string;
+  sort_order: number;
+  published: boolean;
+  created_at?: string;
+  updated_at?: string | null;
+};
+
+// 도입문의(signups) 타입
+export type Signup = {
+  id: string;
+  created_at: string;
+  name: string;
+  company: string;
+  email: string;
+  role?: string | null;
+  phone?: string | null;
+  size?: string | null;
+  memo?: string | null;
+};
+
+// 서비스소개서 신청 리드(brochure_requests) 타입
+export type BrochureRequest = {
+  id: string;
+  created_at: string;
+  name: string;
+  company: string;
+  email: string;
+  role?: string | null;
+  phone?: string | null;
+  size?: string | null;
+};

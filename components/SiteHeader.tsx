@@ -88,6 +88,9 @@ export default function SiteHeader() {
 
   const close = () => setMenuOpen(false);
 
+  // 어드민 콘솔은 자체 사이드바 내비를 쓰므로 공개 GNB 숨김
+  if (pathname?.startsWith("/admin")) return null;
+
   return (
     <header ref={headerRef}>
       <nav className="wrap">

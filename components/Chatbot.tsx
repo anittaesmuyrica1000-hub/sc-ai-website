@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { usePathname } from "next/navigation";
 
 // 채팅 도우미(챗봇) — FAQ 기반 응답 + 도입 문의 연결. 백엔드 없이 동작. 스타일은 theme.css(.cbot*).
 type KbItem = { q: string; a: string; k: string[]; quick?: boolean; icon?: string };
@@ -38,6 +39,7 @@ function esc(s: string) {
 }
 
 export default function Chatbot() {
+  const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const [started, setStarted] = useState(false);
   const [msgs, setMsgs] = useState<Msg[]>([]);
@@ -85,6 +87,9 @@ export default function Chatbot() {
     setText("");
     handle(v);
   }
+
+  // 어드민 콘솔에서는 챗봇 숨김
+  if (pathname?.startsWith("/admin")) return null;
 
   return (
     <div className={`cbot${open ? " open" : ""}`} id="cbot">
