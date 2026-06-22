@@ -100,15 +100,15 @@ export default function HomePage() {
           </div>
           <ul className="flood-stats">
             <li>
-              <div className="stat"><span className="lbl">지원자 거짓·과장 적발 경험</span><span className="num">83.8%</span></div>
+              <div className="stat"><span className="lbl">지원자 거짓·과장 적발 경험</span><span className="num">84%</span></div>
               <p className="src">출처: 사람인, 기업 927개사</p>
             </li>
             <li>
-              <div className="stat"><span className="lbl">기준 미달도 통과시킨 경험</span><span className="num">58.9%</span></div>
+              <div className="stat"><span className="lbl">기준 미달도 통과시킨 경험</span><span className="num">59%</span></div>
               <p className="src">출처: 잡코리아, 인사담당자 794명</p>
             </li>
             <li>
-              <div className="stat"><span className="lbl">잘못 뽑아 후회한 경험</span><span className="num">80.2%</span></div>
+              <div className="stat"><span className="lbl">잘못 뽑아 후회한 경험</span><span className="num">81%</span></div>
               <p className="src">출처: 사람인, 인사담당자 377명</p>
             </li>
             <li>
