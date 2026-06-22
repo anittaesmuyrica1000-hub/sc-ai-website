@@ -125,8 +125,8 @@ export default function BrochureModal() {
             <div className="bro-done">
               <div className="dot"><i className="fa-solid fa-envelope-circle-check"></i></div>
               <h2>소개서를 보내드렸습니다.</h2>
-              <p>입력하신 <b>회사 이메일</b>로 소개서 다운로드 링크를<br />보내드렸어요. 메일함을 확인해 주세요.</p>
-              <p className="sub-note">메일이 안 보이면 스팸함도 확인해 주세요. 담당자가 도입 관련 안내로 곧 연락드릴 수 있습니다.</p>
+              <p>입력하신 <b>회사 이메일</b>로 소개서를 보내드렸어요.<br />메일함을 확인해 주세요.</p>
+              <p className="sub-note">메일이 안 보이면 스팸함도 확인해 주세요.</p>
             </div>
           ) : (
             <>
