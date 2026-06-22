@@ -288,21 +288,21 @@ export default function HomePage() {
                 <div className="qm"><i className="fa-solid fa-quote-left"></i></div>
                 <blockquote>“AI 면접으로 1차 면접을 대체해, 개발자들이 본업에 집중하면서도 좋은 인재를 놓치지 않게 됐어요.”</blockquote>
               </div>
-              <div className="who"><div className="ava">A</div><div><div className="nm">A사</div><div className="ro">Supercoder 도입 고객</div></div></div>
+              <div className="who"><div className="ava">A</div><div><div className="nm">테크기업 채용 총괄</div><div className="ro">개발 직군 채용 담당</div></div></div>
             </div>
             <div className="vc">
               <div className="bubble">
                 <div className="qm"><i className="fa-solid fa-quote-left"></i></div>
                 <blockquote>“표준화된 질문으로 직무 적합성과 의지를 객관적으로 파악할 수 있었습니다.”</blockquote>
               </div>
-              <div className="who"><div className="ava">B</div><div><div className="nm">B사</div><div className="ro">Supercoder 도입 고객</div></div></div>
+              <div className="who"><div className="ava">B</div><div><div className="nm">국내 금융 플랫폼 채용담당자</div><div className="ro">대규모 채용 운영 담당</div></div></div>
             </div>
             <div className="vc">
               <div className="bubble">
                 <div className="qm"><i className="fa-solid fa-quote-left"></i></div>
                 <blockquote>“AI 면접 리포트 덕분에 후보자의 강점과 우려점을 빠르게 파악할 수 있었습니다.”</blockquote>
               </div>
-              <div className="who"><div className="ava">C</div><div><div className="nm">C사</div><div className="ro">Supercoder 도입 고객</div></div></div>
+              <div className="who"><div className="ava">C</div><div><div className="nm">국내 모빌리티 IT 기업 채용담당자</div><div className="ro">기술 직군 채용 담당</div></div></div>
             </div>
           </div>
         </div>
