@@ -119,7 +119,7 @@ function Console({ email }: { email: string }) {
       <aside className={`adm-side${navOpen ? " open" : ""}`}>
         <div className="adm-brand">
           <img src="/supercoder-nav.svg" alt="Supercoder" />
-          <span className="adm-brand-txt">Admin</span>
+          <span className="adm-brand-sub">관리자 콘솔</span>
         </div>
         <nav className="adm-nav">
           {NAV.map((n) => (

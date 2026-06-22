@@ -52,19 +52,20 @@
   /* ===== 어드민 콘솔 레이아웃 (다크 사이드바 + 본문) ===== */
   .adm{display:flex;min-height:100vh;background:#F4F7FC}
   .adm-side{width:236px;flex-shrink:0;background:#0B1426;color:#c2cbe0;display:flex;flex-direction:column;position:sticky;top:0;height:100vh}
-  .adm-brand{display:flex;align-items:center;gap:9px;padding:22px 20px 18px}
-  .adm-brand img{height:26px;filter:brightness(0) invert(1)}
+  .adm-brand{display:flex;flex-direction:column;align-items:flex-start;gap:6px;padding:22px 20px 16px}
+  .adm-brand img{height:22px;width:auto;filter:brightness(0) invert(1)}
+  .adm-brand-sub{font-size:11.5px;font-weight:600;letter-spacing:.02em;color:#7f8aa6}
   .adm-badge{font-size:10px;font-weight:800;letter-spacing:.08em;background:rgba(255,255,255,.13);color:#fff;padding:3px 7px;border-radius:5px}
   .adm-nav{display:flex;flex-direction:column;justify-content:flex-start;gap:4px;padding:10px 12px;flex:1;overflow-y:auto}
   .adm-nav button{display:flex;align-items:center;gap:11px;padding:11px 14px;border-radius:9px;background:none;border:none;color:#9aa6c2;font-size:14.5px;font-weight:600;cursor:pointer;text-align:left;width:100%;font-family:inherit;transition:.12s}
   .adm-nav button i{width:18px;text-align:center;font-size:14px}
   .adm-nav button:hover{background:rgba(255,255,255,.06);color:#fff}
   .adm-nav button.active{background:var(--blue);color:#fff}
-  .adm-side-foot{padding:14px;border-top:1px solid rgba(255,255,255,.08);display:flex;flex-direction:column;gap:8px}
+  .adm-side-foot{padding:8px 12px 12px;border-top:1px solid rgba(255,255,255,.08);display:flex;flex-direction:column;gap:2px}
   .adm-email{font-size:12px;color:#7f8aa6;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
   .adm-side-foot .btn{justify-content:center;font-size:13px;padding:9px 12px}
   .adm-main{flex:1;min-width:0;display:flex;flex-direction:column}
-  .adm-nav-link{display:flex;align-items:center;gap:11px;padding:11px 14px;border-radius:9px;color:#9aa6c2;font-size:14.5px;font-weight:600;text-decoration:none;margin-top:4px;border-top:1px solid rgba(255,255,255,.07);transition:.12s}
+  .adm-nav-link{display:flex;align-items:center;gap:11px;width:100%;padding:11px 14px;border:none;background:none;border-radius:9px;color:#9aa6c2;font-size:14.5px;font-weight:600;text-decoration:none;text-align:left;cursor:pointer;font-family:inherit;transition:.12s}
   .adm-nav-link i{width:18px;text-align:center;font-size:13px}
   .adm-nav-link:hover{background:rgba(255,255,255,.06);color:#fff}
   .adm-bar{display:flex;align-items:center;gap:14px;padding:18px 32px;background:#fff;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:20}
