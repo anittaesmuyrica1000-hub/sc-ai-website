@@ -269,7 +269,7 @@ export default function HomePage() {
           </div>
           <div className="proof-row">
             <div className="pc2"><div className="vlabel"><i className="fa-solid fa-bolt"></i> 속도</div><div className="big big-phrase">수천 명<br />동시 검증</div><p>지원자가 몰려도, 한 번에 1차 검토<br />(응시 → AI 면접 → 리포트)</p></div>
-            <div className="pc2"><div className="vlabel"><i className="fa-solid fa-piggy-bank"></i> 비용 절감</div><div className="big">30<span style={{ fontSize: ".5em" }}>%</span></div><p>잘못된 채용 1건 = 연봉의 약 30% 손실</p><p className="psrc">출처: 美 노동부(DOL)</p></div>
+            <div className="pc2"><div className="vlabel"><i className="fa-solid fa-piggy-bank"></i> 비용 절감</div><div className="big big-phrase">불필요한<br />면접 감소</div><p>검증된 후보에 면접 리소스를 집중합니다.</p></div>
             <div className="pc2"><div className="vlabel"><i className="fa-solid fa-circle-check"></i> 일관성</div><div className="big">100<span style={{ fontSize: ".5em" }}>%</span></div><p>모든 지원자를 동일 기준으로<br />일관되게 검증</p></div>
           </div>
         </div>
