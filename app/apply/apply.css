@@ -64,7 +64,7 @@
   .form-err.show{display:block}
 
   .apply-done{display:none;text-align:center;padding:24px 8px 14px}
-  .apply-done .dot{width:76px;height:76px;border-radius:50%;background:var(--soft-2);color:var(--green);display:grid;place-items:center;font-size:36px;margin:0 auto 22px}
+  .apply-done .dot{width:76px;height:76px;border-radius:50%;background:var(--soft-2);color:var(--blue);display:grid;place-items:center;font-size:36px;margin:0 auto 22px}
   .apply-done h2{font-size:24px;margin-bottom:12px}
   .apply-done p{color:var(--slate);font-size:15.5px;margin-bottom:26px}
 
