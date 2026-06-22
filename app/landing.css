@@ -239,7 +239,8 @@
   .pc2 .vlabel{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;font-weight:600;color:var(--blue);background:var(--soft-2);padding:6px 14px;border-radius:999px;margin-bottom:16px}
   .pc2 .big{font-size:clamp(38px,5vw,56px);font-weight:800;color:var(--blue);letter-spacing:-.03em;line-height:1}
   /* 문구형 big(예: 속도 카드) — 숫자보다 작게·2줄 허용 */
-  .pc2 .big.big-phrase{font-size:clamp(24px,3vw,32px);line-height:1.2}
+  /* 문구형 big — 한 줄 고정(3컬럼 좁은 구간까지). 폭에 맞춰 폰트 축소 */
+  .pc2 .big.big-phrase{white-space:nowrap;font-size:clamp(14px,2.8vw,32px);line-height:1.2}
   .pc2 p{font-size:15px;color:var(--slate);margin-top:10px}
   .pc2 .psrc{font-size:11.5px;color:var(--slate-2);margin-top:5px}
   .logo-wall{display:flex;flex-wrap:wrap;justify-content:center;gap:16px 40px;align-items:center;margin-top:52px;padding-top:40px;border-top:1px solid var(--line)}
@@ -248,7 +249,7 @@
   @media(max-width:760px){.proof-row{gap:12px;margin-top:36px}.pc2{padding:26px 12px}.pc2 .vlabel{font-size:12px;margin-bottom:10px}.pc2 p{font-size:13px;margin-top:8px}}
   @media(max-width:480px){.proof-row{gap:8px}.pc2{padding:18px 9px;border-radius:12px}.pc2 .vlabel{font-size:10.5px;gap:4px;margin-bottom:8px}.pc2 .big{font-size:clamp(22px,7vw,38px)}.pc2 p{font-size:11px;margin-top:7px}}
   /* 모바일(≤560): 카드 1열로 한 장씩 스택 */
-  @media(max-width:560px){.proof-row{grid-template-columns:1fr;gap:14px;max-width:360px;margin:32px auto 0}.pc2{padding:30px 24px;border-radius:var(--r)}.pc2 .vlabel{font-size:13px;margin-bottom:12px}.pc2 .big{font-size:clamp(40px,12vw,52px)}.pc2 p{font-size:14px;margin-top:10px}}
+  @media(max-width:560px){.proof-row{grid-template-columns:1fr;gap:14px;max-width:360px;margin:32px auto 0}.pc2{padding:30px 24px;border-radius:var(--r)}.pc2 .vlabel{font-size:13px;margin-bottom:12px}.pc2 .big{font-size:clamp(40px,12vw,52px)}.pc2 .big.big-phrase{font-size:clamp(22px,7.5vw,30px)}.pc2 p{font-size:14px;margin-top:10px}}
 
   /* 7. VOICES */
   /* 섹션을 조금 위로 — 상단 패딩 축소 */

@@ -270,9 +270,9 @@ export default async function HomePage() {
             <p className="lead">검토 속도, 비용, 역량 검증을 한 번에 개선합니다.</p>
           </div>
           <div className="proof-row">
-            <div className="pc2"><div className="vlabel">속도</div><div className="big big-phrase">수천 명<br />동시 검토</div><p>지원자가 몰려도 1차 검토가 밀리지 않습니다.</p></div>
-            <div className="pc2"><div className="vlabel">비용 절감</div><div className="big big-phrase">불필요한<br />면접 감소</div><p>검증된 후보에 면접 리소스를 집중합니다.</p></div>
-            <div className="pc2"><div className="vlabel">역량 검증</div><div className="big big-phrase">판단 기준<br />제공</div><p>이력서 내용과 실제 응답을 대조해 확인합니다.</p></div>
+            <div className="pc2"><div className="vlabel">속도</div><div className="big big-phrase">수천 명 동시 검토</div><p>지원자가 몰려도 1차 검토가 밀리지 않습니다.</p></div>
+            <div className="pc2"><div className="vlabel">비용 절감</div><div className="big big-phrase">불필요한 면접 감소</div><p>검증된 후보에 면접 리소스를 집중합니다.</p></div>
+            <div className="pc2"><div className="vlabel">역량 검증</div><div className="big big-phrase">판단 기준 제공</div><p>이력서 내용과 실제 응답을 대조해 확인합니다.</p></div>
           </div>
         </div>
       </section>
