@@ -33,13 +33,13 @@ export const metadata: Metadata = {
     url: SITE_URL,
     title: "AI 면접으로 검증된 인재만 만나세요 · AI면접",
     description: "AI 면접이 지원자를 자동 검증하고, 채용팀에는 검증된 핵심 인재 리포트만 전달합니다.",
-    images: [{ url: "/og-image.png", width: 1200, height: 630 }],
+    images: [{ url: "/og-image.png?v=2", width: 1200, height: 630 }],
   },
   twitter: {
     card: "summary_large_image",
     title: "AI 면접으로 검증된 인재만 만나세요 · AI면접",
     description: "AI 면접이 자동 검증하고, 검증된 핵심 인재 리포트만 전달합니다.",
-    images: ["/og-image.png"],
+    images: ["/og-image.png?v=2"],
   },
 };
 
