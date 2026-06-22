@@ -72,9 +72,10 @@
   .adm-bar-acct .adm-email{font-size:13px;color:var(--slate);max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
   .adm-bar-acct .btn{font-size:13px;padding:8px 14px}
   .adm-burger{display:none;width:40px;height:40px;border-radius:9px;border:1px solid var(--line);background:#fff;color:var(--ink);font-size:16px;cursor:pointer;flex-shrink:0}
-  /* 메뉴바 접기/펼치기 토글 */
-  .adm-collapse{display:inline-flex;align-items:center;justify-content:center;width:40px;height:40px;border-radius:9px;border:1px solid var(--line);background:#fff;color:var(--slate);font-size:15px;cursor:pointer;flex-shrink:0;transition:.12s}
-  .adm-collapse:hover{color:var(--blue);border-color:var(--blue-2);background:var(--soft-2)}
+  /* 사이드바 상단(로고 아래) 접기/펼치기 토글 */
+  .adm-collapse{display:flex;align-items:center;gap:10px;width:calc(100% - 24px);margin:0 12px 4px;padding:9px 12px;border:none;border-radius:9px;background:rgba(255,255,255,.05);color:#9aa6c2;font-size:12.5px;font-weight:600;cursor:pointer;text-align:left;font-family:inherit;transition:.12s}
+  .adm-collapse:hover{background:rgba(255,255,255,.1);color:#fff}
+  .adm-collapse i{width:18px;text-align:center;font-size:13px}
 
   /* 사이드바 접기(아이콘 전용) */
   .adm-side{transition:width .18s ease}
@@ -85,6 +86,7 @@
   .adm.collapsed .adm-logo-mark{display:block}
   .adm.collapsed .adm-nav{padding:10px 10px}
   .adm.collapsed .adm-nav button{justify-content:center;padding:11px 0;gap:0}
+  .adm.collapsed .adm-collapse{justify-content:center;width:auto;margin:0 10px 4px;padding:9px 0;gap:0}
   .adm-body{padding:28px 32px 64px;max-width:1180px;width:100%}
   .adm-backdrop{display:none}
 

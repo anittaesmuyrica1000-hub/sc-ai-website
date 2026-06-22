@@ -128,6 +128,9 @@ function Console({ email }: { email: string }) {
           <img className="adm-logo-full" src="/supercoder-nav.svg" alt="Supercoder" />
           <img className="adm-logo-mark" src="/favicon.svg" alt="Supercoder" />
         </a>
+        <button type="button" className="adm-collapse" onClick={toggleCollapse} title={collapsed ? "메뉴 펼치기" : "메뉴 접기"} aria-label="메뉴 접기/펼치기">
+          <i className={`fa-solid ${collapsed ? "fa-angles-right" : "fa-angles-left"}`}></i><span className="adm-label">메뉴 접기</span>
+        </button>
         <nav className="adm-nav">
           {NAV.map((n) => (
             <button key={n.key} className={section === n.key ? "active" : ""} title={n.label} onClick={() => { setSection(n.key); setNavOpen(false); }}>
@@ -141,9 +144,6 @@ function Console({ email }: { email: string }) {
       <div className="adm-main">
         <div className="adm-bar">
           <button type="button" className="adm-burger" aria-label="메뉴" onClick={() => setNavOpen((v) => !v)}><i className="fa-solid fa-bars"></i></button>
-          <button type="button" className="adm-collapse" onClick={toggleCollapse} title={collapsed ? "메뉴 펼치기" : "메뉴 접기"} aria-label="메뉴 접기/펼치기">
-            <i className={`fa-solid ${collapsed ? "fa-angles-right" : "fa-angles-left"}`}></i>
-          </button>
           <div className="adm-bar-title">
             <h1>{TITLE[section].h}</h1>
             <div className="sub">{TITLE[section].d}</div>
