@@ -72,8 +72,10 @@
   .adm-bar-acct .adm-email{font-size:13px;color:var(--slate);max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
   .adm-bar-acct .btn{font-size:13px;padding:8px 14px}
   .adm-burger{display:none;width:40px;height:40px;border-radius:9px;border:1px solid var(--line);background:#fff;color:var(--ink);font-size:16px;cursor:pointer;flex-shrink:0}
-  .adm-collapse{display:inline-flex;align-items:center;justify-content:center;width:40px;height:40px;border-radius:9px;border:1px solid var(--line);background:#fff;color:var(--slate);font-size:15px;cursor:pointer;flex-shrink:0}
-  .adm-collapse:hover{color:var(--blue);border-color:var(--blue-2)}
+  /* 사이드바 하단 접기/펼치기 토글 */
+  .adm-side-toggle{display:flex;align-items:center;gap:11px;width:100%;padding:13px 14px;margin-top:auto;border:none;border-top:1px solid rgba(255,255,255,.08);background:none;color:#7f8aa6;font-size:13px;font-weight:600;cursor:pointer;text-align:left;font-family:inherit;transition:.12s}
+  .adm-side-toggle:hover{background:rgba(255,255,255,.06);color:#fff}
+  .adm-side-toggle i{width:18px;text-align:center;font-size:14px;transition:transform .18s ease}
 
   /* 사이드바 접기(아이콘 전용) */
   .adm-side{transition:width .18s ease}
@@ -84,6 +86,8 @@
   .adm.collapsed .adm-logo-mark{display:block}
   .adm.collapsed .adm-nav{padding:10px 10px}
   .adm.collapsed .adm-nav button{justify-content:center;padding:11px 0;gap:0}
+  .adm.collapsed .adm-side-toggle{justify-content:center;padding:13px 0;gap:0}
+  .adm.collapsed .adm-side-toggle i{transform:rotate(180deg)}
   .adm-body{padding:28px 32px 64px;max-width:1180px;width:100%}
   .adm-backdrop{display:none}
 
@@ -216,7 +220,7 @@
     .adm-side.open{transform:none}
     .adm-backdrop{display:block;position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:55}
     .adm-burger{display:inline-flex;align-items:center;justify-content:center}
-    .adm-collapse{display:none}
+    .adm-side-toggle{display:none}
     /* 모바일은 드로어 풀폭 — collapsed 무력화 */
     .adm.collapsed .adm-side{width:280px}
     .adm.collapsed .adm-label{display:inline}
