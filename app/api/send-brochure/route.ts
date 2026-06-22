@@ -111,8 +111,12 @@ export async function POST(req: Request) {
         위 링크는 보안을 위해 7일 후 만료됩니다. 만료 시 다시 신청해 주세요.<br/>
         도입 관련 문의는 회신 또는 <a href="https://sc-ai-website.vercel.app/apply" style="color:#2E6CF0">도입 문의</a>로 남겨주세요.
       </p>
-      <hr style="border:none;border-top:1px solid #eef1f7;margin:36px 0 16px"/>
-      <p style="font-size:12px;color:#9aa6bf;margin:0;font-weight:400">Supercoder</p>
+      <hr style="border:none;border-top:1px solid #eef1f7;margin:40px 0 18px"/>
+      <p style="font-size:12px;color:#9aa6bf;line-height:1.7;margin:0;font-weight:400">
+        © 2026 Second Team. All rights reserved.<br/>
+        대표 최재웅 · 서울 서초구 효령로55길 19 4층<br/>
+        support@supercoder.co
+      </p>
     </div>`;
 
   try {
