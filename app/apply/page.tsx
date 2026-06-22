@@ -27,6 +27,16 @@ export default function ApplyPage() {
               <li><span className="ic"><i className="fa-solid fa-file-lines"></i></span> 핵심 인재 리포트 제공</li>
               <li><span className="ic"><i className="fa-solid fa-bolt"></i></span> 1일 내 담당자 상담</li>
             </ul>
+            <div className="apply-partners">
+              <p className="apply-partners-label">이미 500개 이상의 채용팀이 함께합니다</p>
+              <div className="apply-logos">
+                <img src="/logos/kakaopay.png" alt="kakaopay" />
+                <img src="/logos/hyundai-autoever.png" alt="HYUNDAI AutoEver" />
+                <img src="/logos/woongjin.png" alt="Woongjin" />
+                <img src="/logos/skonec.png" alt="SKONEC entertainment" />
+                <img src="/logos/markany.png" alt="MarkAny" />
+              </div>
+            </div>
           </div>
           <div className="apply-formcol">
             <ApplyForm />

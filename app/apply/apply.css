@@ -6,13 +6,19 @@
   .apply-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(32px,5vw,72px);max-width:1080px;margin:0 auto;align-items:center}
   .apply-formcol{display:flex;flex-direction:column}
 
-  /* 좌측 인트로 — 수직(그리드)·수평(텍스트) 가운데 정렬 */
-  .apply-intro{text-align:center}
+  /* 좌측 인트로 — 좌측정렬, 그리드로 수직 가운데 */
+  .apply-intro{text-align:left}
   .apply-intro h1{font-size:clamp(25px,2.7vw,34px);font-weight:800;line-height:1.34;letter-spacing:-.02em;color:var(--ink)}
   .apply-intro p{font-size:16px;color:var(--slate);line-height:1.72;margin-top:20px}
-  .apply-points{list-style:none;margin-top:30px;display:grid;gap:16px;width:fit-content;margin-left:auto;margin-right:auto;text-align:left}
+  .apply-points{list-style:none;margin-top:30px;display:grid;gap:16px;padding-left:18px;border-left:3px solid var(--tint)}
   .apply-points li{display:flex;align-items:center;gap:12px;font-size:15px;font-weight:600;color:var(--ink)}
   .apply-points .ic{width:38px;height:38px;border-radius:10px;background:var(--soft-2);color:var(--blue);display:grid;place-items:center;font-size:16px;flex-shrink:0}
+
+  /* 파트너사 로고 — 인트로 하단(좌측정렬). 랜딩 마퀴와 동일하게 multiply로 흰 배경 제거 */
+  .apply-partners{margin-top:40px;padding-top:30px;border-top:1px solid var(--line)}
+  .apply-partners-label{font-size:13px;font-weight:700;color:var(--slate);letter-spacing:.01em;margin-bottom:18px}
+  .apply-logos{display:flex;align-items:center;flex-wrap:wrap;gap:18px 26px}
+  .apply-logos img{max-width:104px;max-height:34px;width:auto;height:auto;object-fit:contain;mix-blend-mode:multiply;opacity:.85}
   @media(max-width:860px){
     .apply-grid{grid-template-columns:1fr;max-width:540px;gap:30px}
     .apply-intro{text-align:center;padding-top:0}
@@ -20,6 +26,7 @@
     .apply-intro h1 br{display:none}
     .apply-intro p{margin-top:14px}
     .apply-points{max-width:360px;margin-left:auto;margin-right:auto;text-align:left}
+    .apply-logos{justify-content:center}
   }
   @media(max-width:420px){.apply-intro h1{font-size:20px}}
 
