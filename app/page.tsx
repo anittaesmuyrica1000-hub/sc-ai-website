@@ -344,8 +344,8 @@ export default function HomePage() {
       <section className="final" id="final" data-nav="dark">
         <HeroParticles canvasId="final-particles" targetId="real-cta" />
         <div className="wrap">
-          <h2>다음 채용부터,<br /><span className="real-cta" id="real-cta">검증된 후보</span>만 만나세요.</h2>
-          <p>5분이면 충분합니다. AI가 먼저 검증하고 핵심 후보만 전달합니다.</p>
+          <h2>다음 채용은,<br /><span className="real-cta" id="real-cta">AI 면접</span>으로 더 빠르게 시작하세요.</h2>
+          <p>간단한 문의를 남겨주시면, 담당자가 도입 방안을 안내해드립니다.</p>
           <Link href="/apply" className="btn btn-blue">무료 상담 신청 <i className="fa-solid fa-arrow-right"></i></Link>
         </div>
       </section>
