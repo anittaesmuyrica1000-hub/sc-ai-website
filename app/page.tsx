@@ -231,30 +231,30 @@ export default function HomePage() {
             </div>
           </div>
 
-          <div className="head" style={{ marginBottom: 6, paddingTop: "clamp(56px,7vw,104px)" }}>
-            <p className="lead" style={{ marginTop: 0, fontWeight: 600 }}>공고만 올리면, 나머지는 AI가 — 채용팀은 결과만 받아보세요.</p>
+          <div className="head" style={{ paddingTop: "clamp(56px,7vw,104px)" }}>
+            <h2>채용공고만 등록하면,<br />검증 리포트까지 <span className="blue">AI가 진행</span>합니다</h2>
           </div>
 
           <div className="flow">
             <div className="node">
               <div className="step">STEP 01</div>
               <div className="ic"><i className="fa-solid fa-bullhorn"></i></div>
-              <h3>채용 공고 등록</h3>
-              <p>공고만 올리면 AI가 평가 기준과 <br />면접 질문을 자동 설계합니다.</p>
+              <h3>채용공고 등록</h3>
+              <p>채용팀이 공고를 등록하면 <br />AI가 직무와 요구 역량을 분석합니다.</p>
             </div>
             <div className="arrow"><i className="fa-solid fa-arrow-right-long"></i></div>
             <div className="node">
               <div className="step">STEP 02</div>
-              <div className="ic"><i className="fa-solid fa-magnifying-glass-chart"></i></div>
-              <h3>AI 면접·검증</h3>
-              <p>지원자가 온라인으로 응시하면 <br />AI가 응답을 검증·채점합니다.</p>
+              <div className="ic"><i className="fa-solid fa-wand-magic-sparkles"></i></div>
+              <h3>AI 면접 자동 생성·진행</h3>
+              <p>AI가 평가 기준과 면접 질문을 만들고, <br />지원자는 온라인으로 응시합니다.</p>
             </div>
             <div className="arrow"><i className="fa-solid fa-arrow-right-long"></i></div>
             <div className="node">
               <div className="step">STEP 03</div>
               <div className="ic"><i className="fa-solid fa-file-lines"></i></div>
-              <h3>리포트 한 장 수신</h3>
-              <p>채용팀은 결과 리포트만 받아 <br />바로 판단합니다.</p>
+              <h3>검증 리포트 수신</h3>
+              <p>AI가 응답을 분석·채점해 <br />한 장의 리포트로 정리합니다.</p>
             </div>
           </div>
         </div>
