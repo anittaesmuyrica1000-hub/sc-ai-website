@@ -29,6 +29,7 @@ export type Post = {
 // FAQ 타입 (어드민 관리 + 랜딩 노출)
 export type Faq = {
   id: string;
+  category?: string | null;
   question: string;
   answer: string;
   sort_order: number;
@@ -48,7 +49,12 @@ export type Signup = {
   phone?: string | null;
   size?: string | null;
   memo?: string | null;
+  status?: string | null;
+  admin_note?: string | null;
 };
+
+// 도입문의 상담 상태 값
+export const SIGNUP_STATUSES = ["신규", "확인 완료", "상담 진행", "완료", "보류"] as const;
 
 // 서비스소개서 신청 리드(brochure_requests) 타입
 export type BrochureRequest = {
