@@ -34,9 +34,9 @@ const JSON_LD = {
     {
       "@type": "FAQPage",
       mainEntity: [
-        { "@type": "Question", name: "AI 면접은 어떻게 진행되나요?", acceptedAnswer: { "@type": "Answer", text: "지원자는 안내에 따라 온라인으로 AI 면접에 응시합니다. AI면접이 응답을 분석·검증해 역량 평가와 핵심 요약이 담긴 리포트를 생성하고, 채용팀에는 검증을 통과한 상위 후보의 리포트만 전달됩니다." } },
+        { "@type": "Question", name: "AI 면접은 어떻게 진행되나요?", acceptedAnswer: { "@type": "Answer", text: "지원자는 안내에 따라 온라인으로 AI 면접에 응시합니다. AI가 응답을 분석해 역량 평가와 핵심 요약이 담긴 리포트를 생성하며, 채용팀은 리포트를 바탕으로 후보자를 검토합니다." } },
         { "@type": "Question", name: "기존 ATS·채용 툴과 연동되나요?", acceptedAnswer: { "@type": "Answer", text: "리포트는 표준 형식으로 제공되어 기존 채용 프로세스에 바로 활용할 수 있습니다. 상세 연동 방식은 도입 상담에서 안내해 드립니다." } },
-        { "@type": "Question", name: "도입까지 얼마나 걸리나요?", acceptedAnswer: { "@type": "Answer", text: "설치나 계약 없이 무료 신청 후 바로 시작할 수 있습니다. 신청하시면 영업일 기준 1일 내 담당자가 데모와 함께 안내드립니다." } },
+        { "@type": "Question", name: "도입까지 얼마나 걸리나요?", acceptedAnswer: { "@type": "Answer", text: "무료 신청 후 담당자가 도입 방식과 데모를 안내드립니다. 별도 설치 없이 온라인으로 진행할 수 있습니다." } },
         { "@type": "Question", name: "지원자 데이터는 안전하게 관리되나요?", acceptedAnswer: { "@type": "Answer", text: "모든 데이터는 전송 구간 암호화(HTTPS)와 접근 통제 정책 아래 관리됩니다. 수집 항목과 처리 방식은 개인정보처리방침에서 확인하실 수 있습니다." } },
         { "@type": "Question", name: "비용은 어떻게 책정되나요?", acceptedAnswer: { "@type": "Answer", text: "채용 규모와 활용 방식에 맞춰 책정됩니다. 우선 무료로 도입 효과를 확인해 보신 뒤, 상담을 통해 안내해 드립니다." } },
       ],
@@ -73,7 +73,7 @@ export default function HomePage() {
 
       {/* SECTION 02 · CLIENTS (도입사 로고 마퀴) */}
       <div className="herostrip" id="clients">
-        <p className="hs-label">이미 500개 이상의 채용팀이 검증을 맡겼습니다</p>
+        <p className="hs-label">지원자 검증에 Supercoder를 활용하고 있습니다</p>
         <div className="marquee">
           <div className="marquee-track">
             {Array.from({ length: 6 }).map((_, block) =>
@@ -143,8 +143,8 @@ export default function HomePage() {
             <div className="valcard">
               <div className="ic"><i className="fa-solid fa-crosshairs"></i></div>
               <h3>역량 검증</h3>
-              <p>이력서 주장과 실제 역량을 대조해,<br />핵심 역량을 데이터로 검증합니다.</p>
-              <span className="metric">핵심 역량 검증 정확도 ↑</span>
+              <p>이력서에 적힌 내용과 실제 응답을 대조해,<br />핵심 역량을 데이터로 확인합니다.</p>
+              <span className="metric">핵심 역량 판단 기준 제공</span>
             </div>
           </div>
         </div>
@@ -156,7 +156,7 @@ export default function HomePage() {
           <div className="head">
             <div className="tagchip"><i className="fa-solid fa-circle-check"></i> 역할 분담</div>
             <h2>지원자 선별은 <span className="blue">AI</span>가,<br />최종 판단은 <span className="blue">사람</span>이</h2>
-            <p className="lead">AI가 전체 지원자를 먼저 선별하고, 채용팀은 핵심 후보 판단에 집중합니다.</p>
+            <p className="lead">AI가 전체 지원자를 먼저 선별하고, 채용팀은 최종 의사결정에 집중합니다.</p>
           </div>
           <div className="funnel3">
             <div className="fn-wrap">
@@ -247,14 +247,14 @@ export default function HomePage() {
               <div className="step">STEP 02</div>
               <div className="ic"><i className="fa-solid fa-magnifying-glass-chart"></i></div>
               <h3>AI 분석·검증</h3>
-              <p>이력서의 주장과 실제 역량을<br />대조해 자동으로 검증·채점.</p>
+              <p>이력서 내용과 면접 응답을 대조해<br />자동으로 검증·채점합니다.</p>
             </div>
             <div className="arrow"><i className="fa-solid fa-arrow-right-long"></i></div>
             <div className="node">
               <div className="step">STEP 03</div>
               <div className="ic"><i className="fa-solid fa-file-lines"></i></div>
               <h3>리포트 수신</h3>
-              <p>검증된 핵심 인재 리포트만<br />채용팀이 받아 판단합니다.</p>
+              <p>검증 결과가 담긴 리포트를<br />채용팀이 확인하고 판단합니다.</p>
             </div>
           </div>
         </div>
@@ -300,7 +300,7 @@ export default function HomePage() {
             <div className="vc">
               <div className="bubble">
                 <div className="qm"><i className="fa-solid fa-quote-left"></i></div>
-                <blockquote>“개발자 채용부터 과정 전반의 컨설팅까지, 성장하는 팀에 큰 도움이 됐습니다.”</blockquote>
+                <blockquote>“AI 면접 리포트 덕분에 후보자의 강점과 우려점을 빠르게 파악할 수 있었습니다.”</blockquote>
               </div>
               <div className="who"><div className="ava">C</div><div><div className="nm">C사</div><div className="ro">Supercoder 도입 고객</div></div></div>
             </div>
@@ -318,7 +318,7 @@ export default function HomePage() {
           <div className="faq-list">
             <details className="faq-item" open>
               <summary>AI 면접은 어떻게 진행되나요? <i className="fa-solid fa-plus fq-ic"></i></summary>
-              <div className="fa-ans">지원자는 안내에 따라 온라인으로 AI 면접에 응시합니다. AI면접이 응답을 분석·검증해 역량 평가와 핵심 요약이 담긴 리포트를 생성하고, 채용팀에는 검증을 통과한 상위 후보의 리포트만 전달됩니다.</div>
+              <div className="fa-ans">지원자는 안내에 따라 온라인으로 AI 면접에 응시합니다. AI가 응답을 분석해 역량 평가와 핵심 요약이 담긴 리포트를 생성하며, 채용팀은 리포트를 바탕으로 후보자를 검토합니다.</div>
             </details>
             <details className="faq-item">
               <summary>기존 ATS·채용 툴과 연동되나요? <i className="fa-solid fa-plus fq-ic"></i></summary>
@@ -326,7 +326,7 @@ export default function HomePage() {
             </details>
             <details className="faq-item">
               <summary>도입까지 얼마나 걸리나요? <i className="fa-solid fa-plus fq-ic"></i></summary>
-              <div className="fa-ans">설치나 계약 없이 무료 신청 후 바로 시작할 수 있습니다. 신청하시면 영업일 기준 1일 내 담당자가 데모와 함께 안내드립니다.</div>
+              <div className="fa-ans">무료 신청 후 담당자가 도입 방식과 데모를 안내드립니다. 별도 설치 없이 온라인으로 진행할 수 있습니다.</div>
             </details>
             <details className="faq-item">
               <summary>지원자 데이터는 안전하게 관리되나요? <i className="fa-solid fa-plus fq-ic"></i></summary>
