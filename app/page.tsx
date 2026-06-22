@@ -131,18 +131,18 @@ export default function HomePage() {
             <div className="valcard">
               <div className="ic"><i className="fa-solid fa-stopwatch"></i></div>
               <h3>빠른 속도</h3>
-              <p>수천 명의 지원자를 AI가 동시에 검증.<br />1차 서류 검토 시간이 사라집니다.</p>
+              <p>수천 명의 지원자를 AI가 동시에 검토해<br />1차 검토 시간을 크게 줄입니다.</p>
               <span className="metric">1차 검토 시간 ↓</span>
             </div>
             <div className="valcard">
               <div className="ic"><i className="fa-solid fa-coins"></i></div>
               <h3>비용 절감</h3>
-              <p>잘못된 채용 한 건은 연봉의 30%.<br />검증 자동화로 실패 비용을 줄입니다.</p>
+              <p>초기 검증을 자동화해<br />채용 미스매치 비용을 줄입니다.</p>
               <span className="metric">채용 미스매치 ↓</span>
             </div>
             <div className="valcard">
               <div className="ic"><i className="fa-solid fa-crosshairs"></i></div>
-              <h3>정확성</h3>
+              <h3>역량 검증</h3>
               <p>이력서 주장과 실제 역량을 대조해,<br />핵심 역량을 데이터로 검증합니다.</p>
               <span className="metric">핵심 역량 검증 정확도 ↑</span>
             </div>
@@ -155,8 +155,8 @@ export default function HomePage() {
         <div className="wrap">
           <div className="head">
             <div className="tagchip"><i className="fa-solid fa-circle-check"></i> 역할 분담</div>
-            <h2>수천 명은 <span className="blue">AI</span>가 좁히고,<br />단 하나의 <span className="blue">결정</span>만 사람이</h2>
-            <p className="lead">AI가 수천 명을 좁히고, 사람은 단 하나만 결정합니다.</p>
+            <h2>지원자 선별은 <span className="blue">AI</span>가,<br />최종 판단은 <span className="blue">사람</span>이</h2>
+            <p className="lead">AI가 전체 지원자를 먼저 선별하고, 채용팀은 핵심 후보 판단에 집중합니다.</p>
           </div>
           <div className="funnel3">
             <div className="fn-wrap">
@@ -192,8 +192,8 @@ export default function HomePage() {
       <section className="how" id="how">
         <div className="wrap">
           <div className="head">
-            <h2>이 <span className="blue">리포트 한 장</span>이면 충분합니다</h2>
-            <p className="lead">검증은 AI가 끝냅니다. 결과만 확인하세요.</p>
+            <h2>핵심 후보 판단에 필요한 내용을<br /><span className="blue">리포트 한 장</span>에 담았습니다</h2>
+            <p className="lead">요약, 등급, 역량, 면접 포인트까지 한눈에 확인하세요.</p>
           </div>
 
           <div className="how-rows">
@@ -209,7 +209,7 @@ export default function HomePage() {
               <div className="hr-info">
                 <span className="hr-eyebrow">리포트 02</span>
                 <h3>종합평가</h3>
-                <p>복잡한 점수 대신 <strong>등급</strong>으로, 합격·보류·탈락을 빠르게 가릅니다.</p>
+                <p>복잡한 점수 대신 <strong>등급</strong>으로, 후보자 판단 기준을 빠르게 확인합니다.</p>
               </div>
               <div className="hr-media"><img className="hr-img" src="/diagram-grade.png" alt="종합 등급 도식" width={1080} height={570} loading="lazy" /></div>
             </div>
@@ -232,7 +232,7 @@ export default function HomePage() {
           </div>
 
           <div className="head" style={{ marginBottom: 6, paddingTop: "clamp(56px,7vw,104px)" }}>
-            <p className="lead" style={{ marginTop: 0, fontWeight: 600 }}>응시부터 리포트까지, 사람 손 없이 단 3단계.</p>
+            <p className="lead" style={{ marginTop: 0, fontWeight: 600 }}>응시부터 리포트까지, 간편하게 3단계로 진행됩니다.</p>
           </div>
 
           <div className="flow">
@@ -240,7 +240,7 @@ export default function HomePage() {
               <div className="step">STEP 01</div>
               <div className="ic"><i className="fa-solid fa-paper-plane"></i></div>
               <h3>후보자 AI 면접 응시</h3>
-              <p>언제 어디서나, 시공간 제약 없이<br />온라인 응시 · 설치 없이 이력서 제출.</p>
+              <p>별도 설치 없이 온라인으로<br />AI 면접에 응시합니다.</p>
             </div>
             <div className="arrow"><i className="fa-solid fa-arrow-right-long"></i></div>
             <div className="node">
@@ -265,10 +265,10 @@ export default function HomePage() {
         <div className="wrap">
           <div className="head">
             <h2>AI 면접 하나로,<br />1차 검토가 <span className="blue">이렇게 바뀝니다</span></h2>
-            <p className="lead">도입 효과를 숫자로 보여드립니다.</p>
+            <p className="lead">검토 속도, 비용, 평가 일관성을 한 번에 개선합니다.</p>
           </div>
           <div className="proof-row">
-            <div className="pc2"><div className="vlabel"><i className="fa-solid fa-bolt"></i> 속도</div><div className="big">동시</div><p>수천 명을 한 번에 1차 검증<br />(응시 → AI 면접 → 리포트)</p></div>
+            <div className="pc2"><div className="vlabel"><i className="fa-solid fa-bolt"></i> 속도</div><div className="big">동시</div><p>대규모 지원자를 동시에 1차 검토<br />(응시 → AI 면접 → 리포트)</p></div>
             <div className="pc2"><div className="vlabel"><i className="fa-solid fa-piggy-bank"></i> 비용 절감</div><div className="big">1,272<span style={{ fontSize: ".5em" }}>만원</span></div><p>잘못된 채용 1건 · 그대로 손실</p><p className="psrc">출처: 사람인, 기업 499개사</p></div>
             <div className="pc2"><div className="vlabel"><i className="fa-solid fa-circle-check"></i> 일관성</div><div className="big">100<span style={{ fontSize: ".5em" }}>%</span></div><p>모든 지원자를 동일 기준으로<br />일관되게 검증</p></div>
           </div>
@@ -279,8 +279,8 @@ export default function HomePage() {
       <section className="voices" id="voices">
         <div className="wrap">
           <div className="head">
-            <h2>먼저 써본 채용팀의 이야기</h2>
-            <p className="lead">실제 도입 고객사가 전한 <span className="blue" style={{ fontWeight: 700 }}>AI 면접 채용</span> 경험입니다.</p>
+            <h2>채용팀은 이렇게 활용하고 있습니다</h2>
+            <p className="lead">반복 검토는 줄이고, <span className="blue" style={{ fontWeight: 700 }}>핵심 후보 판단</span>에 더 많은 시간을 쓰고 있습니다.</p>
           </div>
           <div className="v-grid">
             <div className="vc">
