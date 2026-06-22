@@ -231,8 +231,8 @@ export default function HomePage() {
             </div>
           </div>
 
-          <div className="head" style={{ paddingTop: "clamp(56px,7vw,104px)" }}>
-            <h2>채용공고만 등록하면,<br />검증 리포트까지 <span className="blue">AI가 진행</span>합니다</h2>
+          <div className="head" style={{ paddingTop: "clamp(112px,15vw,190px)" }}>
+            <p className="lead" style={{ marginTop: 0, fontWeight: 700 }}>채용공고만 등록하면, 검증 리포트까지 <span className="blue">AI가 진행</span>합니다.</p>
           </div>
 
           <div className="flow">
