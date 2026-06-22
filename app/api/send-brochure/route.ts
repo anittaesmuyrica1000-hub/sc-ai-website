@@ -99,20 +99,21 @@ export async function POST(req: Request) {
   const subject = "[Supercoder] 요청하신 서비스소개서를 보내드립니다";
   const html = `
     <div style="font-family:Pretendard,'Apple SD Gothic Neo',Arial,sans-serif;max-width:600px;margin:0;padding:16px 8px 32px;color:#1f2a44;text-align:left">
-      <img src="https://sc-ai-website.vercel.app/supercoder-email-logo.png" alt="Supercoder" height="26" style="display:block;height:26px;width:auto;border:0;margin:0 0 36px"/>
+      <img src="https://sc-ai-website.vercel.app/supercoder-email-logo.png" alt="Supercoder" height="26" style="display:block;height:26px;width:auto;border:0;margin:0 0 20px"/>
+      <hr style="border:none;border-top:1px solid #eef1f7;margin:0 0 34px"/>
       <h2 style="font-size:22px;font-weight:800;margin:0 0 22px">AI 면접 서비스 소개서</h2>
-      <p style="font-size:15px;line-height:1.8;margin:0 0 30px">
-        ${name}님, 안녕하세요.<br/>요청하신 <b>AI 면접 서비스 소개서</b>를 보내드립니다.
+      <p style="font-size:16px;line-height:1.9;margin:0 0 34px;font-weight:400">
+        ${name}님, 안녕하세요.<br/>요청하신 <b style="font-weight:700">AI 면접 서비스 소개서</b>를 보내드립니다.
       </p>
-      <p style="margin:0 0 36px">
-        <a href="${link}" style="display:inline-block;background:#2E6CF0;color:#fff;text-decoration:none;font-weight:700;padding:15px 28px;border-radius:10px">소개서 다운로드 (PDF)</a>
+      <p style="margin:0 0 38px">
+        <a href="${link}" style="display:inline-block;background:#2E6CF0;color:#fff;text-decoration:none;font-weight:700;font-size:17px;padding:18px 44px;border-radius:12px">소개서 다운로드 (PDF)</a>
       </p>
-      <p style="font-size:13px;color:#7E8AA3;line-height:1.9;margin:0">
-        위 링크는 보안을 위해 <b>7일 후 만료</b>됩니다. 만료 시 다시 신청해 주세요.<br/>
+      <p style="font-size:13px;color:#8a96ad;line-height:1.9;margin:0;font-weight:400">
+        위 링크는 보안을 위해 7일 후 만료됩니다. 만료 시 다시 신청해 주세요.<br/>
         도입 관련 문의는 회신 또는 <a href="https://sc-ai-website.vercel.app/apply" style="color:#2E6CF0">도입 문의</a>로 남겨주세요.
       </p>
-      <hr style="border:none;border-top:1px solid #e8edf6;margin:36px 0 16px"/>
-      <p style="font-size:12px;color:#9aa6bf;margin:0">Supercoder</p>
+      <hr style="border:none;border-top:1px solid #eef1f7;margin:36px 0 16px"/>
+      <p style="font-size:12px;color:#9aa6bf;margin:0;font-weight:400">Supercoder</p>
     </div>`;
 
   try {
