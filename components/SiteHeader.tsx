@@ -94,10 +94,11 @@ export default function SiteHeader() {
   return (
     <header ref={headerRef}>
       <nav className="wrap">
-        <Link href="/" className="logo">
+        {/* 로고: 항상 홈 최상단(히어로)으로 + 전체 새로고침 → Next Link 대신 일반 a */}
+        <a href="/" className="logo">
           <img src="/supercoder-nav.svg" alt="Supercoder" className="nav-logo-img nav-logo--base" />
           <img src="/supercoder-nav-white.svg" alt="Supercoder" className="nav-logo-img nav-logo--invert" />
-        </Link>
+        </a>
 
         {/* 우측: 페이지 메뉴 + 로그인 + 도입 문의 + (모바일)햄버거 */}
         <div className="navlinks">
