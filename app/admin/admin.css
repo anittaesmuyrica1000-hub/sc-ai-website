@@ -52,9 +52,10 @@
   /* ===== 어드민 콘솔 레이아웃 (다크 사이드바 + 본문) ===== */
   .adm{display:flex;min-height:100vh;background:#F4F7FC}
   .adm-side{width:236px;flex-shrink:0;background:#0B1426;color:#c2cbe0;display:flex;flex-direction:column;position:sticky;top:0;height:100vh}
-  .adm-brand{display:flex;flex-direction:column;align-items:flex-start;gap:6px;padding:22px 20px 16px}
-  .adm-brand img{height:22px;width:auto;filter:brightness(0) invert(1)}
-  .adm-brand-sub{font-size:11.5px;font-weight:600;letter-spacing:.02em;color:#7f8aa6}
+  .adm-brand{display:flex;align-items:center;padding:22px 20px 18px}
+  .adm-brand img{width:auto;filter:brightness(0) invert(1)}
+  .adm-logo-full{height:22px}
+  .adm-logo-mark{display:none;height:24px}
   .adm-badge{font-size:10px;font-weight:800;letter-spacing:.08em;background:rgba(255,255,255,.13);color:#fff;padding:3px 7px;border-radius:5px}
   .adm-nav{display:flex;flex-direction:column;justify-content:flex-start;gap:4px;padding:10px 12px;flex:1;overflow-y:auto}
   .adm-nav button{display:flex;align-items:center;gap:11px;padding:11px 14px;border-radius:9px;background:none;border:none;color:#9aa6c2;font-size:14.5px;font-weight:600;cursor:pointer;text-align:left;width:100%;font-family:inherit;transition:.12s}
@@ -76,6 +77,20 @@
   .adm-bar-acct .adm-email{font-size:13px;color:var(--slate);max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
   .adm-bar-acct .btn{font-size:13px;padding:8px 14px}
   .adm-burger{display:none;width:40px;height:40px;border-radius:9px;border:1px solid var(--line);background:#fff;color:var(--ink);font-size:16px;cursor:pointer;flex-shrink:0}
+  .adm-collapse{display:inline-flex;align-items:center;justify-content:center;width:40px;height:40px;border-radius:9px;border:1px solid var(--line);background:#fff;color:var(--slate);font-size:15px;cursor:pointer;flex-shrink:0}
+  .adm-collapse:hover{color:var(--blue);border-color:var(--blue-2)}
+
+  /* 사이드바 접기(아이콘 전용) */
+  .adm-side{transition:width .18s ease}
+  .adm.collapsed .adm-side{width:66px}
+  .adm.collapsed .adm-label{display:none}
+  .adm.collapsed .adm-brand{justify-content:center;padding:22px 0 18px}
+  .adm.collapsed .adm-logo-full{display:none}
+  .adm.collapsed .adm-logo-mark{display:block}
+  .adm.collapsed .adm-nav{padding:10px 10px}
+  .adm.collapsed .adm-nav button{justify-content:center;padding:11px 0;gap:0}
+  .adm.collapsed .adm-side-foot{padding:8px 10px 12px}
+  .adm.collapsed .adm-side-foot .adm-nav-link{justify-content:center;padding:11px 0;gap:0}
   .adm-body{padding:28px 32px 64px;max-width:1180px;width:100%}
   .adm-backdrop{display:none}
 
@@ -208,6 +223,14 @@
     .adm-side.open{transform:none}
     .adm-backdrop{display:block;position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:55}
     .adm-burger{display:inline-flex;align-items:center;justify-content:center}
+    .adm-collapse{display:none}
+    /* 모바일은 드로어 풀폭 — collapsed 무력화 */
+    .adm.collapsed .adm-side{width:280px}
+    .adm.collapsed .adm-label{display:inline}
+    .adm.collapsed .adm-brand{justify-content:flex-start;padding:22px 20px 18px}
+    .adm.collapsed .adm-logo-full{display:block}
+    .adm.collapsed .adm-logo-mark{display:none}
+    .adm.collapsed .adm-nav button,.adm.collapsed .adm-side-foot .adm-nav-link{justify-content:flex-start;padding:11px 14px;gap:11px}
     .adm-body{padding:22px 18px 56px}
     .adm-bar{padding:16px 18px}
     .adm-bar-acct .adm-email{display:none}

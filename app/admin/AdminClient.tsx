@@ -109,28 +109,35 @@ function Console({ email }: { email: string }) {
   const [navOpen, setNavOpen] = useState(false);
   const [acctOpen, setAcctOpen] = useState(false);
   const [newCount, setNewCount] = useState(0);
+  const [collapsed, setCollapsed] = useState(false);
 
   useEffect(() => {
     supabase.from("signups").select("id", { count: "exact", head: true }).eq("status", "신규").then(({ count }) => setNewCount(count ?? 0));
   }, [section]);
+  useEffect(() => {
+    if (typeof window !== "undefined" && localStorage.getItem("adm-collapsed") === "1") setCollapsed(true);
+  }, []);
+  function toggleCollapse() {
+    setCollapsed((v) => { try { localStorage.setItem("adm-collapsed", v ? "0" : "1"); } catch {} return !v; });
+  }
 
   return (
-    <div className="adm">
+    <div className={`adm${collapsed ? " collapsed" : ""}`}>
       <aside className={`adm-side${navOpen ? " open" : ""}`}>
         <div className="adm-brand">
-          <img src="/supercoder-nav.svg" alt="Supercoder" />
-          <span className="adm-brand-sub">관리자 콘솔</span>
+          <img className="adm-logo-full" src="/supercoder-nav.svg" alt="Supercoder" />
+          <img className="adm-logo-mark" src="/favicon.svg" alt="Supercoder" />
         </div>
         <nav className="adm-nav">
           {NAV.map((n) => (
-            <button key={n.key} className={section === n.key ? "active" : ""} onClick={() => { setSection(n.key); setNavOpen(false); }}>
-              <i className={`fa-solid ${n.icon}`}></i> {n.label}
+            <button key={n.key} className={section === n.key ? "active" : ""} title={n.label} onClick={() => { setSection(n.key); setNavOpen(false); }}>
+              <i className={`fa-solid ${n.icon}`}></i><span className="adm-label">{n.label}</span>
             </button>
           ))}
         </nav>
         <div className="adm-side-foot">
-          <a className="adm-nav-link" href="/" target="_blank" rel="noopener noreferrer"><i className="fa-solid fa-arrow-up-right-from-square"></i> 사이트로 이동</a>
-          <button className="adm-nav-link" type="button" onClick={() => supabase.auth.signOut()}><i className="fa-solid fa-right-from-bracket"></i> 로그아웃</button>
+          <a className="adm-nav-link" href="/" target="_blank" rel="noopener noreferrer" title="사이트로 이동"><i className="fa-solid fa-arrow-up-right-from-square"></i><span className="adm-label">사이트로 이동</span></a>
+          <button className="adm-nav-link" type="button" onClick={() => supabase.auth.signOut()} title="로그아웃"><i className="fa-solid fa-right-from-bracket"></i><span className="adm-label">로그아웃</span></button>
         </div>
       </aside>
       {navOpen && <div className="adm-backdrop" onClick={() => setNavOpen(false)} />}
@@ -138,6 +145,7 @@ function Console({ email }: { email: string }) {
       <div className="adm-main">
         <div className="adm-bar">
           <button type="button" className="adm-burger" aria-label="메뉴" onClick={() => setNavOpen((v) => !v)}><i className="fa-solid fa-bars"></i></button>
+          <button type="button" className="adm-collapse" aria-label="메뉴 접기/펼치기" onClick={toggleCollapse}><i className="fa-solid fa-bars-staggered"></i></button>
           <div className="adm-bar-title">
             <h1>{TITLE[section].h}</h1>
             <div className="sub">{TITLE[section].d}</div>

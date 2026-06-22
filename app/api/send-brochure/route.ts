@@ -99,7 +99,7 @@ export async function POST(req: Request) {
   const subject = "[Supercoder] 요청하신 서비스소개서를 보내드립니다";
   const html = `
     <div style="font-family:Pretendard,'Apple SD Gothic Neo',Arial,sans-serif;max-width:600px;margin:0;padding:64px 8px 32px;color:#1f2a44;text-align:left">
-      <img src="https://sc-ai-website.vercel.app/supercoder-email-logo.png" alt="Supercoder" height="28" style="display:block;height:28px;width:auto;border:0;margin:0 0 26px"/>
+      <a href="https://sc-ai-website.vercel.app" style="display:inline-block;margin:0 0 26px"><img src="https://sc-ai-website.vercel.app/supercoder-email-logo.png" alt="Supercoder" height="28" style="display:block;height:28px;width:auto;border:0"/></a>
       <hr style="border:none;border-top:2px solid #dfe4ee;margin:0 0 40px"/>
       <p style="font-size:18px;line-height:1.85;margin:0 0 38px;font-weight:400">
         ${name}님, 안녕하세요.<br/>요청하신 <b style="font-weight:700">AI 면접 서비스 소개서</b>를 보내드립니다.<br/><br/>아래 버튼에서 소개서를 확인하실 수 있습니다.
