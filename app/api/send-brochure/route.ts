@@ -98,15 +98,14 @@ export async function POST(req: Request) {
   const fromHeader = `"Supercoder" <${GMAIL_FROM}>`;
   const subject = "[Supercoder] 요청하신 서비스소개서를 보내드립니다";
   const html = `
-    <div style="font-family:Pretendard,'Apple SD Gothic Neo',Arial,sans-serif;max-width:600px;margin:0;padding:16px 8px 32px;color:#1f2a44;text-align:left">
+    <div style="font-family:Pretendard,'Apple SD Gothic Neo',Arial,sans-serif;max-width:600px;margin:0;padding:44px 8px 32px;color:#1f2a44;text-align:left">
       <img src="https://sc-ai-website.vercel.app/supercoder-email-logo.png" alt="Supercoder" height="26" style="display:block;height:26px;width:auto;border:0;margin:0 0 20px"/>
-      <hr style="border:none;border-top:1px solid #eef1f7;margin:0 0 34px"/>
-      <h2 style="font-size:22px;font-weight:800;margin:0 0 22px">AI 면접 서비스 소개서</h2>
+      <hr style="border:none;border-top:1px solid #eef1f7;margin:0 0 36px"/>
       <p style="font-size:16px;line-height:1.9;margin:0 0 34px;font-weight:400">
         ${name}님, 안녕하세요.<br/>요청하신 <b style="font-weight:700">AI 면접 서비스 소개서</b>를 보내드립니다.
       </p>
       <p style="margin:0 0 38px">
-        <a href="${link}" style="display:inline-block;background:#2E6CF0;color:#fff;text-decoration:none;font-weight:700;font-size:17px;padding:18px 44px;border-radius:12px">소개서 다운로드 (PDF)</a>
+        <a href="${link}" style="display:inline-block;background:#2E6CF0;color:#fff;text-decoration:none;font-weight:700;font-size:16px;padding:18px 40px;border-radius:12px">AI 면접 서비스 소개서</a>
       </p>
       <p style="font-size:13px;color:#8a96ad;line-height:1.9;margin:0;font-weight:400">
         위 링크는 보안을 위해 7일 후 만료됩니다. 만료 시 다시 신청해 주세요.<br/>
