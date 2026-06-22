@@ -60,7 +60,7 @@ export default function HomePage() {
                 <span className="sky">채용 결정은 </span><span className="hl">사람</span><span className="sky">이 더 빠르게</span>
               </h1>
               <p>
-                구조화된 <span style={{ fontWeight: 700, color: "#fff" }}>AI 면접과 리포트</span>로 1차 검토 시간을 줄이고,<br />
+                <span style={{ fontWeight: 700, color: "#fff" }}>AI 면접·리포트</span>로 1차 검토를 줄이고,<br />
                 <span style={{ fontWeight: 700, color: "#fff" }}>핵심 후보 판단</span>에 집중하세요.
               </p>
               <div className="decl-cta">

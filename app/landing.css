@@ -55,6 +55,9 @@
   /* 모바일: 히어로가 화면을 채워 콘텐츠가 '화면' 정중앙에 오게(svh=주소창 보이는 가시영역 기준).
      min-height:auto면 히어로가 콘텐츠에 붙어 화면 상단으로 치우침 → 100svh로 채움. */
   @media(max-width:880px){.decl .wrap{grid-template-columns:1fr;gap:40px}.decl{min-height:100vh;min-height:100svh}}
+  /* 모바일: 헤드라인이 길어 둘째 줄이 3줄로 넘치지 않도록 폰트 축소(단어 유지·2줄 고정) */
+  @media(max-width:560px){.decl h1{font-size:27px;line-height:1.32}}
+  @media(max-width:400px){.decl h1{font-size:25px}}
 
   /* HERO STRIP — 도입사 로고 (한 줄 무한 루핑 마퀴) */
   /* 로고 루프 — 흰 배경으로 위/아래 섹션과 구분 (multiply가 흰 배경에서 가장 깔끔) */
