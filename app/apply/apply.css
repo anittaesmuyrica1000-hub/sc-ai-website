@@ -21,7 +21,7 @@
     -webkit-mask-image:linear-gradient(90deg,transparent 0,#000 8%,#000 92%,transparent 100%);
             mask-image:linear-gradient(90deg,transparent 0,#000 8%,#000 92%,transparent 100%)}
   .apply-marquee-track{display:flex;align-items:center;width:max-content;animation:apply-scroll 36s linear infinite}
-  .apply-marquee-track img{flex:0 0 auto;margin-right:40px;max-width:104px;max-height:34px;width:auto;height:auto;object-fit:contain;mix-blend-mode:multiply;opacity:.85}
+  .apply-marquee-track img{flex:0 0 auto;margin-right:40px;max-width:104px;max-height:34px;width:auto;height:auto;object-fit:contain;mix-blend-mode:multiply}
   @keyframes apply-scroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
   @media(prefers-reduced-motion:reduce){.apply-marquee-track{animation:none}}
   @media(max-width:860px){
