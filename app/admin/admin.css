@@ -52,7 +52,8 @@
   /* ===== 어드민 콘솔 레이아웃 (다크 사이드바 + 본문) ===== */
   .adm{display:flex;min-height:100vh;background:#F4F7FC}
   .adm-side{width:236px;flex-shrink:0;background:#0B1426;color:#c2cbe0;display:flex;flex-direction:column;position:sticky;top:0;height:100vh}
-  .adm-brand{display:flex;align-items:center;padding:22px 20px 18px}
+  .adm-brand{display:flex;align-items:center;padding:22px 20px 18px;text-decoration:none;cursor:pointer;transition:opacity .12s}
+  .adm-brand:hover{opacity:.78}
   .adm-brand img{width:auto;filter:brightness(0) invert(1)}
   .adm-logo-full{height:22px}
   .adm-logo-mark{display:none;height:24px}
@@ -62,13 +63,7 @@
   .adm-nav button i{width:18px;text-align:center;font-size:14px}
   .adm-nav button:hover{background:rgba(255,255,255,.06);color:#fff}
   .adm-nav button.active{background:var(--blue);color:#fff}
-  .adm-side-foot{padding:8px 12px 12px;border-top:1px solid rgba(255,255,255,.08);display:flex;flex-direction:column;gap:2px}
-  .adm-email{font-size:12px;color:#7f8aa6;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-  .adm-side-foot .btn{justify-content:center;font-size:13px;padding:9px 12px}
   .adm-main{flex:1;min-width:0;display:flex;flex-direction:column}
-  .adm-nav-link{display:flex;align-items:center;gap:11px;width:100%;padding:11px 14px;border:none;background:none;border-radius:9px;color:#9aa6c2;font-size:14.5px;font-weight:600;text-decoration:none;text-align:left;cursor:pointer;font-family:inherit;transition:.12s}
-  .adm-nav-link i{width:18px;text-align:center;font-size:13px}
-  .adm-nav-link:hover{background:rgba(255,255,255,.06);color:#fff}
   .adm-bar{display:flex;align-items:center;gap:14px;padding:18px 32px;background:#fff;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:20}
   .adm-bar-title{flex:1;min-width:0}
   .adm-bar h1{font-size:21px;font-weight:800;letter-spacing:-.02em}
@@ -89,8 +84,6 @@
   .adm.collapsed .adm-logo-mark{display:block}
   .adm.collapsed .adm-nav{padding:10px 10px}
   .adm.collapsed .adm-nav button{justify-content:center;padding:11px 0;gap:0}
-  .adm.collapsed .adm-side-foot{padding:8px 10px 12px}
-  .adm.collapsed .adm-side-foot .adm-nav-link{justify-content:center;padding:11px 0;gap:0}
   .adm-body{padding:28px 32px 64px;max-width:1180px;width:100%}
   .adm-backdrop{display:none}
 
@@ -230,7 +223,7 @@
     .adm.collapsed .adm-brand{justify-content:flex-start;padding:22px 20px 18px}
     .adm.collapsed .adm-logo-full{display:block}
     .adm.collapsed .adm-logo-mark{display:none}
-    .adm.collapsed .adm-nav button,.adm.collapsed .adm-side-foot .adm-nav-link{justify-content:flex-start;padding:11px 14px;gap:11px}
+    .adm.collapsed .adm-nav button{justify-content:flex-start;padding:11px 14px;gap:11px}
     .adm-body{padding:22px 18px 56px}
     .adm-bar{padding:16px 18px}
     .adm-bar-acct .adm-email{display:none}

@@ -124,10 +124,10 @@ function Console({ email }: { email: string }) {
   return (
     <div className={`adm${collapsed ? " collapsed" : ""}`}>
       <aside className={`adm-side${navOpen ? " open" : ""}`}>
-        <div className="adm-brand">
+        <a className="adm-brand" href="/" target="_blank" rel="noopener noreferrer" title="사이트로 이동">
           <img className="adm-logo-full" src="/supercoder-nav.svg" alt="Supercoder" />
           <img className="adm-logo-mark" src="/favicon.svg" alt="Supercoder" />
-        </div>
+        </a>
         <nav className="adm-nav">
           {NAV.map((n) => (
             <button key={n.key} className={section === n.key ? "active" : ""} title={n.label} onClick={() => { setSection(n.key); setNavOpen(false); }}>
@@ -135,10 +135,6 @@ function Console({ email }: { email: string }) {
             </button>
           ))}
         </nav>
-        <div className="adm-side-foot">
-          <a className="adm-nav-link" href="/" target="_blank" rel="noopener noreferrer" title="사이트로 이동"><i className="fa-solid fa-arrow-up-right-from-square"></i><span className="adm-label">사이트로 이동</span></a>
-          <button className="adm-nav-link" type="button" onClick={() => supabase.auth.signOut()} title="로그아웃"><i className="fa-solid fa-right-from-bracket"></i><span className="adm-label">로그아웃</span></button>
-        </div>
       </aside>
       {navOpen && <div className="adm-backdrop" onClick={() => setNavOpen(false)} />}
 
