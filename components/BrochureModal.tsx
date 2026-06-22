@@ -131,7 +131,7 @@ export default function BrochureModal() {
           ) : (
             <>
               <div className="bro-head">
-                <h2>AI 면접관 서비스소개서</h2>
+                <h2>AI 면접 서비스 소개서</h2>
                 <p>정보를 남겨주시면 소개서를 바로 받아보실 수 있습니다.</p>
               </div>
               <form onSubmit={onSubmit} noValidate>
@@ -142,7 +142,7 @@ export default function BrochureModal() {
                     <div className="b-err">이름을 입력해 주세요.</div>
                   </div>
                   <div className={`b-field${invalid.company ? " invalid" : ""}`}>
-                    <label htmlFor="bro-company">회사 <span className="req">*</span></label>
+                    <label htmlFor="bro-company">회사명 <span className="req">*</span></label>
                     <input type="text" id="bro-company" placeholder="회사명" value={fields.company} onChange={(e) => set("company", e.target.value)} />
                     <div className="b-err">회사를 입력해 주세요.</div>
                   </div>
@@ -154,7 +154,7 @@ export default function BrochureModal() {
                 </div>
                 <div className="b-row">
                   <div className="b-field">
-                    <label htmlFor="bro-role">직무 / 직책</label>
+                    <label htmlFor="bro-role">직무/직책</label>
                     <input type="text" id="bro-role" placeholder="예: 인사팀장" value={fields.role} onChange={(e) => set("role", e.target.value)} />
                   </div>
                   <div className="b-field">
@@ -165,7 +165,7 @@ export default function BrochureModal() {
                 <div className={`b-field${invalid.size ? " invalid" : ""}`}>
                   <label htmlFor="bro-size">연간 채용 규모 <span className="req">*</span></label>
                   <select id="bro-size" value={fields.size} onChange={(e) => set("size", e.target.value)}>
-                    <option value="" disabled>선택해 주세요</option>
+                    <option value="" disabled>연간 채용 규모를 선택해 주세요</option>
                     <option value="1-10">1~10명</option>
                     <option value="11-50">11~50명</option>
                     <option value="51-200">51~200명</option>
@@ -173,10 +173,13 @@ export default function BrochureModal() {
                   </select>
                   <div className="b-err">채용 규모를 선택해 주세요.</div>
                 </div>
-                <label className={`bro-agree${agreeInvalid ? " invalid" : ""}`}>
-                  <input type="checkbox" checked={agree} onChange={(e) => { setAgree(e.target.checked); setAgreeInvalid(false); }} />
-                  <span><a href="/privacy" target="_blank" rel="noopener">개인정보 수집·이용</a>에 동의합니다. (필수)</span>
-                </label>
+                <div className={`bro-agree${agreeInvalid ? " invalid" : ""}`}>
+                  <label className="bro-agree-main">
+                    <input type="checkbox" checked={agree} onChange={(e) => { setAgree(e.target.checked); setAgreeInvalid(false); }} />
+                    <span><b>[필수]</b> 개인정보 수집 및 이용 동의</span>
+                  </label>
+                  <a className="bro-agree-more" href="/privacy" target="_blank" rel="noopener noreferrer">자세히보기 <i className="fa-solid fa-chevron-right"></i></a>
+                </div>
                 {formErr && <div className="bro-formerr show">{formErr}</div>}
                 <button type="submit" className="btn btn-blue" disabled={sending}>
                   {sending ? <>전송 중… <i className="fa-solid fa-spinner fa-spin"></i></> : <>회사 메일로 소개서 받기 <i className="fa-solid fa-paper-plane"></i></>}
