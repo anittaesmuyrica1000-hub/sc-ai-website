@@ -25,7 +25,8 @@
     .apply-intro h1{font-size:22px;line-height:1.4;word-break:keep-all}
     .apply-intro h1 br{display:none}
     .apply-intro p{margin-top:14px}
-    .apply-points{max-width:360px;margin-left:auto;margin-right:auto;text-align:left}
+    .apply-points{margin-left:auto;margin-right:auto}
+    .apply-points li{justify-content:center}
     .apply-logos{justify-content:center}
   }
   @media(max-width:420px){.apply-intro h1{font-size:20px}}
