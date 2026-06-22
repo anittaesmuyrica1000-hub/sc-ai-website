@@ -86,8 +86,8 @@ export default function ApplyForm() {
 
   return (
     <div className="apply-card">
-      <div className="ct">도입 문의</div>
-      <div className="cs">아래 정보를 남겨주시면 영업일 기준 1일 내 연락드립니다.</div>
+      <div className="ct">도입 상담 신청</div>
+      <div className="cs">남겨주신 정보를 바탕으로 담당자가 맞춤 도입 방안을 안내해드립니다.</div>
       <form onSubmit={onSubmit} noValidate>
         <div className="field-row">
           <div className={`field${invalid.name ? " invalid" : ""}`}>
@@ -96,7 +96,7 @@ export default function ApplyForm() {
             <div className="err">이름을 입력해 주세요.</div>
           </div>
           <div className={`field${invalid.company ? " invalid" : ""}`}>
-            <label htmlFor="f-company">회사 <span className="req">*</span></label>
+            <label htmlFor="f-company">회사명 <span className="req">*</span></label>
             <input type="text" id="f-company" placeholder="회사명" value={fields.company} onChange={(e) => set("company", e.target.value)} />
             <div className="err">회사를 입력해 주세요.</div>
           </div>
@@ -110,7 +110,7 @@ export default function ApplyForm() {
 
         <div className="field-row">
           <div className="field">
-            <label htmlFor="f-role">직무 / 직책</label>
+            <label htmlFor="f-role">직무/직책</label>
             <input type="text" id="f-role" placeholder="예: 인사팀장" value={fields.role} onChange={(e) => set("role", e.target.value)} />
           </div>
           <div className="field">
@@ -122,7 +122,7 @@ export default function ApplyForm() {
         <div className={`field${invalid.size ? " invalid" : ""}`}>
           <label htmlFor="f-size">연간 채용 규모 <span className="req">*</span></label>
           <select id="f-size" value={fields.size} onChange={(e) => set("size", e.target.value)}>
-            <option value="" disabled>선택해 주세요</option>
+            <option value="" disabled>연간 채용 규모를 선택해 주세요</option>
             <option value="1-10">1~10명</option>
             <option value="11-50">11~50명</option>
             <option value="51-200">51~200명</option>
@@ -132,7 +132,7 @@ export default function ApplyForm() {
         </div>
 
         <div className="field">
-          <label htmlFor="f-memo">문의 메모</label>
+          <label htmlFor="f-memo">문의 내용</label>
           <textarea id="f-memo" placeholder="궁금한 점이나 도입 배경을 자유롭게 적어주세요." value={fields.memo} onChange={(e) => set("memo", e.target.value)} />
         </div>
 

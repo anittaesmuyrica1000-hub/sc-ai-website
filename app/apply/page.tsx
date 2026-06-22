@@ -14,27 +14,42 @@ export const metadata: Metadata = {
   },
 };
 
+const APPLY_LOGOS = [
+  { src: "/logos/kakaopay.png", alt: "kakaopay" },
+  { src: "/logos/hyundai-autoever.png", alt: "HYUNDAI AutoEver" },
+  { src: "/logos/woongjin.png", alt: "Woongjin" },
+  { src: "/logos/skonec.png", alt: "SKONEC entertainment" },
+  { src: "/logos/markany.png", alt: "MarkAny" },
+];
+
 export default function ApplyPage() {
   return (
     <section className="apply">
       <div className="wrap">
         <div className="apply-grid">
           <div className="apply-intro">
-            <h1>AI 면접으로 채용 효율을 <br />높여보세요</h1>
-            <p>지원자 검증부터 채용 결정까지, AI로 더 빠르게.</p>
+            <h1>AI 면접 도입,<br />우리 회사에 맞게 시작하세요</h1>
+            <p>채용 규모와 프로세스에 맞는 AI 면접 활용 방안을 안내해드립니다.</p>
             <ul className="apply-points">
               <li><i className="fa-solid fa-circle-check"></i> 지원자 자동 AI 평가</li>
               <li><i className="fa-solid fa-circle-check"></i> 핵심 인재 리포트 제공</li>
-              <li><i className="fa-solid fa-circle-check"></i> 1일 내 담당자 상담</li>
+              <li><i className="fa-solid fa-circle-check"></i> 영업일 기준 1일 내 상담</li>
             </ul>
             <div className="apply-partners">
-              <p className="apply-partners-label">이미 500개 이상의 채용팀이 함께합니다</p>
-              <div className="apply-logos">
-                <img src="/logos/kakaopay.png" alt="kakaopay" />
-                <img src="/logos/hyundai-autoever.png" alt="HYUNDAI AutoEver" />
-                <img src="/logos/woongjin.png" alt="Woongjin" />
-                <img src="/logos/skonec.png" alt="SKONEC entertainment" />
-                <img src="/logos/markany.png" alt="MarkAny" />
+              <p className="apply-partners-label">이미 500개 이상의 기업이 Supercoder와 함께하고 있습니다</p>
+              <div className="apply-marquee">
+                <div className="apply-marquee-track">
+                  {Array.from({ length: 6 }).map((_, b) =>
+                    APPLY_LOGOS.map((l, i) => (
+                      <img
+                        key={`${b}-${i}`}
+                        src={l.src}
+                        alt={b === 0 ? l.alt : ""}
+                        aria-hidden={b === 0 ? undefined : true}
+                      />
+                    ))
+                  )}
+                </div>
               </div>
             </div>
           </div>
