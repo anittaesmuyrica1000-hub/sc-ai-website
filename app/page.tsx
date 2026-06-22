@@ -125,7 +125,7 @@ export default function HomePage() {
           <div className="head">
             <div className="tagchip"><i className="fa-solid fa-circle-check"></i> 솔루션</div>
             <h2>그래서, 사람을 만나기 전에<br /><span className="blue">AI 면접이 먼저 검증</span>합니다</h2>
-            <p className="lead">더 빠르게, 더 싸게, 더 정확하게 — 한 번에.</p>
+            <p className="lead">더 빠르게, 더 효율적으로, 더 일관되게.</p>
           </div>
           <div className="value-grid">
             <div className="valcard">
