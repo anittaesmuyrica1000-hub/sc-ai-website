@@ -95,8 +95,8 @@ export async function POST(req: Request) {
   if (insErr) console.error("send-brochure: 리드 저장 실패(무시)", insErr);
 
   // 4) 메일 본문
-  const fromHeader = `"AIVIEW (Supercoder)" <${GMAIL_FROM}>`;
-  const subject = "[AIVIEW] 요청하신 서비스소개서를 보내드립니다";
+  const fromHeader = `"Supercoder" <${GMAIL_FROM}>`;
+  const subject = "[Supercoder] 요청하신 서비스소개서를 보내드립니다";
   const html = `
     <div style="font-family:Pretendard,'Apple SD Gothic Neo',Arial,sans-serif;max-width:560px;margin:0 auto;color:#1f2a44">
       <h2 style="font-size:20px;margin:0 0 14px">AI면접 서비스소개서</h2>
@@ -111,7 +111,7 @@ export async function POST(req: Request) {
         도입 관련 문의는 회신 또는 <a href="https://sc-ai-website.vercel.app/apply">도입 문의</a>로 남겨주세요.
       </p>
       <hr style="border:none;border-top:1px solid #e8edf6;margin:24px 0"/>
-      <p style="font-size:12px;color:#9aa6bf;margin:0">Supercoder · AIVIEW</p>
+      <p style="font-size:12px;color:#9aa6bf;margin:0">Supercoder</p>
     </div>`;
 
   try {
