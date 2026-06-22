@@ -232,29 +232,29 @@ export default function HomePage() {
           </div>
 
           <div className="head" style={{ marginBottom: 6, paddingTop: "clamp(56px,7vw,104px)" }}>
-            <p className="lead" style={{ marginTop: 0, fontWeight: 600 }}>응시부터 리포트까지, 간편하게 3단계로 진행됩니다.</p>
+            <p className="lead" style={{ marginTop: 0, fontWeight: 600 }}>공고만 올리면, 나머지는 AI가 — 채용팀은 결과만 받아보세요.</p>
           </div>
 
           <div className="flow">
             <div className="node">
               <div className="step">STEP 01</div>
-              <div className="ic"><i className="fa-solid fa-paper-plane"></i></div>
-              <h3>후보자 AI 면접 응시</h3>
-              <p>별도 설치 없이 온라인으로 <br />AI 면접에 응시합니다.</p>
+              <div className="ic"><i className="fa-solid fa-bullhorn"></i></div>
+              <h3>채용 공고 등록</h3>
+              <p>공고만 올리면 AI가 평가 기준과 <br />면접 질문을 자동 설계합니다.</p>
             </div>
             <div className="arrow"><i className="fa-solid fa-arrow-right-long"></i></div>
             <div className="node">
               <div className="step">STEP 02</div>
               <div className="ic"><i className="fa-solid fa-magnifying-glass-chart"></i></div>
-              <h3>AI 분석·검증</h3>
-              <p>이력서 내용과 면접 응답을 대조해 <br />자동으로 검증·채점합니다.</p>
+              <h3>AI 면접·검증</h3>
+              <p>지원자가 온라인으로 응시하면 <br />AI가 응답을 검증·채점합니다.</p>
             </div>
             <div className="arrow"><i className="fa-solid fa-arrow-right-long"></i></div>
             <div className="node">
               <div className="step">STEP 03</div>
               <div className="ic"><i className="fa-solid fa-file-lines"></i></div>
-              <h3>리포트 수신</h3>
-              <p>검증 결과가 담긴 리포트를 <br />채용팀이 확인하고 판단합니다.</p>
+              <h3>리포트 한 장 수신</h3>
+              <p>채용팀은 결과 리포트만 받아 <br />바로 판단합니다.</p>
             </div>
           </div>
         </div>
