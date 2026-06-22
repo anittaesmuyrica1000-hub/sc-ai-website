@@ -56,12 +56,12 @@ export default function HomePage() {
             <div>
               <div className="tagchip"><i className="fa-solid fa-bolt"></i> AI 면접 채용 검증</div>
               <h1>
-                <span className="hl">수천 명</span><span className="sky">의 지원자,</span><br /><span className="sky">채용팀은 </span>
-                <span className="hl" id="real-word">상위 후보</span><span className="sky">만 보면 됩니다.</span>
+                <span className="sky">지원자 검증은 </span><span className="hl" id="real-word">AI</span><span className="sky">가,</span><br />
+                <span className="sky">채용 결정은 </span><span className="hl">사람</span><span className="sky">이 더 빠르게</span>
               </h1>
               <p>
-                <span style={{ fontWeight: 700, color: "#fff" }}>AI 면접이</span> 전 지원자를 검증하고,<br />
-                검증된 <span style={{ fontWeight: 700, color: "#fff" }}>핵심 인재 리포트만 채용팀에 전달합니다.</span>
+                구조화된 <span style={{ fontWeight: 700, color: "#fff" }}>AI 면접과 리포트</span>로 1차 검토 시간을 줄이고,<br />
+                <span style={{ fontWeight: 700, color: "#fff" }}>핵심 후보 판단</span>에 집중하세요.
               </p>
               <div className="decl-cta">
                 <Link href="/apply" className="btn btn-blue">무료 상담 신청 <i className="fa-solid fa-arrow-right"></i></Link>
