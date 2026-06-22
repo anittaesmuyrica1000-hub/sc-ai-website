@@ -298,7 +298,8 @@
             mask-image:radial-gradient(ellipse 82% 78% at 50% 50%, #000 22%, transparent 86%)}
   @media(prefers-reduced-motion:reduce){.final #final-particles{display:none}}
   .final .wrap{position:relative;z-index:1}
-  .final h2{color:#fff;font-size:clamp(30px,4vw,48px);font-weight:400}
+  /* 히어로(.decl h1) 카피 스타일과 동일하게: 전체 볼드 화이트 + 큰 사이즈 + 좁은 자간 */
+  .final h2{color:#fff;font-size:clamp(34px,4.6vw,56px);font-weight:800;line-height:1.3;letter-spacing:-.04em}
   /* CTA 강조어 — 히어로 헤드카피와 동일: 화이트 엑스트라볼드(그라데이션 제거) */
   .final h2 .real-cta{font-weight:800;white-space:nowrap;color:#fff;-webkit-text-fill-color:#fff}
   .final p{color:#AEB9D4;font-size:18px;font-weight:500;margin:18px auto 30px;max-width:520px}
@@ -310,7 +311,8 @@
   .cta-actions{display:flex;justify-content:center;margin-top:4px}
   .final .reassure{margin-top:22px;display:flex;gap:22px;justify-content:center;flex-wrap:wrap;font-size:14px;color:#DCE7FF}
   .final .reassure i{margin-right:6px}
-  @media(max-width:560px){.cta-form{flex-direction:column}.cta-form input,.cta-form .btn{width:100%;min-width:0}.cta-form .btn{justify-content:center}.final .reassure{gap:14px 18px}}
+  @media(max-width:560px){.cta-form{flex-direction:column}.cta-form input,.cta-form .btn{width:100%;min-width:0}.cta-form .btn{justify-content:center}.final .reassure{gap:14px 18px}.final h2{font-size:31px;line-height:1.3}}
+  @media(max-width:400px){.final h2{font-size:28px}}
 
 
   /* VALUE — 핵심 가치 3 */
