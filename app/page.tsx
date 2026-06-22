@@ -266,7 +266,7 @@ export default async function HomePage() {
       <section className="proof2" id="proof">
         <div className="wrap">
           <div className="head">
-            <h2>AI 면접 하나로,<br />1차 검토가 <span className="blue">이렇게 바뀝니다</span></h2>
+            <h2 className="proof-h2">AI 면접 하나로, 1차 검토가 <span className="blue">이렇게 바뀝니다</span></h2>
             <p className="lead">검토 속도, 비용, 역량 검증을 한 번에 개선합니다.</p>
           </div>
           <div className="proof-row">

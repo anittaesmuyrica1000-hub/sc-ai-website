@@ -231,7 +231,9 @@
   /* 6. PROOF */
   /* 헤드카피 위 여유 공간 — 기본 섹션 패딩보다 상단을 더 넉넉히 */
   .proof2{background:#F4F8FF;padding-top:var(--sec-y)}
-  .proof2 .head{text-align:center;max-width:720px;margin:0 auto}
+  .proof2 .head{text-align:center;max-width:none;margin:0 auto}
+  /* 헤드카피 한 줄 고정(데스크톱·모바일 공통) — 폭에 맞춰 폰트 축소 */
+  .proof2 .head .proof-h2{white-space:nowrap;font-size:clamp(15px,4.3vw,42px)}
   .proof-row{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:50px}
   .pc2{text-align:center;background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:34px 24px;box-shadow:0 12px 30px -20px rgba(20,40,90,.2)}
   .pc2 .vlabel{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;font-weight:600;color:var(--blue);background:var(--soft-2);padding:6px 14px;border-radius:999px;margin-bottom:16px}
