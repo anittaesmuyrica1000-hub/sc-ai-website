@@ -227,7 +227,7 @@ export default async function HomePage() {
               <div className="hr-info">
                 <span className="hr-eyebrow">리포트 04</span>
                 <h3>강점·약점 분석</h3>
-                <p>강점과 약점을 구분해, 대면 면접에서 확인할 포인트까지 짚어줍니다.</p>
+                <p><strong>강점과 약점</strong>을 구분해, 대면 면접에서 확인할 포인트까지 짚어줍니다.</p>
               </div>
               <div className="hr-media"><img className="hr-img" src="/diagram-strength.png" alt="강점·약점 분석 도식" width={1080} height={570} loading="lazy" /></div>
             </div>
@@ -267,12 +267,12 @@ export default async function HomePage() {
         <div className="wrap">
           <div className="head">
             <h2 className="proof-h2">AI 면접 하나로, 1차 검토가 <span className="blue">이렇게 바뀝니다</span></h2>
-            <p className="lead">검토 속도, 비용, 역량 검증을 한 번에 개선합니다.</p>
+            <p className="lead">숫자로 드러난 채용의 진짜 비용을, 1차 검증 단계에서 줄입니다.</p>
           </div>
           <div className="proof-row">
-            <div className="pc2"><div className="vlabel">속도</div><div className="big big-phrase">수천 명 동시 검토</div><p>지원자가 몰려도 1차 검토가 밀리지 않습니다.</p></div>
-            <div className="pc2"><div className="vlabel">비용 절감</div><div className="big big-phrase">불필요한 면접 감소</div><p>검증된 후보에 면접 리소스를 집중합니다.</p></div>
-            <div className="pc2"><div className="vlabel">역량 검증</div><div className="big big-phrase">판단 기준 제공</div><p>이력서 내용과 실제 응답을 대조해 확인합니다.</p></div>
+            <div className="pc2"><div className="vlabel">속도</div><div className="big big-phrase">수천 명도 동시 검토</div><p>자소서 1건 검토에 평균 <strong>10–13분</strong>, 공고당 경쟁률은 1년 새 <strong>55%</strong> 늘었습니다. AI가 1차 검증을 대신합니다.</p><p className="psrc">출처: 사람인·잡코리아</p></div>
+            <div className="pc2"><div className="vlabel">비용 절감</div><div className="big big-phrase">잘못 뽑는 비용 차단</div><p>채용 1인당 <strong>1,272만원</strong>, 신입 <strong>28.7%</strong>는 1년 내 떠납니다. 검증된 후보에만 면접을 집중하세요.</p><p className="psrc">출처: 사람인</p></div>
+            <div className="pc2"><div className="vlabel">역량 검증</div><div className="big big-phrase">서류 너머 진짜 역량</div><p>자소서 <strong>48.5%</strong>가 AI 작성 의심, 인사담당 <strong>73%</strong>는 가려내지 못합니다. 실제 응답을 대조해 검증합니다.</p><p className="psrc">출처: 무하유·고용노동부</p></div>
           </div>
         </div>
       </section>
