@@ -1,7 +1,6 @@
 import Link from "next/link";
 import "./landing.css";
 import HeroParticles from "@/components/HeroParticles";
-import CostCalculator from "@/components/CostCalculator";
 import { getFaqs } from "@/lib/faq";
 
 // FAQ가 어드민(DB)에서 바뀌면 일정 주기로 자동 반영(ISR). 그 외엔 정적으로 빠르게 서빙.
@@ -267,19 +266,16 @@ export default async function HomePage() {
       <section className="proof2" id="proof">
         <div className="wrap">
           <div className="head">
-            <h2 className="proof-h2">AI 면접 하나로, 1차 검토가 <span className="blue">이렇게 바뀝니다</span></h2>
-            <p className="lead">숫자로 드러난 채용의 진짜 비용을, 1차 검증 단계에서 줄입니다.</p>
+            <h2 className="proof-h2">만 명이 몰려도, 1차 스크리닝은 <span className="blue">이렇게 끝납니다</span></h2>
+            <p className="lead">인력은 못 늘리고, 뽑은 사람은 쉽게 나가지 않습니다. 1명을 뽑아도 확실한 핵심인재여야 합니다.</p>
           </div>
           <div className="proof-row">
-            <div className="pc2"><div className="vlabel">속도</div><div className="big big-phrase">수천 명도 동시 검토</div><p>자소서 1건 검토에 평균 <strong>10–13분</strong>, 공고당 경쟁률은 1년 새 <strong>55%</strong> 늘었습니다. AI가 1차 검증을 대신합니다.</p><p className="psrc">출처: 사람인·잡코리아</p></div>
-            <div className="pc2"><div className="vlabel">비용 절감</div><div className="big big-phrase">잘못 뽑는 비용 차단</div><p>채용 1인당 <strong>1,272만원</strong>, 신입 <strong>28.7%</strong>는 1년 내 떠납니다. 검증된 후보에만 면접을 집중하세요.</p><p className="psrc">출처: 사람인</p></div>
-            <div className="pc2"><div className="vlabel">역량 검증</div><div className="big big-phrase">서류 너머 진짜 역량</div><p>자소서 <strong>48.5%</strong>가 AI 작성 의심, 인사담당 <strong>73%</strong>는 가려내지 못합니다. 실제 응답을 대조해 검증합니다.</p><p className="psrc">출처: 무하유·고용노동부</p></div>
+            <div className="pc2"><div className="vlabel">역량 검증</div><div className="big big-phrase">서류 너머 핵심역량</div><p>지원서 <strong>48.5%</strong>가 AI 작성 의심, 인사담당 <strong>73%</strong>는 진짜를 못 가려냅니다. AI 면접은 핵심역량 기준으로 실제 실력을 검증합니다.</p><p className="psrc">출처: 무하유·고용노동부</p></div>
+            <div className="pc2"><div className="vlabel">속도</div><div className="big big-phrase">만 명도 즉시 스크리닝</div><p>한 명당 10분씩, 사람이 만 명을 보면 약 <strong>208일</strong>. AI 면접은 동시에 검토해 1차 스크리닝을 즉시 끝냅니다.</p><p className="psrc">출처: 서류 10분 사람인·잡코리아 (208일=추산)</p></div>
+            <div className="pc2"><div className="vlabel">비용 절감</div><div className="big big-phrase">가장 비싼 시간을 아낍니다</div><p>핵심역량 미달자를 1차에서 걸러, 현업 면접관은 <strong>검증된 소수</strong>만 만납니다. 가장 비싼 자원인 면접관의 시간을 아낍니다.</p><p className="psrc">현업 면접관 시간 = 가장 비싼 채용 자원</p></div>
           </div>
         </div>
       </section>
-
-      {/* SECTION 07.5 · CALC (채용 손실 시뮬레이터) */}
-      <CostCalculator />
 
       {/* SECTION 08 · VOICES */}
       <section className="voices" id="voices">
