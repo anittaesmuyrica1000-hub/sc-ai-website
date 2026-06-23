@@ -203,7 +203,7 @@ export default async function HomePage() {
               <div className="hr-info">
                 <span className="hr-eyebrow">리포트 01</span>
                 <h3>인터뷰 요약</h3>
-                <p>긴 영상을 다시 볼 필요 없이, 대화의 핵심만 자동 요약합니다.</p>
+                <p>긴 영상을 다시 볼 필요 없이, 대화의 핵심만 자동 <strong>요약</strong>합니다.</p>
               </div>
               <div className="hr-media"><img className="hr-img" src="/diagram-interview.png" alt="인터뷰 요약 도식" width={1080} height={570} loading="lazy" /></div>
             </div>
@@ -242,14 +242,14 @@ export default async function HomePage() {
               <div className="step">STEP 01</div>
               <div className="ic"><i className="fa-solid fa-bullhorn"></i></div>
               <h3>채용공고 등록</h3>
-              <p>채용팀이 공고를 등록하면 <br />AI가 직무와 요구 역량을 분석합니다.</p>
+              <p>공고를 등록하면 <br />AI가 직무·요구 역량을 분석합니다.</p>
             </div>
             <div className="arrow"><i className="fa-solid fa-arrow-right-long"></i></div>
             <div className="node">
               <div className="step">STEP 02</div>
               <div className="ic"><i className="fa-solid fa-wand-magic-sparkles"></i></div>
               <h3>AI 면접 자동 생성·진행</h3>
-              <p>AI가 평가 기준과 면접 질문을 만들고, <br />지원자는 온라인으로 응시합니다.</p>
+              <p>AI가 평가 기준·질문을 만들고, <br />지원자가 온라인으로 응시합니다.</p>
             </div>
             <div className="arrow"><i className="fa-solid fa-arrow-right-long"></i></div>
             <div className="node">
