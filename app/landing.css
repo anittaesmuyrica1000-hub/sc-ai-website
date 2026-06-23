@@ -251,6 +251,24 @@
   /* 모바일(≤560): 카드 1열로 한 장씩 스택 */
   @media(max-width:560px){.proof-row{grid-template-columns:1fr;gap:14px;max-width:360px;margin:32px auto 0}.pc2{padding:30px 24px;border-radius:var(--r)}.pc2 .vlabel{font-size:13px;margin-bottom:12px}.pc2 .big{font-size:clamp(40px,12vw,52px)}.pc2 .big.big-phrase{font-size:clamp(22px,7.5vw,30px)}.pc2 p{font-size:14px;margin-top:10px}}
 
+  /* 6.5 CALC — 채용 손실 시뮬레이터 (인터랙티브). 토큰·.wrap·.head·.tagchip·.btn 재사용 */
+  .calc{background:#F4F8FF;padding:var(--sec-y) 0}
+  .calc .head{text-align:center;max-width:760px;margin:0 auto}
+  .calc-box{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:44px;align-items:stretch}
+  .calc-inputs{display:flex;flex-direction:column;justify-content:center;gap:30px;background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:40px 36px;box-shadow:0 12px 30px -22px rgba(20,40,90,.2)}
+  .calc-field{display:block}
+  .calc-field .cf-top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:14px;font-size:15px;color:var(--slate)}
+  .calc-field .cf-top strong{font-size:21px;color:var(--ink);font-weight:800}
+  .calc-field input[type=range]{width:100%;accent-color:var(--blue);height:6px;cursor:pointer}
+  .calc-field .cf-note{display:block;margin-top:8px;font-size:12px;color:var(--slate-2)}
+  .calc-result{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;background:linear-gradient(160deg,#4577FF,#3A6FFF);border-radius:var(--r);padding:40px 24px;box-shadow:0 24px 50px -20px rgba(53,110,255,.5)}
+  .calc-result .cr-label{font-size:15px;color:rgba(255,255,255,.85);font-weight:600}
+  .calc-result .cr-num{font-size:clamp(38px,5.6vw,58px);font-weight:800;color:#fff;letter-spacing:-.03em;line-height:1.12;margin:12px 0 10px}
+  .calc-result .cr-sub{font-size:13.5px;color:rgba(255,255,255,.82)}
+  .calc-src{font-size:12px;color:var(--slate-2);margin:20px auto 0;line-height:1.65;max-width:780px;text-align:center}
+  .calc-cta{margin-top:28px;text-align:center}
+  @media(max-width:760px){.calc-box{grid-template-columns:1fr;gap:16px;margin-top:34px}.calc-inputs{padding:30px 24px;gap:24px}.calc-result{padding:34px 20px}}
+
   /* 7. VOICES */
   /* 섹션을 조금 위로 — 상단 패딩 축소 */
   /* VOICES는 흰색 — 앞 PROOF(연블루 #F4F8FF)와 배경을 나눠 섹션 경계가 드러나게 */

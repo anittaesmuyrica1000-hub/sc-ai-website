@@ -1,6 +1,7 @@
 import Link from "next/link";
 import "./landing.css";
 import HeroParticles from "@/components/HeroParticles";
+import CostCalculator from "@/components/CostCalculator";
 import { getFaqs } from "@/lib/faq";
 
 // FAQ가 어드민(DB)에서 바뀌면 일정 주기로 자동 반영(ISR). 그 외엔 정적으로 빠르게 서빙.
@@ -276,6 +277,9 @@ export default async function HomePage() {
           </div>
         </div>
       </section>
+
+      {/* SECTION 07.5 · CALC (채용 손실 시뮬레이터) */}
+      <CostCalculator />
 
       {/* SECTION 08 · VOICES */}
       <section className="voices" id="voices">
