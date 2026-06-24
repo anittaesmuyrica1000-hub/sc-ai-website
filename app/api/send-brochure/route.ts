@@ -108,8 +108,8 @@ export async function POST(req: Request) {
         <a href="${link}" style="display:inline-block;background:#3b6ef5;color:#ffffff;text-decoration:none;font-weight:700;font-size:16px;padding:18px 56px;border-radius:10px">자료 다운로드</a>
       </p>
       <p style="font-size:13px;color:#8a96ad;line-height:1.9;margin:36px 0 0;font-weight:400">
-        위 링크는 보안을 위해 7일 후 만료됩니다. 만료 시 다시 신청해 주세요.<br/>
-        도입 관련 문의는 회신 또는 <a href="https://sc-ai-website.vercel.app/apply" style="color:#3b6ef5;text-decoration:underline">도입 문의</a>로 남겨주세요.
+        링크는 보안을 위해 7일 후 만료됩니다.<br/>
+        문의는 회신 또는 <a href="https://sc-ai-website.vercel.app/apply" style="color:#3b6ef5;text-decoration:underline">도입 문의</a>로 남겨주세요.
       </p>
       <hr style="border:none;border-top:1px solid #e9edf3;margin:120px 0 0"/>
       <p style="font-size:12px;color:#9aa6bf;line-height:1.9;margin:24px 0 0;font-weight:400;text-align:left">
