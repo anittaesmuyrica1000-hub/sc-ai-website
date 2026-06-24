@@ -1,5 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { getLegalDoc } from "@/lib/legal";
+import LegalView from "@/components/LegalView";
+
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "개인정보처리방침",
@@ -8,7 +12,14 @@ export const metadata: Metadata = {
   alternates: { canonical: "/privacy" },
 };
 
-export default function PrivacyPage() {
+// DB(legal_docs)에 'privacy' 약관이 있으면 그것을, 없으면 아래 정적 콘텐츠로 폴백
+export default async function PrivacyPage() {
+  const doc = await getLegalDoc("privacy");
+  if (doc) return <LegalView doc={doc} />;
+  return <PrivacyStatic />;
+}
+
+function PrivacyStatic() {
   return (
     <main className="legal">
       <div className="legal-head">

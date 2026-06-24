@@ -1,5 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { getLegalDoc } from "@/lib/legal";
+import LegalView from "@/components/LegalView";
+
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "지원자용 서비스 이용약관",
@@ -8,7 +12,14 @@ export const metadata: Metadata = {
   alternates: { canonical: "/terms-applicant" },
 };
 
-export default function TermsApplicantPage() {
+// DB(legal_docs)에 'terms-applicant' 약관이 있으면 그것을, 없으면 아래 정적 콘텐츠로 폴백
+export default async function TermsApplicantPage() {
+  const doc = await getLegalDoc("terms-applicant");
+  if (doc) return <LegalView doc={doc} />;
+  return <TermsApplicantStatic />;
+}
+
+function TermsApplicantStatic() {
   return (
     <main className="legal">
       <div className="legal-head">

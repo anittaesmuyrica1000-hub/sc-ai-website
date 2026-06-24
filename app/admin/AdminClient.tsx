@@ -2,10 +2,10 @@
 
 import { useEffect, useMemo, useState, useCallback } from "react";
 import type { Session } from "@supabase/supabase-js";
-import { supabase, type Post, type Faq, type Signup, type BrochureRequest, SIGNUP_STATUSES } from "@/lib/supabase";
+import { supabase, type Post, type Faq, type Signup, type BrochureRequest, type LegalDoc, legalPath, RESERVED_LEGAL_SLUGS, SIGNUP_STATUSES } from "@/lib/supabase";
 import { fmtDate } from "@/lib/format";
 
-type Section = "dash" | "blog" | "faq" | "brochure" | "signups" | "settings";
+type Section = "dash" | "blog" | "faq" | "brochure" | "legal" | "signups" | "settings";
 
 function fmtDateTime(s?: string) {
   if (!s) return "—";
@@ -92,6 +92,7 @@ const NAV: { key: Section; label: string; icon: string }[] = [
   { key: "blog", label: "블로그", icon: "fa-feather" },
   { key: "faq", label: "FAQ", icon: "fa-circle-question" },
   { key: "brochure", label: "소개서", icon: "fa-file-pdf" },
+  { key: "legal", label: "약관", icon: "fa-scale-balanced" },
   { key: "signups", label: "도입문의", icon: "fa-inbox" },
   { key: "settings", label: "설정", icon: "fa-gear" },
 ];
@@ -100,6 +101,7 @@ const TITLE: Record<Section, { h: string; d: string }> = {
   blog: { h: "블로그 관리", d: "블로그 글을 등록, 수정, 삭제합니다." },
   faq: { h: "FAQ 관리", d: "자주 묻는 질문을 추가하고 수정합니다." },
   brochure: { h: "AI 면접 서비스 소개서", d: "도입문의 페이지와 웹사이트에서 제공되는 서비스 소개서를 관리합니다." },
+  legal: { h: "약관 관리", d: "웹사이트 푸터의 약관(개인정보처리방침·이용약관)을 수정하거나 새 약관을 추가합니다." },
   signups: { h: "도입문의 관리", d: "고객이 남긴 도입문의 기록을 확인하고 상담 상태를 관리합니다." },
   settings: { h: "설정", d: "관리자 계정과 기본 설정을 관리합니다." },
 };
@@ -177,6 +179,7 @@ function Console({ email }: { email: string }) {
           {section === "blog" && <BlogManager />}
           {section === "faq" && <FaqManager />}
           {section === "brochure" && <BrochureSection />}
+          {section === "legal" && <LegalManager />}
           {section === "signups" && <SignupsManager />}
           {section === "settings" && <Settings email={email} />}
         </div>
@@ -673,6 +676,139 @@ function FaqManager() {
                     </td>
                     <td className="nowrap">{it.category ? <span className="pill pill-blue">{it.category}</span> : "—"}</td>
                     <td><div className="cell-title">{it.question}</div><div className="cell-sub">{it.answer.slice(0, 50)}{it.answer.length > 50 ? "…" : ""}</div></td>
+                    <td className="nowrap">{it.published === false ? <span className="pill pill-gray">비공개</span> : <span className="pill pill-green">공개</span>}</td>
+                    <td className="nowrap">{it.updated_at ? fmtDate(it.updated_at) : "—"}</td>
+                    <td className="nowrap"><div className="row-actions">
+                      <button className="icon-btn" title="수정" onClick={() => enterEdit(it)}><i className="fa-solid fa-pen"></i></button>
+                      <button className="icon-btn del" title="삭제" onClick={() => del(it)}><i className="fa-solid fa-trash"></i></button>
+                    </div></td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </div>
+    </>
+  );
+}
+
+/* ===================== 약관(법적 문서) ===================== */
+
+type LegalForm = { id: string; slug: string; title: string; meta: string; body: string; sort_order: string; published: boolean };
+const LEGAL_EMPTY: LegalForm = { id: "", slug: "", title: "", meta: "", body: "", sort_order: "", published: true };
+const SLUG_RE = /^[a-z0-9-]+$/;
+
+function LegalManager() {
+  const [items, setItems] = useState<LegalDoc[]>([]);
+  const [form, setForm] = useState<LegalForm | null>(null);
+  const [msg, setMsg] = useState<{ text: string; ok: boolean } | null>(null);
+  const [saving, setSaving] = useState(false);
+  const [loadErr, setLoadErr] = useState<string | null>(null);
+  const isEdit = !!form?.id;
+  const isReserved = !!form && !!RESERVED_LEGAL_SLUGS[form.slug];
+
+  const load = useCallback(async () => {
+    try {
+      const res = await supabase.from("legal_docs").select("*").order("sort_order", { ascending: true });
+      if (res.error) throw res.error;
+      setItems((res.data as LegalDoc[]) || []);
+      setLoadErr(null);
+    } catch (err) { console.error("legal load failed:", err); setLoadErr("약관 목록을 불러오지 못했습니다. legal_docs 테이블 마이그레이션(supabase/legal-setup.sql)이 적용됐는지 확인해 주세요."); }
+  }, []);
+  useEffect(() => { load(); }, [load]);
+
+  function showMsg(text: string, ok: boolean) { setMsg({ text, ok }); if (ok) setTimeout(() => setMsg(null), 3000); }
+  function set<K extends keyof LegalForm>(k: K, v: LegalForm[K]) { setForm((f) => (f ? { ...f, [k]: v } : f)); }
+  function enterNew() { setForm({ ...LEGAL_EMPTY }); setMsg(null); }
+  function enterEdit(it: LegalDoc) { setForm({ id: it.id, slug: it.slug, title: it.title, meta: it.meta || "", body: it.body, sort_order: String(it.sort_order ?? ""), published: it.published !== false }); setMsg(null); window.scrollTo({ top: 0, behavior: "smooth" }); }
+  function closeForm() { setForm(null); setMsg(null); }
+
+  async function onSubmit(e: React.FormEvent) {
+    e.preventDefault(); if (!form) return;
+    const slug = form.slug.trim().toLowerCase();
+    if (!slug || !SLUG_RE.test(slug)) { showMsg("slug는 영문 소문자·숫자·하이픈만 사용하세요. (예: marketing-terms)", false); return; }
+    if (!form.title.trim() || !form.body.trim()) { showMsg("제목과 본문은 필수입니다.", false); return; }
+    const order = form.sort_order.trim() === "" ? items.length + 1 : Number(form.sort_order);
+    const payload: Record<string, unknown> = { slug, title: form.title.trim(), meta: form.meta.trim() || null, body: form.body, sort_order: Number.isFinite(order) ? order : 0, published: form.published };
+    setSaving(true);
+    try {
+      let res;
+      if (form.id) { payload.updated_at = new Date().toISOString(); res = await supabase.from("legal_docs").update(payload).eq("id", form.id); }
+      else { res = await supabase.from("legal_docs").insert(payload); }
+      if (res.error) throw res.error;
+      showMsg(form.id ? "수정되었습니다." : "등록되었습니다.", true); setForm(null); await load();
+    } catch (err) {
+      console.error("legal save failed:", err);
+      const dup = String((err as { message?: string })?.message || "").toLowerCase().includes("duplicate");
+      showMsg(dup ? "이미 존재하는 slug입니다." : "저장에 실패했습니다. 관리자 권한 또는 마이그레이션 적용을 확인해 주세요.", false);
+    } finally { setSaving(false); }
+  }
+
+  async function del(it: LegalDoc) {
+    if (!confirm("이 약관을 삭제할까요? 되돌릴 수 없습니다.\n\n" + it.slug)) return;
+    try { const res = await supabase.from("legal_docs").delete().eq("id", it.id); if (res.error) throw res.error; if (form?.id === it.id) setForm(null); await load(); }
+    catch (err) { console.error("legal delete failed:", err); alert("삭제에 실패했습니다."); }
+  }
+
+  return (
+    <>
+      <div className="adm-actions">
+        <button className="btn btn-blue" onClick={enterNew}><i className="fa-solid fa-plus"></i> 약관 추가</button>
+      </div>
+
+      {form && (
+        <div className="card" style={{ marginBottom: 24 }}>
+          <h2>{isEdit ? "약관 수정" : "새 약관 작성"}</h2>
+          {msg && <div className={`form-msg ${msg.ok ? "ok" : "err"}`}>{msg.text}</div>}
+          <form onSubmit={onSubmit} noValidate>
+            <div className="field-row">
+              <div className="field">
+                <label htmlFor="lg-slug">slug(주소) <span className="req">*</span></label>
+                <input type="text" id="lg-slug" placeholder="예: marketing-terms" value={form.slug} onChange={(e) => set("slug", e.target.value)} disabled={isReserved} />
+                <span className="cf-note">{isReserved ? `예약 약관 — 공개 경로 ${RESERVED_LEGAL_SLUGS[form.slug]} (변경 불가)` : `공개 경로: ${form.slug.trim() ? legalPath(form.slug.trim().toLowerCase()) : "/legal/…"}`}</span>
+              </div>
+              <div className="field">
+                <label htmlFor="lg-o">정렬 순서</label>
+                <input type="number" id="lg-o" placeholder="작을수록 위 (비우면 맨 뒤)" value={form.sort_order} onChange={(e) => set("sort_order", e.target.value)} />
+              </div>
+            </div>
+            <div className="field">
+              <label htmlFor="lg-title">제목 <span className="req">*</span></label>
+              <input type="text" id="lg-title" placeholder="예: 개인정보처리방침" value={form.title} onChange={(e) => set("title", e.target.value)} />
+            </div>
+            <div className="field">
+              <label htmlFor="lg-meta">상단 메타(선택)</label>
+              <input type="text" id="lg-meta" placeholder="예: 운영: 주식회사 세컨드팀 · 시행일: 2026년 2월 1일" value={form.meta} onChange={(e) => set("meta", e.target.value)} />
+            </div>
+            <div className="field">
+              <label htmlFor="lg-body">본문(HTML) <span className="req">*</span></label>
+              <textarea id="lg-body" style={{ minHeight: 360, fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace", fontSize: 13 }} placeholder={"<h2>제1조. 목적</h2>\n<p>...</p>\n<ol><li>...</li></ol>"} value={form.body} onChange={(e) => set("body", e.target.value)} />
+              <span className="cf-note">제목·소제목 <code>&lt;h2&gt;</code>, 문단 <code>&lt;p&gt;</code>, 목록 <code>&lt;ul&gt;</code>/<code>&lt;ol&gt;</code>+<code>&lt;li&gt;</code>, 링크 <code>&lt;a&gt;</code> 등 HTML로 작성합니다.</span>
+            </div>
+            <label className="check"><input type="checkbox" checked={form.published} onChange={(e) => set("published", e.target.checked)} /> 공개(노출) — 해제 시 비공개</label>
+            <div className="form-actions">
+              <button type="submit" className="btn btn-blue" disabled={saving}>{saving ? "저장 중…" : isEdit ? "수정 저장" : "등록하기"}</button>
+              <button type="button" className="btn btn-out" onClick={closeForm}>취소</button>
+            </div>
+          </form>
+        </div>
+      )}
+
+      <div className="card list-card">
+        <div className="list-head"><h2>등록된 약관</h2><span className="count">{items.length}개</span></div>
+        {loadErr ? <div className="list-state">{loadErr}</div> : items.length === 0 ? (
+          <div className="list-state">아직 등록된 약관이 없습니다. “약관 추가”로 시작하거나, 마이그레이션(supabase/legal-setup.sql)으로 기존 약관을 시드하세요.</div>
+        ) : (
+          <div className="adm-table-wrap">
+            <table className="adm-table">
+              <thead><tr><th>정렬</th><th>제목</th><th>공개 경로</th><th>노출</th><th>수정일</th><th>관리</th></tr></thead>
+              <tbody>
+                {items.map((it) => (
+                  <tr key={it.id}>
+                    <td className="nowrap">{it.sort_order}</td>
+                    <td><div className="cell-title" dangerouslySetInnerHTML={{ __html: it.title }} /><div className="cell-sub">{it.slug}{RESERVED_LEGAL_SLUGS[it.slug] ? " · 예약" : ""}</div></td>
+                    <td className="nowrap"><a href={legalPath(it.slug)} target="_blank" rel="noopener noreferrer">{legalPath(it.slug)}</a></td>
                     <td className="nowrap">{it.published === false ? <span className="pill pill-gray">비공개</span> : <span className="pill pill-green">공개</span>}</td>
                     <td className="nowrap">{it.updated_at ? fmtDate(it.updated_at) : "—"}</td>
                     <td className="nowrap"><div className="row-actions">

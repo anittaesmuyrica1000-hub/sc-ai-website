@@ -67,3 +67,26 @@ export type BrochureRequest = {
   phone?: string | null;
   size?: string | null;
 };
+
+// 약관(법적 문서) 타입 — admin 관리 + 법적 페이지 렌더
+export type LegalDoc = {
+  id: string;
+  slug: string;
+  title: string;
+  meta?: string | null;
+  body: string;
+  sort_order: number;
+  published: boolean;
+  created_at?: string;
+  updated_at?: string | null;
+};
+
+// 루트 경로로 노출되는 예약 slug (그 외 신규 약관은 /legal/[slug])
+export const RESERVED_LEGAL_SLUGS: Record<string, string> = {
+  privacy: "/privacy",
+  terms: "/terms",
+  "terms-applicant": "/terms-applicant",
+};
+export function legalPath(slug: string): string {
+  return RESERVED_LEGAL_SLUGS[slug] ?? `/legal/${slug}`;
+}
