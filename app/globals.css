@@ -106,13 +106,16 @@ header.nav-invert .nav-center a:hover{color:#fff}
 .nav-menu-btn.open .nav-burger span:nth-child(1){transform:translateY(6px) rotate(45deg)}
 .nav-menu-btn.open .nav-burger span:nth-child(2){opacity:0}
 .nav-menu-btn.open .nav-burger span:nth-child(3){transform:translateY(-6px) rotate(-45deg)}
-/* 모바일 풀스크린 메뉴 — 햄버거 탭 시 헤더(64px) 아래 전체 화면을 덮음 */
-.nav-menu{position:fixed;top:64px;left:0;right:0;bottom:0;background:#fff;border-top:1px solid var(--line);padding:28px 24px calc(28px + env(safe-area-inset-bottom));display:flex;flex-direction:column;gap:4px;z-index:70;overflow-y:auto}
-.nav-menu[hidden]{display:none}
-.nav-menu a,.nav-menu button{padding:16px 14px;border-radius:11px;font-size:17px;font-weight:600;color:var(--ink);display:block;width:100%;text-align:left;background:none;border:0;font-family:inherit;cursor:pointer}
-.nav-menu a:hover,.nav-menu button:hover{background:var(--soft);color:var(--ink)}
-.nav-menu .nav-menu-cta{margin-top:auto;background:var(--blue);color:#fff;text-align:center;padding:17px;font-size:16px;box-shadow:0 8px 20px -10px rgba(46,108,240,.6)}
-.nav-menu .nav-menu-cta:hover{background:var(--blue-d);color:#fff}
+/* 모바일 풀스크린 메뉴 — 헤더(64px) 아래를 덮으며 우→좌 슬라이드인 */
+.nav-menu{position:fixed;top:64px;left:0;right:0;bottom:0;background:#fff;border-top:1px solid var(--line);padding:8px 24px calc(22px + env(safe-area-inset-bottom));display:flex;flex-direction:column;z-index:70;overflow-y:auto;transform:translateX(100%);visibility:hidden;transition:transform .3s cubic-bezier(.4,0,.2,1),visibility .3s}
+.nav-menu.open{transform:translateX(0);visibility:visible}
+.nav-menu-links{display:flex;flex-direction:column}
+.nav-menu-links a{padding:21px 2px;font-size:18px;font-weight:600;color:var(--ink);border-bottom:1px solid var(--line);text-decoration:none;transition:color .15s}
+.nav-menu-links a:active{color:var(--blue)}
+.nav-menu-actions{margin-top:auto;display:flex;flex-direction:column;gap:10px;padding-top:22px}
+.nav-menu-cta,.nav-menu-login{display:block;width:100%;text-align:center;padding:16px;border-radius:12px;font-size:16px;text-decoration:none}
+.nav-menu-cta{background:var(--blue);color:#fff;font-weight:700;box-shadow:0 8px 20px -10px rgba(46,108,240,.6)}
+.nav-menu-login{background:var(--soft);color:var(--ink);font-weight:600}
 @media(max-width:600px){.logo{font-size:18px}.logo .m{width:23px;height:23px}}
 @media(max-width:480px){.navlinks .nav-btn{height:36px;padding:0 14px;font-size:13px}.nav-menu-btn{width:40px;height:36px}}
 /* 반응형 GNB: 데스크톱(≥761) 인라인 링크 노출·햄버거 숨김 / 모바일(≤760) 반대 (소스 순서상 뒤에 둬 우선 적용) */

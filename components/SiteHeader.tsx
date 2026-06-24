@@ -122,11 +122,15 @@ export default function SiteHeader() {
             >
               <span className="nav-burger"><span></span><span></span><span></span></span>
             </button>
-            <div className="nav-menu" id="navMenu" hidden={!menuOpen}>
-              <Link href="/blog" onClick={close}>블로그</Link>
-              <a href="#" className="js-brochure" onClick={close}>서비스소개서</a>
-              <a href="https://ai.supercoder.co/recruiter" onClick={close}>로그인</a>
-              <Link href="/apply" className="nav-menu-cta" onClick={close}>도입 문의</Link>
+            <div className={`nav-menu${menuOpen ? " open" : ""}`} id="navMenu" aria-hidden={!menuOpen}>
+              <div className="nav-menu-links">
+                <Link href="/blog" onClick={close}>블로그</Link>
+                <a href="#" className="js-brochure" onClick={close}>서비스소개서</a>
+              </div>
+              <div className="nav-menu-actions">
+                <Link href="/apply" className="nav-menu-cta" onClick={close}>도입 문의</Link>
+                <a href="https://ai.supercoder.co/recruiter" className="nav-menu-login" onClick={close}>로그인</a>
+              </div>
             </div>
           </div>
         </div>
