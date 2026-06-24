@@ -98,8 +98,8 @@ export async function POST(req: Request) {
   const fromHeader = `"Supercoder" <${GMAIL_FROM}>`;
   const subject = "[Supercoder] 요청하신 서비스소개서를 보내드립니다";
   const html = `
-    <div style="font-family:Pretendard,'Apple SD Gothic Neo',Arial,sans-serif;max-width:600px;margin:0 auto;padding:56px 24px 40px;color:#1f2a44;text-align:center">
-      <div style="text-align:left"><a href="https://sc-ai-website.vercel.app" style="display:inline-block"><img src="https://sc-ai-website.vercel.app/supercoder-email-logo.png" alt="Supercoder" height="30" style="display:block;height:30px;width:auto;border:0"/></a></div>
+    <div style="font-family:Pretendard,'Apple SD Gothic Neo',Arial,sans-serif;max-width:600px;margin:0 auto;padding:56px 24px 40px;color:#1f2a44;text-align:center;word-break:keep-all">
+      <div style="text-align:left"><a href="https://sc-ai-website.vercel.app" style="display:inline-block"><img src="https://sc-ai-website.vercel.app/supercoder-email-logo.png" alt="Supercoder" width="216" height="30" style="display:block;width:216px;max-width:100%;height:auto;border:0"/></a></div>
       <hr style="border:none;border-top:1px solid #e9edf3;margin:22px 0 0"/>
       <p style="font-size:18px;line-height:1.75;margin:104px 0 0;font-weight:400;color:#2b3450">
         ${name}님, 안녕하세요.<br/>요청하신 <b style="font-weight:700">AI 면접 서비스 소개서</b> 보내드립니다.
