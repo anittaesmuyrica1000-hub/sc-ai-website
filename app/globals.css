@@ -106,12 +106,12 @@ header.nav-invert .nav-center a:hover{color:#fff}
 .nav-menu-btn.open .nav-burger span:nth-child(1){transform:translateY(6px) rotate(45deg)}
 .nav-menu-btn.open .nav-burger span:nth-child(2){opacity:0}
 .nav-menu-btn.open .nav-burger span:nth-child(3){transform:translateY(-6px) rotate(-45deg)}
-/* 드롭다운 메뉴 */
-.nav-menu{position:absolute;top:calc(100% + 12px);right:0;min-width:210px;background:#fff;border:1px solid var(--line);border-radius:14px;box-shadow:0 18px 44px -18px rgba(20,40,90,.3);padding:8px;display:grid;gap:2px;z-index:80}
+/* 모바일 풀스크린 메뉴 — 햄버거 탭 시 헤더(64px) 아래 전체 화면을 덮음 */
+.nav-menu{position:fixed;top:64px;left:0;right:0;bottom:0;background:#fff;border-top:1px solid var(--line);padding:28px 24px calc(28px + env(safe-area-inset-bottom));display:flex;flex-direction:column;gap:4px;z-index:70;overflow-y:auto}
 .nav-menu[hidden]{display:none}
-.nav-menu a,.nav-menu button{padding:11px 14px;border-radius:9px;font-size:14px;font-weight:600;color:var(--slate);display:block;width:100%;text-align:left;background:none;border:0;font-family:inherit;cursor:pointer}
+.nav-menu a,.nav-menu button{padding:16px 14px;border-radius:11px;font-size:17px;font-weight:600;color:var(--ink);display:block;width:100%;text-align:left;background:none;border:0;font-family:inherit;cursor:pointer}
 .nav-menu a:hover,.nav-menu button:hover{background:var(--soft);color:var(--ink)}
-.nav-menu .nav-menu-cta{margin-top:6px;background:var(--blue);color:#fff;text-align:center;box-shadow:0 8px 20px -10px rgba(46,108,240,.6)}
+.nav-menu .nav-menu-cta{margin-top:auto;background:var(--blue);color:#fff;text-align:center;padding:17px;font-size:16px;box-shadow:0 8px 20px -10px rgba(46,108,240,.6)}
 .nav-menu .nav-menu-cta:hover{background:var(--blue-d);color:#fff}
 @media(max-width:600px){.logo{font-size:18px}.logo .m{width:23px;height:23px}}
 @media(max-width:480px){.navlinks .nav-btn{height:36px;padding:0 14px;font-size:13px}.nav-menu-btn{width:40px;height:36px}}
@@ -121,6 +121,14 @@ header.nav-invert .nav-center a:hover{color:#fff}
 /* 모바일: 다크 섹션(히어로·FINAL CTA) 위 헤더를 반투명 남색 바로 — 투명일 때
    CTA 콘텐츠(로고·도입문의·햄버거)와 겹쳐 보이던 충돌 해소(밝은 섹션 nav-solid와 동일 원리) */
 @media(max-width:760px){header.nav-invert{background:rgba(8,13,28,.82);backdrop-filter:blur(10px);border-bottom-color:rgba(255,255,255,.10)}}
+/* 풀스크린 메뉴 열림: 헤더 바를 흰색으로 고정 → 다크 섹션 위에서도 로고·X 또렷 */
+@media(max-width:760px){
+  header:has(.nav-menu-btn.open){background:#fff;backdrop-filter:none;border-bottom-color:var(--line)}
+  header:has(.nav-menu-btn.open) .logo .nav-logo--base{display:block}
+  header:has(.nav-menu-btn.open) .logo .nav-logo--invert{display:none}
+  header:has(.nav-menu-btn.open) .nav-burger span{background:var(--ink)}
+  header:has(.nav-menu-btn.open) .nav-menu-btn{background:#fff;border-color:var(--line)}
+}
 
 /* ===== Footer (partial: <site-footer>) — GNB와 동일: 흰 배경 + 컬러 로고 ===== */
 footer{background:#fff;color:var(--slate);padding:64px 0 44px;font-size:14px;border-top:1px solid var(--line)}

@@ -106,7 +106,7 @@ export default function SiteHeader() {
             <Link href="/blog">블로그</Link>
             <a href="#" className="js-brochure">서비스소개서</a>
           </div>
-          <Link href="/admin" className="btn btn-out nav-login">로그인</Link>
+          <a href="https://ai.supercoder.co/recruiter" className="btn btn-out nav-login">로그인</a>
           <Link href="/apply" className="btn btn-blue nav-btn">도입 문의</Link>
 
           {/* 모바일: 햄버거 메뉴 */}
@@ -125,7 +125,7 @@ export default function SiteHeader() {
             <div className="nav-menu" id="navMenu" hidden={!menuOpen}>
               <Link href="/blog" onClick={close}>블로그</Link>
               <a href="#" className="js-brochure" onClick={close}>서비스소개서</a>
-              <Link href="/admin" onClick={close}>로그인</Link>
+              <a href="https://ai.supercoder.co/recruiter" onClick={close}>로그인</a>
               <Link href="/apply" className="nav-menu-cta" onClick={close}>도입 문의</Link>
             </div>
           </div>
