@@ -782,9 +782,9 @@ function LegalManager() {
               <input type="text" id="lg-meta" placeholder="예: 운영: 주식회사 세컨드팀 · 시행일: 2026년 2월 1일" value={form.meta} onChange={(e) => set("meta", e.target.value)} />
             </div>
             <div className="field">
-              <label htmlFor="lg-body">본문(HTML) <span className="req">*</span></label>
-              <textarea id="lg-body" style={{ minHeight: 360, fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace", fontSize: 13 }} placeholder={"<h2>제1조. 목적</h2>\n<p>...</p>\n<ol><li>...</li></ol>"} value={form.body} onChange={(e) => set("body", e.target.value)} />
-              <span className="cf-note">제목·소제목 <code>&lt;h2&gt;</code>, 문단 <code>&lt;p&gt;</code>, 목록 <code>&lt;ul&gt;</code>/<code>&lt;ol&gt;</code>+<code>&lt;li&gt;</code>, 링크 <code>&lt;a&gt;</code> 등 HTML로 작성합니다.</span>
+              <label htmlFor="lg-body">본문(마크다운) <span className="req">*</span></label>
+              <textarea id="lg-body" style={{ minHeight: 360, fontSize: 14, lineHeight: 1.7 }} placeholder={"## 제1조. 목적\n\n본 약관은 …\n\n## 제2조. 정의\n\n- 첫째 항목\n- 둘째 항목"} value={form.body} onChange={(e) => set("body", e.target.value)} />
+              <span className="cf-note">블로그와 동일한 마크다운: 소제목 <code>## 제목</code>, 문단은 빈 줄로 구분, 목록 <code>- 항목</code>, 굵게 <code>**텍스트**</code>, 링크 <code>[이름](주소)</code>, 표 <code>| 칸 | 칸 |</code>.</span>
             </div>
             <label className="check"><input type="checkbox" checked={form.published} onChange={(e) => set("published", e.target.checked)} /> 공개(노출) — 해제 시 비공개</label>
             <div className="form-actions">
