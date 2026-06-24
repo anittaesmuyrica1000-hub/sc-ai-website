@@ -88,7 +88,7 @@ nav{position:relative;display:flex;align-items:center;justify-content:space-betw
 /* 로그인 — 보조 버튼(도입 문의 왼쪽). 다크 섹션 위에선 투명+흰 보더 */
 .navlinks .nav-login{height:40px;padding:0 18px;font-size:14px}
 header.nav-invert .nav-login{background:transparent;color:#fff;border-color:rgba(255,255,255,.45)}
-header.nav-invert .nav-login:hover{border-color:#fff;color:#fff}
+header.nav-invert .nav-login:hover{background:var(--soft-2);color:var(--ink);border-color:var(--line)}
 @media(max-width:760px){.nav-login{display:none}}
 /* 중앙 페이지 메뉴(블로그·서비스소개서) — 헤더 정중앙 고정 */
 .nav-center{display:flex;align-items:center;gap:24px;margin-right:28px}
