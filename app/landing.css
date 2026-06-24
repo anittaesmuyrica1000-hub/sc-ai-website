@@ -232,9 +232,8 @@
   /* 헤드카피 위 여유 공간 — 기본 섹션 패딩보다 상단을 더 넉넉히 */
   .proof2{background:#F4F8FF;padding-top:var(--sec-y)}
   .proof2 .head{text-align:center;max-width:none;margin:0 auto}
-  /* 헤드카피 한 줄 고정(데스크톱·모바일 공통) — 폭에 맞춰 폰트 축소 */
-  .proof2 .head .proof-h2{white-space:nowrap;font-size:clamp(15px,4.3vw,42px)}
-  .proof-row{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:50px}
+  /* 헤드카피: 다른 섹션과 동일한 기본 h2 크기·줄바꿈 사용(모바일에서 축소되지 않도록) */
+  .proof-row{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px;margin-top:50px}
   .pc2{text-align:center;background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:34px 24px;box-shadow:0 12px 30px -20px rgba(20,40,90,.2)}
   .pc2 .vlabel{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;font-weight:600;color:var(--blue);background:var(--soft-2);padding:6px 14px;border-radius:999px;margin-bottom:16px}
   .pc2 .big{font-size:clamp(38px,5vw,56px);font-weight:800;color:var(--blue);letter-spacing:-.03em;line-height:1}
@@ -254,20 +253,23 @@
   /* 6.5 CALC — 채용 손실 시뮬레이터 (인터랙티브). 토큰·.wrap·.head·.tagchip·.btn 재사용 */
   .calc{background:#F4F8FF;padding:var(--sec-y) 0}
   .calc .head{text-align:center;max-width:760px;margin:0 auto}
-  .calc-box{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:44px;align-items:stretch}
+  .calc-premise{display:inline-flex;align-items:flex-start;gap:8px;margin-top:18px;max-width:600px;text-align:left;font-size:12.5px;color:var(--slate);background:#fff;border:1px solid var(--line);border-radius:12px;padding:11px 16px;line-height:1.55}
+  .calc-premise i{color:var(--blue);font-size:12px;flex:0 0 auto;margin-top:3px}
+  .calc-premise strong{color:var(--blue);font-weight:800}
+  .calc-box{display:grid;grid-template-columns:1fr;gap:20px;max-width:620px;margin:44px auto 0}
   .calc-inputs{display:flex;flex-direction:column;justify-content:center;gap:30px;background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:40px 36px;box-shadow:0 12px 30px -22px rgba(20,40,90,.2)}
   .calc-field{display:block}
   .calc-field .cf-top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:14px;font-size:15px;color:var(--slate)}
   .calc-field .cf-top strong{font-size:21px;color:var(--ink);font-weight:800}
   .calc-field input[type=range]{width:100%;accent-color:var(--blue);height:6px;cursor:pointer}
   .calc-field .cf-note{display:block;margin-top:8px;font-size:12px;color:var(--slate-2)}
-  .calc-result{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;background:linear-gradient(160deg,#4577FF,#3A6FFF);border-radius:var(--r);padding:40px 24px;box-shadow:0 24px 50px -20px rgba(53,110,255,.5)}
-  .calc-result .cr-label{font-size:15px;color:rgba(255,255,255,.85);font-weight:600}
-  .calc-result .cr-num{font-size:clamp(38px,5.6vw,58px);font-weight:800;color:#fff;letter-spacing:-.03em;line-height:1.12;margin:12px 0 10px}
-  .calc-result .cr-sub{font-size:13.5px;color:rgba(255,255,255,.82)}
-  .calc-src{font-size:12px;color:var(--slate-2);margin:20px auto 0;line-height:1.65;max-width:780px;text-align:center}
+  /* 딥네이비 결과 카드 — 손실액에 무게감 부여 */
+  .calc-result{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;background:linear-gradient(155deg,#15264F,#0B1733);border-radius:var(--r);padding:46px 28px;box-shadow:0 26px 54px -22px rgba(11,23,51,.55)}
+  .calc-result .cr-label{font-size:14.5px;color:rgba(255,255,255,.7);font-weight:600;letter-spacing:.01em}
+  .calc-result .cr-num{font-size:clamp(40px,6.2vw,64px);font-weight:800;color:#fff;letter-spacing:-.03em;line-height:1.1;margin:14px 0 12px}
+  .calc-result .cr-sub{font-size:13.5px;color:rgba(255,255,255,.66);max-width:340px;line-height:1.55}
   .calc-cta{margin-top:28px;text-align:center}
-  @media(max-width:760px){.calc-box{grid-template-columns:1fr;gap:16px;margin-top:34px}.calc-inputs{padding:30px 24px;gap:24px}.calc-result{padding:34px 20px}}
+  @media(max-width:760px){.calc-box{gap:16px;margin-top:34px}.calc-inputs{padding:30px 24px}.calc-result{padding:34px 20px}}
 
   /* 7. VOICES */
   /* 섹션을 조금 위로 — 상단 패딩 축소 */

@@ -194,6 +194,7 @@ export default async function HomePage() {
       <section className="how" id="how">
         <div className="wrap">
           <div className="head">
+            <div className="tagchip"><i className="fa-solid fa-file-lines"></i> AI 리포트</div>
             <h2>핵심 후보 판단에 필요한 내용을<br /><span className="blue">리포트 한 장</span>에 담았습니다</h2>
             <p className="lead">요약, 등급, 역량, 면접 포인트까지 한눈에 확인하세요.</p>
           </div>
@@ -266,13 +267,14 @@ export default async function HomePage() {
       <section className="proof2" id="proof">
         <div className="wrap">
           <div className="head">
-            <h2 className="proof-h2">만 명이 몰려도, 1차 스크리닝은 <span className="blue">이렇게 끝납니다</span></h2>
+            <div className="tagchip"><i className="fa-solid fa-chart-simple"></i> 검증된 효과</div>
+            <h2 className="proof-h2">만 명이 몰려도, 검증된 핵심인재만 <span className="blue">남깁니다</span></h2>
             <p className="lead">인력은 못 늘리고, 뽑은 사람은 쉽게 나가지 않습니다. 1명을 뽑아도 확실한 핵심인재여야 합니다.</p>
           </div>
           <div className="proof-row">
             <div className="pc2"><div className="vlabel">역량 검증</div><div className="big big-phrase">서류 너머 핵심역량</div><p>지원서 <strong>48.5%</strong>가 AI 작성 의심, 인사담당 <strong>73%</strong>는 진짜를 못 가려냅니다. AI 면접은 핵심역량 기준으로 실제 실력을 검증합니다.</p><p className="psrc">출처: 무하유·고용노동부</p></div>
-            <div className="pc2"><div className="vlabel">속도</div><div className="big big-phrase">만 명도 즉시 스크리닝</div><p>한 명당 10분씩, 사람이 만 명을 보면 약 <strong>208일</strong>. AI 면접은 동시에 검토해 1차 스크리닝을 즉시 끝냅니다.</p><p className="psrc">출처: 서류 10분 사람인·잡코리아 (208일=추산)</p></div>
-            <div className="pc2"><div className="vlabel">비용 절감</div><div className="big big-phrase">가장 비싼 시간을 아낍니다</div><p>핵심역량 미달자를 1차에서 걸러, 현업 면접관은 <strong>검증된 소수</strong>만 만납니다. 가장 비싼 자원인 면접관의 시간을 아낍니다.</p><p className="psrc">현업 면접관 시간 = 가장 비싼 채용 자원</p></div>
+            <div className="pc2"><div className="vlabel">속도</div><div className="big big-phrase">만 명도 즉시 스크리닝</div><p>한 명당 10분씩, 사람이 만 명을 보면 약 <strong>208일</strong>. AI 면접은 동시에 진행해 1차 스크리닝을 <strong>즉시</strong> 끝냅니다.</p><p className="psrc">출처: 서류 10분 사람인·잡코리아 (208일=추산)</p></div>
+            <div className="pc2"><div className="vlabel">비용 절감</div><div className="big big-phrase">가장 비싼 시간 절약</div><p>핵심역량 미달자를 1차에서 걸러, 현업 면접관은 <strong>검증된 소수</strong>만 만납니다. 가장 비싼 자원인 면접관의 시간을 아낍니다.</p><p className="psrc">현업 면접관 시간 = 가장 비싼 채용 자원</p></div>
           </div>
         </div>
       </section>
@@ -281,6 +283,7 @@ export default async function HomePage() {
       <section className="voices" id="voices">
         <div className="wrap">
           <div className="head">
+            <div className="tagchip"><i className="fa-solid fa-comment-dots"></i> 활용 사례</div>
             <h2>채용팀은 이렇게 활용하고 있습니다</h2>
             <p className="lead">반복 검토는 줄이고, <span className="blue" style={{ fontWeight: 700 }}>핵심 후보 판단</span>에 더 많은 시간을 쓰고 있습니다.</p>
           </div>

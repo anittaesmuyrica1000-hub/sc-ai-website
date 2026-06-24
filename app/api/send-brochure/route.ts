@@ -98,24 +98,21 @@ export async function POST(req: Request) {
   const fromHeader = `"Supercoder" <${GMAIL_FROM}>`;
   const subject = "[Supercoder] 요청하신 서비스소개서를 보내드립니다";
   const html = `
-    <div style="font-family:Pretendard,'Apple SD Gothic Neo',Arial,sans-serif;max-width:600px;margin:0;padding:64px 8px 32px;color:#1f2a44;text-align:left">
-      <a href="https://sc-ai-website.vercel.app" style="display:inline-block;margin:0 0 26px"><img src="https://sc-ai-website.vercel.app/supercoder-email-logo.png" alt="Supercoder" height="28" style="display:block;height:28px;width:auto;border:0"/></a>
-      <hr style="border:none;border-top:2px solid #dfe4ee;margin:0 0 40px"/>
-      <p style="font-size:18px;line-height:1.85;margin:0 0 38px;font-weight:400">
-        ${name}님, 안녕하세요.<br/>요청하신 <b style="font-weight:700">AI 면접 서비스 소개서</b>를 보내드립니다.<br/><br/>아래 버튼에서 소개서를 확인하실 수 있습니다.
+    <div style="font-family:Pretendard,'Apple SD Gothic Neo',Arial,sans-serif;max-width:600px;margin:0 auto;padding:70px 24px 40px;color:#1f2a44;text-align:center">
+      <a href="https://sc-ai-website.vercel.app" style="display:inline-block;margin:0 0 96px"><img src="https://sc-ai-website.vercel.app/supercoder-email-logo.png" alt="Supercoder" height="30" style="display:block;height:30px;width:auto;border:0"/></a>
+      <p style="font-size:18px;line-height:1.75;margin:0 0 64px;font-weight:400;color:#2b3450">
+        ${name}님, 안녕하세요.<br/>요청하신 <b style="font-weight:700">AI 면접 서비스 소개서</b> 보내드립니다.
       </p>
-      <p style="margin:0 0 38px">
-        <a href="${link}" style="display:inline-block;background:#2E6CF0;color:#fff;text-decoration:none;font-weight:700;font-size:16px;padding:18px 40px;border-radius:12px">AI 면접 서비스 소개서</a>
+      <p style="margin:0 0 40px">
+        <a href="${link}" style="display:inline-block;background:#3b6ef5;color:#ffffff;text-decoration:none;font-weight:700;font-size:16px;padding:18px 56px;border-radius:10px">자료 다운로드</a>
       </p>
-      <p style="font-size:13px;color:#8a96ad;line-height:1.9;margin:0;font-weight:400">
+      <p style="font-size:13px;color:#8a96ad;line-height:1.9;margin:0 0 56px;font-weight:400">
         위 링크는 보안을 위해 7일 후 만료됩니다. 만료 시 다시 신청해 주세요.<br/>
-        도입 관련 문의는 회신 또는 <a href="https://sc-ai-website.vercel.app/apply" style="color:#2E6CF0">도입 문의</a>로 남겨주세요.
+        도입 관련 문의는 회신 또는 <a href="https://sc-ai-website.vercel.app/apply" style="color:#3b6ef5;text-decoration:underline">도입 문의</a>로 남겨주세요.
       </p>
-      <hr style="border:none;border-top:1px solid #eef1f7;margin:40px 0 18px"/>
-      <p style="font-size:12px;color:#9aa6bf;line-height:1.7;margin:0;font-weight:400">
-        © 2026 Second Team. All rights reserved.<br/>
-        대표 최재웅 · 서울 서초구 효령로55길 19 4층<br/>
-        support@supercoder.co
+      <hr style="border:none;border-top:1px solid #e9edf3;margin:0 0 26px"/>
+      <p style="font-size:12px;color:#9aa6bf;line-height:1.9;margin:0;font-weight:400">
+        © 2026 Second Team. All rights reserved.
       </p>
     </div>`;
 
