@@ -124,12 +124,9 @@ function Console({ email }: { email: string }) {
   return (
     <div className={`adm${collapsed ? " collapsed" : ""}`}>
       <aside className={`adm-side${navOpen ? " open" : ""}`}>
-        <a className="adm-brand" href="/" target="_blank" rel="noopener noreferrer" title="사이트로 이동">
+        <button type="button" className="adm-brand" onClick={toggleCollapse} title={collapsed ? "메뉴 펼치기" : "메뉴 접기"} aria-label="메뉴 접기/펼치기">
           <img className="adm-logo-full" src="/supercoder-nav.svg" alt="Supercoder" />
           <img className="adm-logo-mark" src="/favicon.svg" alt="Supercoder" />
-        </a>
-        <button type="button" className="adm-collapse" onClick={toggleCollapse} title={collapsed ? "메뉴 펼치기" : "메뉴 접기"} aria-label="메뉴 접기/펼치기">
-          <i className={`fa-solid ${collapsed ? "fa-angles-right" : "fa-angles-left"}`}></i><span className="adm-label">메뉴 접기</span>
         </button>
         <nav className="adm-nav">
           {NAV.map((n) => (
@@ -137,6 +134,9 @@ function Console({ email }: { email: string }) {
               <i className={`fa-solid ${n.icon}`}></i><span className="adm-label">{n.label}</span>
             </button>
           ))}
+          <a className="adm-nav-link" href="/" target="_blank" rel="noopener noreferrer" title="웹사이트로 가기">
+            <i className="fa-solid fa-arrow-up-right-from-square"></i><span className="adm-label">웹사이트로 가기</span>
+          </a>
         </nav>
       </aside>
       {navOpen && <div className="adm-backdrop" onClick={() => setNavOpen(false)} />}
