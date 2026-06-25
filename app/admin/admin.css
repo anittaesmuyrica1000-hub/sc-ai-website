@@ -35,11 +35,14 @@
   /* 본문 미리보기 토글 + 편집/미리보기 분할 */
   .md-preview-toggle{float:right;font-weight:600;font-size:12px;color:var(--blue);background:none;border:none;cursor:pointer;display:inline-flex;align-items:center;gap:5px}
   .md-preview-toggle:hover{text-decoration:underline}
-  .md-edit-split{display:grid;grid-template-columns:1fr 1fr;gap:14px;align-items:start}
+  /* 본문/미리보기 같은 높이로 맞춤 — 각 칸 내부 스크롤 */
+  .md-edit-split{display:grid;grid-template-columns:1fr 1fr;gap:14px;height:64vh;min-height:440px}
+  .md-edit-split>*{min-height:0}
   .md-edit-split .md-edit-pane{display:flex;flex-direction:column;min-width:0}
-  .md-preview{border:1px solid var(--line);border-radius:10px;background:#fff;overflow:hidden;min-width:0}
-  .md-preview-label{font-size:11px;font-weight:700;color:var(--slate-2);padding:7px 14px;border-bottom:1px solid var(--line);background:var(--soft)}
-  .md-preview-body{padding:16px 18px;max-height:520px;overflow:auto}
+  .md-edit-split .md-edit-pane textarea{flex:1;min-height:0;height:auto;resize:none}
+  .md-preview{border:1px solid var(--line);border-radius:10px;background:#fff;overflow:hidden;min-width:0;display:flex;flex-direction:column}
+  .md-preview-label{flex-shrink:0;font-size:11px;font-weight:700;color:var(--slate-2);padding:7px 14px;border-bottom:1px solid var(--line);background:var(--soft)}
+  .md-preview-body{flex:1;min-height:0;padding:16px 18px;overflow:auto}
   .md-preview-body h2{font-size:17px;font-weight:700;color:var(--ink);margin:22px 0 9px;line-height:1.4}
   .md-preview-body h2:first-child{margin-top:0}
   .md-preview-body h3{font-size:15px;font-weight:700;color:var(--ink);margin:16px 0 6px}
