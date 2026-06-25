@@ -37,6 +37,15 @@ export default function MarkdownToolbar({ textareaRef, value, onChange }: Props)
     });
   }
 
+  // 줄바꿈 삽입 — 커서 위치에 줄바꿈(렌더 시 <br>). 빈 줄(엔터 2번)은 문단 분리.
+  function lineBreak() {
+    apply((before, sel, after) => {
+      const text = before + sel + "\n" + after;
+      const pos = before.length + sel.length + 1;
+      return { text, selStart: pos, selEnd: pos };
+    });
+  }
+
   function wrap(token: string, placeholder: string) {
     apply((before, sel, after) => {
       const body = sel || placeholder;
@@ -77,6 +86,9 @@ export default function MarkdownToolbar({ textareaRef, value, onChange }: Props)
       </B>
       <B title="굵게 (**텍스트**)" onClick={() => wrap("**", "텍스트")}>
         <i className="fa-solid fa-bold" />
+      </B>
+      <B title="줄바꿈 (커서 위치에서 줄 바꿈)" onClick={lineBreak}>
+        <span className="md-br" aria-hidden>↵</span>
       </B>
       <span className="md-sep" />
       <B title="글머리 목록 (-)" onClick={() => eachLine((l) => "- " + l.replace(/^(\s*)(?:[-*]|\d+[.)])\s+/, "$1"))}>

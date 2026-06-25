@@ -161,6 +161,8 @@ footer{background:#fff;color:var(--slate);padding:64px 0 44px;font-size:14px;bor
 .legal h2{font-size:19px;font-weight:700;line-height:1.4;color:var(--ink);margin:36px 0 12px}
 .legal h3{font-size:16px;font-weight:700;color:var(--ink);margin:22px 0 8px}
 .legal p,.legal li{color:var(--slate);font-size:15px;line-height:1.75}
+.legal p{margin:0 0 14px}
+.legal p:last-child{margin-bottom:0}
 /* 약관 번호 목록(ol=숫자, ul=점) + 항목 간격 */
 .legal ul{margin:10px 0 12px 16px;list-style:disc}
 .legal ol{margin:10px 0 12px 16px;list-style:decimal}

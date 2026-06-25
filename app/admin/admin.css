@@ -21,6 +21,7 @@
   .md-btn{width:32px;height:30px;display:inline-flex;align-items:center;justify-content:center;border:1px solid transparent;border-radius:7px;background:transparent;color:var(--slate);font-size:14px;cursor:pointer;transition:.12s}
   .md-btn:hover{background:#fff;border-color:var(--line);color:var(--blue)}
   .md-sep{width:1px;height:18px;background:var(--line);margin:0 4px}
+  .md-br{font-size:16px;font-weight:700;line-height:1}
   /* 본문 미리보기 토글 + 편집/미리보기 분할 */
   .md-preview-toggle{float:right;font-weight:600;font-size:12px;color:var(--blue);background:none;border:none;cursor:pointer;display:inline-flex;align-items:center;gap:5px}
   .md-preview-toggle:hover{text-decoration:underline}
@@ -33,6 +34,8 @@
   .md-preview-body h2:first-child{margin-top:0}
   .md-preview-body h3{font-size:15px;font-weight:700;color:var(--ink);margin:16px 0 6px}
   .md-preview-body p,.md-preview-body li{color:var(--slate);font-size:14px;line-height:1.7}
+  .md-preview-body p{margin:0 0 12px}
+  .md-preview-body p:last-child{margin-bottom:0}
   .md-preview-body ul{margin:8px 0 10px 16px;list-style:disc}
   .md-preview-body ol{margin:8px 0 10px 16px;list-style:decimal}
   .md-preview-body li{margin-bottom:5px;padding-left:2px}
