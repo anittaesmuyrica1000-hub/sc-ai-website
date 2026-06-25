@@ -127,10 +127,22 @@ function Console({ email }: { email: string }) {
   return (
     <div className={`adm${collapsed ? " collapsed" : ""}`}>
       <aside className={`adm-side${navOpen ? " open" : ""}`}>
-        <button type="button" className="adm-brand" onClick={toggleCollapse} title={collapsed ? "메뉴 펼치기" : "메뉴 접기"} aria-label="메뉴 접기/펼치기">
-          <img className="adm-logo-full" src="/supercoder-nav.svg" alt="Supercoder" />
-          <img className="adm-logo-mark" src="/favicon.svg" alt="Supercoder" />
-        </button>
+        <div className="adm-head">
+          <button type="button" className="adm-brand" onClick={() => { setSection("dash"); setNavOpen(false); }} title="대시보드" aria-label="대시보드로">
+            <img className="adm-logo-full" src="/supercoder-nav.svg" alt="Supercoder" />
+            <img className="adm-logo-mark" src="/favicon.svg" alt="Supercoder" />
+          </button>
+          <button
+            type="button"
+            className="adm-toggle"
+            onClick={toggleCollapse}
+            title={collapsed ? "사이드바 펼치기" : "사이드바 접기"}
+            aria-label="사이드바 접기/펼치기"
+            aria-expanded={!collapsed}
+          >
+            <i className={`fa-solid ${collapsed ? "fa-angles-right" : "fa-angles-left"}`}></i>
+          </button>
+        </div>
         <nav className="adm-nav">
           {NAV.map((n) => (
             <button key={n.key} className={section === n.key ? "active" : ""} title={n.label} onClick={() => { setSection(n.key); setNavOpen(false); }}>
