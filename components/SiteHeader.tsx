@@ -86,6 +86,12 @@ export default function SiteHeader() {
     };
   }, [menuOpen]);
 
+  // 모바일 메뉴 열림 동안 body 스크롤 잠금 + 챗봇 숨김(겹침 방지)
+  useEffect(() => {
+    document.body.classList.toggle("nav-menu-open", menuOpen);
+    return () => document.body.classList.remove("nav-menu-open");
+  }, [menuOpen]);
+
   const close = () => setMenuOpen(false);
 
   // 어드민 콘솔은 자체 사이드바 내비를 쓰므로 공개 GNB 숨김
@@ -126,10 +132,8 @@ export default function SiteHeader() {
               <div className="nav-menu-links">
                 <Link href="/blog" onClick={close}>블로그</Link>
                 <a href="#" className="js-brochure" onClick={close}>서비스소개서</a>
-              </div>
-              <div className="nav-menu-actions">
-                <Link href="/apply" className="nav-menu-cta" onClick={close}>도입 문의</Link>
-                <a href="https://ai.supercoder.co/recruiter" className="nav-menu-login" onClick={close}>로그인</a>
+                <Link href="/apply" className="nav-menu-item-cta" onClick={close}>도입 문의</Link>
+                <a href="https://ai.supercoder.co/recruiter" onClick={close}>로그인</a>
               </div>
             </div>
           </div>

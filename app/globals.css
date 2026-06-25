@@ -120,7 +120,14 @@ header.nav-invert .nav-center a:hover{color:#fff}
 @media(max-width:480px){.navlinks .nav-btn{height:36px;padding:0 14px;font-size:13px}.nav-menu-btn{width:40px;height:36px}}
 /* 반응형 GNB: 데스크톱(≥761) 인라인 링크 노출·햄버거 숨김 / 모바일(≤760) 반대 (소스 순서상 뒤에 둬 우선 적용) */
 @media(min-width:761px){.nav-menu-wrap{display:none}}
-@media(max-width:760px){.nav-center{display:none}}
+@media(max-width:760px){
+  .nav-center{display:none}
+  /* 모바일 상단 바: 햄버거(좌) + 로고(우)만. 도입문의 CTA는 햄버거 메뉴 안으로 */
+  nav{flex-direction:row-reverse}
+  .navlinks .nav-btn{display:none}
+}
+/* 햄버거 메뉴: 도입 문의 항목만 파란색으로 강조(블로그·서비스소개서·로그인은 기본) */
+.nav-menu-links .nav-menu-item-cta{color:var(--blue);font-weight:700}
 /* 모바일: 다크 섹션(히어로·FINAL CTA) 위 헤더를 반투명 남색 바로 — 투명일 때
    CTA 콘텐츠(로고·도입문의·햄버거)와 겹쳐 보이던 충돌 해소(밝은 섹션 nav-solid와 동일 원리) */
 @media(max-width:760px){header.nav-invert{background:rgba(8,13,28,.82);backdrop-filter:blur(10px);border-bottom-color:rgba(255,255,255,.10)}}
@@ -262,3 +269,12 @@ footer{background:#fff;color:var(--slate);padding:64px 0 44px;font-size:14px;bor
   .cbot-head{padding-top:calc(15px + env(safe-area-inset-top))}
   .cbot-input{padding-bottom:calc(12px + env(safe-area-inset-bottom))}
 }
+/* 모바일: 챗봇 버튼을 둥근 아이콘으로 축소(텍스트 라벨 숨김) → 화면 영역 절약·겹침 완화 */
+@media(max-width:760px){
+  .cbot-fab{padding:0;width:56px;height:56px;max-width:none;border-radius:50%;justify-content:center;gap:0}
+  .cbot-fab .cbot-fab-txt{display:none}
+  .cbot-fab .cbot-fab-ico{font-size:22px}
+}
+/* 모바일 메뉴 열림: 배경 스크롤 잠금 + 챗봇 숨김(메뉴와 겹침 방지) */
+body.nav-menu-open{overflow:hidden}
+body.nav-menu-open .cbot{display:none}

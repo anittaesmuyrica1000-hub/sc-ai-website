@@ -96,7 +96,7 @@ export default function Chatbot() {
       {!open && (
         <button type="button" className="cbot-fab" aria-label="채팅 문의 열기" onClick={openPanel}>
           <span className="cbot-fab-ico"><i className="fa-solid fa-comment-dots"></i></span>
-          <span>
+          <span className="cbot-fab-txt">
             <span className="cb-t">궁금한 건 채팅으로 문의하세요</span>
             <span className="cb-s">평균 몇 분 내 답변드립니다</span>
           </span>
