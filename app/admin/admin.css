@@ -22,6 +22,16 @@
   .md-btn:hover{background:#fff;border-color:var(--line);color:var(--blue)}
   .md-sep{width:1px;height:18px;background:var(--line);margin:0 4px}
   .md-br{font-size:16px;font-weight:700;line-height:1}
+  .md-btn .md-txt{font-size:12.5px;font-weight:800;letter-spacing:-.01em}
+  .md-btn .md-txt-sm{font-size:11px}
+  .md-btn{min-width:32px;width:auto;padding:0 6px}
+  .md-ed-labelrow{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+  .md-ed-labelrow label{margin-bottom:0}
+  .md-preview-body hr{border:none;border-top:1px solid var(--line);margin:16px 0}
+  .md-preview-body .post-tldr{background:var(--soft);border:1px solid var(--line);border-radius:10px;padding:12px 14px;margin:12px 0}
+  .md-preview-body .post-tldr .tldr-head{font-size:12px;font-weight:800;color:var(--blue);margin-bottom:6px}
+  .md-preview-body blockquote{border-left:3px solid var(--blue-2,#9bb8f5);background:var(--soft);margin:12px 0;padding:8px 14px;color:var(--slate)}
+  .md-preview-body .post-figure{margin:12px 0}.md-preview-body .post-figure img{max-width:100%;border-radius:8px}
   /* 본문 미리보기 토글 + 편집/미리보기 분할 */
   .md-preview-toggle{float:right;font-weight:600;font-size:12px;color:var(--blue);background:none;border:none;cursor:pointer;display:inline-flex;align-items:center;gap:5px}
   .md-preview-toggle:hover{text-decoration:underline}

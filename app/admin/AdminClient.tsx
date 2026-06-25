@@ -1,11 +1,10 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState, useCallback } from "react";
+import { useEffect, useMemo, useState, useCallback } from "react";
 import type { Session } from "@supabase/supabase-js";
 import { supabase, type Post, type Faq, type Signup, type BrochureRequest, type LegalDoc, legalPath, RESERVED_LEGAL_SLUGS, SIGNUP_STATUSES } from "@/lib/supabase";
 import { fmtDate } from "@/lib/format";
-import { renderContent } from "@/lib/postRender";
-import MarkdownToolbar from "@/components/MarkdownToolbar";
+import MarkdownEditor from "@/components/MarkdownEditor";
 
 type Section = "dash" | "blog" | "faq" | "brochure" | "legal" | "signups" | "settings";
 
@@ -509,10 +508,15 @@ function BlogManager() {
               <label htmlFor="f-excerpt">요약</label>
               <input type="text" id="f-excerpt" placeholder="리스트에 보일 한 줄 요약" value={form.excerpt} onChange={(e) => set("excerpt", e.target.value)} />
             </div>
-            <div className="field">
-              <label htmlFor="f-content">본문 <span className="req">*</span></label>
-              <textarea id="f-content" placeholder="본문을 입력하세요. 빈 줄로 문단을 나눕니다." value={form.content} onChange={(e) => set("content", e.target.value)} />
-            </div>
+            <MarkdownEditor
+              id="f-content"
+              label="본문"
+              required
+              value={form.content}
+              onChange={(v) => set("content", v)}
+              placeholder={"본문을 입력하세요. 빈 줄로 문단을 나눕니다.\n\n## 소제목\n\n- 목록 항목\n\n**굵게**, [링크](https://...)"}
+              hint={<>툴바로 제목·목록·인용·구분선·이미지·표·핵심요약 등을 넣을 수 있습니다. 빈 줄로 문단 구분, 엔터 1번은 줄바꿈.</>}
+            />
             <label className="check"><input type="checkbox" checked={form.published} onChange={(e) => set("published", e.target.checked)} /> 공개(게시) — 해제 시 비공개(임시저장)</label>
             <div className="form-actions">
               <button type="submit" className="btn btn-blue" disabled={saving}>{saving ? "저장 중…" : isEdit ? "수정 저장" : "등록하기"}</button>
@@ -707,8 +711,6 @@ function LegalManager() {
   const [msg, setMsg] = useState<{ text: string; ok: boolean } | null>(null);
   const [saving, setSaving] = useState(false);
   const [loadErr, setLoadErr] = useState<string | null>(null);
-  const [preview, setPreview] = useState(false);
-  const bodyRef = useRef<HTMLTextAreaElement>(null);
   const isEdit = !!form?.id;
   const isReserved = !!form && !!RESERVED_LEGAL_SLUGS[form.slug];
 
@@ -785,26 +787,15 @@ function LegalManager() {
               <label htmlFor="lg-meta">상단 메타(선택)</label>
               <input type="text" id="lg-meta" placeholder="예: 운영: 주식회사 세컨드팀 · 시행일: 2026년 2월 1일" value={form.meta} onChange={(e) => set("meta", e.target.value)} />
             </div>
-            <div className="field">
-              <label htmlFor="lg-body">본문(마크다운) <span className="req">*</span>
-                <button type="button" className="md-preview-toggle" onClick={() => setPreview((p) => !p)}>
-                  <i className={`fa-solid ${preview ? "fa-pen" : "fa-eye"}`} /> {preview ? "편집/미리보기 같이 보기" : "미리보기 켜기"}
-                </button>
-              </label>
-              <div className={preview ? "md-edit-split" : undefined}>
-                <div className="md-edit-pane">
-                  <MarkdownToolbar textareaRef={bodyRef} value={form.body} onChange={(v) => set("body", v)} />
-                  <textarea ref={bodyRef} id="lg-body" style={{ minHeight: 360, fontSize: 14, lineHeight: 1.7 }} placeholder={"## 제1조. 목적\n\n본 약관은 …\n\n## 제2조. 정의\n\n- 첫째 항목\n- 둘째 항목"} value={form.body} onChange={(e) => set("body", e.target.value)} />
-                </div>
-                {preview && (
-                  <div className="md-preview" aria-label="미리보기">
-                    <div className="md-preview-label">미리보기 (실제 페이지 렌더)</div>
-                    <div className="md-preview-body" dangerouslySetInnerHTML={{ __html: renderContent(form.body) }} />
-                  </div>
-                )}
-              </div>
-              <span className="cf-note">블로그와 동일한 마크다운: 소제목 <code>## 제목</code>, 문단은 빈 줄로 구분, 목록 <code>- 항목</code>(들여쓰기로 중첩), 번호 <code>1. 항목</code>, 굵게 <code>**텍스트**</code>, 링크 <code>[이름](주소)</code>, 표 <code>| 칸 | 칸 |</code>.</span>
-            </div>
+            <MarkdownEditor
+              id="lg-body"
+              label="본문(마크다운)"
+              required
+              value={form.body}
+              onChange={(v) => set("body", v)}
+              placeholder={"## 제1조. 목적\n\n본 약관은 …\n\n## 제2조. 정의\n\n- 첫째 항목\n- 둘째 항목"}
+              hint={<>소제목 <code>## 제목</code>, 문단은 빈 줄로 구분, 목록 <code>- 항목</code>(들여쓰기로 중첩), 번호 <code>1. 항목</code>, 굵게 <code>**텍스트**</code>, 링크 <code>[이름](주소)</code>, 표 <code>| 칸 | 칸 |</code>.</>}
+            />
             <label className="check"><input type="checkbox" checked={form.published} onChange={(e) => set("published", e.target.checked)} /> 공개(노출) — 해제 시 비공개</label>
             <div className="form-actions">
               <button type="submit" className="btn btn-blue" disabled={saving}>{saving ? "저장 중…" : isEdit ? "수정 저장" : "등록하기"}</button>

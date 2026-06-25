@@ -168,6 +168,7 @@ footer{background:#fff;color:var(--slate);padding:64px 0 44px;font-size:14px;bor
 .legal ol{margin:10px 0 12px 16px;list-style:decimal}
 .legal li{margin-bottom:6px;padding-left:2px}
 .legal li>ul,.legal li>ol{margin-top:8px;margin-left:14px}
+.legal hr,.legal .post-hr{border:none;border-top:1px solid var(--line);margin:24px 0}
 .legal table{width:100%;border-collapse:collapse;margin:14px 0;font-size:14px}
 .legal th,.legal td{border:1px solid var(--line);padding:10px 12px;text-align:left;vertical-align:top}
 .legal th{background:var(--soft);color:var(--ink);font-weight:700}

@@ -73,6 +73,31 @@ export default function MarkdownToolbar({ textareaRef, value, onChange }: Props)
     });
   }
 
+  // 블록 단위 삽입(앞뒤 빈 줄 확보) — 구분선/핵심요약 등
+  function insertBlock(content: string, selFrom = 0, selLen = content.length) {
+    apply((before, sel, after) => {
+      const lead = before && !before.endsWith("\n\n") ? (before.endsWith("\n") ? "\n" : "\n\n") : "";
+      const trail = after.startsWith("\n") ? "" : "\n";
+      const base = before.length + lead.length;
+      return { text: before + lead + content + trail + after, selStart: base + selFrom, selEnd: base + selFrom + selLen };
+    });
+  }
+
+  function image() {
+    apply((before, sel, after) => {
+      const lead = before && !before.endsWith("\n\n") ? (before.endsWith("\n") ? "\n" : "\n\n") : "";
+      const trail = after.startsWith("\n") ? "" : "\n";
+      const alt = sel || "이미지 설명";
+      const urlStart = before.length + lead.length + alt.length + 4; // ![alt](
+      return { text: before + lead + `![${alt}](이미지URL)` + trail + after, selStart: urlStart, selEnd: urlStart + "이미지URL".length };
+    });
+  }
+
+  function callout() {
+    const c = ":::요약\n- 핵심 내용\n:::";
+    insertBlock(c, c.indexOf("핵심 내용"), "핵심 내용".length);
+  }
+
   const B = ({ onClick, title, children }: { onClick: () => void; title: string; children: React.ReactNode }) => (
     <button type="button" className="md-btn" title={title} onMouseDown={(e) => e.preventDefault()} onClick={onClick}>
       {children}
@@ -81,9 +106,13 @@ export default function MarkdownToolbar({ textareaRef, value, onChange }: Props)
 
   return (
     <div className="md-toolbar" role="toolbar" aria-label="마크다운 서식">
-      <B title="소제목 (##)" onClick={() => eachLine((l) => (l.startsWith("## ") ? l : "## " + l.replace(/^#+\s*/, "")))}>
-        <i className="fa-solid fa-heading" />
+      <B title="제목 (##)" onClick={() => eachLine((l) => (l.startsWith("## ") && !l.startsWith("### ") ? l : "## " + l.replace(/^#+\s*/, "")))}>
+        <span className="md-txt">제목</span>
       </B>
+      <B title="소제목 (###)" onClick={() => eachLine((l) => (l.startsWith("### ") ? l : "### " + l.replace(/^#+\s*/, "")))}>
+        <span className="md-txt md-txt-sm">소제목</span>
+      </B>
+      <span className="md-sep" />
       <B title="굵게 (**텍스트**)" onClick={() => wrap("**", "텍스트")}>
         <i className="fa-solid fa-bold" />
       </B>
@@ -107,8 +136,18 @@ export default function MarkdownToolbar({ textareaRef, value, onChange }: Props)
       <B title="인용 (>)" onClick={() => eachLine((l) => (l.startsWith("> ") ? l : "> " + l))}>
         <i className="fa-solid fa-quote-right" />
       </B>
+      <B title="구분선 (---)" onClick={() => insertBlock("---")}>
+        <i className="fa-solid fa-minus" />
+      </B>
+      <B title="핵심요약 박스" onClick={callout}>
+        <i className="fa-solid fa-bolt" />
+      </B>
+      <span className="md-sep" />
       <B title="링크 삽입" onClick={link}>
         <i className="fa-solid fa-link" />
+      </B>
+      <B title="이미지 삽입" onClick={image}>
+        <i className="fa-solid fa-image" />
       </B>
       <B title="표 삽입" onClick={table}>
         <i className="fa-solid fa-table-cells" />

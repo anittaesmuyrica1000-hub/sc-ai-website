@@ -87,6 +87,7 @@ export function renderContent(text: string | null | undefined): string {
       }
       if (/^###\s+/.test(block)) return "<h3>" + inline(block.replace(/^###\s+/, "")) + "</h3>";
       if (/^##\s+/.test(block)) return "<h2>" + inline(block.replace(/^##\s+/, "")) + "</h2>";
+      if (/^(?:-{3,}|\*{3,}|_{3,})$/.test(block)) return '<hr class="post-hr">';
 
       const lines = block.split("\n");
 
