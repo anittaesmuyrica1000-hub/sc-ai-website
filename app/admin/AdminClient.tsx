@@ -515,7 +515,6 @@ function BlogManager() {
               value={form.content}
               onChange={(v) => set("content", v)}
               placeholder={"본문을 입력하세요. 빈 줄로 문단을 나눕니다.\n\n## 소제목\n\n- 목록 항목\n\n**굵게**, [링크](https://...)"}
-              hint={<>툴바로 제목·목록·인용·구분선·이미지·표·핵심요약 등을 넣을 수 있습니다. 빈 줄로 문단 구분, 엔터 1번은 줄바꿈.</>}
             />
             <label className="check"><input type="checkbox" checked={form.published} onChange={(e) => set("published", e.target.checked)} /> 공개(게시) — 해제 시 비공개(임시저장)</label>
             <div className="form-actions">
@@ -794,7 +793,6 @@ function LegalManager() {
               value={form.body}
               onChange={(v) => set("body", v)}
               placeholder={"## 제1조. 목적\n\n본 약관은 …\n\n## 제2조. 정의\n\n- 첫째 항목\n- 둘째 항목"}
-              hint={<>소제목 <code>## 제목</code>, 문단은 빈 줄로 구분, 목록 <code>- 항목</code>(들여쓰기로 중첩), 번호 <code>1. 항목</code>, 굵게 <code>**텍스트**</code>, 링크 <code>[이름](주소)</code>, 표 <code>| 칸 | 칸 |</code>.</>}
             />
             <label className="check"><input type="checkbox" checked={form.published} onChange={(e) => set("published", e.target.checked)} /> 공개(노출) — 해제 시 비공개</label>
             <div className="form-actions">
