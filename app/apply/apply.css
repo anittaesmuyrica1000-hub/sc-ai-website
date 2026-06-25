@@ -13,6 +13,9 @@
   .apply-points{list-style:none;margin-top:30px;display:grid;gap:14px}
   .apply-points li{display:flex;align-items:center;gap:10px;font-size:15px;font-weight:600;color:var(--ink)}
   .apply-points li>i{color:var(--blue);font-size:18px;flex-shrink:0}
+  /* 제목 반응형(모바일 짧게)·로고 위치(모바일 폼 아래) 토글 — 데스크톱 기본값 */
+  .apply-h1-m{display:none}
+  .apply-partners--mobile{display:none}
 
   /* 파트너사 로고 — 인트로 하단. 한 줄 무한 루핑. 투명 PNG(*-t.png) 사용 → 배경 무관하게 깔끔 */
   .apply-partners{margin-top:40px;padding-top:30px;border-top:1px solid var(--line)}
@@ -31,6 +34,12 @@
     .apply-intro h1 br{display:none}
     .apply-intro p{margin-top:14px}
     .apply-points{width:fit-content;margin-left:auto;margin-right:auto}
+    /* 모바일(에이치닷식): 제목 짧게 · 불릿 숨김 · 로고는 폼 아래로 */
+    .apply-h1-d{display:none}
+    .apply-h1-m{display:inline}
+    .apply-points{display:none}
+    .apply-partners--desktop{display:none}
+    .apply-partners--mobile{display:block;text-align:center;margin-top:30px;padding-top:28px}
   }
   @media(max-width:420px){.apply-intro h1{font-size:20px}}
 
