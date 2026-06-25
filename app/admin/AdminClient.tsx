@@ -1050,29 +1050,52 @@ function SignupsManager() {
           : rows.length === 0 ? <div className="list-state">아직 접수된 도입문의가 없습니다.</div>
           : filtered.length === 0 ? <div className="list-state">조건에 맞는 문의가 없습니다.</div>
           : (
-            <div className="adm-table-wrap">
-              <table className="adm-table">
-                <thead><tr><th>접수일</th><th>이름</th><th>회사명</th><th>업무 이메일</th><th>직무/직책</th><th>채용 규모</th><th>상태</th><th>관리</th></tr></thead>
-                <tbody>
-                  {filtered.map((r) => (
-                    <tr key={r.id}>
-                      <td className="nowrap">{fmtDate(r.created_at)}</td>
-                      <td className="nowrap">{r.name}</td>
-                      <td>{r.company}</td>
-                      <td><a href={`mailto:${r.email}`}>{r.email}</a></td>
-                      <td>{r.role || "—"}</td>
-                      <td className="nowrap">{r.size ? (SIZE_LABEL[r.size] || r.size) : "—"}</td>
-                      <td className="nowrap">
-                        <select className="status-sel" value={r.status || "신규"} onChange={(e) => updateRow(r.id, { status: e.target.value })}>
-                          {SIGNUP_STATUSES.map((s) => <option key={s} value={s}>{s}</option>)}
-                        </select>
-                      </td>
-                      <td className="nowrap"><button className="icon-btn" title="상세" onClick={() => setDetail(r)}><i className="fa-solid fa-eye"></i></button></td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+            <>
+              {/* 데스크톱: 표 */}
+              <div className="adm-table-wrap sig-table">
+                <table className="adm-table">
+                  <thead><tr><th>접수일</th><th>이름</th><th>회사명</th><th>업무 이메일</th><th>직무/직책</th><th>채용 규모</th><th>상태</th><th>관리</th></tr></thead>
+                  <tbody>
+                    {filtered.map((r) => (
+                      <tr key={r.id}>
+                        <td className="nowrap">{fmtDate(r.created_at)}</td>
+                        <td className="nowrap">{r.name}</td>
+                        <td>{r.company}</td>
+                        <td><a href={`mailto:${r.email}`}>{r.email}</a></td>
+                        <td>{r.role || "—"}</td>
+                        <td className="nowrap">{r.size ? (SIZE_LABEL[r.size] || r.size) : "—"}</td>
+                        <td className="nowrap">
+                          <select className="status-sel" value={r.status || "신규"} onChange={(e) => updateRow(r.id, { status: e.target.value })}>
+                            {SIGNUP_STATUSES.map((s) => <option key={s} value={s}>{s}</option>)}
+                          </select>
+                        </td>
+                        <td className="nowrap"><button className="icon-btn" title="상세" onClick={() => setDetail(r)}><i className="fa-solid fa-eye"></i></button></td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+              {/* 모바일: 카드 리스트 (탭하면 상세) */}
+              <div className="sig-cards">
+                {filtered.map((r) => (
+                  <div key={r.id} className="sig-card" onClick={() => setDetail(r)}>
+                    <div className="sig-card-head">
+                      <span className="sig-card-co">{r.company}</span>
+                      <StatusBadge value={r.status} />
+                    </div>
+                    <div className="sig-card-sub">{r.name}{r.role ? ` · ${r.role}` : ""}{r.size ? ` · ${SIZE_LABEL[r.size] || r.size}` : ""}</div>
+                    <div className="sig-card-date">{fmtDate(r.created_at)} 접수</div>
+                    <div className="sig-card-acts" onClick={(e) => e.stopPropagation()}>
+                      {r.phone && <a className="sig-act" href={`tel:${r.phone}`}><i className="fa-solid fa-phone"></i> 전화</a>}
+                      <a className="sig-act" href={`mailto:${r.email}`}><i className="fa-solid fa-envelope"></i> 메일</a>
+                      <select className="status-sel" value={r.status || "신규"} onChange={(e) => updateRow(r.id, { status: e.target.value })}>
+                        {SIGNUP_STATUSES.map((s) => <option key={s} value={s}>{s}</option>)}
+                      </select>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </>
           )}
       </div>
 
@@ -1108,6 +1131,10 @@ function SignupDetail({ row, onClose, onSave }: { row: Signup; onClose: () => vo
           <button className="icon-btn" onClick={onClose}><i className="fa-solid fa-xmark"></i></button>
         </div>
         <div className="adm-modal-body">
+          <div className="sig-detail-acts">
+            {row.phone && <a className="sig-act" href={`tel:${row.phone}`}><i className="fa-solid fa-phone"></i> 전화하기</a>}
+            <a className="sig-act" href={`mailto:${row.email}`}><i className="fa-solid fa-envelope"></i> 메일 보내기</a>
+          </div>
           <dl className="detail-grid">
             {fields.map(([k, v]) => (<div key={k} className="detail-row"><dt>{k}</dt><dd>{k === "업무 이메일" ? <a href={`mailto:${v}`}>{v}</a> : v}</dd></div>))}
           </dl>
