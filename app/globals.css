@@ -122,8 +122,7 @@ header.nav-invert .nav-center a:hover{color:#fff}
 @media(min-width:761px){.nav-menu-wrap{display:none}}
 @media(max-width:760px){
   .nav-center{display:none}
-  /* 모바일 상단 바: 햄버거(좌) + 로고(우)만. 도입문의 CTA는 햄버거 메뉴 안으로 */
-  nav{flex-direction:row-reverse}
+  /* 모바일 상단 바: 로고(좌) + 햄버거(우)만. 도입문의 CTA는 햄버거 메뉴 안으로 */
   .navlinks .nav-btn{display:none}
 }
 /* 햄버거 메뉴: 도입 문의 항목만 파란색으로 강조(블로그·서비스소개서·로그인은 기본) */
