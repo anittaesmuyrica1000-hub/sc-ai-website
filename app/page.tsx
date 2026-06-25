@@ -2,6 +2,10 @@ import Link from "next/link";
 import "./landing.css";
 import HeroParticles from "@/components/HeroParticles";
 import { getFaqs } from "@/lib/faq";
+import { renderBody } from "@/lib/postRender";
+
+// JSON-LD·검색용 태그 제거 텍스트
+const plain = (s: string) => String(s || "").replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim();
 
 // FAQ가 어드민(DB)에서 바뀌면 일정 주기로 자동 반영(ISR). 그 외엔 정적으로 빠르게 서빙.
 export const revalidate = 120;
@@ -42,7 +46,8 @@ export default async function HomePage() {
         mainEntity: faqs.map((f) => ({
           "@type": "Question",
           name: f.question,
-          acceptedAnswer: { "@type": "Answer", text: f.answer },
+          
+          acceptedAnswer: { "@type": "Answer", text: plain(f.answer) },
         })),
       },
     ],
@@ -54,6 +59,7 @@ export default async function HomePage() {
         <HeroParticles canvasId="hero-particles" targetId="real-word" />
         {/* SECTION 01 · DECLARATION (히어로) */}
         <section className="decl" id="hero">
+
           <div className="wrap">
             <div>
               <div className="tagchip"><i className="fa-solid fa-bolt"></i> AI 면접 채용 검증</div>
@@ -324,7 +330,7 @@ export default async function HomePage() {
             {faqs.map((f, i) => (
               <details className="faq-item" key={i} {...(i === 0 ? { open: true } : {})}>
                 <summary>{f.question} <i className="fa-solid fa-plus fq-ic"></i></summary>
-                <div className="fa-ans">{f.answer}</div>
+                <div className="fa-ans" dangerouslySetInnerHTML={{ __html: renderBody(f.answer) }} />
               </details>
             ))}
           </div>

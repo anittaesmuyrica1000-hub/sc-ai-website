@@ -5,6 +5,11 @@ import type { Session } from "@supabase/supabase-js";
 import { supabase, type Post, type Faq, type Signup, type BrochureRequest, type LegalDoc, legalPath, RESERVED_LEGAL_SLUGS, SIGNUP_STATUSES } from "@/lib/supabase";
 import { fmtDate } from "@/lib/format";
 import MarkdownEditor from "@/components/MarkdownEditor";
+import RichEditor from "@/components/RichEditor";
+import { renderBody } from "@/lib/postRender";
+
+// HTML 태그 제거(목록 미리보기·검증용)
+const stripTags = (s: string) => String(s || "").replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim();
 
 type Section = "dash" | "blog" | "faq" | "brochure" | "legal" | "signups" | "settings";
 
@@ -527,14 +532,15 @@ function BlogManager() {
               <label htmlFor="f-excerpt">요약</label>
               <input type="text" id="f-excerpt" placeholder="리스트에 보일 한 줄 요약" value={form.excerpt} onChange={(e) => set("excerpt", e.target.value)} />
             </div>
-            <MarkdownEditor
-              id="f-content"
-              label="본문"
-              required
-              value={form.content}
-              onChange={(v) => set("content", v)}
-              placeholder={"본문을 입력하세요. 빈 줄로 문단을 나눕니다.\n\n## 소제목\n\n- 목록 항목\n\n**굵게**, [링크](https://...)"}
-            />
+            <div className="field">
+              <label>본문 <span className="req">*</span></label>
+              <RichEditor
+                key={form.id || "new"}
+                value={renderBody(form.content)}
+                onChange={(html) => set("content", html)}
+                placeholder="본문을 입력하세요. 위 도구로 제목·목록·이미지 등을 넣을 수 있습니다."
+              />
+            </div>
             <label className="check"><input type="checkbox" checked={form.published} onChange={(e) => set("published", e.target.checked)} /> 공개(게시) — 해제 시 비공개(임시저장)</label>
             <div className="form-actions">
               <button type="submit" className="btn btn-blue" disabled={saving}>{saving ? "저장 중…" : isEdit ? "수정 저장" : "등록하기"}</button>
@@ -668,8 +674,14 @@ function FaqManager() {
               <input type="text" id="fa-q" placeholder="예: AI 면접은 어떻게 진행되나요?" value={form.question} onChange={(e) => set("question", e.target.value)} />
             </div>
             <div className="field">
-              <label htmlFor="fa-a">답변 <span className="req">*</span></label>
-              <textarea id="fa-a" placeholder="답변 내용을 입력하세요." value={form.answer} onChange={(e) => set("answer", e.target.value)} />
+              <label>답변 <span className="req">*</span></label>
+              <RichEditor
+                key={form.id || "new"}
+                value={renderBody(form.answer)}
+                onChange={(html) => set("answer", html)}
+                placeholder="답변 내용을 입력하세요."
+                minHeight={200}
+              />
             </div>
             <label className="check"><input type="checkbox" checked={form.published} onChange={(e) => set("published", e.target.checked)} /> 공개(노출) — 해제 시 비공개</label>
             <div className="form-actions">
@@ -699,7 +711,7 @@ function FaqManager() {
                       </div>
                     </td>
                     <td className="nowrap">{it.category ? <span className="pill pill-blue">{it.category}</span> : "—"}</td>
-                    <td><div className="cell-title">{it.question}</div><div className="cell-sub">{it.answer.slice(0, 50)}{it.answer.length > 50 ? "…" : ""}</div></td>
+                    <td><div className="cell-title">{it.question}</div><div className="cell-sub">{stripTags(it.answer).slice(0, 50)}{stripTags(it.answer).length > 50 ? "…" : ""}</div></td>
                     <td className="nowrap">{it.published === false ? <span className="pill pill-gray">비공개</span> : <span className="pill pill-green">공개</span>}</td>
                     <td className="nowrap">{it.updated_at ? fmtDate(it.updated_at) : "—"}</td>
                     <td className="nowrap"><div className="row-actions">

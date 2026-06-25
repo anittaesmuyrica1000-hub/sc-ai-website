@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 import "./post.css";
 import { supabase, type Post } from "@/lib/supabase";
 import { fmtDate } from "@/lib/format";
-import { renderContent } from "@/lib/postRender";
+import { renderBody } from "@/lib/postRender";
 
 export const dynamic = "force-dynamic";
 
@@ -55,7 +55,7 @@ export default async function PostPage({ params }: { params: Promise<{ id: strin
           </div>
         </div>
         {p.cover_url && <img className="post-hero" src={p.cover_url} alt="" />}
-        <div className="post-content" dangerouslySetInnerHTML={{ __html: renderContent(p.content) }} />
+        <div className="post-content" dangerouslySetInnerHTML={{ __html: renderBody(p.content) }} />
         <div className="post-foot">
           <Link href="/blog" className="btn btn-out"><i className="fa-solid fa-arrow-left"></i> 목록으로</Link>
         </div>

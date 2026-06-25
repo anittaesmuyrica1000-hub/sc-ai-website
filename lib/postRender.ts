@@ -114,3 +114,11 @@ export function renderContent(text: string | null | undefined): string {
     })
     .join("");
 }
+
+// 본문 렌더 — WYSIWYG(HTML)면 그대로 출력, 아니면 마크다운으로 렌더(기존 글 하위호환).
+// 블로그·FAQ·약관 공용. authenticated 관리자만 작성하므로 신뢰된 HTML로 취급.
+export function renderBody(s: string | null | undefined): string {
+  const body = String(s || "");
+  const looksHtml = /<(p|h[1-6]|ul|ol|li|div|table|tr|td|br|strong|em|b|i|u|a|img|blockquote|hr|figure)\b/i.test(body);
+  return looksHtml ? body : renderContent(body);
+}
