@@ -116,6 +116,8 @@
   .adm-bar-title{flex:1;min-width:0;display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
   .adm-bar h1{font-size:21px;font-weight:800;letter-spacing:-.02em}
   .adm-bar .sub{font-size:13px;color:var(--slate)}
+  /* 모바일: 부제가 한 줄에 안 들어가 줄바꿈→정렬 깨짐. 부제 숨겨 ☰·제목·벨 한 줄 유지 */
+  @media(max-width:760px){.adm-bar .sub{display:none}}
   .adm-bar-acct{display:flex;align-items:center;gap:12px;flex-shrink:0}
   .adm-bar-acct .adm-email{font-size:13px;color:var(--slate);max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
   .adm-bar-acct .btn{font-size:13px;padding:8px 14px}
