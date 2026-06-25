@@ -27,6 +27,42 @@ function splitRow(line: string): string[] {
   return line.trim().replace(/^\|/, "").replace(/\|$/, "").split("|").map((c) => c.trim());
 }
 
+// 목록 한 줄 파싱 — 들여쓰기(중첩 단계), 순서/비순서, 내용을 추출.
+// 마커: 비순서 `- `/`* `, 순서 `1. `/`1) `. 들여쓰기는 공백/탭(탭=2칸 환산)으로 단계 구분.
+type ListLine = { indent: number; ordered: boolean; num: number; content: string };
+function parseListLine(line: string): ListLine | null {
+  const m = line.match(/^([ \t]*)(?:([0-9]+)[.)]|[-*])[ \t]+(.*)$/);
+  if (!m) return null;
+  return { indent: m[1].replace(/\t/g, "  ").length, ordered: m[2] !== undefined, num: m[2] ? parseInt(m[2], 10) : 0, content: m[3] };
+}
+
+// 블록의 모든 줄이 목록 항목이면 true (중첩 목록 블록 판별)
+function isList(lines: string[]): boolean {
+  return lines.length > 0 && lines.every((l) => parseListLine(l) !== null);
+}
+
+// 들여쓰기 기반으로 중첩 <ol>/<ul> 생성. 같은 들여쓰기=형제, 더 깊으면 자식.
+function renderList(lines: string[]): string {
+  const items = lines.map((l) => parseListLine(l)!);
+  let i = 0;
+  function build(): string {
+    const indent = items[i].indent;
+    const ordered = items[i].ordered;
+    const tag = ordered ? "ol" : "ul";
+    // 순서목록이 1이 아닌 번호로 시작하면 start로 이어지는 번호 보존(표 등으로 끊긴 항목)
+    const start = ordered && items[i].num > 1 ? ' start="' + items[i].num + '"' : "";
+    let out = "";
+    while (i < items.length && items[i].indent === indent) {
+      let li = inline(items[i].content);
+      i++;
+      if (i < items.length && items[i].indent > indent) li += build(); // 자식 목록
+      out += "<li>" + li + "</li>";
+    }
+    return '<' + tag + start + ' class="post-list">' + out + "</" + tag + ">";
+  }
+  return build();
+}
+
 export function renderContent(text: string | null | undefined): string {
   const blocks = String(text || "")
     .split(/\n{2,}/)
@@ -62,8 +98,8 @@ export function renderContent(text: string | null | undefined): string {
           .join("");
         return '<div class="post-table-wrap"><table class="post-table"><thead><tr>' + head + "</tr></thead><tbody>" + body + "</tbody></table></div>";
       }
-      if (lines.every((l) => /^[-*]\s+/.test(l))) {
-        return '<ul class="post-list">' + lines.map((l) => "<li>" + inline(l.replace(/^[-*]\s+/, "")) + "</li>").join("") + "</ul>";
+      if (isList(lines)) {
+        return renderList(lines);
       }
       const isSrc = (txt: string) => /^출처[\s:：]/.test(txt.trim()) || txt.trim() === "출처";
       if (lines.every((l) => /^>\s?/.test(l))) {
