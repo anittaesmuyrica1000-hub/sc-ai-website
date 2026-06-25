@@ -24,13 +24,6 @@ export default function SiteFooter() {
                 <li><Link href="/terms-applicant">지원자용 서비스 이용약관</Link></li>
               </ul>
             </div>
-            <div className="foot-col">
-              <h4>글로벌 인재 채용</h4>
-              <ul>
-                <li><Link href="/privacy">개인정보처리 방침</Link></li>
-                <li><Link href="/terms">서비스 이용약관</Link></li>
-              </ul>
-            </div>
           </div>
         </div>
         <div className="foot-bottom">
