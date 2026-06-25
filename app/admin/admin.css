@@ -113,9 +113,9 @@
   .adm-nav button.active{background:var(--blue);color:#fff}
   .adm-main{flex:1;min-width:0;display:flex;flex-direction:column}
   .adm-bar{display:flex;align-items:center;gap:14px;padding:18px 32px;background:#fff;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:20}
-  .adm-bar-title{flex:1;min-width:0}
+  .adm-bar-title{flex:1;min-width:0;display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
   .adm-bar h1{font-size:21px;font-weight:800;letter-spacing:-.02em}
-  .adm-bar .sub{font-size:13px;color:var(--slate);margin-top:3px}
+  .adm-bar .sub{font-size:13px;color:var(--slate)}
   .adm-bar-acct{display:flex;align-items:center;gap:12px;flex-shrink:0}
   .adm-bar-acct .adm-email{font-size:13px;color:var(--slate);max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
   .adm-bar-acct .btn{font-size:13px;padding:8px 14px}
@@ -137,8 +137,8 @@
   .adm-brand-txt{font-size:15px;font-weight:800;color:#fff;letter-spacing:-.01em}
 
   /* 상단바 알림·계정 */
-  .adm-bell{position:relative;width:40px;height:40px;border-radius:10px;border:1px solid var(--line);background:#fff;color:var(--slate);font-size:16px;cursor:pointer;flex-shrink:0}
-  .adm-bell:hover{color:var(--blue);border-color:var(--blue-2)}
+  .adm-bell{position:relative;width:40px;height:40px;border-radius:10px;border:0;background:transparent;color:var(--slate);font-size:18px;cursor:pointer;flex-shrink:0}
+  .adm-bell:hover{background:var(--soft);color:var(--blue)}
   .adm-bell-dot{position:absolute;top:-5px;right:-5px;min-width:18px;height:18px;padding:0 4px;border-radius:9px;background:var(--red);color:#fff;font-size:10px;font-weight:800;display:grid;place-items:center}
   /* 관리자 계정 — 사이드바 하단(Claude식). 다크 테마, 메뉴는 위로 열림 */
   .adm-foot{padding:10px 12px 14px;border-top:1px solid rgba(255,255,255,.08);white-space:nowrap}
