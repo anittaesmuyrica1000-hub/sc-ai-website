@@ -21,6 +21,28 @@
   .md-btn{width:32px;height:30px;display:inline-flex;align-items:center;justify-content:center;border:1px solid transparent;border-radius:7px;background:transparent;color:var(--slate);font-size:14px;cursor:pointer;transition:.12s}
   .md-btn:hover{background:#fff;border-color:var(--line);color:var(--blue)}
   .md-sep{width:1px;height:18px;background:var(--line);margin:0 4px}
+  /* 본문 미리보기 토글 + 편집/미리보기 분할 */
+  .md-preview-toggle{float:right;font-weight:600;font-size:12px;color:var(--blue);background:none;border:none;cursor:pointer;display:inline-flex;align-items:center;gap:5px}
+  .md-preview-toggle:hover{text-decoration:underline}
+  .md-edit-split{display:grid;grid-template-columns:1fr 1fr;gap:14px;align-items:start}
+  .md-edit-split .md-edit-pane{display:flex;flex-direction:column;min-width:0}
+  .md-preview{border:1px solid var(--line);border-radius:10px;background:#fff;overflow:hidden}
+  .md-preview-label{font-size:11px;font-weight:700;color:var(--slate-2);padding:7px 14px;border-bottom:1px solid var(--line);background:var(--soft)}
+  .md-preview-body{padding:16px 18px;max-height:520px;overflow:auto}
+  .md-preview-body h2{font-size:17px;font-weight:700;color:var(--ink);margin:22px 0 9px;line-height:1.4}
+  .md-preview-body h2:first-child{margin-top:0}
+  .md-preview-body h3{font-size:15px;font-weight:700;color:var(--ink);margin:16px 0 6px}
+  .md-preview-body p,.md-preview-body li{color:var(--slate);font-size:14px;line-height:1.7}
+  .md-preview-body ul{margin:8px 0 10px 16px;list-style:disc}
+  .md-preview-body ol{margin:8px 0 10px 16px;list-style:decimal}
+  .md-preview-body li{margin-bottom:5px;padding-left:2px}
+  .md-preview-body li>ul,.md-preview-body li>ol{margin-top:6px;margin-left:14px}
+  .md-preview-body a{color:var(--blue);text-decoration:underline}
+  .md-preview-body strong{color:var(--ink)}
+  .md-preview-body table{width:100%;border-collapse:collapse;margin:12px 0;font-size:13px}
+  .md-preview-body th,.md-preview-body td{border:1px solid var(--line);padding:8px 10px;text-align:left;vertical-align:top}
+  .md-preview-body th{background:var(--soft);font-weight:700;color:var(--ink)}
+  @media (max-width:760px){.md-edit-split{grid-template-columns:1fr}}
   .field-row{display:grid;grid-template-columns:1fr 1fr;gap:13px}
   .field .hint{font-size:12px;color:var(--slate-2);margin-top:5px}
   .cover-edit{display:flex;align-items:center;gap:14px;margin-bottom:10px}
