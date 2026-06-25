@@ -121,15 +121,10 @@
   .adm-bar-acct .btn{font-size:13px;padding:8px 14px}
   .adm-burger{display:none;width:40px;height:40px;border-radius:9px;border:1px solid var(--line);background:#fff;color:var(--ink);font-size:16px;cursor:pointer;flex-shrink:0}
 
-  /* 사이드바 접기(아이콘 전용) — 로고 클릭으로 토글 */
+  /* 사이드바 접기 = 사이드바 숨김(콘텐츠 풀폭). 재오픈은 상단 ☰ */
   .adm-side{transition:width .18s ease}
-  .adm.collapsed .adm-side{width:66px}
-  .adm.collapsed .adm-label{display:none}
-  /* 접힘: 헤더는 토글 아이콘만 가운데 — 로고 숨김 */
-  .adm.collapsed .adm-head{justify-content:center;padding:20px 0 16px}
-  .adm.collapsed .adm-brand{display:none}
-  .adm.collapsed .adm-nav{padding:10px 10px}
-  .adm.collapsed .adm-nav button,.adm.collapsed .adm-nav-link{justify-content:center;padding:11px 0;gap:0}
+  .adm.collapsed .adm-side{width:0;min-width:0;overflow:hidden}
+  .adm.collapsed .adm-burger{display:inline-flex;align-items:center;justify-content:center}
   .adm-body{padding:28px 32px 64px;max-width:1180px;width:100%}
   .adm-backdrop{display:none}
 
@@ -262,15 +257,9 @@
     .adm-side.open{transform:none}
     .adm-backdrop{display:block;position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:55}
     .adm-burger{display:inline-flex;align-items:center;justify-content:center}
-    /* 모바일은 드로어 풀폭 — collapsed 무력화. 접기 토글도 숨김(드로어라 의미 없음) */
+    /* 모바일은 드로어 — collapsed(숨김) 무력화: 드로어 폭 복구. 접기 토글은 숨김 */
     .adm-toggle{display:none}
-    .adm.collapsed .adm-side{width:280px}
-    .adm.collapsed .adm-label{display:inline}
-    .adm.collapsed .adm-head{justify-content:flex-start;padding:20px 14px 16px}
-    .adm.collapsed .adm-brand{display:flex}
-    .adm.collapsed .adm-logo-full{display:block}
-    .adm.collapsed .adm-logo-mark{display:none}
-    .adm.collapsed .adm-nav button,.adm.collapsed .adm-nav-link{justify-content:flex-start;padding:11px 14px;gap:11px}
+    .adm.collapsed .adm-side{width:280px;overflow:auto}
     .adm-body{padding:22px 18px 56px}
     .adm-bar{padding:16px 18px}
     .adm-bar-acct .adm-email{display:none}

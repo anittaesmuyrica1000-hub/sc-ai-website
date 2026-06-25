@@ -90,11 +90,11 @@ function LoginForm() {
 
 const NAV: { key: Section; label: string; icon: string }[] = [
   { key: "dash", label: "대시보드", icon: "fa-gauge-high" },
-  { key: "blog", label: "블로그", icon: "fa-newspaper" },
+  { key: "blog", label: "블로그", icon: "fa-feather" },
   { key: "faq", label: "FAQ", icon: "fa-circle-question" },
   { key: "brochure", label: "소개서", icon: "fa-file-pdf" },
-  { key: "legal", label: "약관", icon: "fa-file-contract" },
-  { key: "signups", label: "도입문의", icon: "fa-clipboard-list" },
+  { key: "legal", label: "약관", icon: "fa-scale-balanced" },
+  { key: "signups", label: "도입문의", icon: "fa-inbox" },
   { key: "settings", label: "설정", icon: "fa-gear" },
 ];
 const TITLE: Record<Section, { h: string; d: string }> = {
@@ -123,6 +123,11 @@ function Console({ email }: { email: string }) {
   function toggleCollapse() {
     setCollapsed((v) => { try { localStorage.setItem("adm-collapsed", v ? "0" : "1"); } catch {} return !v; });
   }
+  // 상단 ☰: 모바일은 드로어 열기/닫기, 데스크톱은 사이드바 접기/펼치기
+  function onBurger() {
+    if (typeof window !== "undefined" && window.matchMedia("(max-width:980px)").matches) setNavOpen((v) => !v);
+    else toggleCollapse();
+  }
 
   return (
     <div className={`adm${collapsed ? " collapsed" : ""}`}>
@@ -145,12 +150,12 @@ function Console({ email }: { email: string }) {
         </div>
         <nav className="adm-nav">
           {NAV.map((n) => (
-            <button key={n.key} className={section === n.key ? "active" : ""} title={n.label} onClick={() => { setSection(n.key); setNavOpen(false); }}>
-              <i className={`fa-solid ${n.icon}`}></i><span className="adm-label">{n.label}</span>
+            <button key={n.key} className={section === n.key ? "active" : ""} onClick={() => { setSection(n.key); setNavOpen(false); }}>
+              <span className="adm-label">{n.label}</span>
             </button>
           ))}
-          <a className="adm-nav-link" href="/" target="_blank" rel="noopener noreferrer" title="웹사이트로 가기">
-            <i className="fa-solid fa-arrow-up-right-from-square"></i><span className="adm-label">웹사이트로 가기</span>
+          <a className="adm-nav-link" href="/" target="_blank" rel="noopener noreferrer">
+            <span className="adm-label">웹사이트로 가기</span>
           </a>
         </nav>
       </aside>
@@ -158,7 +163,7 @@ function Console({ email }: { email: string }) {
 
       <div className="adm-main">
         <div className="adm-bar">
-          <button type="button" className="adm-burger" aria-label="메뉴" onClick={() => setNavOpen((v) => !v)}><i className="fa-solid fa-bars"></i></button>
+          <button type="button" className="adm-burger" aria-label="메뉴" onClick={onBurger}><i className="fa-solid fa-bars"></i></button>
           <div className="adm-bar-title">
             <h1>{TITLE[section].h}</h1>
             <div className="sub">{TITLE[section].d}</div>
@@ -204,10 +209,10 @@ function Console({ email }: { email: string }) {
 /* ===================== 대시보드 ===================== */
 
 const QUICK: { key: Section; label: string; desc: string; icon: string }[] = [
-  { key: "blog", label: "블로그 관리", desc: "블로그 글을 작성하고 수정·삭제합니다.", icon: "fa-newspaper" },
+  { key: "blog", label: "블로그 관리", desc: "블로그 글을 작성하고 수정·삭제합니다.", icon: "fa-feather" },
   { key: "faq", label: "FAQ 관리", desc: "FAQ를 추가하고 노출 여부·순서를 관리합니다.", icon: "fa-circle-question" },
   { key: "brochure", label: "소개서 관리", desc: "AI 면접 서비스 소개서 PDF를 업로드·교체합니다.", icon: "fa-file-pdf" },
-  { key: "signups", label: "도입문의 관리", desc: "도입문의를 확인하고 상담 상태를 관리합니다.", icon: "fa-clipboard-list" },
+  { key: "signups", label: "도입문의 관리", desc: "도입문의를 확인하고 상담 상태를 관리합니다.", icon: "fa-inbox" },
   { key: "settings", label: "설정", desc: "관리자 계정과 기본 설정을 관리합니다.", icon: "fa-gear" },
 ];
 
@@ -247,7 +252,7 @@ function Dashboard({ onGo }: { onGo: (s: Section) => void }) {
           out.totBlog = rows.length;
           out.pubBlog = rows.filter((p) => p.published !== false).length;
           [...rows].sort((a, b) => new Date(b.updated_at || b.created_at).getTime() - new Date(a.updated_at || a.created_at).getTime()).slice(0, 3)
-            .forEach((p) => out.updates.push({ type: "블로그", title: p.title, time: p.updated_at || p.created_at, icon: "fa-newspaper", color: "u-blue" }));
+            .forEach((p) => out.updates.push({ type: "블로그", title: p.title, time: p.updated_at || p.created_at, icon: "fa-feather", color: "u-blue" }));
         }
       } catch {}
 
@@ -267,7 +272,7 @@ function Dashboard({ onGo }: { onGo: (s: Section) => void }) {
         if (r.data) { out.brochure = r.data.label; out.brochureAt = r.data.created_at; out.updates.push({ type: "소개서", title: r.data.label, time: r.data.created_at, icon: "fa-file-pdf", color: "u-red" }); }
       } catch {}
 
-      out.recent.slice(0, 2).forEach((s) => out.updates.push({ type: "도입문의", title: `${s.company} 도입문의 접수`, time: s.created_at, icon: "fa-clipboard-list", color: "u-green" }));
+      out.recent.slice(0, 2).forEach((s) => out.updates.push({ type: "도입문의", title: `${s.company} 도입문의 접수`, time: s.created_at, icon: "fa-inbox", color: "u-green" }));
       out.updates.sort((a, b) => new Date(b.time).getTime() - new Date(a.time).getTime());
       out.updates = out.updates.slice(0, 5);
       setD(out);
@@ -279,7 +284,7 @@ function Dashboard({ onGo }: { onGo: (s: Section) => void }) {
   const stats = [
     { label: "오늘 신규 도입문의", v: d.today == null ? "—" : `${d.today}건`, sub: d.todayDelta == null ? "어제 대비 —" : `어제 대비 ${delta(d.todayDelta)}`, icon: "fa-envelope", chip: "s-blue", go: "signups" as Section },
     { label: "이번 주 도입문의", v: d.week == null ? "—" : `${d.week}건`, sub: d.weekDelta == null ? "지난주 대비 —" : `지난주 대비 ${delta(d.weekDelta)}`, icon: "fa-users", chip: "s-violet", go: "signups" as Section },
-    { label: "공개 중인 블로그", v: d.pubBlog == null ? "—" : `${d.pubBlog}개`, sub: d.totBlog == null ? "" : `전체 ${d.totBlog}개`, icon: "fa-newspaper", chip: "s-green", go: "blog" as Section },
+    { label: "공개 중인 블로그", v: d.pubBlog == null ? "—" : `${d.pubBlog}개`, sub: d.totBlog == null ? "" : `전체 ${d.totBlog}개`, icon: "fa-feather", chip: "s-green", go: "blog" as Section },
     { label: "공개 중인 FAQ", v: d.pubFaq == null ? "—" : `${d.pubFaq}개`, sub: d.totFaq == null ? "전체 FAQ" : `전체 ${d.totFaq}개`, icon: "fa-circle-question", chip: "s-amber", go: "faq" as Section },
     { label: "소개서 (현재 버전)", v: d.brochure || "없음", sub: d.brochureAt ? `${fmtDate(d.brochureAt)} 업로드` : "업로드 필요", icon: "fa-file-pdf", chip: "s-red", go: "brochure" as Section, small: true },
   ];
