@@ -158,6 +158,25 @@ function Console({ email }: { email: string }) {
             <span className="adm-label">웹사이트로 가기</span>
           </a>
         </nav>
+        <div className="adm-foot">
+          <div className="adm-acct">
+            <button className="adm-acct-btn" onClick={() => setAcctOpen((v) => !v)}>
+              <span className="adm-avatar">관</span>
+              <span className="adm-acct-name">관리자</span>
+              <i className="fa-solid fa-chevron-up adm-acct-caret"></i>
+            </button>
+            {acctOpen && (
+              <>
+                <div className="adm-acct-bg" onClick={() => setAcctOpen(false)} />
+                <div className="adm-acct-menu">
+                  <div className="adm-acct-email">{email}</div>
+                  <button onClick={() => { setAcctOpen(false); setSection("settings"); setNavOpen(false); }}><i className="fa-solid fa-gear"></i> 설정</button>
+                  <button onClick={() => supabase.auth.signOut()}><i className="fa-solid fa-right-from-bracket"></i> 로그아웃</button>
+                </div>
+              </>
+            )}
+          </div>
+        </div>
       </aside>
       {navOpen && <div className="adm-backdrop" onClick={() => setNavOpen(false)} />}
 
@@ -173,23 +192,6 @@ function Console({ email }: { email: string }) {
               <i className="fa-regular fa-bell"></i>
               {newCount > 0 && <span className="adm-bell-dot">{newCount > 9 ? "9+" : newCount}</span>}
             </button>
-            <div className="adm-acct">
-              <button className="adm-acct-btn" onClick={() => setAcctOpen((v) => !v)}>
-                <span className="adm-avatar">관</span>
-                <span className="adm-acct-name">관리자</span>
-                <i className="fa-solid fa-chevron-down"></i>
-              </button>
-              {acctOpen && (
-                <>
-                  <div className="adm-acct-bg" onClick={() => setAcctOpen(false)} />
-                  <div className="adm-acct-menu">
-                    <div className="adm-acct-email">{email}</div>
-                    <button onClick={() => { setAcctOpen(false); setSection("settings"); }}><i className="fa-solid fa-gear"></i> 설정</button>
-                    <button onClick={() => supabase.auth.signOut()}><i className="fa-solid fa-right-from-bracket"></i> 로그아웃</button>
-                  </div>
-                </>
-              )}
-            </div>
           </div>
         </div>
         <div className="adm-body">
