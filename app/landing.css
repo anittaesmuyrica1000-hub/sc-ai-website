@@ -154,17 +154,17 @@
   /* 프로세스(시안2) — 큰 라이트블루 패널 안에 3단계 카드 묶음(Claude Design 원본 형태). */
   .flow2{margin:54px auto clamp(56px,8vw,110px);max-width:1180px;background:#F4F8FF;border-radius:30px;padding:clamp(30px,4vw,54px) clamp(20px,3.4vw,46px);display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(16px,2vw,28px)}
   .pstep{background:#fff;border-radius:20px;box-shadow:0 14px 32px rgba(31,45,90,.09);padding:clamp(24px,2.6vw,32px) clamp(20px,2.2vw,28px);text-align:center;animation:pstepUp var(--pdur,5s) ease-in-out infinite}
-  .pstep .pic{width:56px;height:56px;margin:0 auto;border-radius:16px;background:var(--blue);color:#fff;display:flex;align-items:center;justify-content:center;animation:pstepOn var(--pdur,5s) ease-in-out infinite}
-  .pstep .pic svg{width:26px;height:26px}
+  .pstep .pic{width:56px;height:56px;margin:0 auto;color:var(--blue);display:flex;align-items:center;justify-content:center;animation:pstepOn var(--pdur,5s) ease-in-out infinite}
+  .pstep .pic svg{width:42px;height:42px}
   .pstep-tag{display:inline-flex;align-items:center;margin-top:22px;padding:5px 12px;border-radius:999px;background:var(--soft-2);color:var(--blue);font-weight:800;font-size:12.5px;letter-spacing:.03em}
   .pstep h3{margin:13px 0 0;font-size:20px;font-weight:800;letter-spacing:-.02em;color:var(--ink)}
   .pstep p{margin:10px 0 0;font-size:15px;line-height:1.65;color:var(--slate)}
   /* 카드별 모션 시차(STEP 01→02→03 순서대로 켜짐) */
   .pstep:nth-child(2),.pstep:nth-child(2) .pic{animation-delay:.85s}
   .pstep:nth-child(3),.pstep:nth-child(3) .pic{animation-delay:1.7s}
-  @keyframes pstepOn{0%,8%{opacity:.5;transform:scale(.94);box-shadow:0 0 0 0 rgba(46,108,240,0)}18%,72%{opacity:1;transform:scale(1);box-shadow:0 12px 26px rgba(46,108,240,.26)}84%,100%{opacity:.5;transform:scale(.94);box-shadow:0 0 0 0 rgba(46,108,240,0)}}
+  @keyframes pstepOn{0%,8%{opacity:.4;transform:scale(.88)}18%,72%{opacity:1;transform:scale(1)}84%,100%{opacity:.4;transform:scale(.88)}}
   @keyframes pstepUp{0%,8%{transform:translateY(8px)}20%,72%{transform:translateY(0)}84%,100%{transform:translateY(8px)}}
-  @media(max-width:760px){.flow2{margin-top:40px;gap:12px;border-radius:24px}.pstep{padding:22px 16px}.pstep .pic{width:46px;height:46px;border-radius:13px}.pstep .pic svg{width:22px;height:22px}.pstep h3{font-size:16px}.pstep p{font-size:13px;line-height:1.55}.pstep-tag{margin-top:16px;font-size:11px}}
+  @media(max-width:760px){.flow2{margin-top:40px;gap:12px;border-radius:24px}.pstep{padding:22px 16px}.pstep .pic{width:46px;height:46px}.pstep .pic svg{width:38px;height:38px}.pstep h3{font-size:16px}.pstep p{font-size:13px;line-height:1.55}.pstep-tag{margin-top:16px;font-size:11px}}
   @media(max-width:480px){.pstep p br{display:none}}
   /* 모바일(≤560): 3단계 세로 스택 */
   @media(max-width:560px){.flow2{grid-template-columns:1fr;gap:14px;padding:24px 18px}.pstep{padding:22px 20px}.pstep h3{font-size:17px}.pstep p{font-size:13.5px}}

@@ -254,7 +254,7 @@ export default async function HomePage() {
               <p>공고를 등록하면<br />AI가 직무·요구 역량을 분석합니다.</p>
             </div>
             <div className="pstep">
-              <div className="pic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"><path d="M12 3l1.6 4.4L18 9l-4.4 1.6L12 15l-1.6-4.4L6 9l4.4-1.6z" /><path d="M18 14l.7 2.1L21 17l-2.3.9L18 20l-.7-2.1L15 17l2.3-.9z" /></svg></div>
+              <div className="pic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"><path d="m21.64 3.64-1.28-1.28a1.21 1.21 0 0 0-1.72 0L2.36 18.64a1.21 1.21 0 0 0 0 1.72l1.28 1.28a1.2 1.2 0 0 0 1.72 0L21.64 5.36a1.2 1.2 0 0 0 0-1.72Z" /><path d="m14 7 3 3" /><path d="M5 6v4" /><path d="M19 14v4" /><path d="M10 2v2" /><path d="M7 8H3" /><path d="M21 16h-4" /><path d="M11 3H9" /></svg></div>
               <span className="pstep-tag">STEP 02</span>
               <h3>AI 면접 자동 생성·진행</h3>
               <p>AI가 평가 기준·질문을 만들고,<br />지원자가 온라인으로 응시합니다.</p>
