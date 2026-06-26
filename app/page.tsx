@@ -1,8 +1,12 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import "./landing.css";
 import HeroParticles from "@/components/HeroParticles";
 import { getFaqs } from "@/lib/faq";
 import { renderBody } from "@/lib/postRender";
+
+// 홈 canonical (중복 색인 방지) — 공통 메타는 layout.tsx
+export const metadata: Metadata = { alternates: { canonical: "/" } };
 
 // JSON-LD·검색용 태그 제거 텍스트
 const plain = (s: string) => String(s || "").replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim();

@@ -30,6 +30,7 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
     title: `${p.title} · 블로그`,
     description: p.excerpt || undefined,
     keywords: tags.length ? tags : undefined,
+    alternates: { canonical: `/blog/${id}` },
     openGraph: {
       type: "article",
       title: p.title,
