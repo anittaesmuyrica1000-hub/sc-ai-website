@@ -241,29 +241,29 @@ export default async function HomePage() {
           </div>
 
           <div className="head" style={{ paddingTop: "clamp(112px,15vw,190px)" }}>
-            <p className="lead" style={{ marginTop: 0, fontWeight: 700 }}>채용공고만 등록하면, 검증 리포트까지 <span className="blue">AI가 진행</span>합니다.</p>
+            <div className="tagchip"><i className="fa-solid fa-diagram-project"></i> 진행 절차</div>
+            <h2>채용공고만 등록하면, 검증 리포트까지<br /><span className="blue">AI가 진행</span>합니다</h2>
           </div>
 
-          <div className="flow">
-            <div className="node">
-              <div className="step">STEP 01</div>
-              <div className="ic"><i className="fa-solid fa-bullhorn"></i></div>
+          {/* 프로세스(시안2) — 라이트블루 패널 + 3단계 카드. 펄스/페이드업 루프 모션(CSS). */}
+          <div className="flow2">
+            <div className="pstep">
+              <div className="pic"><i className="fa-solid fa-bullhorn"></i></div>
+              <span className="pstep-tag">STEP 01</span>
               <h3>채용공고 등록</h3>
-              <p>공고를 등록하면 <br />AI가 직무·요구 역량을 분석합니다.</p>
+              <p>공고를 등록하면<br />AI가 직무·요구 역량을 분석합니다.</p>
             </div>
-            <div className="arrow"><i className="fa-solid fa-arrow-right-long"></i></div>
-            <div className="node">
-              <div className="step">STEP 02</div>
-              <div className="ic"><i className="fa-solid fa-wand-magic-sparkles"></i></div>
+            <div className="pstep">
+              <div className="pic"><i className="fa-solid fa-wand-magic-sparkles"></i></div>
+              <span className="pstep-tag">STEP 02</span>
               <h3>AI 면접 자동 생성·진행</h3>
-              <p>AI가 평가 기준·질문을 만들고, <br />지원자가 온라인으로 응시합니다.</p>
+              <p>AI가 평가 기준·질문을 만들고,<br />지원자가 온라인으로 응시합니다.</p>
             </div>
-            <div className="arrow"><i className="fa-solid fa-arrow-right-long"></i></div>
-            <div className="node">
-              <div className="step">STEP 03</div>
-              <div className="ic"><i className="fa-solid fa-file-lines"></i></div>
+            <div className="pstep">
+              <div className="pic"><i className="fa-solid fa-file-lines"></i></div>
+              <span className="pstep-tag">STEP 03</span>
               <h3>검증 리포트 수신</h3>
-              <p>AI가 응답을 분석·채점해 <br />한 장의 리포트로 정리합니다.</p>
+              <p>AI가 응답을 분석·채점해<br />한 장의 리포트로 정리합니다.</p>
             </div>
           </div>
         </div>
