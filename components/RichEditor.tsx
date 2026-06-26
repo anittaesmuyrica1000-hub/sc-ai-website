@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { supabase } from "@/lib/supabase";
 
 // 네이버 블로그식 WYSIWYG 편집기(보이는 대로). contentEditable + 서식 버튼 + 이미지 업로드.
@@ -9,7 +9,24 @@ import { supabase } from "@/lib/supabase";
 export type EditorTemplate = { label: string; html: string };
 
 // 빈 본문 판별용 — 태그 제거 후 공백/줄바꿈만 남으면 빈 것으로 본다.
-const stripText = (html: string) => String(html || "").replace(/<[^>]+>/g, "").replace(/[\s ]+/g, "").trim();
+const stripText = (html: string) => String(html || "").replace(/<[^>]+>/g, "").replace(/[\s ]+/g, "").trim();
+
+const MAX_ROWS = 30;
+const MAX_COLS = 8;
+const GRID = 8; // 격자 픽커 최대(8×8)
+const FONT_SIZES = [
+  { label: "아주 작게", px: "13px" },
+  { label: "작게", px: "15px" },
+  { label: "보통", px: "17px" },
+  { label: "크게", px: "21px" },
+  { label: "아주 크게", px: "26px" },
+  { label: "제목 크기", px: "32px" },
+];
+// 글자색 / 형광펜 색 팔레트
+const TEXT_COLORS = ["#1a2233", "#2e6cf0", "#1f59d6", "#e5484d", "#0f9d58", "#f5a623", "#8b5cf6", "#64748b", "#ffffff"];
+const HILITE_COLORS = ["#fff3a3", "#cdebff", "#d6f5d6", "#ffd9dc", "#ece0ff", "#ffe2c2", "#e9edf3", "transparent"];
+
+type Box = { top: number; left: number; width: number; height: number };
 
 type Props = {
   value: string; // 초기 HTML
@@ -20,9 +37,20 @@ type Props = {
 };
 
 export default function RichEditor({ value, onChange, placeholder, minHeight = 380, templates }: Props) {
+  const wrapRef = useRef<HTMLDivElement>(null);
   const ref = useRef<HTMLDivElement>(null);
   const fileRef = useRef<HTMLInputElement>(null);
+  const cellRef = useRef<HTMLTableCellElement | null>(null);
   const [uploading, setUploading] = useState(false);
+  const [gridOpen, setGridOpen] = useState(false);
+  const [hover, setHover] = useState({ r: 0, c: 0 });
+  const [palette, setPalette] = useState<"fore" | "back" | null>(null);
+
+  // 플로팅 툴바 대상/좌표
+  const [tableEl, setTableEl] = useState<HTMLTableElement | null>(null);
+  const [imgFig, setImgFig] = useState<HTMLElement | null>(null); // 선택된 이미지의 figure
+  const [tablePos, setTablePos] = useState<Box | null>(null);
+  const [imgPos, setImgPos] = useState<Box | null>(null);
 
   // 초기 1회만 주입(이후엔 사용자 입력이 출처)
   useEffect(() => {
@@ -35,7 +63,56 @@ export default function RichEditor({ value, onChange, placeholder, minHeight = 3
   }
   function exec(command: string, val?: string) {
     ref.current?.focus();
+    try { document.execCommand("styleWithCSS", false, "true"); } catch { /* noop */ }
     document.execCommand(command, false, val);
+    emit();
+  }
+  // 선택 영역을 inline style span으로 감싼다(글자 크기 등 execCommand가 없는 서식용).
+  function wrapStyle(prop: "fontSize", value: string) {
+    ref.current?.focus();
+    const sel = window.getSelection();
+    if (!sel || sel.rangeCount === 0 || sel.isCollapsed) return;
+    const range = sel.getRangeAt(0);
+    if (!ref.current?.contains(range.commonAncestorContainer)) return;
+    const span = document.createElement("span");
+    span.style[prop] = value;
+    try {
+      span.appendChild(range.extractContents());
+      range.insertNode(span);
+      sel.removeAllRanges();
+      const r = document.createRange();
+      r.selectNodeContents(span);
+      sel.addRange(r);
+    } catch { /* 복잡한 선택은 무시 */ }
+    emit();
+  }
+  function onFontSize(e: React.ChangeEvent<HTMLSelectElement>) {
+    const v = e.target.value;
+    e.target.selectedIndex = 0;
+    if (v) wrapStyle("fontSize", v);
+  }
+  function onAlign(e: React.ChangeEvent<HTMLSelectElement>) {
+    const v = e.target.value;
+    e.target.selectedIndex = 0;
+    if (v) exec(v);
+  }
+  function applyColor(which: "fore" | "back", color: string) {
+    exec(which === "fore" ? "foreColor" : "hiliteColor", color);
+    setPalette(null);
+  }
+  // 동영상 임베드 — YouTube/Vimeo URL을 반응형 iframe으로 삽입.
+  function insertVideo() {
+    const url = window.prompt("동영상 주소를 붙여넣으세요 (YouTube · Vimeo)", "https://");
+    if (!url) return;
+    let src = "";
+    const yt = url.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|shorts\/))([\w-]{11})/);
+    const vm = url.match(/vimeo\.com\/(?:video\/)?(\d+)/);
+    if (yt) src = `https://www.youtube.com/embed/${yt[1]}`;
+    else if (vm) src = `https://player.vimeo.com/video/${vm[1]}`;
+    else { alert("YouTube 또는 Vimeo 주소만 넣을 수 있습니다."); return; }
+    const html = `<div class="post-video"><iframe src="${src}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div><p><br></p>`;
+    ref.current?.focus();
+    document.execCommand("insertHTML", false, html);
     emit();
   }
   function onBlockChange(e: React.ChangeEvent<HTMLSelectElement>) {
@@ -63,22 +140,209 @@ export default function RichEditor({ value, onChange, placeholder, minHeight = 3
     }
     exec("formatBlock", inQuote ? "p" : "blockquote");
   }
-  // 표 만들기 — 행·열 수를 입력받아 블로그 표 마크업(post-table)으로 삽입.
-  // 블로그 상세는 본문 HTML을 그대로 출력하므로 같은 클래스를 쓰면 라이브에서도 동일하게 스타일링된다.
-  function insertTable() {
-    const raw = window.prompt("표 크기를 '행,열' 로 입력하세요 (머리글 행 제외)", "2,3");
-    if (!raw) return;
-    const [r, c] = raw.split(/[,x×*\s]+/).map((n) => parseInt(n.trim(), 10));
-    const rows = Math.min(Math.max(r || 0, 1), 30);
-    const cols = Math.min(Math.max(c || 0, 1), 10);
-    if (!rows || !cols) { alert("숫자로 '행,열'을 입력해 주세요. 예: 2,3"); return; }
-    const head = "<tr>" + Array.from({ length: cols }, (_, i) => `<th>머리글 ${i + 1}</th>`).join("") + "</tr>";
-    const body = Array.from({ length: rows }, () => "<tr>" + Array.from({ length: cols }, () => "<td>내용</td>").join("") + "</tr>").join("");
+
+  // ── 좌표 계산 ─────────────────────────────────────────────
+  const boxOf = useCallback((el: HTMLElement): Box | null => {
+    if (!wrapRef.current) return null;
+    const w = wrapRef.current.getBoundingClientRect();
+    const r = el.getBoundingClientRect();
+    return { top: r.top - w.top, left: r.left - w.left, width: r.width, height: r.height };
+  }, []);
+
+  // 활성 표/이미지 좌표 재계산(스크롤·리사이즈·내용변경 시)
+  const reposition = useCallback(() => {
+    setTablePos(tableEl ? boxOf(tableEl) : null);
+    setImgPos(imgFig ? boxOf(imgFig) : null);
+  }, [tableEl, imgFig, boxOf]);
+
+  useEffect(() => {
+    reposition();
+  }, [reposition]);
+
+  useEffect(() => {
+    const onScrollResize = () => reposition();
+    const area = ref.current;
+    window.addEventListener("scroll", onScrollResize, true);
+    window.addEventListener("resize", onScrollResize);
+    area?.addEventListener("scroll", onScrollResize);
+    return () => {
+      window.removeEventListener("scroll", onScrollResize, true);
+      window.removeEventListener("resize", onScrollResize);
+      area?.removeEventListener("scroll", onScrollResize);
+    };
+  }, [reposition]);
+
+  // 표 안에 커서가 있는지 추적 → 표 편집 툴바 표시
+  useEffect(() => {
+    function onSelChange() {
+      const root = ref.current;
+      if (!root) return;
+      const sel = window.getSelection();
+      let node: Node | null = sel?.anchorNode ?? null;
+      if (!node || !root.contains(node)) return; // 에디터 밖 선택은 무시(툴바 유지)
+      let cell: HTMLTableCellElement | null = null;
+      while (node && node !== root) {
+        if (node.nodeType === 1) {
+          const tag = (node as HTMLElement).tagName;
+          if (tag === "TD" || tag === "TH") { cell = node as HTMLTableCellElement; break; }
+        }
+        node = node.parentNode;
+      }
+      cellRef.current = cell;
+      setTableEl(cell ? cell.closest("table") : null);
+    }
+    document.addEventListener("selectionchange", onSelChange);
+    return () => document.removeEventListener("selectionchange", onSelChange);
+  }, []);
+
+  // 이미지 클릭 → 선택, 그 외 클릭 → 선택 해제
+  useEffect(() => {
+    function onDocDown(e: MouseEvent) {
+      const t = e.target as HTMLElement;
+      // 툴바 밖 클릭이면 열린 격자·팔레트 닫기
+      if (!t.closest(".rich-toolbar")) { setGridOpen(false); setPalette(null); }
+      if (t.closest(".rich-imgbar") || t.closest(".rich-handle")) return; // 툴바/핸들 클릭은 유지
+      if (t.tagName === "IMG" && ref.current?.contains(t)) {
+        setImgFig((t.closest("figure") as HTMLElement) || t);
+      } else {
+        setImgFig(null);
+      }
+    }
+    document.addEventListener("mousedown", onDocDown);
+    return () => document.removeEventListener("mousedown", onDocDown);
+  }, []);
+
+  // ── 표 삽입(격자 픽커) ─────────────────────────────────────
+  function insertTable(rows: number, cols: number) {
+    const r = Math.min(Math.max(rows, 1), MAX_ROWS);
+    const c = Math.min(Math.max(cols, 1), MAX_COLS);
+    const head = "<tr>" + Array.from({ length: c }, (_, i) => `<th>머리글 ${i + 1}</th>`).join("") + "</tr>";
+    const body = Array.from({ length: r }, () => "<tr>" + Array.from({ length: c }, () => "<td>내용</td>").join("") + "</tr>").join("");
     const html = `<div class="post-table-wrap"><table class="post-table"><thead>${head}</thead><tbody>${body}</tbody></table></div><p><br></p>`;
     ref.current?.focus();
     document.execCommand("insertHTML", false, html);
+    setGridOpen(false);
     emit();
   }
+
+  // ── 표 편집 연산 ──────────────────────────────────────────
+  function withCell(fn: (cell: HTMLTableCellElement, table: HTMLTableElement) => void) {
+    const cell = cellRef.current;
+    const table = tableEl;
+    if (!cell || !table) return;
+    fn(cell, table);
+    emit();
+    requestAnimationFrame(reposition);
+  }
+  function addRow(below: boolean) {
+    withCell((cell, table) => {
+      const tbody = table.tBodies[0];
+      if (!tbody) return;
+      if (tbody.rows.length >= MAX_ROWS) return;
+      const cols = table.rows[0]?.cells.length || 1;
+      const tr = document.createElement("tr");
+      for (let i = 0; i < cols; i++) { const td = document.createElement("td"); td.textContent = "내용"; tr.appendChild(td); }
+      const curRow = cell.closest("tr");
+      const inHead = curRow?.parentElement?.tagName === "THEAD";
+      if (inHead) tbody.insertBefore(tr, tbody.firstChild);
+      else tbody.insertBefore(tr, below ? curRow!.nextSibling : curRow);
+    });
+  }
+  function addCol(after: boolean) {
+    withCell((cell, table) => {
+      const cols = table.rows[0]?.cells.length || 0;
+      if (cols >= MAX_COLS) return;
+      const idx = cell.cellIndex;
+      Array.from(table.rows).forEach((row) => {
+        const inHead = row.parentElement?.tagName === "THEAD";
+        const el = document.createElement(inHead ? "th" : "td");
+        el.textContent = inHead ? "머리글" : "내용";
+        const refCell = row.cells[after ? idx + 1 : idx] || null;
+        row.insertBefore(el, refCell);
+      });
+    });
+  }
+  function delRow() {
+    withCell((cell, table) => {
+      const tbody = table.tBodies[0];
+      const curRow = cell.closest("tr");
+      if (!curRow) return;
+      if (curRow.parentElement?.tagName === "THEAD") return; // 머리글 행은 삭제 불가
+      if (tbody && tbody.rows.length <= 1) return; // 최소 1행 유지
+      curRow.remove();
+      cellRef.current = null;
+    });
+  }
+  function delCol() {
+    withCell((cell, table) => {
+      const cols = table.rows[0]?.cells.length || 0;
+      if (cols <= 1) return; // 최소 1열 유지
+      const idx = cell.cellIndex;
+      Array.from(table.rows).forEach((row) => { row.cells[idx]?.remove(); });
+      cellRef.current = null;
+    });
+  }
+  function delTable() {
+    if (!tableEl) return;
+    (tableEl.closest(".post-table-wrap") || tableEl).remove();
+    setTableEl(null);
+    cellRef.current = null;
+    emit();
+  }
+
+  // ── 이미지 크기/정렬 ──────────────────────────────────────
+  function applyImgStyle(fig: HTMLElement) {
+    const width = fig.dataset.width; // '40' 등(%) — 없으면 100%
+    const align = fig.dataset.align || "center";
+    let s = "";
+    if (width) s += `width:${width}%;`;
+    if (align === "left") s += "margin-right:auto;margin-left:0;";
+    else if (align === "right") s += "margin-left:auto;margin-right:0;";
+    else s += "margin-left:auto;margin-right:auto;"; // center
+    fig.setAttribute("style", s);
+  }
+  function setImgWidth(pct: number) {
+    if (!imgFig) return;
+    imgFig.dataset.width = String(Math.max(15, Math.min(100, Math.round(pct))));
+    applyImgStyle(imgFig);
+    emit();
+    requestAnimationFrame(reposition);
+  }
+  function setImgAlign(align: "left" | "center" | "right") {
+    if (!imgFig) return;
+    imgFig.dataset.align = align;
+    applyImgStyle(imgFig);
+    emit();
+    requestAnimationFrame(reposition);
+  }
+  function delImg() {
+    if (!imgFig) return;
+    imgFig.remove();
+    setImgFig(null);
+    emit();
+  }
+  // 모서리 드래그로 자유 리사이즈
+  function onHandleDown(e: React.PointerEvent) {
+    e.preventDefault();
+    if (!imgFig || !ref.current) return;
+    const fig = imgFig;
+    const cs = getComputedStyle(ref.current);
+    const areaW = ref.current.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight);
+    const startX = e.clientX;
+    const startW = fig.getBoundingClientRect().width;
+    const move = (ev: PointerEvent) => {
+      const w = startW + (ev.clientX - startX);
+      setImgWidth((w / areaW) * 100);
+    };
+    const up = () => {
+      document.removeEventListener("pointermove", move);
+      document.removeEventListener("pointerup", up);
+      emit();
+    };
+    document.addEventListener("pointermove", move);
+    document.addEventListener("pointerup", up);
+  }
+
   // 템플릿 — 선택한 글 구조(HTML)를 본문에 채워 넣는다. 내용이 있으면 덮어쓸지 확인.
   function applyTemplate(e: React.ChangeEvent<HTMLSelectElement>) {
     const idx = e.target.selectedIndex - 1;
@@ -128,8 +392,11 @@ export default function RichEditor({ value, onChange, placeholder, minHeight = 3
     </button>
   );
 
+  const curWidth = imgFig?.dataset.width ? parseInt(imgFig.dataset.width, 10) : 100;
+  const curAlign = imgFig?.dataset.align || "center";
+
   return (
-    <div className="rich">
+    <div className="rich" ref={wrapRef}>
       <div className="rich-toolbar" role="toolbar" aria-label="서식">
         {templates && templates.length > 0 && (
           <>
@@ -146,25 +413,91 @@ export default function RichEditor({ value, onChange, placeholder, minHeight = 3
           <option value="h2">제목</option>
           <option value="h3">소제목</option>
         </select>
+        <select className="rich-block" onChange={onFontSize} title="글자 크기" defaultValue="">
+          <option value="" disabled>크기</option>
+          {FONT_SIZES.map((f) => <option key={f.px} value={f.px}>{f.label}</option>)}
+        </select>
         <span className="rich-sep" />
         <B on={() => exec("bold")} title="굵게"><b>B</b></B>
         <B on={() => exec("italic")} title="기울임"><i>I</i></B>
         <B on={() => exec("underline")} title="밑줄"><u>U</u></B>
         <span className="rich-sep" />
+        <div className="rich-grid-wrap">
+          <button type="button" className={"rich-btn rich-color-btn" + (palette === "fore" ? " is-on" : "")} title="글자색"
+            onMouseDown={(e) => e.preventDefault()} onClick={() => setPalette((p) => (p === "fore" ? null : "fore"))}>
+            <span className="rich-color-A">가</span><i className="fa-solid fa-caret-down rich-caret" />
+          </button>
+          {palette === "fore" && (
+            <div className="rich-palette">
+              {TEXT_COLORS.map((c) => (
+                <button key={c} type="button" className="rich-swatch" style={{ background: c }} title={c}
+                  onMouseDown={(e) => e.preventDefault()} onClick={() => applyColor("fore", c)} />
+              ))}
+            </div>
+          )}
+        </div>
+        <div className="rich-grid-wrap">
+          <button type="button" className={"rich-btn rich-color-btn" + (palette === "back" ? " is-on" : "")} title="형광펜"
+            onMouseDown={(e) => e.preventDefault()} onClick={() => setPalette((p) => (p === "back" ? null : "back"))}>
+            <span className="rich-color-A rich-hl">가</span><i className="fa-solid fa-caret-down rich-caret" />
+          </button>
+          {palette === "back" && (
+            <div className="rich-palette">
+              {HILITE_COLORS.map((c) => (
+                <button key={c} type="button" className={"rich-swatch" + (c === "transparent" ? " rich-swatch-none" : "")} style={{ background: c }} title={c === "transparent" ? "없음" : c}
+                  onMouseDown={(e) => e.preventDefault()} onClick={() => applyColor("back", c)} />
+              ))}
+            </div>
+          )}
+        </div>
+        <span className="rich-sep" />
+        <select className="rich-block" onChange={onAlign} title="정렬" defaultValue="">
+          <option value="" disabled>정렬</option>
+          <option value="justifyLeft">왼쪽</option>
+          <option value="justifyCenter">가운데</option>
+          <option value="justifyRight">오른쪽</option>
+          <option value="justifyFull">양쪽</option>
+        </select>
         <B on={() => exec("insertUnorderedList")} title="글머리 목록"><i className="fa-solid fa-list-ul" /></B>
         <B on={() => exec("insertOrderedList")} title="번호 목록"><i className="fa-solid fa-list-ol" /></B>
+        <B on={() => exec("indent")} title="들여쓰기"><i className="fa-solid fa-indent" /></B>
+        <B on={() => exec("outdent")} title="내어쓰기"><i className="fa-solid fa-outdent" /></B>
+        <span className="rich-sep" />
         <B on={toggleQuote} title="인용 (다시 누르면 해제)"><i className="fa-solid fa-quote-right" /></B>
         <B on={() => exec("insertHorizontalRule")} title="구분선"><i className="fa-solid fa-minus" /></B>
-        <B on={insertTable} title="표 만들기"><i className="fa-solid fa-table" /></B>
+        <div className="rich-grid-wrap">
+          <button type="button" className={"rich-btn" + (gridOpen ? " is-on" : "")} title="표 만들기"
+            onMouseDown={(e) => e.preventDefault()} onClick={() => setGridOpen((v) => !v)}>
+            <i className="fa-solid fa-table" />
+          </button>
+          {gridOpen && (
+            <div className="rich-grid" onMouseLeave={() => setHover({ r: 0, c: 0 })}>
+              <div className="rich-grid-cells">
+                {Array.from({ length: GRID }, (_, ri) =>
+                  Array.from({ length: GRID }, (_, ci) => (
+                    <span key={`${ri}-${ci}`}
+                      className={"rich-grid-cell" + (ri < hover.r && ci < hover.c ? " on" : "")}
+                      onMouseEnter={() => setHover({ r: ri + 1, c: ci + 1 })}
+                      onMouseDown={(e) => e.preventDefault()}
+                      onClick={() => insertTable(hover.r, hover.c)} />
+                  ))
+                )}
+              </div>
+              <div className="rich-grid-label">{hover.r > 0 ? `${hover.r} × ${hover.c} 표` : "크기를 선택하세요"}</div>
+            </div>
+          )}
+        </div>
         <span className="rich-sep" />
         <B on={addLink} title="링크"><i className="fa-solid fa-link" /></B>
         <button type="button" className="rich-btn" title="이미지 업로드" onMouseDown={(e) => e.preventDefault()} onClick={() => fileRef.current?.click()} disabled={uploading}>
           {uploading ? <i className="fa-solid fa-spinner fa-spin" /> : <i className="fa-solid fa-image" />}
         </button>
         <input ref={fileRef} type="file" accept="image/*" hidden onChange={onPickImage} />
+        <B on={insertVideo} title="동영상 (YouTube · Vimeo)"><i className="fa-solid fa-film" /></B>
         <span className="rich-sep" />
         <B on={clearFmt} title="서식 지우기"><i className="fa-solid fa-eraser" /></B>
       </div>
+
       <div
         ref={ref}
         className="rich-area post-content"
@@ -176,6 +509,48 @@ export default function RichEditor({ value, onChange, placeholder, minHeight = 3
         data-placeholder={placeholder || "내용을 입력하세요…"}
         style={{ minHeight }}
       />
+
+      {/* 표 편집 플로팅 툴바 — 표 안에 커서가 있을 때 */}
+      {tableEl && tablePos && (
+        <div className="rich-tablebar" style={{ top: Math.max(2, tablePos.top - 40), left: tablePos.left }}
+          onMouseDown={(e) => e.preventDefault()}>
+          <button type="button" title="위에 행 추가" onClick={() => addRow(false)}><i className="fa-solid fa-arrow-up" /><i className="fa-solid fa-plus rich-mini" /></button>
+          <button type="button" title="아래에 행 추가" onClick={() => addRow(true)}><i className="fa-solid fa-arrow-down" /><i className="fa-solid fa-plus rich-mini" /></button>
+          <span className="rich-bar-sep" />
+          <button type="button" title="왼쪽에 열 추가" onClick={() => addCol(false)}><i className="fa-solid fa-arrow-left" /><i className="fa-solid fa-plus rich-mini" /></button>
+          <button type="button" title="오른쪽에 열 추가" onClick={() => addCol(true)}><i className="fa-solid fa-arrow-right" /><i className="fa-solid fa-plus rich-mini" /></button>
+          <span className="rich-bar-sep" />
+          <button type="button" title="행 삭제" onClick={delRow}>행<i className="fa-solid fa-minus rich-mini" /></button>
+          <button type="button" title="열 삭제" onClick={delCol}>열<i className="fa-solid fa-minus rich-mini" /></button>
+          <span className="rich-bar-sep" />
+          <button type="button" className="rich-bar-del" title="표 삭제" onClick={delTable}><i className="fa-solid fa-trash" /></button>
+        </div>
+      )}
+
+      {/* 이미지 크기/정렬 플로팅 툴바 + 리사이즈 핸들 */}
+      {imgFig && imgPos && (
+        <>
+          <div className="rich-imgbar" style={{ top: Math.max(2, imgPos.top - 44), left: imgPos.left }}>
+            <button type="button" className={curWidth <= 45 ? "is-on" : ""} title="작게" onClick={() => setImgWidth(40)}>작게</button>
+            <button type="button" className={curWidth > 45 && curWidth < 95 ? "is-on" : ""} title="보통" onClick={() => setImgWidth(70)}>보통</button>
+            <button type="button" className={curWidth >= 95 ? "is-on" : ""} title="크게" onClick={() => setImgWidth(100)}>크게</button>
+            <span className="rich-bar-sep" />
+            <input type="range" min={15} max={100} value={curWidth} title="크기 조절"
+              onChange={(e) => setImgWidth(parseInt(e.target.value, 10))} />
+            <span className="rich-imgbar-pct">{curWidth}%</span>
+            <span className="rich-bar-sep" />
+            <button type="button" className={curAlign === "left" ? "is-on" : ""} title="왼쪽 정렬" onClick={() => setImgAlign("left")}><i className="fa-solid fa-align-left" /></button>
+            <button type="button" className={curAlign === "center" ? "is-on" : ""} title="가운데 정렬" onClick={() => setImgAlign("center")}><i className="fa-solid fa-align-center" /></button>
+            <button type="button" className={curAlign === "right" ? "is-on" : ""} title="오른쪽 정렬" onClick={() => setImgAlign("right")}><i className="fa-solid fa-align-right" /></button>
+            <span className="rich-bar-sep" />
+            <button type="button" className="rich-bar-del" title="이미지 삭제" onClick={delImg}><i className="fa-solid fa-trash" /></button>
+          </div>
+          <div className="rich-imgsel" style={{ top: imgPos.top, left: imgPos.left, width: imgPos.width, height: imgPos.height }} />
+          <div className="rich-handle" title="드래그하여 크기 조절"
+            style={{ top: imgPos.top + imgPos.height - 7, left: imgPos.left + imgPos.width - 7 }}
+            onPointerDown={onHandleDown} />
+        </>
+      )}
     </div>
   );
 }

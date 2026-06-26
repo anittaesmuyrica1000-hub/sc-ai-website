@@ -446,6 +446,9 @@ const BLOG_TEMPLATES: EditorTemplate[] = [
   },
 ];
 
+// 관리자가 직접 저장한 글 템플릿(Supabase post_templates)
+type CustomTemplate = { id: string; label: string; html: string };
+
 function BlogManager() {
   const [posts, setPosts] = useState<Post[]>([]);
   const [form, setForm] = useState<FormState | null>(null);
@@ -454,6 +457,7 @@ function BlogManager() {
   const [loadErr, setLoadErr] = useState(false);
   const [uploadingCover, setUploadingCover] = useState(false);
   const [preview, setPreview] = useState(false);
+  const [customTpls, setCustomTpls] = useState<CustomTemplate[]>([]);
   const isEdit = !!form?.id;
 
   const load = useCallback(async () => {
@@ -465,6 +469,43 @@ function BlogManager() {
     } catch (err) { console.error("posts load failed:", err); setLoadErr(true); }
   }, []);
   useEffect(() => { load(); }, [load]);
+
+  // 내 템플릿 불러오기(테이블이 없거나 권한이 없으면 조용히 무시)
+  const loadTpls = useCallback(async () => {
+    try {
+      const res = await supabase.from("post_templates").select("id,label,html").order("created_at", { ascending: true });
+      if (res.error) throw res.error;
+      setCustomTpls((res.data as CustomTemplate[]) || []);
+    } catch (err) { console.warn("templates load skipped:", err); }
+  }, []);
+  useEffect(() => { loadTpls(); }, [loadTpls]);
+
+  // 기본 템플릿 + 내 템플릿을 합쳐 편집기에 전달
+  const allTemplates = useMemo<EditorTemplate[]>(
+    () => [...BLOG_TEMPLATES, ...customTpls.map((t) => ({ label: t.label, html: t.html }))],
+    [customTpls]
+  );
+
+  // 현재 본문을 새 템플릿으로 저장
+  async function saveAsTemplate() {
+    if (!form || !stripTags(form.content)) { showMsg("본문을 먼저 작성한 뒤 템플릿으로 저장할 수 있습니다.", false); return; }
+    const label = window.prompt("템플릿 이름을 입력하세요", form.title.trim() || "내 템플릿");
+    if (!label || !label.trim()) return;
+    try {
+      const res = await supabase.from("post_templates").insert({ label: label.trim(), html: form.content });
+      if (res.error) throw res.error;
+      await loadTpls();
+      showMsg(`“${label.trim()}” 템플릿을 저장했습니다.`, true);
+    } catch (err) { console.error("template save failed:", err); showMsg("템플릿 저장에 실패했습니다. 관리자 권한 또는 테이블 설정을 확인해 주세요.", false); }
+  }
+  async function deleteTpl(t: CustomTemplate) {
+    if (!confirm(`템플릿 “${t.label}”을(를) 삭제할까요?`)) return;
+    try {
+      const res = await supabase.from("post_templates").delete().eq("id", t.id);
+      if (res.error) throw res.error;
+      await loadTpls();
+    } catch (err) { console.error("template delete failed:", err); alert("템플릿 삭제에 실패했습니다."); }
+  }
 
   function showMsg(text: string, ok: boolean) { setMsg({ text, ok }); if (ok) setTimeout(() => setMsg(null), 3000); }
   function set<K extends keyof FormState>(k: K, v: FormState[K]) { setForm((f) => (f ? { ...f, [k]: v } : f)); }
@@ -574,8 +615,25 @@ function BlogManager() {
                 value={renderBody(form.content)}
                 onChange={(html) => set("content", html)}
                 placeholder="본문을 입력하세요. 위 도구로 제목·목록·표·이미지 등을 넣을 수 있습니다."
-                templates={BLOG_TEMPLATES}
+                templates={allTemplates}
               />
+              <div className="tpl-manage">
+                <button type="button" className="btn btn-out btn-sm" onClick={saveAsTemplate}>
+                  <i className="fa-solid fa-bookmark"></i> 현재 글을 템플릿으로 저장
+                </button>
+                {customTpls.length > 0 && (
+                  <div className="tpl-chips">
+                    <span className="tpl-chips-label">내 템플릿</span>
+                    {customTpls.map((t) => (
+                      <span className="tpl-chip" key={t.id}>
+                        {t.label}
+                        <button type="button" title="삭제" onClick={() => deleteTpl(t)} aria-label={`${t.label} 삭제`}>×</button>
+                      </span>
+                    ))}
+                  </div>
+                )}
+              </div>
+              <p className="hint">상단 도구의 <strong>📄 템플릿</strong>에서 기본 템플릿과 내 템플릿을 불러올 수 있습니다.</p>
             </div>
             <label className="check"><input type="checkbox" checked={form.published} onChange={(e) => set("published", e.target.checked)} /> 공개(게시) — 해제 시 비공개(임시저장)</label>
             <div className="form-actions">
