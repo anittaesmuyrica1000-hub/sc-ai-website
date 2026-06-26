@@ -7,6 +7,7 @@ import { fmtDate } from "@/lib/format";
 import MarkdownEditor from "@/components/MarkdownEditor";
 import RichEditor, { type EditorTemplate } from "@/components/RichEditor";
 import { renderBody } from "@/lib/postRender";
+import { recommendTags } from "@/lib/keywords";
 
 // HTML 태그 제거(목록 미리보기·검증용)
 const stripTags = (s: string) => String(s || "").replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim();
@@ -409,8 +410,9 @@ function Settings({ email }: { email: string }) {
 
 /* ===================== 블로그 관리 ===================== */
 
-type FormState = { id: string; title: string; category: string; author: string; cover_url: string; excerpt: string; content: string; published: boolean };
-const EMPTY: FormState = { id: "", title: "", category: "", author: "", cover_url: "", excerpt: "", content: "", published: true };
+type FormState = { id: string; title: string; category: string; author: string; cover_url: string; excerpt: string; content: string; published: boolean; tags: string[] };
+const EMPTY: FormState = { id: "", title: "", category: "", author: "", cover_url: "", excerpt: "", content: "", published: true, tags: [] };
+const MAX_TAGS = 8;
 
 // 블로그 글 템플릿 — 자주 쓰는 글 구조를 한 번에 채워 넣는다. 본문은 WYSIWYG(HTML)로 저장된다.
 const BLOG_TEMPLATES: EditorTemplate[] = [
@@ -511,11 +513,33 @@ function BlogManager() {
     setCustomTpls(next);
   }
 
+  // ── 주제 키워드 · 해시태그(SEO) ─────────────────────────────
+  const [tagInput, setTagInput] = useState("");
+  // 제목·본문·카테고리에서 자동 추천(이미 고른 건 제외)
+  const recoTags = useMemo(() => {
+    if (!form) return [] as string[];
+    return recommendTags({ title: form.title, content: form.content, category: form.category })
+      .filter((t) => !form.tags.includes(t));
+  }, [form]);
+  function normTag(s: string) { return s.replace(/^#+/, "").replace(/\s+/g, " ").trim(); }
+  function addTag(raw: string) {
+    const t = normTag(raw);
+    if (!t || !form) return;
+    if (form.tags.includes(t)) return;
+    if (form.tags.length >= MAX_TAGS) { showMsg(`해시태그는 최대 ${MAX_TAGS}개까지 넣을 수 있습니다.`, false); return; }
+    set("tags", [...form.tags, t]);
+  }
+  function removeTag(t: string) { if (form) set("tags", form.tags.filter((x) => x !== t)); }
+  function onTagKey(e: React.KeyboardEvent<HTMLInputElement>) {
+    if (e.key === "Enter" || e.key === ",") { e.preventDefault(); addTag(tagInput); setTagInput(""); }
+    else if (e.key === "Backspace" && !tagInput && form?.tags.length) { removeTag(form.tags[form.tags.length - 1]); }
+  }
+
   function showMsg(text: string, ok: boolean) { setMsg({ text, ok }); if (ok) setTimeout(() => setMsg(null), 3000); }
   function set<K extends keyof FormState>(k: K, v: FormState[K]) { setForm((f) => (f ? { ...f, [k]: v } : f)); }
   function enterNew() { setForm({ ...EMPTY }); setMsg(null); }
   function enterEdit(p: Post) {
-    setForm({ id: p.id, title: p.title || "", category: p.category || "", author: p.author || "", cover_url: p.cover_url || "", excerpt: p.excerpt || "", content: p.content || "", published: p.published !== false });
+    setForm({ id: p.id, title: p.title || "", category: p.category || "", author: p.author || "", cover_url: p.cover_url || "", excerpt: p.excerpt || "", content: p.content || "", published: p.published !== false, tags: Array.isArray(p.tags) ? p.tags : [] });
     setMsg(null); window.scrollTo({ top: 0, behavior: "smooth" });
   }
   function closeForm() { setForm(null); setMsg(null); }
@@ -542,12 +566,21 @@ function BlogManager() {
     const payload: Record<string, unknown> = {
       title: form.title.trim(), category: form.category.trim() || null, author: form.author.trim() || null,
       cover_url: form.cover_url.trim() || null, excerpt: form.excerpt.trim() || null, content: form.content, published: form.published,
+      tags: form.tags.length ? form.tags : null,
     };
     setSaving(true);
     try {
-      let res;
-      if (form.id) { payload.updated_at = new Date().toISOString(); res = await supabase.from("posts").update(payload).eq("id", form.id); }
-      else { res = await supabase.from("posts").insert(payload); }
+      const run = (body: Record<string, unknown>) =>
+        form.id
+          ? supabase.from("posts").update({ ...body, updated_at: new Date().toISOString() }).eq("id", form.id)
+          : supabase.from("posts").insert(body);
+      let res = await run(payload);
+      // tags 컬럼이 아직 없으면(마이그레이션 전) 태그 빼고 다시 저장 — 본문 저장은 막지 않는다.
+      if (res.error && /tags/i.test(`${res.error.message} ${res.error.details || ""}`)) {
+        const { tags, ...rest } = payload; void tags;
+        res = await run(rest);
+        if (!res.error) alert("글은 저장됐지만 태그는 보류됐어요.\nSupabase에서 posts.tags 컬럼 추가(SQL) 후 다시 저장하면 태그가 반영됩니다.");
+      }
       if (res.error) throw res.error;
       showMsg(form.id ? "수정되었습니다." : "등록되었습니다.", true);
       setForm(null); await load();
@@ -611,6 +644,34 @@ function BlogManager() {
             <div className="field">
               <label htmlFor="f-excerpt">요약</label>
               <input type="text" id="f-excerpt" placeholder="리스트에 보일 한 줄 요약" value={form.excerpt} onChange={(e) => set("excerpt", e.target.value)} />
+            </div>
+            <div className="field">
+              <label>주제 키워드 · 해시태그 <span className="hint-inline">검색 노출(SEO)용 · 3~5개 권장, 최대 {MAX_TAGS}개</span></label>
+              <div className="tag-box">
+                {form.tags.map((t) => (
+                  <span className="tag-chip on" key={t}>
+                    #{t}
+                    <button type="button" title="제거" aria-label={`${t} 제거`} onClick={() => removeTag(t)}>×</button>
+                  </span>
+                ))}
+                <input
+                  type="text"
+                  className="tag-input"
+                  placeholder={form.tags.length ? "추가…" : "키워드 입력 후 Enter (예: AI면접)"}
+                  value={tagInput}
+                  onChange={(e) => setTagInput(e.target.value)}
+                  onKeyDown={onTagKey}
+                  onBlur={() => { if (tagInput.trim()) { addTag(tagInput); setTagInput(""); } }}
+                />
+              </div>
+              <div className="tag-reco">
+                <span className="tag-reco-head"><i className="fa-solid fa-wand-magic-sparkles"></i> 추천 키워드</span>
+                {recoTags.length === 0
+                  ? <span className="tag-reco-empty">제목·본문을 입력하면 키워드를 추천해 드려요.</span>
+                  : recoTags.map((t) => (
+                      <button type="button" className="tag-chip" key={t} onClick={() => addTag(t)}>#{t}</button>
+                    ))}
+              </div>
             </div>
             <div className="field">
               <label>본문 <span className="req">*</span></label>

@@ -62,7 +62,6 @@ header.nav-invert:hover .logo .nav-logo--base{display:block}
 header.nav-invert:hover .logo .nav-logo--invert{display:none}
 header.nav-invert:hover .nav-center a{color:var(--ink)}
 header.nav-invert:hover .nav-center a:hover{color:var(--blue-d)}
-header.nav-invert:hover .nav-login{background:#fff;color:var(--ink);border-color:var(--line)}
 header.nav-invert:hover .nav-menu-btn{background:transparent;border:0}
 header.nav-invert:hover .nav-burger span{background:var(--ink)}
 /* .nav-hidden: 히어로 최상단에서 GNB를 위로 숨김(슬라이드 업+페이드). 스크롤하면 해제되어 흰 GNB 등장. */
@@ -85,10 +84,15 @@ nav{position:relative;display:flex;align-items:center;justify-content:space-betw
 .logo .m{width:26px;height:26px;border-radius:8px;background:linear-gradient(135deg,var(--blue),var(--blue-2));display:grid;place-items:center;color:#fff;font-size:13px}
 .navlinks{display:flex;align-items:center;gap:8px}
 .navlinks .nav-btn{height:40px;padding:0 20px;font-size:14px;color:#fff}
-/* 로그인 — 보조 버튼(도입 문의 왼쪽). 다크 섹션 위에선 투명+흰 보더 */
-.navlinks .nav-login{height:40px;padding:0 18px;font-size:14px}
-header.nav-invert .nav-login{background:transparent;color:#fff;border-color:rgba(255,255,255,.45)}
-header.nav-invert .nav-login:hover{background:var(--soft-2);color:var(--ink);border-color:var(--line)}
+/* 로그인 — 보조 액션(도입 문의 왼쪽). 보더·배경 없는 텍스트 링크형(아이콘 라인 제거 무드와 통일,
+   파란 채움 CTA와 위계 분리). 다크 섹션 위에선 흰 글자. */
+.navlinks .nav-login{height:40px;padding:0 12px;font-size:14px;font-weight:600;background:transparent;color:var(--ink);border:0}
+.navlinks .nav-login:hover{background:transparent;color:var(--blue-d)}
+header.nav-invert .nav-login{background:transparent;color:rgba(255,255,255,.92);border:0}
+header.nav-invert .nav-login:hover{background:transparent;color:#fff}
+/* 다크 섹션 위에서 헤더 호버(밝아질 때) → 로그인 글자도 어둡게 */
+header.nav-invert:hover .nav-login{background:transparent;color:var(--ink)}
+header.nav-invert:hover .nav-login:hover{color:var(--blue-d)}
 @media(max-width:760px){.nav-login{display:none}}
 /* 중앙 페이지 메뉴(블로그·서비스소개서) — 헤더 정중앙 고정 */
 .nav-center{display:flex;align-items:center;gap:24px;margin-right:28px}
