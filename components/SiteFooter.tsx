@@ -13,7 +13,20 @@ export default function SiteFooter() {
       <div className="wrap">
         <div className="foot-top">
           <div className="foot-brand">
-            <img src="/supercoder-footer.svg" className="foot-logo-img" alt="Supercoder" />
+            <a
+              href="/"
+              className="foot-logo-link"
+              aria-label="맨 위로"
+              onClick={(e) => {
+                // 홈에서는 새로고침 대신 최상단으로 부드럽게 스크롤, 그 외 페이지는 홈으로 이동
+                if (pathname === "/") {
+                  e.preventDefault();
+                  window.scrollTo({ top: 0, behavior: "smooth" });
+                }
+              }}
+            >
+              <img src="/supercoder-footer.svg" className="foot-logo-img" alt="Supercoder" />
+            </a>
           </div>
           <div className="foot-links">
             <div className="foot-col">
