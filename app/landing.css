@@ -153,7 +153,7 @@
   .how .head{text-align:center;max-width:760px;margin:0 auto}
   /* 프로세스(시안2) — 바깥 패널 없이 3단계 카드, 중앙 정렬 + 배경 없는 라인 아이콘. */
   .flow2{margin:50px auto 6px;max-width:1080px;display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(20px,3vw,40px)}
-  .pstep{background:#fff;border-radius:20px;box-shadow:0 14px 32px rgba(31,45,90,.09);padding:clamp(26px,2.8vw,36px) clamp(18px,2.2vw,28px);text-align:center;animation:pstepUp var(--pdur,5s) ease-in-out infinite}
+  .pstep{background:#F4F8FE;border-radius:20px;box-shadow:0 14px 32px rgba(31,45,90,.09);padding:clamp(26px,2.8vw,36px) clamp(18px,2.2vw,28px);text-align:center;animation:pstepUp var(--pdur,5s) ease-in-out infinite}
   .pstep .pic{width:52px;height:52px;margin:0 auto;color:var(--blue);display:flex;align-items:center;justify-content:center;animation:pstepOn var(--pdur,5s) ease-in-out infinite}
   .pstep .pic svg{width:42px;height:42px}
   .pstep-tag{display:inline-flex;align-items:center;margin-top:20px;padding:5px 12px;border-radius:999px;background:var(--soft-2);color:var(--blue);font-weight:800;font-size:12.5px;letter-spacing:.03em}
