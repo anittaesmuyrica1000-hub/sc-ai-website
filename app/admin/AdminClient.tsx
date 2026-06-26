@@ -446,8 +446,19 @@ const BLOG_TEMPLATES: EditorTemplate[] = [
   },
 ];
 
-// 관리자가 직접 저장한 글 템플릿(Supabase post_templates)
+// 관리자가 직접 만든 글 템플릿 — 백엔드 저장 없이 브라우저(localStorage)에 보관.
 type CustomTemplate = { id: string; label: string; html: string };
+const TPL_KEY = "aiview_blog_templates";
+function readLocalTpls(): CustomTemplate[] {
+  if (typeof window === "undefined") return [];
+  try {
+    const arr = JSON.parse(localStorage.getItem(TPL_KEY) || "[]");
+    return Array.isArray(arr) ? arr.filter((t) => t && t.label && t.html) : [];
+  } catch { return []; }
+}
+function writeLocalTpls(list: CustomTemplate[]) {
+  try { localStorage.setItem(TPL_KEY, JSON.stringify(list)); } catch { /* 용량 초과 등은 무시 */ }
+}
 
 function BlogManager() {
   const [posts, setPosts] = useState<Post[]>([]);
@@ -470,15 +481,8 @@ function BlogManager() {
   }, []);
   useEffect(() => { load(); }, [load]);
 
-  // 내 템플릿 불러오기(테이블이 없거나 권한이 없으면 조용히 무시)
-  const loadTpls = useCallback(async () => {
-    try {
-      const res = await supabase.from("post_templates").select("id,label,html").order("created_at", { ascending: true });
-      if (res.error) throw res.error;
-      setCustomTpls((res.data as CustomTemplate[]) || []);
-    } catch (err) { console.warn("templates load skipped:", err); }
-  }, []);
-  useEffect(() => { loadTpls(); }, [loadTpls]);
+  // 내 템플릿 불러오기 — 브라우저(localStorage)에서
+  useEffect(() => { setCustomTpls(readLocalTpls()); }, []);
 
   // 기본 템플릿 + 내 템플릿을 합쳐 편집기에 전달
   const allTemplates = useMemo<EditorTemplate[]>(
@@ -486,25 +490,25 @@ function BlogManager() {
     [customTpls]
   );
 
-  // 현재 본문을 새 템플릿으로 저장
-  async function saveAsTemplate() {
+  // 현재 본문을 새 템플릿으로 저장(브라우저 보관)
+  function saveAsTemplate() {
     if (!form || !stripTags(form.content)) { showMsg("본문을 먼저 작성한 뒤 템플릿으로 저장할 수 있습니다.", false); return; }
     const label = window.prompt("템플릿 이름을 입력하세요", form.title.trim() || "내 템플릿");
     if (!label || !label.trim()) return;
-    try {
-      const res = await supabase.from("post_templates").insert({ label: label.trim(), html: form.content });
-      if (res.error) throw res.error;
-      await loadTpls();
-      showMsg(`“${label.trim()}” 템플릿을 저장했습니다.`, true);
-    } catch (err) { console.error("template save failed:", err); showMsg("템플릿 저장에 실패했습니다. 관리자 권한 또는 테이블 설정을 확인해 주세요.", false); }
+    const name = label.trim();
+    const idx = customTpls.findIndex((t) => t.label === name);
+    if (idx >= 0 && !confirm(`이미 있는 “${name}” 템플릿을 현재 본문으로 덮어쓸까요?`)) return;
+    const item: CustomTemplate = { id: `${Date.now()}-${Math.random().toString(36).slice(2)}`, label: name, html: form.content };
+    const next = idx >= 0 ? customTpls.map((t, i) => (i === idx ? { ...item, id: t.id } : t)) : [...customTpls, item];
+    writeLocalTpls(next);
+    setCustomTpls(next);
+    showMsg(`“${name}” 템플릿을 저장했습니다.`, true);
   }
-  async function deleteTpl(t: CustomTemplate) {
+  function deleteTpl(t: CustomTemplate) {
     if (!confirm(`템플릿 “${t.label}”을(를) 삭제할까요?`)) return;
-    try {
-      const res = await supabase.from("post_templates").delete().eq("id", t.id);
-      if (res.error) throw res.error;
-      await loadTpls();
-    } catch (err) { console.error("template delete failed:", err); alert("템플릿 삭제에 실패했습니다."); }
+    const next = customTpls.filter((x) => x.id !== t.id);
+    writeLocalTpls(next);
+    setCustomTpls(next);
   }
 
   function showMsg(text: string, ok: boolean) { setMsg({ text, ok }); if (ok) setTimeout(() => setMsg(null), 3000); }
