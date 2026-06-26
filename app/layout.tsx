@@ -18,6 +18,9 @@ export const metadata: Metadata = {
   applicationName: "AI면접",
   verification: {
     google: "oDEbTQ1eeTf8wR4lAn7m-QV6q2LII3NbrfRuzsIxgUs",
+    other: {
+      "naver-site-verification": "42f5d5e59e6faa5d4d9681e74786b04cf0cad0eb",
+    },
   },
   icons: {
     icon: [
