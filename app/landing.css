@@ -154,8 +154,8 @@
   /* 프로세스(시안2) — 바깥 패널 없이 3단계 카드, 중앙 정렬 + 배경 없는 라인 아이콘. */
   .flow2{position:relative;margin:50px auto clamp(56px,8vw,110px);max-width:1080px;display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(20px,3vw,40px)}
   /* 카드 중앙을 가로지르는 연결 라인(카드 뒤, 간격에 보임) + 좌→우로 흐르는 빛(카드 위) */
-  .flow2::before{content:"";position:absolute;left:8%;right:8%;top:50%;height:2px;transform:translateY(-50%);background:color-mix(in srgb,var(--blue) 18%,transparent);border-radius:2px;z-index:0;pointer-events:none}
-  .flow2::after{content:"";position:absolute;top:50%;left:0;width:130px;height:3px;transform:translateY(-50%);border-radius:3px;background:linear-gradient(90deg,transparent,var(--blue),transparent);box-shadow:0 0 16px 2px color-mix(in srgb,var(--blue) 55%,transparent);z-index:0;pointer-events:none;animation:flowLine var(--pdur,5s) linear infinite}
+  .flow2::before{content:"";position:absolute;left:8%;right:8%;top:50%;height:2px;transform:translateY(-50%);background:#F4F8FE;border-radius:2px;z-index:0;pointer-events:none}
+  .flow2::after{content:"";position:absolute;top:50%;left:0;width:130px;height:3px;transform:translateY(-50%);border-radius:3px;background:linear-gradient(90deg,transparent,#F4F8FE,transparent);box-shadow:0 0 16px 2px #F4F8FE;z-index:0;pointer-events:none;animation:flowLine var(--pdur,5s) linear infinite}
   @keyframes flowLine{0%{left:0;opacity:0}8%{opacity:1}92%{opacity:1}100%{left:calc(100% - 130px);opacity:0}}
   .pstep{position:relative;z-index:1;background:#F4F8FE;border-radius:20px;box-shadow:0 14px 32px rgba(31,45,90,.09);padding:clamp(26px,2.8vw,36px) clamp(18px,2.2vw,28px);text-align:center;animation:pstepUp var(--pdur,5s) ease-in-out infinite}
   .pstep .pic{width:52px;height:52px;margin:0 auto;color:var(--blue);display:flex;align-items:center;justify-content:center;animation:pstepOn var(--pdur,5s) ease-in-out infinite}
@@ -167,7 +167,7 @@
   .pstep:nth-child(2),.pstep:nth-child(2) .pic{animation-delay:.85s}
   .pstep:nth-child(3),.pstep:nth-child(3) .pic{animation-delay:1.7s}
   @keyframes pstepOn{0%,8%{opacity:.4;transform:scale(.88)}18%,72%{opacity:1;transform:scale(1)}84%,100%{opacity:.4;transform:scale(.88)}}
-  @keyframes pstepUp{0%,8%{opacity:.55;transform:translateY(10px)}20%,72%{opacity:1;transform:translateY(0)}84%,100%{opacity:.55;transform:translateY(10px)}}
+  @keyframes pstepUp{0%,8%{transform:translateY(8px)}20%,72%{transform:translateY(0)}84%,100%{transform:translateY(8px)}}
   @media(max-width:760px){.flow2{margin-top:40px;gap:14px}.pstep{padding:24px 16px}.pstep .pic{width:46px;height:46px}.pstep .pic svg{width:36px;height:36px}.pstep h3{font-size:16px}.pstep p{font-size:13px;line-height:1.55}.pstep-tag{margin-top:16px;font-size:11px}}
   @media(max-width:480px){.pstep p br{display:none}}
   /* 모바일(≤560): 3단계 세로 스택 — 가로 연결 라인은 숨김 */
