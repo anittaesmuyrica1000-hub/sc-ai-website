@@ -248,19 +248,19 @@ export default async function HomePage() {
           {/* 프로세스(시안2) — 라이트블루 패널 + 3단계 카드. 펄스/페이드업 루프 모션(CSS). */}
           <div className="flow2">
             <div className="pstep">
-              <div className="pic"><i className="fa-solid fa-bullhorn"></i></div>
+              <div className="pic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"><path d="m3 11 18-5v12L3 14v-3z" /><path d="M11.6 16.8a3 3 0 1 1-5.8-1.6" /></svg></div>
               <span className="pstep-tag">STEP 01</span>
               <h3>채용공고 등록</h3>
               <p>공고를 등록하면<br />AI가 직무·요구 역량을 분석합니다.</p>
             </div>
             <div className="pstep">
-              <div className="pic"><i className="fa-solid fa-wand-magic-sparkles"></i></div>
+              <div className="pic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"><path d="M12 3l1.6 4.4L18 9l-4.4 1.6L12 15l-1.6-4.4L6 9l4.4-1.6z" /><path d="M18 14l.7 2.1L21 17l-2.3.9L18 20l-.7-2.1L15 17l2.3-.9z" /></svg></div>
               <span className="pstep-tag">STEP 02</span>
               <h3>AI 면접 자동 생성·진행</h3>
               <p>AI가 평가 기준·질문을 만들고,<br />지원자가 온라인으로 응시합니다.</p>
             </div>
             <div className="pstep">
-              <div className="pic"><i className="fa-solid fa-file-lines"></i></div>
+              <div className="pic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7z" /><path d="M14 2v4a2 2 0 0 0 2 2h4" /><path d="M16 13H8" /><path d="M16 17H8" /><path d="M10 9H8" /></svg></div>
               <span className="pstep-tag">STEP 03</span>
               <h3>검증 리포트 수신</h3>
               <p>AI가 응답을 분석·채점해<br />한 장의 리포트로 정리합니다.</p>
