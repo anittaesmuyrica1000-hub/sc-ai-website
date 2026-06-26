@@ -5,7 +5,7 @@ import type { Session } from "@supabase/supabase-js";
 import { supabase, type Post, type Faq, type Signup, type BrochureRequest, type LegalDoc, legalPath, RESERVED_LEGAL_SLUGS, SIGNUP_STATUSES } from "@/lib/supabase";
 import { fmtDate } from "@/lib/format";
 import MarkdownEditor from "@/components/MarkdownEditor";
-import RichEditor from "@/components/RichEditor";
+import RichEditor, { type EditorTemplate } from "@/components/RichEditor";
 import { renderBody } from "@/lib/postRender";
 
 // HTML 태그 제거(목록 미리보기·검증용)
@@ -412,6 +412,40 @@ function Settings({ email }: { email: string }) {
 type FormState = { id: string; title: string; category: string; author: string; cover_url: string; excerpt: string; content: string; published: boolean };
 const EMPTY: FormState = { id: "", title: "", category: "", author: "", cover_url: "", excerpt: "", content: "", published: true };
 
+// 블로그 글 템플릿 — 자주 쓰는 글 구조를 한 번에 채워 넣는다. 본문은 WYSIWYG(HTML)로 저장된다.
+const BLOG_TEMPLATES: EditorTemplate[] = [
+  {
+    label: "고객 사례 (도입 후기)",
+    html:
+      '<div class="post-table-wrap"><table class="post-table"><thead><tr><th>항목</th><th>도입 전</th><th>도입 후</th></tr></thead><tbody>' +
+      "<tr><td>채용 소요 기간</td><td>내용</td><td>내용</td></tr><tr><td>면접 검증 인원</td><td>내용</td><td>내용</td></tr></tbody></table></div>" +
+      "<h2>도입 배경</h2><p>고객사가 어떤 채용 문제를 겪고 있었는지 적어주세요.</p>" +
+      "<h2>도입 과정</h2><p>AIVIEW를 어떻게 적용했는지 단계별로 설명합니다.</p>" +
+      "<h2>도입 효과</h2><ul><li>핵심 성과 1</li><li>핵심 성과 2</li></ul>" +
+      "<blockquote>고객 인터뷰 한마디를 인용으로 넣어주세요.</blockquote>" +
+      "<h2>마무리</h2><p>요약과 CTA를 적어주세요.</p>",
+  },
+  {
+    label: "기능 소개",
+    html:
+      "<h2>한 줄 요약</h2><p>이 기능이 무엇을 해결하는지 한 문장으로 적어주세요.</p>" +
+      "<h2>이런 분께 필요해요</h2><ul><li>대상 1</li><li>대상 2</li></ul>" +
+      "<h2>주요 기능</h2><h3>1. 기능 이름</h3><p>설명</p><h3>2. 기능 이름</h3><p>설명</p>" +
+      "<h2>활용 예시</h2><p>실제 활용 시나리오를 적어주세요.</p>",
+  },
+  {
+    label: "채용 인사이트 / 트렌드",
+    html:
+      "<h2>들어가며</h2><p>다루려는 주제와 배경을 적어주세요.</p>" +
+      "<h2>데이터로 보는 현황</h2>" +
+      '<div class="post-table-wrap"><table class="post-table"><thead><tr><th>지표</th><th>수치</th></tr></thead><tbody>' +
+      "<tr><td>지표 1</td><td>내용</td></tr><tr><td>지표 2</td><td>내용</td></tr></tbody></table></div>" +
+      "<p>출처: 자료 출처를 적어주세요.</p>" +
+      "<h2>시사점</h2><ul><li>인사이트 1</li><li>인사이트 2</li></ul>" +
+      "<h2>맺음말</h2><p>정리와 제언을 적어주세요.</p>",
+  },
+];
+
 function BlogManager() {
   const [posts, setPosts] = useState<Post[]>([]);
   const [form, setForm] = useState<FormState | null>(null);
@@ -419,6 +453,7 @@ function BlogManager() {
   const [saving, setSaving] = useState(false);
   const [loadErr, setLoadErr] = useState(false);
   const [uploadingCover, setUploadingCover] = useState(false);
+  const [preview, setPreview] = useState(false);
   const isEdit = !!form?.id;
 
   const load = useCallback(async () => {
@@ -538,15 +573,45 @@ function BlogManager() {
                 key={form.id || "new"}
                 value={renderBody(form.content)}
                 onChange={(html) => set("content", html)}
-                placeholder="본문을 입력하세요. 위 도구로 제목·목록·이미지 등을 넣을 수 있습니다."
+                placeholder="본문을 입력하세요. 위 도구로 제목·목록·표·이미지 등을 넣을 수 있습니다."
+                templates={BLOG_TEMPLATES}
               />
             </div>
             <label className="check"><input type="checkbox" checked={form.published} onChange={(e) => set("published", e.target.checked)} /> 공개(게시) — 해제 시 비공개(임시저장)</label>
             <div className="form-actions">
               <button type="submit" className="btn btn-blue" disabled={saving}>{saving ? "저장 중…" : isEdit ? "수정 저장" : "등록하기"}</button>
+              <button type="button" className="btn btn-out" onClick={() => setPreview(true)}><i className="fa-solid fa-eye"></i> 미리보기</button>
               <button type="button" className="btn btn-out" onClick={closeForm}>취소</button>
             </div>
           </form>
+        </div>
+      )}
+
+      {preview && form && (
+        <div className="adm-modal-bg" onClick={() => setPreview(false)}>
+          <div className="adm-modal wide" onClick={(e) => e.stopPropagation()}>
+            <div className="adm-modal-head">
+              <h3><i className="fa-solid fa-eye"></i> 미리보기 — 블로그에 표시될 모습</h3>
+              <button className="icon-btn" title="닫기" onClick={() => setPreview(false)}><i className="fa-solid fa-xmark"></i></button>
+            </div>
+            <div className="adm-modal-body">
+              <div className="blog-preview">
+                <div className="post-head">
+                  <span className="cat">{form.category || "기타"}</span>
+                  <h1>{form.title || "(제목 없음)"}</h1>
+                  <div className="post-meta">
+                    {form.author && <span><i className="fa-regular fa-user"></i> {form.author}</span>}
+                    <span>{fmtDate(new Date().toISOString())}</span>
+                  </div>
+                </div>
+                {form.cover_url && <img className="post-hero" src={form.cover_url} alt="" />}
+                <div className="post-content" dangerouslySetInnerHTML={{ __html: renderBody(form.content) || '<p style="color:var(--slate-2)">본문이 비어 있습니다.</p>' }} />
+              </div>
+            </div>
+            <div className="adm-modal-foot">
+              <button className="btn btn-out" onClick={() => setPreview(false)}>닫기</button>
+            </div>
+          </div>
         </div>
       )}
 
@@ -657,17 +722,12 @@ function FaqManager() {
           <h2>{isEdit ? "FAQ 수정" : "새 FAQ 작성"}</h2>
           {msg && <div className={`form-msg ${msg.ok ? "ok" : "err"}`}>{msg.text}</div>}
           <form onSubmit={onSubmit} noValidate>
-            <div className="field-row">
-              <div className="field">
-                <label htmlFor="fa-cat">카테고리</label>
-                <select id="fa-cat" value={form.category} onChange={(e) => set("category", e.target.value)}>
-                  {FAQ_CATS.map((c) => <option key={c} value={c}>{c}</option>)}
-                </select>
-              </div>
-              <div className="field">
-                <label htmlFor="fa-o">정렬 순서</label>
-                <input type="number" id="fa-o" placeholder="작을수록 위 (비우면 맨 뒤)" value={form.sort_order} onChange={(e) => set("sort_order", e.target.value)} />
-              </div>
+            <div className="field">
+              <label htmlFor="fa-cat">카테고리</label>
+              <select id="fa-cat" value={form.category} onChange={(e) => set("category", e.target.value)}>
+                {FAQ_CATS.map((c) => <option key={c} value={c}>{c}</option>)}
+              </select>
+              <p className="hint">{isEdit ? "노출 순서는 아래 목록의 ▲▼ 화살표로 바꿀 수 있어요." : "새 FAQ는 목록 맨 아래에 추가됩니다. 순서는 등록 후 목록의 ▲▼ 화살표로 조정하세요."}</p>
             </div>
             <div className="field">
               <label htmlFor="fa-q">질문 <span className="req">*</span></label>
@@ -705,7 +765,7 @@ function FaqManager() {
                   <tr key={it.id}>
                     <td className="nowrap">
                       <div className="ord-ctl">
-                        <span>{it.sort_order}</span>
+                        <span className="ord-num">{i + 1}</span>
                         <button className="icon-btn xs" title="위로" disabled={i === 0} onClick={() => move(i, -1)}><i className="fa-solid fa-chevron-up"></i></button>
                         <button className="icon-btn xs" title="아래로" disabled={i === items.length - 1} onClick={() => move(i, 1)}><i className="fa-solid fa-chevron-down"></i></button>
                       </div>

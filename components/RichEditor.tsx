@@ -6,14 +6,20 @@ import { supabase } from "@/lib/supabase";
 // 네이버 블로그식 WYSIWYG 편집기(보이는 대로). contentEditable + 서식 버튼 + 이미지 업로드.
 // 결과는 HTML(innerHTML)로 onChange 전달 → 블로그/FAQ 본문에 저장. 약관은 마크다운(MarkdownEditor) 유지.
 // 부모에서 항목별로 key를 주면 글 전환 시 remount되어 초기 HTML이 주입된다(편집 중 커서 튐 방지).
+export type EditorTemplate = { label: string; html: string };
+
+// 빈 본문 판별용 — 태그 제거 후 공백/줄바꿈만 남으면 빈 것으로 본다.
+const stripText = (html: string) => String(html || "").replace(/<[^>]+>/g, "").replace(/[\s ]+/g, "").trim();
+
 type Props = {
   value: string; // 초기 HTML
   onChange: (html: string) => void;
   placeholder?: string;
   minHeight?: number;
+  templates?: EditorTemplate[]; // 있으면 '템플릿' 드롭다운 노출(블로그 전용)
 };
 
-export default function RichEditor({ value, onChange, placeholder, minHeight = 380 }: Props) {
+export default function RichEditor({ value, onChange, placeholder, minHeight = 380, templates }: Props) {
   const ref = useRef<HTMLDivElement>(null);
   const fileRef = useRef<HTMLInputElement>(null);
   const [uploading, setUploading] = useState(false);
@@ -44,6 +50,46 @@ export default function RichEditor({ value, onChange, placeholder, minHeight = 3
   function clearFmt() {
     exec("removeFormat");
     exec("formatBlock", "p");
+  }
+  // 인용 토글 — 선택 영역이 이미 인용(blockquote) 안이면 본문(p)으로 되돌리고, 아니면 인용으로 감싼다.
+  function toggleQuote() {
+    ref.current?.focus();
+    const sel = window.getSelection();
+    let node: Node | null = sel?.anchorNode ?? null;
+    let inQuote = false;
+    while (node && node !== ref.current) {
+      if (node.nodeType === 1 && (node as HTMLElement).tagName === "BLOCKQUOTE") { inQuote = true; break; }
+      node = node.parentNode;
+    }
+    exec("formatBlock", inQuote ? "p" : "blockquote");
+  }
+  // 표 만들기 — 행·열 수를 입력받아 블로그 표 마크업(post-table)으로 삽입.
+  // 블로그 상세는 본문 HTML을 그대로 출력하므로 같은 클래스를 쓰면 라이브에서도 동일하게 스타일링된다.
+  function insertTable() {
+    const raw = window.prompt("표 크기를 '행,열' 로 입력하세요 (머리글 행 제외)", "2,3");
+    if (!raw) return;
+    const [r, c] = raw.split(/[,x×*\s]+/).map((n) => parseInt(n.trim(), 10));
+    const rows = Math.min(Math.max(r || 0, 1), 30);
+    const cols = Math.min(Math.max(c || 0, 1), 10);
+    if (!rows || !cols) { alert("숫자로 '행,열'을 입력해 주세요. 예: 2,3"); return; }
+    const head = "<tr>" + Array.from({ length: cols }, (_, i) => `<th>머리글 ${i + 1}</th>`).join("") + "</tr>";
+    const body = Array.from({ length: rows }, () => "<tr>" + Array.from({ length: cols }, () => "<td>내용</td>").join("") + "</tr>").join("");
+    const html = `<div class="post-table-wrap"><table class="post-table"><thead>${head}</thead><tbody>${body}</tbody></table></div><p><br></p>`;
+    ref.current?.focus();
+    document.execCommand("insertHTML", false, html);
+    emit();
+  }
+  // 템플릿 — 선택한 글 구조(HTML)를 본문에 채워 넣는다. 내용이 있으면 덮어쓸지 확인.
+  function applyTemplate(e: React.ChangeEvent<HTMLSelectElement>) {
+    const idx = e.target.selectedIndex - 1;
+    e.target.selectedIndex = 0;
+    const tpl = templates?.[idx];
+    if (!tpl || !ref.current) return;
+    const hasContent = stripText(ref.current.innerHTML).length > 0;
+    if (hasContent && !window.confirm("현재 본문을 템플릿 내용으로 바꿀까요? 기존 내용은 사라집니다.")) return;
+    ref.current.innerHTML = tpl.html;
+    ref.current.focus();
+    emit();
   }
   // 붙여넣기는 서식 없는 텍스트로(엉킨 HTML 방지)
   function onPaste(e: React.ClipboardEvent) {
@@ -85,6 +131,15 @@ export default function RichEditor({ value, onChange, placeholder, minHeight = 3
   return (
     <div className="rich">
       <div className="rich-toolbar" role="toolbar" aria-label="서식">
+        {templates && templates.length > 0 && (
+          <>
+            <select className="rich-block rich-tpl" onChange={applyTemplate} title="글 템플릿" defaultValue="">
+              <option value="" disabled>📄 템플릿</option>
+              {templates.map((t, i) => <option key={i} value={i}>{t.label}</option>)}
+            </select>
+            <span className="rich-sep" />
+          </>
+        )}
         <select className="rich-block" onChange={onBlockChange} title="문단 스타일" defaultValue="">
           <option value="" disabled>스타일</option>
           <option value="p">본문</option>
@@ -98,8 +153,9 @@ export default function RichEditor({ value, onChange, placeholder, minHeight = 3
         <span className="rich-sep" />
         <B on={() => exec("insertUnorderedList")} title="글머리 목록"><i className="fa-solid fa-list-ul" /></B>
         <B on={() => exec("insertOrderedList")} title="번호 목록"><i className="fa-solid fa-list-ol" /></B>
-        <B on={() => exec("formatBlock", "blockquote")} title="인용"><i className="fa-solid fa-quote-right" /></B>
+        <B on={toggleQuote} title="인용 (다시 누르면 해제)"><i className="fa-solid fa-quote-right" /></B>
         <B on={() => exec("insertHorizontalRule")} title="구분선"><i className="fa-solid fa-minus" /></B>
+        <B on={insertTable} title="표 만들기"><i className="fa-solid fa-table" /></B>
         <span className="rich-sep" />
         <B on={addLink} title="링크"><i className="fa-solid fa-link" /></B>
         <button type="button" className="rich-btn" title="이미지 업로드" onMouseDown={(e) => e.preventDefault()} onClick={() => fileRef.current?.click()} disabled={uploading}>
