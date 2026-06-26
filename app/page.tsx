@@ -68,8 +68,8 @@ export default async function HomePage() {
                 <span className="sky">채용 결정은 </span><span className="hl">사람</span><span className="sky">이 더 빠르게</span>
               </h1>
               <p>
-                <span style={{ fontWeight: 700, color: "#fff" }}>AI 면접·리포트</span>로 1차 검토를 줄이고,<br />
-                <span style={{ fontWeight: 700, color: "#fff" }}>핵심 후보 판단</span>에 집중하세요.
+                <span style={{ color: "#fff" }}>AI 면접·리포트</span>로 1차 검토를 줄이고,<br />
+                <span style={{ color: "#fff" }}>핵심 후보 판단</span>에 집중하세요.
               </p>
               <div className="decl-cta">
                 <Link href="/apply" className="btn btn-blue">무료 상담 신청 <i className="fa-solid fa-arrow-right"></i></Link>
