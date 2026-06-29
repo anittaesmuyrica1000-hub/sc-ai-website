@@ -150,13 +150,15 @@ footer{background:#fff;color:var(--slate);padding:64px 0 40px;font-size:14px;bor
 .foot-logo-link{display:inline-flex;cursor:pointer}
 .foot-logo-img{height:28px;width:auto;display:block;opacity:.85;transition:opacity .2s}
 .foot-logo-link:hover .foot-logo-img{opacity:1}
-/* 2) 상품정보 — 서비스 링크 + 약관 링크 */
-.foot-nav{display:flex;flex-wrap:wrap;gap:14px 28px;margin:28px 0 0}
-.foot-nav a{color:var(--slate);font-size:14.5px;font-weight:600}
+/* 2) 상품정보 — 서비스 링크 + 약관 링크. 가운뎃점(·)으로 구분된 인라인 흐름(좁아지면 자연 줄바꿈) */
+.foot-nav{margin:26px 0 0;line-height:2}
+.foot-nav a{color:var(--slate);font-size:14.5px;font-weight:600;white-space:nowrap}
 .foot-nav a:hover{color:var(--blue-d)}
-.foot-legal{display:flex;flex-wrap:wrap;gap:8px 18px;margin:14px 0 0}
-.foot-legal a{color:var(--slate-2);font-size:13px}
+.foot-nav a:not(:last-child)::after{content:"·";margin:0 13px;color:var(--slate-2);font-weight:400}
+.foot-legal{margin:12px 0 0;line-height:1.9}
+.foot-legal a{color:var(--slate-2);font-size:13px;white-space:nowrap}
 .foot-legal a:hover{color:var(--blue-d)}
+.foot-legal a:not(:last-child)::after{content:"·";margin:0 11px;color:var(--line);font-weight:400}
 /* 3) 기업정보 — 맨 하단(구분선 위) */
 .foot-divider{border:none;border-top:1px solid var(--line);margin:32px 0 0}
 .foot-biz{display:flex;flex-wrap:wrap;gap:4px 14px;margin:24px 0 0;color:var(--slate-2);font-size:12.5px;line-height:1.7}
