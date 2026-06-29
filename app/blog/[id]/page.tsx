@@ -35,7 +35,7 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
       type: "article",
       title: p.title,
       description: p.excerpt || undefined,
-      images: p.cover_url ? [{ url: p.cover_url }] : undefined,
+      images: p.cover_url ? [{ url: p.cover_url }] : [{ url: "/og-image.png?v=2", width: 1200, height: 630 }],
       tags: tags.length ? tags : undefined,
     },
   };
