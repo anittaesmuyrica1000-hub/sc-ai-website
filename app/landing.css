@@ -302,11 +302,11 @@
   .faq-list{max-width:780px;margin:44px auto 0;display:grid;gap:14px}
   .faq-item{background:#fff;border:1px solid var(--line);border-radius:14px;box-shadow:0 8px 22px -16px rgba(20,40,90,.2);overflow:hidden}
   .faq-item summary{list-style:none;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:16px;
-    padding:20px 24px;font-size:16.5px;font-weight:700;color:var(--ink)}
+    padding:20px 24px;font-size:16.5px;font-weight:700;color:var(--ink);word-break:keep-all}
   .faq-item summary::-webkit-details-marker{display:none}
   .faq-item summary .fq-ic{flex-shrink:0;color:var(--blue);transition:transform .25s}
   .faq-item[open] summary .fq-ic{transform:rotate(45deg)}
-  .faq-item .fa-ans{padding:0 24px 22px;color:var(--slate);font-size:15px;line-height:1.75}
+  .faq-item .fa-ans{padding:0 24px 22px;color:var(--slate);font-size:15px;line-height:1.75;word-break:keep-all;overflow-wrap:anywhere}
   .faq-item .fa-ans a{color:var(--blue);text-decoration:underline}
   .faq-item .fa-ans p{margin:0 0 10px}
   .faq-item .fa-ans p:last-child{margin-bottom:0}

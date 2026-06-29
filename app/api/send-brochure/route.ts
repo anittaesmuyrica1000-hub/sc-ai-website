@@ -1,8 +1,6 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
-import nodemailer from "nodemailer";
-import MailComposer from "nodemailer/lib/mail-composer";
-import { JWT } from "google-auth-library";
+import { sendMail, mailerConfigured } from "@/lib/mailer";
 
 // 서비스소개서 발송 API — 회사 이메일로 소개서(현재본) 보안 링크(7일 만료)를 전송.
 // 발송 방식 2가지 지원(우선순위):
@@ -42,21 +40,11 @@ export async function POST(req: Request) {
   const SUPABASE_URL = process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL;
   const SERVICE_ROLE = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
-  // 발송 방식 환경변수
-  const SA_EMAIL = process.env.GMAIL_SA_CLIENT_EMAIL;
-  const SA_KEY = process.env.GMAIL_SA_PRIVATE_KEY?.replace(/\\n/g, "\n");
-  const GMAIL_USER = process.env.GMAIL_USER;
-  const GMAIL_APP_PASSWORD = process.env.GMAIL_APP_PASSWORD;
-  const GMAIL_FROM = process.env.GMAIL_FROM || GMAIL_USER || SA_EMAIL;
-
-  const useServiceAccount = !!(SA_EMAIL && SA_KEY && GMAIL_FROM);
-  const useSmtp = !!(GMAIL_USER && GMAIL_APP_PASSWORD);
-
   if (!SUPABASE_URL || !SERVICE_ROLE) {
     console.error("send-brochure: Supabase 서버 환경변수 누락");
     return bad("서버 설정이 완료되지 않았습니다. 관리자에게 문의해 주세요.", 500);
   }
-  if (!useServiceAccount && !useSmtp) {
+  if (!mailerConfigured()) {
     console.error("send-brochure: 메일 발송 환경변수 누락");
     return bad("이메일 발송이 아직 설정되지 않았습니다. 관리자에게 문의해 주세요.", 500);
   }
@@ -95,7 +83,6 @@ export async function POST(req: Request) {
   if (insErr) console.error("send-brochure: 리드 저장 실패(무시)", insErr);
 
   // 4) 메일 본문
-  const fromHeader = `"Supercoder" <${GMAIL_FROM}>`;
   const subject = "[Supercoder] 요청하신 서비스소개서를 보내드립니다";
   const html = `
     <div style="font-family:Pretendard,'Apple SD Gothic Neo',Arial,sans-serif;max-width:600px;margin:0 auto;padding:56px 24px 40px;color:#1f2a44;text-align:center;word-break:keep-all">
@@ -118,44 +105,25 @@ export async function POST(req: Request) {
     </div>`;
 
   try {
-    if (useServiceAccount) {
-      // (A) 서비스 계정으로 noreply@ 위임 → Gmail API send
-      const client = new JWT({
-        email: SA_EMAIL,
-        key: SA_KEY,
-        scopes: ["https://www.googleapis.com/auth/gmail.send"],
-        subject: GMAIL_FROM, // 위임(impersonate) 대상 = 발신 계정
-      });
-      const { token } = await client.getAccessToken();
-      if (!token) throw new Error("서비스 계정 토큰 발급 실패");
-
-      const mime = await new MailComposer({ from: fromHeader, to: email, subject, html })
-        .compile()
-        .build();
-      const raw = mime.toString("base64url");
-
-      const res = await fetch("https://gmail.googleapis.com/gmail/v1/users/me/messages/send", {
-        method: "POST",
-        headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
-        body: JSON.stringify({ raw }),
-      });
-      if (!res.ok) {
-        const detail = await res.text();
-        throw new Error(`Gmail API ${res.status}: ${detail}`);
-      }
-    } else {
-      // (B) SMTP + 앱 비밀번호 폴백
-      const transporter = nodemailer.createTransport({
-        host: "smtp.gmail.com",
-        port: 465,
-        secure: true,
-        auth: { user: GMAIL_USER!, pass: GMAIL_APP_PASSWORD! },
-      });
-      await transporter.sendMail({ from: fromHeader, to: email, subject, html });
-    }
+    await sendMail({ to: email, subject, html });
   } catch (err) {
     console.error("send-brochure: 메일 발송 실패", err);
     return bad("이메일 발송에 실패했습니다. 잠시 후 다시 시도해 주세요.", 500);
+  }
+
+  // 5) 관리자에게 소개서 신청 알림(베스트 에포트)
+  const NOTIFY_TO = process.env.SALES_NOTIFY_TO || process.env.GMAIL_FROM;
+  if (NOTIFY_TO) {
+    const esc = (s: string) => String(s || "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    sendMail({
+      to: NOTIFY_TO,
+      replyTo: email,
+      subject: `[소개서 신청] ${company} · ${name}`,
+      html: `<div style="font-family:Pretendard,Arial,sans-serif;font-size:14px;color:#1f2a44;word-break:keep-all">
+        <h2 style="font-size:16px">서비스소개서 신청</h2>
+        <p>회사: <b>${esc(company)}</b><br/>이름: ${esc(name)}<br/>이메일: ${esc(email)}<br/>연락처: ${esc(phone || "-")}<br/>직책: ${esc(role || "-")}<br/>규모: ${esc(size)}</p>
+      </div>`,
+    }).catch((e) => console.error("send-brochure: 관리자 알림 실패(무시)", e));
   }
 
   return NextResponse.json({ ok: true });

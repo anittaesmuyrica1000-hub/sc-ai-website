@@ -117,12 +117,8 @@ function Console({ email }: { email: string }) {
   const [section, setSection] = useState<Section>("dash");
   const [navOpen, setNavOpen] = useState(false);
   const [acctOpen, setAcctOpen] = useState(false);
-  const [newCount, setNewCount] = useState(0);
   const [collapsed, setCollapsed] = useState(false);
 
-  useEffect(() => {
-    supabase.from("signups").select("id", { count: "exact", head: true }).eq("status", "신규").then(({ count }) => setNewCount(count ?? 0));
-  }, [section]);
   useEffect(() => {
     if (typeof window !== "undefined" && localStorage.getItem("adm-collapsed") === "1") setCollapsed(true);
   }, []);
@@ -192,12 +188,6 @@ function Console({ email }: { email: string }) {
           <div className="adm-bar-title">
             <h1>{TITLE[section].h}</h1>
             <div className="sub">{TITLE[section].d}</div>
-          </div>
-          <div className="adm-bar-acct">
-            <button className="adm-bell" title="신규 도입문의" onClick={() => setSection("signups")}>
-              <i className="fa-regular fa-bell"></i>
-              {newCount > 0 && <span className="adm-bell-dot">{newCount > 9 ? "9+" : newCount}</span>}
-            </button>
           </div>
         </div>
         <div className="adm-body">

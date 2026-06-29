@@ -64,6 +64,12 @@ export default function ApplyForm() {
     try {
       const res = await supabase.from("signups").insert(payload);
       if (res.error) throw res.error;
+      // 관리자 알림 메일(베스트 에포트 — 실패해도 신청 완료에는 영향 없음)
+      fetch("/api/notify-signup", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      }).catch(() => {});
       setDone(true);
       setTimeout(() => window.scrollTo({ top: 0, behavior: "smooth" }), 0);
     } catch (err) {
