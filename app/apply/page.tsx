@@ -3,6 +3,9 @@ import "./apply.css";
 import ApplyForm from "./ApplyForm";
 import { buildPageMetadata } from "@/lib/pageSeo";
 
+// 어드민 SEO 초안(page_seo)이 바뀌면 주기적으로 반영(정적 생성 → ISR).
+export const revalidate = 120;
+
 const FALLBACK_METADATA: Metadata = {
   title: "무료 신청 · AI 면접 채용 검증",
   description:
