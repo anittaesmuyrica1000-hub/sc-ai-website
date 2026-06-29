@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState, useCallback } from "react";
 import type { Session } from "@supabase/supabase-js";
-import { supabase, type Post, type Faq, type Signup, type BrochureRequest, type LegalDoc, type LegalVersion, legalPath, RESERVED_LEGAL_SLUGS, SIGNUP_STATUSES } from "@/lib/supabase";
+import { supabase, type Post, type Faq, type Signup, type BrochureRequest, type LegalDoc, type LegalVersion, type PageSeo, legalPath, RESERVED_LEGAL_SLUGS, SIGNUP_STATUSES, SEO_PAGES } from "@/lib/supabase";
 import { fmtDate } from "@/lib/format";
 import MarkdownEditor from "@/components/MarkdownEditor";
 import RichEditor, { type EditorTemplate } from "@/components/RichEditor";
@@ -12,7 +12,7 @@ import { recommendTags } from "@/lib/keywords";
 // HTML 태그 제거(목록 미리보기·검증용)
 const stripTags = (s: string) => String(s || "").replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim();
 
-type Section = "dash" | "blog" | "faq" | "brochure" | "legal" | "signups" | "settings";
+type Section = "dash" | "blog" | "faq" | "brochure" | "legal" | "seo" | "signups" | "settings";
 
 function fmtDateTime(s?: string) {
   if (!s) return "—";
@@ -100,6 +100,7 @@ const NAV: { key: Section; label: string; icon: string }[] = [
   { key: "faq", label: "FAQ", icon: "fa-circle-question" },
   { key: "brochure", label: "소개서", icon: "fa-file-pdf" },
   { key: "legal", label: "약관", icon: "fa-scale-balanced" },
+  { key: "seo", label: "SEO", icon: "fa-magnifying-glass" },
   { key: "signups", label: "도입문의", icon: "fa-inbox" },
   { key: "settings", label: "설정", icon: "fa-gear" },
 ];
@@ -109,6 +110,7 @@ const TITLE: Record<Section, { h: string; d: string }> = {
   faq: { h: "FAQ 관리", d: "자주 묻는 질문을 추가하고 수정합니다." },
   brochure: { h: "AI 면접 서비스 소개서", d: "도입문의 페이지와 웹사이트에서 제공되는 서비스 소개서를 관리합니다." },
   legal: { h: "약관 관리", d: "웹사이트 푸터의 약관(개인정보처리방침·이용약관)을 수정하거나 새 약관을 추가합니다." },
+  seo: { h: "SEO 메타데이터", d: "페이지별 검색·공유 메타데이터(제목·설명·OG)를 초안으로 만들고 적용합니다." },
   signups: { h: "도입문의 관리", d: "고객이 남긴 도입문의 기록을 확인하고 상담 상태를 관리합니다." },
   settings: { h: "설정", d: "관리자 계정과 기본 설정을 관리합니다." },
 };
@@ -196,6 +198,7 @@ function Console({ email }: { email: string }) {
           {section === "faq" && <FaqManager />}
           {section === "brochure" && <BrochureSection />}
           {section === "legal" && <LegalManager />}
+          {section === "seo" && <SeoManager />}
           {section === "signups" && <SignupsManager />}
           {section === "settings" && <Settings email={email} />}
         </div>
@@ -1179,6 +1182,194 @@ function LegalManager() {
                     <td className="nowrap"><div className="row-actions">
                       <button className="icon-btn" title="수정" onClick={() => enterEdit(it)}><i className="fa-solid fa-pen"></i></button>
                       <button className="icon-btn del" title="삭제" onClick={() => del(it)}><i className="fa-solid fa-trash"></i></button>
+                    </div></td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </div>
+    </>
+  );
+}
+
+/* ===================== 페이지별 SEO 메타데이터 ===================== */
+
+type SeoForm = {
+  id: string;
+  path: string;
+  label: string;
+  title: string;
+  description: string;
+  og_title: string;
+  og_description: string;
+  og_image: string;
+  noindex: boolean;
+  published: boolean;
+};
+
+function SeoManager() {
+  const [rows, setRows] = useState<PageSeo[]>([]);
+  const [form, setForm] = useState<SeoForm | null>(null);
+  const [msg, setMsg] = useState<{ text: string; ok: boolean } | null>(null);
+  const [saving, setSaving] = useState(false);
+  const [loadErr, setLoadErr] = useState<string | null>(null);
+  const isEdit = !!form?.id;
+
+  const load = useCallback(async () => {
+    try {
+      const res = await supabase.from("page_seo").select("*").order("sort_order", { ascending: true });
+      if (res.error) throw res.error;
+      setRows((res.data as PageSeo[]) || []);
+      setLoadErr(null);
+    } catch (err) {
+      console.error("page_seo load failed:", err);
+      setLoadErr("SEO 목록을 불러오지 못했습니다. page_seo 테이블 마이그레이션(supabase/page-seo-setup.sql)이 적용됐는지 확인해 주세요.");
+    }
+  }, []);
+  useEffect(() => { load(); }, [load]);
+
+  // 레지스트리(SEO_PAGES) 기준으로 항상 전 페이지를 보여주고, DB 행이 있으면 병합
+  const list = useMemo(() => {
+    const byPath = new Map(rows.map((r) => [r.path, r]));
+    const known = SEO_PAGES.map((p) => ({ path: p.path, label: p.label, row: byPath.get(p.path) || null }));
+    const extra = rows.filter((r) => !SEO_PAGES.some((p) => p.path === r.path)).map((r) => ({ path: r.path, label: r.label, row: r }));
+    return [...known, ...extra];
+  }, [rows]);
+
+  function showMsg(text: string, ok: boolean) { setMsg({ text, ok }); if (ok) setTimeout(() => setMsg(null), 3000); }
+  function set<K extends keyof SeoForm>(k: K, v: SeoForm[K]) { setForm((f) => (f ? { ...f, [k]: v } : f)); }
+  function closeForm() { setForm(null); setMsg(null); }
+
+  function enterEdit(path: string, label: string, row: PageSeo | null) {
+    setForm({
+      id: row?.id || "",
+      path,
+      label,
+      title: row?.title || "",
+      description: row?.description || "",
+      og_title: row?.og_title || "",
+      og_description: row?.og_description || "",
+      og_image: row?.og_image || "",
+      noindex: row?.noindex ?? false,
+      published: row?.published ?? false,
+    });
+    setMsg(null);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  async function onSubmit(e: React.FormEvent) {
+    e.preventDefault(); if (!form) return;
+    const trimOrNull = (s: string) => (s.trim() ? s.trim() : null);
+    const payload: Record<string, unknown> = {
+      path: form.path,
+      label: form.label,
+      title: trimOrNull(form.title),
+      description: trimOrNull(form.description),
+      og_title: trimOrNull(form.og_title),
+      og_description: trimOrNull(form.og_description),
+      og_image: trimOrNull(form.og_image),
+      noindex: form.noindex,
+      published: form.published,
+    };
+    setSaving(true);
+    try {
+      const res = form.id
+        ? await supabase.from("page_seo").update({ ...payload, updated_at: new Date().toISOString() }).eq("id", form.id)
+        : await supabase.from("page_seo").insert(payload);
+      if (res.error) throw res.error;
+      showMsg(form.published ? "저장 후 페이지에 적용됐습니다." : "초안으로 저장됐습니다. (적용 체크 시 페이지에 반영)", true);
+      setForm(null);
+      await load();
+    } catch (err) {
+      console.error("page_seo save failed:", err);
+      const dup = String((err as { message?: string })?.message || "").toLowerCase().includes("duplicate");
+      showMsg(dup ? "이미 이 경로의 SEO 항목이 있습니다. 목록에서 수정하세요." : "저장에 실패했습니다. 관리자 권한 또는 마이그레이션 적용을 확인해 주세요.", false);
+    } finally { setSaving(false); }
+  }
+
+  async function del(row: PageSeo) {
+    if (!confirm(`'${row.label}'(${row.path}) SEO 설정을 삭제할까요?\n삭제하면 이 페이지는 코드 기본값으로 돌아갑니다.`)) return;
+    try {
+      const res = await supabase.from("page_seo").delete().eq("id", row.id);
+      if (res.error) throw res.error;
+      if (form?.id === row.id) setForm(null);
+      await load();
+    } catch (err) { console.error("page_seo delete failed:", err); alert("삭제에 실패했습니다."); }
+  }
+
+  function statusPill(row: PageSeo | null) {
+    if (!row) return <span className="pill pill-gray">없음</span>;
+    if (row.published) return <span className="pill pill-green">적용 중</span>;
+    return <span className="pill pill-amber">초안</span>;
+  }
+
+  return (
+    <>
+      <div className="card" style={{ marginBottom: 20 }}>
+        <p className="hint" style={{ margin: 0 }}>
+          페이지별 검색·공유 메타데이터를 <strong>초안</strong>으로 만들고, <strong>적용</strong> 체크 시 실제 페이지에 반영됩니다.
+          비워 둔 항목은 코드 기본값을 그대로 사용합니다. (반영에는 <code>page-seo-setup.sql</code> 적용 필요)
+        </p>
+      </div>
+
+      {form && (
+        <div className="card" style={{ marginBottom: 24 }}>
+          <h2>{form.label} <span className="hint-inline">{form.path}</span> SEO {isEdit ? "수정" : "초안 작성"}</h2>
+          {msg && <div className={`form-msg ${msg.ok ? "ok" : "err"}`}>{msg.text}</div>}
+          <form onSubmit={onSubmit} noValidate>
+            <div className="field">
+              <label htmlFor="seo-title">제목(title) <span className="hint-inline">검색 결과 제목 · 권장 ~60자</span></label>
+              <input type="text" id="seo-title" maxLength={120} placeholder="비우면 코드 기본 제목 사용" value={form.title} onChange={(e) => set("title", e.target.value)} />
+              <span className="cf-note">{form.title.length}자</span>
+            </div>
+            <div className="field">
+              <label htmlFor="seo-desc">설명(description) <span className="hint-inline">검색 결과 요약 · 권장 ~155자</span></label>
+              <textarea id="seo-desc" rows={3} maxLength={320} placeholder="비우면 코드 기본 설명 사용" value={form.description} onChange={(e) => set("description", e.target.value)} />
+              <span className="cf-note">{form.description.length}자</span>
+            </div>
+            <div className="field-row">
+              <div className="field">
+                <label htmlFor="seo-ogt">OG 제목 <span className="hint-inline">공유 카드 · 비우면 제목 사용</span></label>
+                <input type="text" id="seo-ogt" placeholder="비우면 위 제목 사용" value={form.og_title} onChange={(e) => set("og_title", e.target.value)} />
+              </div>
+              <div className="field">
+                <label htmlFor="seo-ogi">OG 이미지 경로 <span className="hint-inline">예: /og-image.png</span></label>
+                <input type="text" id="seo-ogi" placeholder="비우면 기본 이미지 사용" value={form.og_image} onChange={(e) => set("og_image", e.target.value)} />
+              </div>
+            </div>
+            <div className="field">
+              <label htmlFor="seo-ogd">OG 설명 <span className="hint-inline">공유 카드 · 비우면 설명 사용</span></label>
+              <textarea id="seo-ogd" rows={2} placeholder="비우면 위 설명 사용" value={form.og_description} onChange={(e) => set("og_description", e.target.value)} />
+            </div>
+            <label className="check"><input type="checkbox" checked={form.noindex} onChange={(e) => set("noindex", e.target.checked)} /> 검색 색인 제외 (noindex) — 이 페이지를 검색에 노출하지 않음</label>
+            <label className="check"><input type="checkbox" checked={form.published} onChange={(e) => set("published", e.target.checked)} /> <strong>적용</strong> — 체크하면 초안이 실제 페이지에 반영됩니다(해제 시 초안만 저장).</label>
+            <div className="form-actions">
+              <button type="submit" className="btn btn-blue" disabled={saving}>{saving ? "저장 중…" : isEdit ? "저장" : "초안 저장"}</button>
+              <button type="button" className="btn btn-out" onClick={closeForm}>취소</button>
+            </div>
+          </form>
+        </div>
+      )}
+
+      <div className="card list-card">
+        <div className="list-head"><h2>페이지 목록</h2><span className="count">{list.length}개</span></div>
+        {loadErr ? <div className="list-state">{loadErr}</div> : (
+          <div className="adm-table-wrap">
+            <table className="adm-table">
+              <thead><tr><th>페이지</th><th>경로</th><th>상태</th><th>제목(미리보기)</th><th>수정일</th><th>관리</th></tr></thead>
+              <tbody>
+                {list.map((it) => (
+                  <tr key={it.path}>
+                    <td className="nowrap">{it.label}</td>
+                    <td className="nowrap"><a href={it.path} target="_blank" rel="noopener noreferrer">{it.path}</a></td>
+                    <td className="nowrap">{statusPill(it.row)}{it.row?.noindex ? <span className="pill pill-gray" style={{ marginLeft: 6 }}>noindex</span> : null}</td>
+                    <td><div className="cell-title">{it.row?.title || <span style={{ color: "var(--slate-2)" }}>코드 기본값</span>}</div></td>
+                    <td className="nowrap">{it.row?.updated_at ? fmtDate(it.row.updated_at) : "—"}</td>
+                    <td className="nowrap"><div className="row-actions">
+                      <button className="icon-btn" title={it.row ? "수정" : "초안 만들기"} onClick={() => enterEdit(it.path, it.label, it.row)}><i className={`fa-solid ${it.row ? "fa-pen" : "fa-plus"}`}></i></button>
+                      {it.row && <button className="icon-btn del" title="삭제" onClick={() => del(it.row!)}><i className="fa-solid fa-trash"></i></button>}
                     </div></td>
                   </tr>
                 ))}

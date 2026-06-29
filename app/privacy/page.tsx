@@ -2,15 +2,19 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { getLegalDoc } from "@/lib/legal";
 import LegalView from "@/components/LegalView";
+import { buildPageMetadata } from "@/lib/pageSeo";
 
 export const dynamic = "force-dynamic";
 
-export const metadata: Metadata = {
+const FALLBACK_METADATA: Metadata = {
   title: "개인정보처리방침",
   description:
     "AI면접 개인정보처리방침 — 정보 수집·이용, 공유, 데이터 보안, 접근·정정·삭제 권리를 안내합니다.",
   alternates: { canonical: "/privacy" },
 };
+export function generateMetadata() {
+  return buildPageMetadata("/privacy", FALLBACK_METADATA);
+}
 
 // DB(legal_docs)에 'privacy' 약관이 있으면 그것을, 없으면 아래 정적 콘텐츠로 폴백
 export default async function PrivacyPage() {

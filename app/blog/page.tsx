@@ -2,10 +2,11 @@ import type { Metadata } from "next";
 import "./blog.css";
 import { supabase, type Post } from "@/lib/supabase";
 import BlogClient from "./BlogClient";
+import { buildPageMetadata } from "@/lib/pageSeo";
 
 export const dynamic = "force-dynamic";
 
-export const metadata: Metadata = {
+const FALLBACK_METADATA: Metadata = {
   title: "블로그 · AI 면접 채용 인사이트",
   description: "AI면접 블로그 — AI 면접·채용 검증·HR 트렌드에 대한 인사이트를 전합니다.",
   alternates: {
@@ -19,6 +20,9 @@ export const metadata: Metadata = {
     images: [{ url: "/og-image.png?v=2", width: 1200, height: 630 }],
   },
 };
+export function generateMetadata() {
+  return buildPageMetadata("/blog", FALLBACK_METADATA);
+}
 
 export default async function BlogPage() {
   let posts: Post[] = [];

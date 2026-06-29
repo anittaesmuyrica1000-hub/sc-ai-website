@@ -99,6 +99,33 @@ export type LegalVersion = {
   created_at?: string;
 };
 
+// 페이지별 SEO 메타데이터(초안) 타입 — 어드민 관리 + 페이지 generateMetadata 반영
+export type PageSeo = {
+  id: string;
+  path: string;            // "/", "/apply" …
+  label: string;           // 어드민 표시용 이름
+  title?: string | null;
+  description?: string | null;
+  og_title?: string | null;
+  og_description?: string | null;
+  og_image?: string | null;
+  noindex: boolean;
+  published: boolean;      // true 면 실제 페이지에 적용, false 면 초안(미반영)
+  sort_order: number;
+  created_at?: string;
+  updated_at?: string | null;
+};
+
+// SEO 관리 대상 페이지(어드민 시드/표시 기준). path 가 page_seo.path 와 매칭된다.
+export const SEO_PAGES: { path: string; label: string }[] = [
+  { path: "/", label: "홈 (랜딩)" },
+  { path: "/apply", label: "도입문의" },
+  { path: "/blog", label: "블로그 목록" },
+  { path: "/privacy", label: "개인정보처리방침" },
+  { path: "/terms", label: "서비스 이용약관(기업)" },
+  { path: "/terms-applicant", label: "지원자용 이용약관" },
+];
+
 // 루트 경로로 노출되는 예약 slug (그 외 신규 약관은 /legal/[slug])
 export const RESERVED_LEGAL_SLUGS: Record<string, string> = {
   privacy: "/privacy",

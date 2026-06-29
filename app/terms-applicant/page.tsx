@@ -2,15 +2,19 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { getLegalDoc } from "@/lib/legal";
 import LegalView from "@/components/LegalView";
+import { buildPageMetadata } from "@/lib/pageSeo";
 
 export const dynamic = "force-dynamic";
 
-export const metadata: Metadata = {
+const FALLBACK_METADATA: Metadata = {
   title: "지원자용 서비스 이용약관",
   description:
     "AI면접 AI 면접 서비스 지원자용 이용약관 — 응시 절차, 면접데이터 처리, 지원자의 권리·의무, 책임 제한 등을 규정합니다.",
   alternates: { canonical: "/terms-applicant" },
 };
+export function generateMetadata() {
+  return buildPageMetadata("/terms-applicant", FALLBACK_METADATA);
+}
 
 // DB(legal_docs)에 'terms-applicant' 약관이 있으면 그것을, 없으면 아래 정적 콘텐츠로 폴백
 export default async function TermsApplicantPage() {

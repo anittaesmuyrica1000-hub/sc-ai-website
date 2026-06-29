@@ -4,9 +4,13 @@ import "./landing.css";
 import HeroParticles from "@/components/HeroParticles";
 import { getFaqs } from "@/lib/faq";
 import { renderBody } from "@/lib/postRender";
+import { buildPageMetadata } from "@/lib/pageSeo";
 
-// 홈 canonical (중복 색인 방지) — 공통 메타는 layout.tsx
-export const metadata: Metadata = { alternates: { canonical: "/" } };
+// 홈 canonical (중복 색인 방지) — 공통 메타는 layout.tsx. 어드민 SEO 초안(적용 시) 덮어씀.
+const FALLBACK_METADATA: Metadata = { alternates: { canonical: "/" } };
+export function generateMetadata() {
+  return buildPageMetadata("/", FALLBACK_METADATA);
+}
 
 // JSON-LD·검색용 태그 제거 텍스트
 const plain = (s: string) => String(s || "").replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim();
