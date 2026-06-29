@@ -171,7 +171,8 @@
   .ver-no{font-weight:800;color:var(--blue-d);font-size:14px;min-width:34px}
   .ver-date{font-size:13px;font-weight:600;color:var(--ink)}
   .ver-at{font-size:12.5px;color:var(--slate-2)}
-  .ver-acts{margin-left:auto;display:flex;gap:7px}
+  .ver-acts{margin-left:auto;display:flex;gap:7px;flex-wrap:wrap}
+  .ver-del:hover{color:#e5484d !important;border-color:#f3c0c2 !important;background:#fdeef0 !important}
   /* 버전 미리보기 모달 */
   .ver-modal{position:fixed;inset:0;z-index:200;background:rgba(15,23,42,.5);display:flex;align-items:center;justify-content:center;padding:20px}
   .ver-modal-box{background:#fff;border-radius:14px;width:min(760px,100%);max-height:88vh;display:flex;flex-direction:column;box-shadow:0 30px 80px -20px rgba(15,23,42,.5)}

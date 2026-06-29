@@ -996,6 +996,24 @@ function LegalManager() {
     setPreviewVer(null); showMsg(`v${v.version} 내용을 불러왔습니다. 확인 후 저장하세요.`, true);
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
+  // 버전 스냅샷 삭제(이력만 제거 — 공개된 현재 약관 본문엔 영향 없음).
+  // 삭제 후 현재 약관의 버전 번호를 남은 스냅샷 최댓값으로 재정렬(남은 게 없으면 v1).
+  async function deleteVersion(v: LegalVersion) {
+    if (!form) return;
+    if (!confirm(`버전 v${v.version} 기록을 삭제할까요?\n이력에서만 사라지며 현재 공개 약관 본문에는 영향이 없습니다. (되돌릴 수 없음)`)) return;
+    try {
+      const del = await supabase.from("legal_doc_versions").delete().eq("id", v.id);
+      if (del.error) throw del.error;
+      const remaining = versions.filter((x) => x.id !== v.id);
+      const newVer = remaining.length ? Math.max(...remaining.map((x) => x.version)) : 1;
+      // 현재 약관의 표시 버전을 남은 이력에 맞게 정렬
+      await supabase.from("legal_docs").update({ version: newVer }).eq("slug", form.slug);
+      setVersions(remaining);
+      await load();
+      showMsg(remaining.length ? `v${v.version} 기록을 삭제했습니다. (현재 버전 v${newVer})` : "모든 버전 이력을 삭제해 현재 버전이 v1로 초기화됐습니다.", true);
+      setPreviewVer(null);
+    } catch (err) { console.error("version delete failed:", err); alert("버전 삭제에 실패했습니다. 관리자 권한 또는 테이블 설정을 확인해 주세요."); }
+  }
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault(); if (!form) return;
@@ -1110,11 +1128,13 @@ function LegalManager() {
                       <span className="ver-acts">
                         <button type="button" className="btn btn-out btn-sm" onClick={() => setPreviewVer(v)}>보기</button>
                         <button type="button" className="btn btn-out btn-sm" onClick={() => restoreVersion(v)}>되돌리기</button>
+                        <button type="button" className="btn btn-out btn-sm ver-del" onClick={() => deleteVersion(v)}>삭제</button>
                       </span>
                     </li>
                   ))}
                 </ul>
               )}
+              {versions.length > 0 && <p className="hint" style={{ marginTop: 12 }}>💡 버전을 모두 삭제하면 현재 버전이 <strong>v1로 초기화</strong>됩니다. (삭제는 이력만 지우며 공개 약관 본문엔 영향 없음)</p>}
             </div>
           )}
         </div>
