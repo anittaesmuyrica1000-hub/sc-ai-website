@@ -11,33 +11,33 @@ export default function SiteFooter() {
   return (
     <footer>
       <div className="wrap">
-        <div className="foot-top">
-          <div className="foot-brand">
-            {/* 로고 클릭 = 홈으로 전체 새로고침(Next Link 아닌 일반 앵커라 풀 페이지 로드) */}
-            <a href="/" className="foot-logo-link" aria-label="홈으로 새로고침">
-              <img src="/supercoder-footer.svg" className="foot-logo-img" alt="Supercoder" />
-            </a>
-          </div>
-          <div className="foot-links">
-            <div className="foot-col">
-              <h4>AI 면접관</h4>
-              <ul>
-                <li><Link href="/privacy">개인정보처리 방침</Link></li>
-                <li><Link href="/terms">기업용 서비스 이용약관</Link></li>
-                <li><Link href="/terms-applicant">지원자용 서비스 이용약관</Link></li>
-              </ul>
-            </div>
-          </div>
+        {/* 1) 로고 — 클릭 시 홈으로 전체 새로고침(일반 앵커) */}
+        <a href="/" className="foot-logo-link" aria-label="홈으로 새로고침">
+          <img src="/supercoder-footer.svg" className="foot-logo-img" alt="Supercoder" />
+        </a>
+
+        {/* 2) 상품정보 — 서비스 + 약관 */}
+        <nav className="foot-nav">
+          <Link href="/apply">도입 문의</Link>
+          <a href="#" className="js-brochure">서비스소개서</a>
+          <Link href="/blog">블로그</Link>
+          <a href="https://ai.supercoder.co/recruiter" target="_blank" rel="noopener noreferrer">로그인</a>
+        </nav>
+        <div className="foot-legal">
+          <Link href="/privacy">개인정보처리방침</Link>
+          <Link href="/terms">기업용 서비스 이용약관</Link>
+          <Link href="/terms-applicant">지원자용 서비스 이용약관</Link>
         </div>
-        <div className="foot-bottom">
-          <div className="foot-biz">
-            <span>(주)세컨드팀</span>
-            <span>대표 최재웅</span>
-            <span>서울 서초구 효령로55길 19 4층</span>
-            <span>이메일 support@supercoder.co</span>
-          </div>
-          <p className="foot-copy">© 2026 Second Team. All rights reserved.</p>
+
+        {/* 3) 기업정보 — 맨 하단 */}
+        <hr className="foot-divider" />
+        <div className="foot-biz">
+          <span>(주)세컨드팀</span>
+          <span>대표 최재웅</span>
+          <span>서울 서초구 효령로55길 19 4층</span>
+          <span>support@supercoder.co</span>
         </div>
+        <p className="foot-copy">© 2026 Second Team. All rights reserved.</p>
       </div>
     </footer>
   );

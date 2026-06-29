@@ -144,25 +144,24 @@ header.nav-invert .nav-center a:hover{color:#fff}
 }
 
 /* ===== Footer (partial: <site-footer>) — GNB와 동일: 흰 배경 + 컬러 로고 ===== */
-footer{background:#fff;color:var(--slate);padding:64px 0 44px;font-size:14px;border-top:1px solid var(--line)}
-.foot-top{display:flex;justify-content:space-between;align-items:flex-start;gap:48px;flex-wrap:wrap}
-.foot-brand{display:flex;flex-direction:column;align-items:flex-start;gap:18px}
+/* 좌측 정렬 3단: 로고 → 상품정보 → 기업정보(맨 하단) */
+footer{background:#fff;color:var(--slate);padding:64px 0 40px;font-size:14px;border-top:1px solid var(--line);text-align:left}
+/* 1) 로고 */
 .foot-logo-link{display:inline-flex;cursor:pointer}
-.foot-logo-img{height:26px;width:auto;display:block;opacity:.7;transition:opacity .2s}
+.foot-logo-img{height:28px;width:auto;display:block;opacity:.85;transition:opacity .2s}
 .foot-logo-link:hover .foot-logo-img{opacity:1}
-.foot-copy{color:var(--slate-2);font-size:13px;margin:0}
-/* 저작권 — 푸터 맨 아래 바 */
-.foot-bottom{margin-top:48px;padding-top:16px;border-top:1px solid var(--line);text-align:left}
-/* 사업자 정보 — 소형·약한 색, 여러 줄 가능 */
-.foot-biz{display:flex;flex-wrap:wrap;gap:3px 14px;color:var(--slate-2);font-size:12.5px;line-height:1.6;margin-bottom:10px}
+/* 2) 상품정보 — 서비스 링크 + 약관 링크 */
+.foot-nav{display:flex;flex-wrap:wrap;gap:14px 28px;margin:28px 0 0}
+.foot-nav a{color:var(--slate);font-size:14.5px;font-weight:600}
+.foot-nav a:hover{color:var(--blue-d)}
+.foot-legal{display:flex;flex-wrap:wrap;gap:8px 18px;margin:14px 0 0}
+.foot-legal a{color:var(--slate-2);font-size:13px}
+.foot-legal a:hover{color:var(--blue-d)}
+/* 3) 기업정보 — 맨 하단(구분선 위) */
+.foot-divider{border:none;border-top:1px solid var(--line);margin:32px 0 0}
+.foot-biz{display:flex;flex-wrap:wrap;gap:4px 14px;margin:24px 0 0;color:var(--slate-2);font-size:12.5px;line-height:1.7}
 .foot-biz span{white-space:nowrap}
-.foot-links{display:flex;gap:64px}
-.foot-col h4{color:var(--slate-2);font-size:14px;font-weight:600;margin-bottom:18px}
-.foot-col ul{list-style:none;display:grid;gap:14px}
-.foot-col li a{color:var(--slate);font-size:14px}
-.foot-col a:hover{color:var(--blue-d)}
-@media(max-width:680px){.foot-top{flex-direction:column;gap:36px}.foot-links{gap:48px}}
-@media(max-width:420px){.foot-links{gap:28px}}
+.foot-copy{color:var(--slate-2);font-size:12.5px;margin:10px 0 0}
 
 /* ===== Legal / 문서 페이지 (privacy.html · terms*.html · 404.html 공용) ===== */
 /* 헤더(고정 GNB) 높이만큼 상단 여백 + 가독성 위주의 본문 레이아웃 */
