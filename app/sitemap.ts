@@ -7,7 +7,7 @@ const SITE_URL = "https://sc-ai-website.vercel.app";
 
 export const dynamic = "force-dynamic"; // 글 변경이 바로 반영되도록 요청 시 생성
 
-type PostRow = { id: string; updated_at?: string | null; created_at?: string | null };
+type PostRow = { id: string; slug?: string | null; updated_at?: string | null; created_at?: string | null };
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const staticRoutes: MetadataRoute.Sitemap = [
@@ -23,12 +23,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   try {
     const res = await supabase
       .from("posts")
-      .select("id,updated_at,created_at")
+      .select("id,slug,updated_at,created_at")
       .eq("published", true)
       .order("created_at", { ascending: false });
     if (!res.error && res.data) {
       posts = (res.data as PostRow[]).map((p) => ({
-        url: `${SITE_URL}/blog/${p.id}`,
+        url: `${SITE_URL}/blog/${p.slug || p.id}`,
         lastModified: p.updated_at || p.created_at || undefined,
         changeFrequency: "monthly",
         priority: 0.6,

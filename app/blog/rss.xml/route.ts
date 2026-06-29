@@ -9,6 +9,7 @@ export const dynamic = "force-dynamic";
 
 type Row = {
   id: string;
+  slug?: string | null;
   title: string;
   excerpt?: string | null;
   category?: string | null;
@@ -38,7 +39,7 @@ export async function GET() {
   try {
     const res = await supabase
       .from("posts")
-      .select("id,title,excerpt,category,content,cover_url,created_at,updated_at")
+      .select("id,slug,title,excerpt,category,content,cover_url,created_at,updated_at")
       .eq("published", true)
       .order("created_at", { ascending: false })
       .limit(50);
@@ -49,7 +50,7 @@ export async function GET() {
 
   const items = posts
     .map((p) => {
-      const link = `${SITE_URL}/blog/${p.id}`;
+      const link = `${SITE_URL}/blog/${p.slug || p.id}`;
       const date = new Date(p.created_at);
       const pubDate = isNaN(date.getTime()) ? "" : date.toUTCString();
       const cover = p.cover_url

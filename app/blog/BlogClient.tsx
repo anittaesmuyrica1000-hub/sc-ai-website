@@ -54,7 +54,7 @@ export default function BlogClient({ posts, error }: { posts: Post[]; error: boo
           ) : (
             <div className="post-grid">
               {filtered.map((p) => (
-                <Link key={p.id} href={`/blog/${encodeURIComponent(p.id)}`} className="post-card">
+                <Link key={p.id} href={`/blog/${encodeURIComponent(p.slug || p.id)}`} className="post-card">
                   {p.cover_url ? (
                     <img className="post-cover" src={p.cover_url} alt="" loading="lazy" />
                   ) : (

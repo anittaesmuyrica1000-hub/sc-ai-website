@@ -25,6 +25,9 @@ export type Post = {
   author?: string | null;
   published: boolean;
   tags?: string[] | null;
+  slug?: string | null;
+  meta_title?: string | null;
+  meta_description?: string | null;
 };
 
 // FAQ 타입 (어드민 관리 + 랜딩 노출)

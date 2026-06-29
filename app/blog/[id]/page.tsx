@@ -8,11 +8,18 @@ import { renderBody } from "@/lib/postRender";
 
 export const dynamic = "force-dynamic";
 
-async function getPost(id: string): Promise<Post | null> {
+const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+// slug 우선 조회 → 없으면 UUID(id)로 (기존 색인된 주소 호환). slug 컬럼 미존재(마이그레이션 전)면 id로 폴백.
+async function getPost(key: string): Promise<Post | null> {
   try {
-    const res = await supabase.from("posts").select("*").eq("id", id).single();
-    if (res.error) throw res.error;
-    const p = res.data as Post;
+    let p: Post | null = null;
+    const bySlug = await supabase.from("posts").select("*").eq("slug", key).maybeSingle();
+    if (!bySlug.error && bySlug.data) p = bySlug.data as Post;
+    if (!p && UUID_RE.test(key)) {
+      const byId = await supabase.from("posts").select("*").eq("id", key).maybeSingle();
+      if (!byId.error && byId.data) p = byId.data as Post;
+    }
     if (!p || p.published === false) return null;
     return p;
   } catch (err) {
@@ -26,15 +33,19 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
   const p = await getPost(id);
   if (!p) return { title: "글을 찾을 수 없습니다" };
   const tags = Array.isArray(p.tags) ? p.tags.filter(Boolean) : [];
+  const metaTitle = p.meta_title?.trim() || `${p.title} · 블로그`;
+  const metaDesc = p.meta_description?.trim() || p.excerpt || undefined;
+  const path = `/blog/${p.slug || p.id}`;
   return {
-    title: `${p.title} · 블로그`,
-    description: p.excerpt || undefined,
+    title: metaTitle,
+    description: metaDesc,
     keywords: tags.length ? tags : undefined,
-    alternates: { canonical: `/blog/${id}` },
+    alternates: { canonical: path },
     openGraph: {
       type: "article",
-      title: p.title,
-      description: p.excerpt || undefined,
+      title: p.meta_title?.trim() || p.title,
+      description: metaDesc,
+      url: path,
       images: p.cover_url ? [{ url: p.cover_url }] : [{ url: "/og-image.png?v=2", width: 1200, height: 630 }],
       tags: tags.length ? tags : undefined,
     },

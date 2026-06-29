@@ -410,9 +410,21 @@ function Settings({ email }: { email: string }) {
 
 /* ===================== 블로그 관리 ===================== */
 
-type FormState = { id: string; title: string; category: string; author: string; cover_url: string; excerpt: string; content: string; published: boolean; tags: string[] };
-const EMPTY: FormState = { id: "", title: "", category: "", author: "", cover_url: "", excerpt: "", content: "", published: true, tags: [] };
+type FormState = { id: string; title: string; category: string; author: string; cover_url: string; excerpt: string; content: string; published: boolean; tags: string[]; slug: string; meta_title: string; meta_description: string };
+const EMPTY: FormState = { id: "", title: "", category: "", author: "", cover_url: "", excerpt: "", content: "", published: true, tags: [], slug: "", meta_title: "", meta_description: "" };
 const MAX_TAGS = 8;
+
+// 제목 → URL slug. 한글·영문 소문자·숫자·하이픈 허용, 공백은 하이픈, 그 외 제거.
+function slugify(s: string) {
+  return String(s || "")
+    .trim().toLowerCase()
+    .replace(/['"]/g, "")
+    .replace(/[^\w가-힣\s-]/g, "")
+    .replace(/\s+/g, "-")
+    .replace(/-+/g, "-")
+    .replace(/^-|-$/g, "")
+    .slice(0, 80);
+}
 
 // 블로그 글 템플릿 — 자주 쓰는 글 구조를 한 번에 채워 넣는다. 본문은 WYSIWYG(HTML)로 저장된다.
 const BLOG_TEMPLATES: EditorTemplate[] = [
@@ -539,7 +551,7 @@ function BlogManager() {
   function set<K extends keyof FormState>(k: K, v: FormState[K]) { setForm((f) => (f ? { ...f, [k]: v } : f)); }
   function enterNew() { setForm({ ...EMPTY }); setMsg(null); }
   function enterEdit(p: Post) {
-    setForm({ id: p.id, title: p.title || "", category: p.category || "", author: p.author || "", cover_url: p.cover_url || "", excerpt: p.excerpt || "", content: p.content || "", published: p.published !== false, tags: Array.isArray(p.tags) ? p.tags : [] });
+    setForm({ id: p.id, title: p.title || "", category: p.category || "", author: p.author || "", cover_url: p.cover_url || "", excerpt: p.excerpt || "", content: p.content || "", published: p.published !== false, tags: Array.isArray(p.tags) ? p.tags : [], slug: p.slug || "", meta_title: p.meta_title || "", meta_description: p.meta_description || "" });
     setMsg(null); window.scrollTo({ top: 0, behavior: "smooth" });
   }
   function closeForm() { setForm(null); setMsg(null); }
@@ -563,10 +575,13 @@ function BlogManager() {
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault(); if (!form) return;
     if (!form.title.trim() || !form.content.trim()) { showMsg("제목과 본문은 필수입니다.", false); return; }
+    const slug = form.slug.trim() || null;
+    if (slug && !/^[\w가-힣-]+$/.test(slug)) { showMsg("URL slug는 한글·영문·숫자·하이픈만 사용하세요.", false); return; }
     const payload: Record<string, unknown> = {
       title: form.title.trim(), category: form.category.trim() || null, author: form.author.trim() || null,
       cover_url: form.cover_url.trim() || null, excerpt: form.excerpt.trim() || null, content: form.content, published: form.published,
       tags: form.tags.length ? form.tags : null,
+      slug, meta_title: form.meta_title.trim() || null, meta_description: form.meta_description.trim() || null,
     };
     setSaving(true);
     try {
@@ -575,11 +590,15 @@ function BlogManager() {
           ? supabase.from("posts").update({ ...body, updated_at: new Date().toISOString() }).eq("id", form.id)
           : supabase.from("posts").insert(body);
       let res = await run(payload);
-      // tags 컬럼이 아직 없으면(마이그레이션 전) 태그 빼고 다시 저장 — 본문 저장은 막지 않는다.
-      if (res.error && /tags/i.test(`${res.error.message} ${res.error.details || ""}`)) {
-        const { tags, ...rest } = payload; void tags;
+      // slug 중복이면 명확히 안내
+      if (res.error && /duplicate|unique/i.test(`${res.error.message} ${res.error.details || ""}`) && /slug/i.test(`${res.error.message} ${res.error.details || ""}`)) {
+        showMsg("이미 사용 중인 URL slug입니다. 다른 값으로 바꿔 주세요.", false); setSaving(false); return;
+      }
+      // 새 컬럼(tags/slug/meta_*)이 아직 없으면(마이그레이션 전) 해당 값만 빼고 다시 저장 — 본문 저장은 막지 않는다.
+      if (res.error && /tags|slug|meta_title|meta_description/i.test(`${res.error.message} ${res.error.details || ""}`)) {
+        const { tags, slug: _s, meta_title, meta_description, ...rest } = payload; void tags; void _s; void meta_title; void meta_description;
         res = await run(rest);
-        if (!res.error) alert("글은 저장됐지만 태그는 보류됐어요.\nSupabase에서 posts.tags 컬럼 추가(SQL) 후 다시 저장하면 태그가 반영됩니다.");
+        if (!res.error) alert("글은 저장됐지만 태그·URL·메타 항목은 보류됐어요.\nSupabase에 마이그레이션(SQL) 적용 후 다시 저장하면 반영됩니다.");
       }
       if (res.error) throw res.error;
       showMsg(form.id ? "수정되었습니다." : "등록되었습니다.", true);
@@ -616,6 +635,16 @@ function BlogManager() {
               <label htmlFor="f-title">제목 <span className="req">*</span></label>
               <input type="text" id="f-title" placeholder="글 제목" value={form.title} onChange={(e) => set("title", e.target.value)} />
             </div>
+            <div className="field">
+              <label htmlFor="f-slug">URL 주소(slug) <span className="hint-inline">검색·공유용 주소 · 비우면 자동 ID 사용</span></label>
+              <div className="slug-row">
+                <span className="slug-prefix">/blog/</span>
+                <input type="text" id="f-slug" placeholder="ai-면접-도입-가이드" value={form.slug}
+                  onChange={(e) => set("slug", e.target.value)} onBlur={(e) => set("slug", slugify(e.target.value))} />
+                <button type="button" className="btn btn-out btn-sm" onClick={() => set("slug", slugify(form.title))} disabled={!form.title.trim()}>제목에서 생성</button>
+              </div>
+              <p className="hint">최종 주소: <strong>/blog/{form.slug.trim() || "(자동 ID)"}</strong></p>
+            </div>
             <div className="field-row">
               <div className="field">
                 <label htmlFor="f-category">카테고리</label>
@@ -645,6 +674,19 @@ function BlogManager() {
               <label htmlFor="f-excerpt">요약</label>
               <input type="text" id="f-excerpt" placeholder="리스트에 보일 한 줄 요약" value={form.excerpt} onChange={(e) => set("excerpt", e.target.value)} />
             </div>
+            <details className="seo-box">
+              <summary>SEO 검색 노출 설정 <span className="hint-inline">비우면 제목·요약을 그대로 사용</span></summary>
+              <div className="field">
+                <label htmlFor="f-mtitle">검색 제목(meta title)</label>
+                <input type="text" id="f-mtitle" placeholder="비우면 글 제목 사용 · 검색결과에 뜨는 제목" value={form.meta_title} onChange={(e) => set("meta_title", e.target.value)} />
+                <p className="hint">{(form.meta_title || form.title).length}자 · 25~35자 권장</p>
+              </div>
+              <div className="field">
+                <label htmlFor="f-mdesc">검색 설명(meta description)</label>
+                <textarea id="f-mdesc" rows={2} placeholder="비우면 요약 사용 · 검색결과에 뜨는 설명문" value={form.meta_description} onChange={(e) => set("meta_description", e.target.value)} />
+                <p className="hint">{(form.meta_description || form.excerpt).length}자 · 50~80자 권장</p>
+              </div>
+            </details>
             <div className="field">
               <label>주제 키워드 · 해시태그 <span className="hint-inline">검색 노출(SEO)용 · 3~5개 권장, 최대 {MAX_TAGS}개</span></label>
               <div className="tag-box">
@@ -755,7 +797,7 @@ function BlogManager() {
                     <td className="nowrap">{p.updated_at ? fmtDate(p.updated_at) : "—"}</td>
                     <td className="nowrap">
                       <div className="row-actions">
-                        <button className="icon-btn" title="보기" onClick={() => window.open(`/blog/${encodeURIComponent(p.id)}`, "_blank")}><i className="fa-solid fa-arrow-up-right-from-square"></i></button>
+                        <button className="icon-btn" title="보기" onClick={() => window.open(`/blog/${encodeURIComponent(p.slug || p.id)}`, "_blank")}><i className="fa-solid fa-arrow-up-right-from-square"></i></button>
                         <button className="icon-btn" title="수정" onClick={() => enterEdit(p)}><i className="fa-solid fa-pen"></i></button>
                         <button className="icon-btn del" title="삭제" onClick={() => del(p)}><i className="fa-solid fa-trash"></i></button>
                       </div>
