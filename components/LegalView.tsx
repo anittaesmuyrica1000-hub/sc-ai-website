@@ -16,6 +16,13 @@ export default function LegalView({ doc }: { doc: LegalDoc }) {
       <div className="legal-head">
         <h1 dangerouslySetInnerHTML={{ __html: doc.title }} />
         {doc.meta && <p className="legal-meta">{doc.meta}</p>}
+        {(doc.effective_date || doc.version) && (
+          <p className="legal-version">
+            {doc.effective_date ? `시행일 ${doc.effective_date}` : ""}
+            {doc.effective_date && doc.version ? " · " : ""}
+            {doc.version ? `버전 v${doc.version}` : ""}
+          </p>
+        )}
       </div>
       <div dangerouslySetInnerHTML={{ __html: renderBody(doc.body) }} />
       <Link className="back-link" href="/">

@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState, useCallback } from "react";
 import type { Session } from "@supabase/supabase-js";
-import { supabase, type Post, type Faq, type Signup, type BrochureRequest, type LegalDoc, legalPath, RESERVED_LEGAL_SLUGS, SIGNUP_STATUSES } from "@/lib/supabase";
+import { supabase, type Post, type Faq, type Signup, type BrochureRequest, type LegalDoc, type LegalVersion, legalPath, RESERVED_LEGAL_SLUGS, SIGNUP_STATUSES } from "@/lib/supabase";
 import { fmtDate } from "@/lib/format";
 import MarkdownEditor from "@/components/MarkdownEditor";
 import RichEditor, { type EditorTemplate } from "@/components/RichEditor";
@@ -956,8 +956,8 @@ function FaqManager() {
 
 /* ===================== 약관(법적 문서) ===================== */
 
-type LegalForm = { id: string; slug: string; title: string; meta: string; body: string; sort_order: string; published: boolean };
-const LEGAL_EMPTY: LegalForm = { id: "", slug: "", title: "", meta: "", body: "", sort_order: "", published: true };
+type LegalForm = { id: string; slug: string; title: string; meta: string; body: string; sort_order: string; published: boolean; effective_date: string };
+const LEGAL_EMPTY: LegalForm = { id: "", slug: "", title: "", meta: "", body: "", sort_order: "", published: true, effective_date: "" };
 const SLUG_RE = /^[a-z0-9-]+$/;
 
 function LegalManager() {
@@ -966,8 +966,19 @@ function LegalManager() {
   const [msg, setMsg] = useState<{ text: string; ok: boolean } | null>(null);
   const [saving, setSaving] = useState(false);
   const [loadErr, setLoadErr] = useState<string | null>(null);
+  const [versions, setVersions] = useState<LegalVersion[]>([]);
+  const [previewVer, setPreviewVer] = useState<LegalVersion | null>(null);
   const isEdit = !!form?.id;
   const isReserved = !!form && !!RESERVED_LEGAL_SLUGS[form.slug];
+
+  // 편집 중인 약관의 버전 이력 불러오기(테이블 미적용 시 조용히 빈 목록)
+  const loadVersions = useCallback(async (slug: string) => {
+    try {
+      const res = await supabase.from("legal_doc_versions").select("*").eq("slug", slug).order("version", { ascending: false });
+      if (res.error) throw res.error;
+      setVersions((res.data as LegalVersion[]) || []);
+    } catch { setVersions([]); }
+  }, []);
 
   const load = useCallback(async () => {
     try {
@@ -981,9 +992,20 @@ function LegalManager() {
 
   function showMsg(text: string, ok: boolean) { setMsg({ text, ok }); if (ok) setTimeout(() => setMsg(null), 3000); }
   function set<K extends keyof LegalForm>(k: K, v: LegalForm[K]) { setForm((f) => (f ? { ...f, [k]: v } : f)); }
-  function enterNew() { setForm({ ...LEGAL_EMPTY }); setMsg(null); }
-  function enterEdit(it: LegalDoc) { setForm({ id: it.id, slug: it.slug, title: it.title, meta: it.meta || "", body: it.body, sort_order: String(it.sort_order ?? ""), published: it.published !== false }); setMsg(null); window.scrollTo({ top: 0, behavior: "smooth" }); }
-  function closeForm() { setForm(null); setMsg(null); }
+  function enterNew() { setForm({ ...LEGAL_EMPTY }); setVersions([]); setMsg(null); }
+  function enterEdit(it: LegalDoc) {
+    setForm({ id: it.id, slug: it.slug, title: it.title, meta: it.meta || "", body: it.body, sort_order: String(it.sort_order ?? ""), published: it.published !== false, effective_date: it.effective_date || "" });
+    setVersions([]); loadVersions(it.slug);
+    setMsg(null); window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+  function closeForm() { setForm(null); setVersions([]); setMsg(null); }
+  // 과거 버전 내용을 폼에 불러오기(되돌리기) — 저장하면 새 버전으로 기록됨
+  function restoreVersion(v: LegalVersion) {
+    if (!confirm(`v${v.version} 내용을 편집기로 불러올까요?\n저장하면 새 버전으로 기록됩니다(기존 이력은 보존).`)) return;
+    set("title", v.title); set("meta", v.meta || ""); set("body", v.body); set("effective_date", v.effective_date || "");
+    setPreviewVer(null); showMsg(`v${v.version} 내용을 불러왔습니다. 확인 후 저장하세요.`, true);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault(); if (!form) return;
@@ -991,14 +1013,33 @@ function LegalManager() {
     if (!slug || !SLUG_RE.test(slug)) { showMsg("slug는 영문 소문자·숫자·하이픈만 사용하세요. (예: marketing-terms)", false); return; }
     if (!form.title.trim() || !form.body.trim()) { showMsg("제목과 본문은 필수입니다.", false); return; }
     const order = form.sort_order.trim() === "" ? items.length + 1 : Number(form.sort_order);
-    const payload: Record<string, unknown> = { slug, title: form.title.trim(), meta: form.meta.trim() || null, body: form.body, sort_order: Number.isFinite(order) ? order : 0, published: form.published };
+    const current = items.find((i) => i.id === form.id);
+    const newVersion = (current?.version || 0) + 1;
+    const effDate = form.effective_date.trim() || null;
+    const base: Record<string, unknown> = { slug, title: form.title.trim(), meta: form.meta.trim() || null, body: form.body, sort_order: Number.isFinite(order) ? order : 0, published: form.published };
+    const payload: Record<string, unknown> = { ...base, effective_date: effDate, version: newVersion };
     setSaving(true);
     try {
-      let res;
-      if (form.id) { payload.updated_at = new Date().toISOString(); res = await supabase.from("legal_docs").update(payload).eq("id", form.id); }
-      else { res = await supabase.from("legal_docs").insert(payload); }
+      const run = (body: Record<string, unknown>) =>
+        form.id
+          ? supabase.from("legal_docs").update({ ...body, updated_at: new Date().toISOString() }).eq("id", form.id)
+          : supabase.from("legal_docs").insert(body);
+      let res = await run(payload);
+      // effective_date/version 컬럼 미적용 시 해당 값 빼고 재시도(저장은 막지 않음)
+      let versioned = true;
+      if (res.error && /effective_date|version|column/i.test(`${res.error.message} ${res.error.details || ""}`)) {
+        res = await run(base); versioned = false;
+      }
       if (res.error) throw res.error;
-      showMsg(form.id ? "수정되었습니다." : "등록되었습니다.", true); setForm(null); await load();
+      // 버전 스냅샷 적재(테이블 미적용이면 조용히 건너뜀)
+      if (versioned) {
+        try {
+          await supabase.from("legal_doc_versions").insert({ slug, version: newVersion, title: form.title.trim(), meta: form.meta.trim() || null, body: form.body, effective_date: effDate });
+        } catch { /* 버전 테이블 미적용 — 무시 */ }
+      }
+      showMsg(form.id ? `수정되었습니다 (v${newVersion}).` : "등록되었습니다 (v1).", true);
+      if (!versioned) alert("저장됐지만 버전·시행일은 보류됐어요.\nSupabase에 legal-versioning-setup.sql 적용 후 다시 저장하면 버전 기록이 시작됩니다.");
+      setForm(null); setVersions([]); await load();
     } catch (err) {
       console.error("legal save failed:", err);
       const dup = String((err as { message?: string })?.message || "").toLowerCase().includes("duplicate");
@@ -1038,9 +1079,15 @@ function LegalManager() {
               <label htmlFor="lg-title">제목 <span className="req">*</span></label>
               <input type="text" id="lg-title" placeholder="예: 개인정보처리방침" value={form.title} onChange={(e) => set("title", e.target.value)} />
             </div>
-            <div className="field">
-              <label htmlFor="lg-meta">상단 메타(선택)</label>
-              <input type="text" id="lg-meta" placeholder="예: 운영: 주식회사 세컨드팀 · 시행일: 2026년 2월 1일" value={form.meta} onChange={(e) => set("meta", e.target.value)} />
+            <div className="field-row">
+              <div className="field">
+                <label htmlFor="lg-meta">상단 메타(선택)</label>
+                <input type="text" id="lg-meta" placeholder="예: 운영: 주식회사 세컨드팀" value={form.meta} onChange={(e) => set("meta", e.target.value)} />
+              </div>
+              <div className="field">
+                <label htmlFor="lg-eff">시행일 <span className="hint-inline">버전 기록·공개 표기에 사용</span></label>
+                <input type="date" id="lg-eff" value={form.effective_date} onChange={(e) => set("effective_date", e.target.value)} />
+              </div>
             </div>
             <MarkdownEditor
               id="lg-body"
@@ -1056,6 +1103,49 @@ function LegalManager() {
               <button type="button" className="btn btn-out" onClick={closeForm}>취소</button>
             </div>
           </form>
+
+          {isEdit && (
+            <div className="ver-panel">
+              <h3 className="ver-title"><i className="fa-solid fa-clock-rotate-left"></i> 버전 내역 {versions.length > 0 && <span className="count">{versions.length}개</span>}</h3>
+              {versions.length === 0 ? (
+                <p className="hint">아직 기록된 버전이 없습니다. 저장하면 버전이 쌓이기 시작합니다. (버전 기능은 <code>legal-versioning-setup.sql</code> 적용 필요)</p>
+              ) : (
+                <ul className="ver-list">
+                  {versions.map((v) => (
+                    <li key={v.id} className="ver-item">
+                      <span className="ver-no">v{v.version}</span>
+                      <span className="ver-date">{v.effective_date ? `시행 ${v.effective_date}` : "시행일 미지정"}</span>
+                      <span className="ver-at">{v.created_at ? fmtDate(v.created_at) : ""} 저장</span>
+                      <span className="ver-acts">
+                        <button type="button" className="btn btn-out btn-sm" onClick={() => setPreviewVer(v)}>보기</button>
+                        <button type="button" className="btn btn-out btn-sm" onClick={() => restoreVersion(v)}>되돌리기</button>
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+          )}
+        </div>
+      )}
+
+      {previewVer && (
+        <div className="ver-modal" onClick={() => setPreviewVer(null)}>
+          <div className="ver-modal-box" onClick={(e) => e.stopPropagation()}>
+            <div className="ver-modal-head">
+              <strong>v{previewVer.version} 미리보기 {previewVer.effective_date ? `· 시행 ${previewVer.effective_date}` : ""}</strong>
+              <button type="button" className="icon-btn" aria-label="닫기" onClick={() => setPreviewVer(null)}><i className="fa-solid fa-xmark"></i></button>
+            </div>
+            <div className="ver-modal-body">
+              <h2 dangerouslySetInnerHTML={{ __html: previewVer.title }} />
+              {previewVer.meta && <p className="ver-modal-meta">{previewVer.meta}</p>}
+              <div className="md-preview-body post-content" dangerouslySetInnerHTML={{ __html: renderBody(previewVer.body) }} />
+            </div>
+            <div className="ver-modal-foot">
+              <button type="button" className="btn btn-blue btn-sm" onClick={() => restoreVersion(previewVer)}>이 버전으로 되돌리기</button>
+              <button type="button" className="btn btn-out btn-sm" onClick={() => setPreviewVer(null)}>닫기</button>
+            </div>
+          </div>
         </div>
       )}
 
@@ -1071,7 +1161,7 @@ function LegalManager() {
                 {items.map((it) => (
                   <tr key={it.id}>
                     <td className="nowrap">{it.sort_order}</td>
-                    <td><div className="cell-title" dangerouslySetInnerHTML={{ __html: it.title }} /><div className="cell-sub">{it.slug}{RESERVED_LEGAL_SLUGS[it.slug] ? " · 예약" : ""}</div></td>
+                    <td><div className="cell-title" dangerouslySetInnerHTML={{ __html: it.title }} /><div className="cell-sub">{it.slug}{RESERVED_LEGAL_SLUGS[it.slug] ? " · 예약" : ""}{it.version ? ` · v${it.version}` : ""}{it.effective_date ? ` · 시행 ${it.effective_date}` : ""}</div></td>
                     <td className="nowrap"><a href={legalPath(it.slug)} target="_blank" rel="noopener noreferrer">{legalPath(it.slug)}</a></td>
                     <td className="nowrap">{it.published === false ? <span className="pill pill-gray">비공개</span> : <span className="pill pill-green">공개</span>}</td>
                     <td className="nowrap">{it.updated_at ? fmtDate(it.updated_at) : "—"}</td>

@@ -81,8 +81,22 @@ export type LegalDoc = {
   body: string;
   sort_order: number;
   published: boolean;
+  effective_date?: string | null;
+  version?: number | null;
   created_at?: string;
   updated_at?: string | null;
+};
+
+// 약관 버전 스냅샷(legal_doc_versions) — 저장할 때마다 1줄 적재
+export type LegalVersion = {
+  id: string;
+  slug: string;
+  version: number;
+  title: string;
+  meta?: string | null;
+  body: string;
+  effective_date?: string | null;
+  created_at?: string;
 };
 
 // 루트 경로로 노출되는 예약 slug (그 외 신규 약관은 /legal/[slug])
