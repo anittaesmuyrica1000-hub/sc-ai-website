@@ -334,7 +334,8 @@ export default async function HomePage() {
             {faqs.map((f, i) => (
               <details className="faq-item" key={i} {...(i === 0 ? { open: true } : {})}>
                 <summary>{f.question} <i className="fa-solid fa-plus fq-ic"></i></summary>
-                <div className="fa-ans" dangerouslySetInnerHTML={{ __html: renderBody(f.answer) }} />
+                {/* 답변에 박힌 강제 줄바꿈(<br>)은 제거 — 화면폭에 맞춰 자연스럽게 흐르도록(문단 <p>은 유지) */}
+                <div className="fa-ans" dangerouslySetInnerHTML={{ __html: renderBody(f.answer).replace(/<br\s*\/?>\s*/gi, " ") }} />
               </details>
             ))}
           </div>
