@@ -1013,8 +1013,9 @@ function LegalManager() {
     if (!slug || !SLUG_RE.test(slug)) { showMsg("slug는 영문 소문자·숫자·하이픈만 사용하세요. (예: marketing-terms)", false); return; }
     if (!form.title.trim() || !form.body.trim()) { showMsg("제목과 본문은 필수입니다.", false); return; }
     const order = form.sort_order.trim() === "" ? items.length + 1 : Number(form.sort_order);
-    const current = items.find((i) => i.id === form.id);
-    const newVersion = (current?.version || 0) + 1;
+    // 버전 번호 = 이미 쌓인 스냅샷의 최대 + 1 → 첫 저장은 v1, 이후 v2·v3…
+    const maxVer = versions.length ? Math.max(...versions.map((v) => v.version)) : 0;
+    const newVersion = maxVer + 1;
     const effDate = form.effective_date.trim() || null;
     const base: Record<string, unknown> = { slug, title: form.title.trim(), meta: form.meta.trim() || null, body: form.body, sort_order: Number.isFinite(order) ? order : 0, published: form.published };
     const payload: Record<string, unknown> = { ...base, effective_date: effDate, version: newVersion };
