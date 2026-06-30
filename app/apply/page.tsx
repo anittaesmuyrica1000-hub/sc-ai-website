@@ -23,8 +23,6 @@ export function generateMetadata() {
 }
 
 const APPLY_LOGOS = [
-  { src: "/logos/kakaopay-t.png", alt: "kakaopay" },
-  { src: "/logos/hyundai-autoever-t.png", alt: "HYUNDAI AutoEver" },
   { src: "/logos/woongjin-t.png", alt: "Woongjin" },
   { src: "/logos/skonec-t.png", alt: "SKONEC entertainment" },
   { src: "/logos/markany-t.png", alt: "MarkAny" },

@@ -19,8 +19,6 @@ const plain = (s: string) => String(s || "").replace(/<[^>]+>/g, " ").replace(/\
 export const revalidate = 120;
 
 const LOGOS = [
-  { src: "/logos/kakaopay.png", alt: "kakaopay" },
-  { src: "/logos/hyundai-autoever.png", alt: "HYUNDAI AutoEver" },
   { src: "/logos/woongjin.png", alt: "Woongjin" },
   { src: "/logos/skonec.png", alt: "SKONEC entertainment" },
   { src: "/logos/markany.png", alt: "MarkAny" },
