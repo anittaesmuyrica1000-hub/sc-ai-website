@@ -8,7 +8,7 @@ import { usePathname } from "next/navigation";
  * 공유 GNB(헤더) — 페이지 네비 중심(블로그·서비스소개서·로그인) + 도입문의 CTA.
  * 섹션 앵커(왜 AI 면접인가/작동 방식/…)는 제거(스크롤 점프 방식 폐기).
  * 데스크톱은 인라인 링크, 모바일은 햄버거 메뉴. 섹션 인지형 색상(nav-invert 등) 유지.
- * '서비스소개서'는 BrochureModal이 .js-brochure 위임 클릭으로 처리한다.
+ * '서비스소개서'는 /brochure 페이지로 이동(추적용 — 모달에서 페이지로 전환됨).
  */
 export default function SiteHeader() {
   const headerRef = useRef<HTMLElement>(null);
@@ -110,7 +110,7 @@ export default function SiteHeader() {
         <div className="navlinks">
           <div className="nav-center">
             <Link href="/blog">블로그</Link>
-            <a href="#" className="js-brochure">서비스소개서</a>
+            <Link href="/brochure">서비스소개서</Link>
           </div>
           <a href="https://ai.supercoder.co/recruiter" target="_blank" rel="noopener noreferrer" className="btn btn-out nav-login">로그인</a>
           <Link href="/apply" className="btn btn-blue nav-btn">도입 문의</Link>
@@ -131,7 +131,7 @@ export default function SiteHeader() {
             <div className={`nav-menu${menuOpen ? " open" : ""}`} id="navMenu" aria-hidden={!menuOpen}>
               <div className="nav-menu-links">
                 <Link href="/blog" onClick={close}>블로그</Link>
-                <a href="#" className="js-brochure" onClick={close}>서비스소개서</a>
+                <Link href="/brochure" onClick={close}>서비스소개서</Link>
                 <Link href="/apply" className="nav-menu-item-cta" onClick={close}>도입 문의</Link>
                 <a href="https://ai.supercoder.co/recruiter" target="_blank" rel="noopener noreferrer" onClick={close}>로그인</a>
               </div>

@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import "./globals.css";
 import SiteHeader from "@/components/SiteHeader";
 import SiteFooter from "@/components/SiteFooter";
-import BrochureModal from "@/components/BrochureModal";
 import Chatbot from "@/components/Chatbot";
 import Analytics from "@/components/Analytics";
 
@@ -66,7 +65,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <SiteHeader />
         {children}
         <SiteFooter />
-        <BrochureModal />
         <Chatbot />
         <Analytics />
       </body>

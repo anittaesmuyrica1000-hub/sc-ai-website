@@ -19,7 +19,7 @@ export default function SiteFooter() {
         {/* 2) 상품정보 — 서비스 + 약관 */}
         <nav className="foot-nav">
           <Link href="/apply">도입 문의</Link>
-          <a href="#" className="js-brochure">서비스소개서</a>
+          <Link href="/brochure">서비스소개서</Link>
           <Link href="/blog">블로그</Link>
           <a href="https://ai.supercoder.co/recruiter" target="_blank" rel="noopener noreferrer">로그인</a>
         </nav>
