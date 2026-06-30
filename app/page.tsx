@@ -70,8 +70,7 @@ export default async function HomePage() {
             <div>
               <div className="tagchip"><i className="fa-solid fa-bolt"></i> AI 면접 채용 검증</div>
               <h1>
-                <span className="sky">지원자 검증은 </span><span className="hl" id="real-word">AI</span><span className="sky">가,</span><br />
-                <span className="sky">채용 결정은 </span><span className="hl">사람</span><span className="sky">이 더 빠르게</span>
+                <span className="sky">테스트 </span><span className="hl" id="real-word">페이지</span><span className="sky"> 입니다.</span>
               </h1>
               <p>
                 <span style={{ color: "#fff" }}>AI 면접·리포트</span>로 1차 검토를 줄이고,<br />
