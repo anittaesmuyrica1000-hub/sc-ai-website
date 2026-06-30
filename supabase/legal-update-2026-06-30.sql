@@ -1,0 +1,98 @@
+-- 약관 업데이트 2026-06-30
+-- 1) 개인정보처리방침(privacy): 새 본문(정보수집·이용/데이터최소화/CCPA/정보공유/
+--    개인정보 처리 위탁=수탁업체·서브프로세서 목록/데이터보안/접근·정정·삭제/업데이트/연락)으로 전면 교체.
+-- 2) 서비스 약관(terms) 제8조: 수탁업체 목록은 개인정보처리방침 참조 — cross-reference 한 줄 보강(조건부).
+-- Supabase SQL Editor에서 실행. (legal_docs는 admin RLS — service_role 또는 인증 관리자 세션에서 실행)
+
+-- ── 1) 개인정보처리방침 본문 교체 ─────────────────────────────────────────
+update public.legal_docs
+set
+  body = $body$<p>AI 면접 제품(지원자)의 인앱(in-product) 처리에 대해서는 별도의 「AI 면접 개인정보 고지」가 우선 적용됩니다.</p>
+
+<p>주식회사 세컨드팀(이하 “회사”)는 개인정보와 개인정보 보호의 중요성을 인식하고 있습니다. 본 개인정보처리방침은 회사의 채용 플랫폼 서비스와 관련하여 정보를 수집·이용·공개하는 방법을 설명합니다.</p>
+
+<h2>정보 수집 및 이용</h2>
+<ul>
+  <li>이용자는 면접 녹화, 전사본, 이력서 등 회사 플랫폼을 통해 공유된 데이터가 평가 목적으로 외부 서비스에 전송될 수 있음을 인지합니다. 여기에는 지원자 면접을 평가하기 위해 제3자 대규모 언어모델(LLM) 제공자와 데이터를 공유하는 것이 포함될 수 있습니다.</li>
+  <li>면접 중 캡처된 이미지는 잠재적 고용주에게 프로필과 함께 표시되는 고품질의 전문 사진을 생성하는 데 사용될 수 있으며, 이 과정에서 이미지 데이터가 제3자 API로 전송될 수 있습니다.</li>
+  <li>면접 프롬프트, 전사본, 녹화 및 산출물은 <strong>어떠한 대규모 언어모델의 학습·재학습·개선에도 사용되지 않습니다.</strong> 회사가 이용하는 Azure OpenAI 수탁(sub-processor) 약관에 따라 프롬프트와 완성결과(completion)는 OpenAI에 공유되지 않으며 고객 간(cross-customer)에 사용되지 않습니다. 회사가 내부적으로 모델을 개선하는 경우에는 합성 데이터 또는 완전 익명처리된 데이터만 사용하며, 해당 활동은 별도의 문서화된 목적으로 고지됩니다.</li>
+  <li>이용자의 데이터(이력서, AI 면접, 기대 급여 및 플랫폼을 통해 공유된 기타 정보)는 회사를 통해 채용하는 기업이 접근할 수 있습니다. 회사는 때때로 이용자가 프로필을 보유한 외부 웹사이트에서 관련 정보를 수집할 수 있습니다.</li>
+  <li>회사는 플랫폼 이용자에게 거래·서비스 운영 관련 메시지를 발송할 수 있습니다. 마케팅 커뮤니케이션(채용 기회 뉴스레터, 제품 업데이트)은 <strong>이용자가 사전 동의(opt-in)한 경우에만</strong> 발송되며, 동의 기록은 플랫폼의 동의 기록 저장소에 보관됩니다. 이용자는 계정 설정에서 언제든지 동의를 철회할 수 있습니다.</li>
+</ul>
+
+<h2>데이터 최소화</h2>
+<p>회사는 GDPR 제5조 제1항 (c)호 및 「개인정보 보호법」 제3조 제1항에 따라 수집 목적에 필요한 개인정보만을 수집합니다. 각 데이터 항목의 보유 기간은 회사의 데이터 보유 정책에서 정하며, 플랫폼 백엔드의 예약 삭제(retention) 절차를 통해 운영됩니다.</p>
+
+<h2>캘리포니아 소비자 개인정보(CCPA / CPRA)</h2>
+<p>회사는 미국 캘리포니아주를 대상으로 영업하지 않으며 캘리포니아 거주자의 개인정보를 처리하지 않으므로, 캘리포니아 소비자 개인정보보호법(CCPA) 및 캘리포니아 개인정보 권리법(CPRA)은 회사의 처리에 적용되지 않습니다. 향후 변경되는 경우 본 항목을 갱신하고 CCPA 관련 고지를 추가합니다.</p>
+
+<h2>정보 공유</h2>
+<p>회사는 채용 공고를 게시한 고용주와 개인정보를 공유할 수 있습니다. 또한 이메일 발송, 분석 등 운영 지원 서비스를 제공하는 제3자 서비스 제공자와 정보를 공유할 수 있습니다. 회사는 개인정보를 제3자에게 판매하지 않습니다.</p>
+
+<h2>개인정보 처리 위탁(수탁업체·서브프로세서)</h2>
+<p>회사는 지원자 또는 채용담당자의 개인정보를 회사를 대신하여 처리하도록 외부 업체(“수탁업체/서브프로세서”)에 위탁하고 있습니다. 본 목록은 ISO/IEC 27701:2025 통제항목 CPL-181(개인정보 이전 국가 기록), CPL-183(제3자 개인정보 제공 기록), OPS-101(수탁업체 관리)에 따른 개인정보 투명성 약속의 일환으로 공개됩니다.</p>
+
+<h3>활성 수탁업체</h3>
+<p>아래 표는 시행일 기준 공식 목록이며, 각 행은 수탁업체의 법적 명칭, 위탁 서비스·역할, 공유되는 개인정보 항목, 처리 위치, 이전의 계약적 근거를 기록합니다.</p>
+<div style="overflow-x:auto">
+  <table>
+    <thead><tr><th>수탁업체(법적 명칭)</th><th>서비스 · 역할</th><th>공유 개인정보 항목</th><th>처리 위치</th><th>계약적 근거</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Microsoft Corporation</strong> — Azure(인프라)</td><td>컴퓨팅, 스토리지(Blob·Files), 네트워킹, Postgres 호스팅. 플랫폼의 기본 데이터 저장 계층.</td><td>전 항목: 미디어, 면접 데이터, 사용자 계정, 사용자 로그, 접근 로그, 결제.</td><td>한국 중부(Microsoft Azure Korea 리전)</td><td>Microsoft Online Services 데이터 보호 부속서(DPA) — EU 표준계약조항(SCC)·영국 부속서·한국 국외이전 부속 포함.</td></tr>
+      <tr><td><strong>Microsoft Corporation</strong> — Azure OpenAI Service</td><td>면접 리포트 생성, 요약, 지원자 역량 평가, 이력서 기반 질문 생성, 실시간 후속 질문을 위한 대규모 언어모델 추론.</td><td>면접 전사본 및 이력서 텍스트. 지원자 음성은 전송되지 않음(음성은 Azure AI Services가 먼저 전사).</td><td>한국 중부(Microsoft Azure Korea 리전)</td><td>Microsoft Online Services DPA + Azure OpenAI Service 약관. Microsoft 공개 정책에 따라 고객의 프롬프트·완성결과는 Microsoft 기반모델의 학습·재학습·개선에 사용되지 않음.</td></tr>
+      <tr><td><strong>Microsoft Corporation</strong> — Azure AI Services(음성-텍스트 변환)</td><td>면접 음성의 텍스트 변환. 순수 STT이며 평가·의견 없음.</td><td>면접 음성 및 변환된 텍스트.</td><td>한국 중부(Microsoft Azure Korea 리전)</td><td>Microsoft Online Services DPA(1·2행과 동일 업체).</td></tr>
+      <tr><td><strong>Agora Lab, Inc.</strong></td><td>실시간 면접 세션 중 영상·음성 중계. Azure Blob 스토리지로의 청크 업로드 파이프라인. 전송 전용 역할이며 평가·의견 없음.</td><td>세션 중 면접 음성·영상 스트림(일시적; 짧은 엣지 캐시 외 저장되지 않음).</td><td>Agora SD-RTN 엣지·데이터센터(최근접 엣지 모델; 세션별 라우팅 리전 동적).</td><td>Agora Master Services Agreement + Agora Data Processing Addendum(<a href="https://www.agora.io/en/legal/data-processing-agreement" target="_blank" rel="noopener noreferrer">agora.io/en/legal/data-processing-agreement</a> 게시).</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<h3>서브프로세서로 분류하지 않는 업체</h3>
+<p>다음 업체는 투명성을 위해 안내하며, 지원자 또는 채용담당자의 개인정보를 서비스 입력값으로 제공받지 않으므로 활성 수탁업체 표에 포함되지 않습니다.</p>
+<ul>
+  <li><strong>Stripe</strong> — 미사용. Stripe 연동은 백엔드에서 제거되었으며 현재 어떠한 결제 흐름도 Stripe를 경유하지 않습니다.</li>
+  <li><strong>Higgsfield</strong> — 비(非)개인정보 워크플로우에만 사용. 지원자·채용담당자 개인정보를 제공받지 않습니다.</li>
+  <li><strong>GitHub, Inc.</strong> — 회사 내부 저장소의 소스코드 호스팅. 지원자·채용담당자 개인정보는 소스코드에 저장되지 않습니다.</li>
+  <li><strong>Atlassian(Jira)</strong> — 내부 업무 관리. 티켓에는 개별 레코드가 아닌 데이터 범주만 참조되며, 지원자·채용담당자 개인정보는 저장되지 않습니다.</li>
+  <li><strong>Vanta</strong> — 회사 자체 보안 태세 모니터링. 고객·지원자·채용담당자 개인정보를 제공받지 않습니다.</li>
+  <li><strong>Google Workspace(메일·캘린더)</strong> — 회사 내부 임직원 커뮤니케이션용. 일상적 처리 경로에서 지원자·채용담당자 개인정보가 경유하지 않습니다.</li>
+</ul>
+
+<h3>변경 통지</h3>
+<p>회사는 활성 수탁업체 목록의 변경(추가, 삭제, 처리 리전 변경, 계약적 근거 변경) 시 최소 30일 전에 기업 고객에게 통지합니다. 통지는 <a href="mailto:support@supercoder.co">support@supercoder.co</a> 에서 이메일로 발송되며, 고객은 Master Services Agreement에 따라 통지 기간 내에 이의를 제기할 수 있습니다.</p>
+
+<h3>버전 이력</h3>
+<p><strong>v1.0 — 2026년 6월 30일.</strong> 공개용 수탁업체 목록 최초 게시. 회사 내부 수탁업체 목록 등록부 v1.1(2026년 6월 9일 게시) 기준. 활성 수탁업체 4곳(Microsoft Azure ×3 + Agora) 및 서브프로세서로 분류하지 않는 업체 6곳 공개.</p>
+
+<h2>데이터 보안</h2>
+<p>회사는 개인정보를 무단 접근·이용·공개로부터 보호하기 위한 합리적인 조치를 취합니다. 다만 인터넷을 통한 전송이나 전자적 저장의 어떠한 방법도 완전히 안전하지는 않으므로, 회사는 절대적인 보안을 보장할 수 없습니다.</p>
+
+<h2>접근, 정정 및 삭제</h2>
+<p>이용자는 회사가 수집한 개인정보에 대해 접근·정정·삭제를 요청할 권리가 있으며, 아래 연락처로 요청할 수 있습니다.</p>
+
+<h2>본 방침의 업데이트</h2>
+<p>회사는 운영 또는 관련 법령의 변경을 반영하여 본 방침을 수시로 업데이트할 수 있습니다. 업데이트된 버전은 갱신일과 함께 웹사이트에 게시되며, 중대한 변경이 있는 경우 이메일로 고지합니다.</p>
+
+<h2>연락</h2>
+<p>본 방침에 관한 문의는 <a href="mailto:support@supercoder.co">support@supercoder.co</a> 로 연락해 주시기 바랍니다.</p>
+
+<p style="margin-top:36px;padding-top:20px;border-top:1px solid var(--line);color:var(--slate-2);font-size:.92em">시행일: 2026년 6월 29일 · 최종 업데이트: 2026년 6월 30일</p>$body$,
+  effective_date = '2026-06-29',
+  version = '1.1',
+  updated_at = now()
+where slug = 'privacy';
+
+-- ── 2) 서비스 약관 제8조 cross-reference 보강(조건부; 원문 문구가 있을 때만) ──
+update public.legal_docs
+set body = replace(
+      body,
+      '구체 내용은 개인정보처리방침에 공개합니다.',
+      '수탁업체(서브프로세서) 목록을 포함한 구체 내용은 개인정보처리방침에 공개합니다.'
+    ),
+    updated_at = now()
+where slug = 'terms'
+  and body like '%구체 내용은 개인정보처리방침에 공개합니다.%'
+  and body not like '%수탁업체(서브프로세서) 목록을 포함한%';
+
+-- 확인
+select slug, version, effective_date, published, left(body, 60) as body_head
+from public.legal_docs where slug in ('privacy','terms') order by slug;
