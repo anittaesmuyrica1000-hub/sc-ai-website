@@ -7,8 +7,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 Supercoder AI 웹사이트 — **AIVIEW** 제품 랜딩 + 블로그/도입문의. AI 면접으로 지원자를 자동 검증하고, 채용팀에는 검증된 핵심 인재 리포트만 전달하는 B2B 채용 SaaS의 마케팅 웹앱이다. 카피·UI는 전부 한국어.
 
 - Remote: https://github.com/anittaesmuyrica1000-hub/sc-ai-website.git
-- Default branch: `main`
-- 운영 도메인: https://sc-ai-website.vercel.app
+- **브랜치 전략:** `dev` = 작업 기본(GitHub default branch), `main` = 운영(Vercel Production Branch). 별도 지시가 없으면 **`dev`에서 작업·커밋·push**하고, 테스트 후 PR(`dev`→`main`) 머지로 운영 반영.
+- 운영 도메인: https://sc-ai-website.vercel.app (Vercel Production = `main` 브랜치)
+- **DB는 dev·운영 공유** — 같은 Supabase 프로젝트(`supercoder-aiview`)를 쓴다. dev에서의 admin 설정·DB 변경(GA·약관·SEO·도입문의 등)은 운영에도 즉시 반영됨에 유의.
 
 ## Architecture
 
@@ -64,8 +65,11 @@ UI 구현 시 **기존 컴포넌트·토큰을 먼저 재사용**한다. 공유 
 ### 구현 후 검증 (MUST)
 commit/push 전에 **항상** `npm run build`로 타입·린트·빌드를 통과시킨다. 화면 변경은 `npm run dev`로 확인하고, 필요 시 스크린샷은 `screenshots/`에 저장한다.
 
+### 브랜치 전략 (MUST)
+별도 지시가 없으면 **`dev` 브랜치에서 작업**한다(GitHub default=`dev`). 작업 시작 전 현재 브랜치가 `dev`인지 확인(`git checkout dev`). `main`은 운영(Vercel Production)이므로 **`main`에 직접 push 금지** — 운영 반영은 테스트 후 **PR(`dev`→`main`) 머지로만** 한다(`gh pr create --base main --head dev`). dev에 push하면 Vercel이 preview 배포(`*-git-dev-*.vercel.app`)를 만들어 테스트 가능.
+
 ### 새 기능 추가 시 push (MUST)
-기능 완료 시 `git add -A` → 의미 있는 commit → `git push`. secret(`.env*`)은 절대 commit하지 않는다(.gitignore 확인).
+기능 완료 시 `git add -A` → 의미 있는 commit → `git push`( = `dev`에 push). secret(`.env*`)은 절대 commit하지 않는다(.gitignore 확인).
 
 ## MCP 연결 (Connected Integrations)
 - **Vercel** — 배포/프로젝트 관리
