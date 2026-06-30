@@ -86,25 +86,8 @@ function NotAdmin({ email }: { email: string }) {
 }
 
 function LoginForm() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
   const [err, setErr] = useState("");
-  const [busy, setBusy] = useState(false);
   const [googleBusy, setGoogleBusy] = useState(false);
-
-  async function onSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    setErr("");
-    setBusy(true);
-    try {
-      const { error } = await supabase.auth.signInWithPassword({ email: email.trim(), password });
-      if (error) throw error;
-    } catch (e2: unknown) {
-      const msg = e2 instanceof Error ? e2.message : String(e2);
-      setErr("로그인에 실패했습니다. 이메일·비밀번호를 확인해 주세요. (" + msg + ")");
-      setBusy(false);
-    }
-  }
 
   async function loginGoogle() {
     setErr("");
@@ -128,28 +111,15 @@ function LoginForm() {
       <div className="admin-head">
         <div>
           <h1>관리자 로그인</h1>
-          <div className="sub">AIVIEW 관리 콘솔은 관리자 인증이 필요합니다.</div>
+          <div className="sub">AIVIEW 관리 콘솔은 Google 계정으로 로그인합니다.</div>
         </div>
       </div>
       <div className="card">
         {err && <div className="form-msg err">{err}</div>}
-        <button type="button" className="btn btn-out btn-google" onClick={loginGoogle} disabled={googleBusy} style={{ width: "100%", justifyContent: "center" }}>
+        <button type="button" className="btn btn-blue btn-google" onClick={loginGoogle} disabled={googleBusy} style={{ width: "100%", justifyContent: "center" }}>
           <i className="fa-brands fa-google"></i> {googleBusy ? "Google로 이동 중…" : "Google로 로그인"}
         </button>
-        <div className="login-divider"><span>또는 이메일로 로그인</span></div>
-        <form onSubmit={onSubmit}>
-          <div className="field">
-            <label htmlFor="login-email">이메일</label>
-            <input type="email" id="login-email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="admin@supercoder.co" required />
-          </div>
-          <div className="field">
-            <label htmlFor="login-pw">비밀번호</label>
-            <input type="password" id="login-pw" value={password} onChange={(e) => setPassword(e.target.value)} required />
-          </div>
-          <div className="form-actions">
-            <button type="submit" className="btn btn-blue" disabled={busy}>{busy ? "로그인 중…" : "로그인"}</button>
-          </div>
-        </form>
+        <div className="hint" style={{ marginTop: 12, textAlign: "center" }}>관리자(admins)로 등록된 Google 계정만 접근할 수 있습니다.</div>
       </div>
     </main>
   );
@@ -425,11 +395,6 @@ function Dashboard({ onGo }: { onGo: (s: Section) => void }) {
 const GA_ID_RE = /^G-[A-Z0-9]{4,}$/i;
 
 function Settings({ email }: { email: string }) {
-  const [pw, setPw] = useState("");
-  const [pw2, setPw2] = useState("");
-  const [msg, setMsg] = useState<{ text: string; ok: boolean } | null>(null);
-  const [busy, setBusy] = useState(false);
-
   // Google Analytics 측정 ID (site_settings.ga_measurement_id)
   const [ga, setGa] = useState("");
   const [gaLoaded, setGaLoaded] = useState(false);
@@ -447,19 +412,6 @@ function Settings({ email }: { email: string }) {
       });
     return () => { active = false; };
   }, []);
-
-  async function changePw(e: React.FormEvent) {
-    e.preventDefault();
-    if (pw.length < 8) { setMsg({ text: "비밀번호는 8자 이상이어야 합니다.", ok: false }); return; }
-    if (pw !== pw2) { setMsg({ text: "두 비밀번호가 일치하지 않습니다.", ok: false }); return; }
-    setBusy(true);
-    try {
-      const { error } = await supabase.auth.updateUser({ password: pw });
-      if (error) throw error;
-      setMsg({ text: "비밀번호가 변경되었습니다.", ok: true }); setPw(""); setPw2("");
-    } catch (err) { console.error(err); setMsg({ text: "변경에 실패했습니다. 다시 시도해 주세요.", ok: false }); }
-    finally { setBusy(false); }
-  }
 
   async function saveGa(e: React.FormEvent) {
     e.preventDefault();
@@ -484,16 +436,7 @@ function Settings({ email }: { email: string }) {
         <h2>계정 정보</h2>
         <div className="set-row"><span>로그인 이메일</span><b>{email}</b></div>
         <div className="set-row"><span>권한</span><b>관리자</b></div>
-        <div className="hint" style={{ marginTop: 12 }}>새 관리자 추가는 Supabase Auth에 사용자를 만들고 admins 테이블에 이메일을 등록하면 됩니다.</div>
-      </div>
-      <div className="card">
-        <h2>비밀번호 변경</h2>
-        {msg && <div className={`form-msg ${msg.ok ? "ok" : "err"}`}>{msg.text}</div>}
-        <form onSubmit={changePw}>
-          <div className="field"><label>새 비밀번호</label><input type="password" value={pw} onChange={(e) => setPw(e.target.value)} placeholder="8자 이상" /></div>
-          <div className="field"><label>새 비밀번호 확인</label><input type="password" value={pw2} onChange={(e) => setPw2(e.target.value)} /></div>
-          <div className="form-actions"><button className="btn btn-blue" disabled={busy}>{busy ? "변경 중…" : "비밀번호 변경"}</button></div>
-        </form>
+        <div className="hint" style={{ marginTop: 12 }}>새 관리자 추가는 Supabase Auth에 사용자를 만들고 admins 테이블에 이메일을 등록하면 됩니다. (로그인은 Google 계정으로만 가능합니다.)</div>
       </div>
       <div className="card">
         <h2>Google Analytics · 태그(gtag)</h2>

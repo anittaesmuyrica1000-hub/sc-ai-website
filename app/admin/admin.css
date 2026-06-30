@@ -467,5 +467,3 @@
 /* 관리자 로그인 — Google(SSO) 버튼 + 구분선 */
 .btn-google{display:inline-flex;align-items:center;gap:8px}
 .btn-google .fa-google{color:#ea4335}
-.login-divider{display:flex;align-items:center;gap:10px;margin:16px 0;color:var(--slate-2);font-size:12px}
-.login-divider::before,.login-divider::after{content:"";flex:1;height:1px;background:var(--line)}
