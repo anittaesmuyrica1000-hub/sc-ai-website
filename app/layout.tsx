@@ -4,6 +4,7 @@ import SiteHeader from "@/components/SiteHeader";
 import SiteFooter from "@/components/SiteFooter";
 import BrochureModal from "@/components/BrochureModal";
 import Chatbot from "@/components/Chatbot";
+import Analytics from "@/components/Analytics";
 
 const SITE_URL = "https://sc-ai-website.vercel.app";
 
@@ -67,6 +68,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <SiteFooter />
         <BrochureModal />
         <Chatbot />
+        <Analytics />
       </body>
     </html>
   );

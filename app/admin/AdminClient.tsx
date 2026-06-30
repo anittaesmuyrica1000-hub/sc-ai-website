@@ -361,11 +361,31 @@ function Dashboard({ onGo }: { onGo: (s: Section) => void }) {
 
 /* ===================== 설정 ===================== */
 
+const GA_ID_RE = /^G-[A-Z0-9]{4,}$/i;
+
 function Settings({ email }: { email: string }) {
   const [pw, setPw] = useState("");
   const [pw2, setPw2] = useState("");
   const [msg, setMsg] = useState<{ text: string; ok: boolean } | null>(null);
   const [busy, setBusy] = useState(false);
+
+  // Google Analytics 측정 ID (site_settings.ga_measurement_id)
+  const [ga, setGa] = useState("");
+  const [gaLoaded, setGaLoaded] = useState(false);
+  const [gaMsg, setGaMsg] = useState<{ text: string; ok: boolean } | null>(null);
+  const [gaBusy, setGaBusy] = useState(false);
+
+  useEffect(() => {
+    let active = true;
+    supabase.from("site_settings").select("value").eq("key", "ga_measurement_id").maybeSingle()
+      .then(({ data, error }) => {
+        if (!active) return;
+        if (error) { setGaMsg({ text: "설정 테이블이 없습니다. supabase/site-settings-setup.sql을 먼저 실행해 주세요.", ok: false }); }
+        else { setGa(String(data?.value || "")); }
+        setGaLoaded(true);
+      });
+    return () => { active = false; };
+  }, []);
 
   async function changePw(e: React.FormEvent) {
     e.preventDefault();
@@ -378,6 +398,20 @@ function Settings({ email }: { email: string }) {
       setMsg({ text: "비밀번호가 변경되었습니다.", ok: true }); setPw(""); setPw2("");
     } catch (err) { console.error(err); setMsg({ text: "변경에 실패했습니다. 다시 시도해 주세요.", ok: false }); }
     finally { setBusy(false); }
+  }
+
+  async function saveGa(e: React.FormEvent) {
+    e.preventDefault();
+    const v = ga.trim();
+    if (v && !GA_ID_RE.test(v)) { setGaMsg({ text: "형식이 올바르지 않습니다. 예: G-XXXXXXXXXX", ok: false }); return; }
+    setGaBusy(true);
+    try {
+      const { error } = await supabase.from("site_settings")
+        .upsert({ key: "ga_measurement_id", value: v, updated_at: new Date().toISOString() }, { onConflict: "key" });
+      if (error) throw error;
+      setGaMsg({ text: v ? "저장됐습니다. 잠시 후 사이트에 적용됩니다." : "측정 ID를 비웠습니다(GA 비활성화).", ok: true });
+    } catch (err) { console.error("ga save failed:", err); setGaMsg({ text: "저장에 실패했습니다. 설정 테이블(site-settings-setup.sql) 적용 여부를 확인해 주세요.", ok: false }); }
+    finally { setGaBusy(false); }
   }
 
   return (
@@ -395,6 +429,18 @@ function Settings({ email }: { email: string }) {
           <div className="field"><label>새 비밀번호</label><input type="password" value={pw} onChange={(e) => setPw(e.target.value)} placeholder="8자 이상" /></div>
           <div className="field"><label>새 비밀번호 확인</label><input type="password" value={pw2} onChange={(e) => setPw2(e.target.value)} /></div>
           <div className="form-actions"><button className="btn btn-blue" disabled={busy}>{busy ? "변경 중…" : "비밀번호 변경"}</button></div>
+        </form>
+      </div>
+      <div className="card">
+        <h2>Google Analytics</h2>
+        {gaMsg && <div className={`form-msg ${gaMsg.ok ? "ok" : "err"}`}>{gaMsg.text}</div>}
+        <form onSubmit={saveGa}>
+          <div className="field">
+            <label>측정 ID (Measurement ID)</label>
+            <input type="text" value={ga} onChange={(e) => setGa(e.target.value)} placeholder="G-XXXXXXXXXX" disabled={!gaLoaded} autoComplete="off" />
+          </div>
+          <div className="hint">analytics.google.com → 관리 → 데이터 스트림에서 발급되는 <b>G-</b>로 시작하는 ID. 비워서 저장하면 GA가 꺼집니다.</div>
+          <div className="form-actions"><button className="btn btn-blue" disabled={gaBusy || !gaLoaded}>{gaBusy ? "저장 중…" : "저장"}</button></div>
         </form>
       </div>
     </div>
