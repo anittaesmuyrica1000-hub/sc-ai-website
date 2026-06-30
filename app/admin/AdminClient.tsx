@@ -394,12 +394,28 @@ function Dashboard({ onGo }: { onGo: (s: Section) => void }) {
 
 const GA_ID_RE = /^G-[A-Z0-9]{4,}$/i;
 
+const ADMIN_EMAIL_RE = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
+
 function Settings({ email }: { email: string }) {
   // Google Analytics 측정 ID (site_settings.ga_measurement_id)
   const [ga, setGa] = useState("");
   const [gaLoaded, setGaLoaded] = useState(false);
   const [gaMsg, setGaMsg] = useState<{ text: string; ok: boolean } | null>(null);
   const [gaBusy, setGaBusy] = useState(false);
+
+  // 관리자 계정 관리 (admins 테이블)
+  const [admins, setAdmins] = useState<string[]>([]);
+  const [adminsLoaded, setAdminsLoaded] = useState(false);
+  const [newAdmin, setNewAdmin] = useState("");
+  const [adminMsg, setAdminMsg] = useState<{ text: string; ok: boolean } | null>(null);
+  const [adminBusy, setAdminBusy] = useState(false);
+
+  const loadAdmins = useCallback(async () => {
+    const { data, error } = await supabase.from("admins").select("email").order("email");
+    if (error) { setAdminMsg({ text: "관리자 목록을 불러오지 못했습니다. RLS 마이그레이션(supabase/admins-management-rls.sql) 적용 여부를 확인해 주세요.", ok: false }); }
+    else { setAdmins((data || []).map((r) => r.email as string)); }
+    setAdminsLoaded(true);
+  }, []);
 
   useEffect(() => {
     let active = true;
@@ -412,6 +428,36 @@ function Settings({ email }: { email: string }) {
       });
     return () => { active = false; };
   }, []);
+
+  useEffect(() => { loadAdmins(); }, [loadAdmins]);
+
+  async function addAdmin(e: React.FormEvent) {
+    e.preventDefault();
+    const v = newAdmin.trim().toLowerCase();
+    if (!ADMIN_EMAIL_RE.test(v)) { setAdminMsg({ text: "올바른 이메일 형식을 입력해 주세요.", ok: false }); return; }
+    if (admins.includes(v)) { setAdminMsg({ text: "이미 등록된 관리자입니다.", ok: false }); return; }
+    setAdminBusy(true);
+    try {
+      const { error } = await supabase.from("admins").insert({ email: v });
+      if (error) throw error;
+      setNewAdmin(""); setAdminMsg({ text: `${v} 을(를) 관리자로 추가했습니다. 해당 Google 계정으로 로그인할 수 있습니다.`, ok: true });
+      await loadAdmins();
+    } catch (err) { console.error("admin add failed:", err); setAdminMsg({ text: "추가에 실패했습니다. 권한(RLS) 또는 중복 여부를 확인해 주세요.", ok: false }); }
+    finally { setAdminBusy(false); }
+  }
+
+  async function removeAdmin(target: string) {
+    if (target === email) { setAdminMsg({ text: "본인 계정은 제거할 수 없습니다.", ok: false }); return; }
+    if (!window.confirm(`${target} 을(를) 관리자에서 제거할까요?`)) return;
+    setAdminBusy(true);
+    try {
+      const { error } = await supabase.from("admins").delete().eq("email", target);
+      if (error) throw error;
+      setAdminMsg({ text: `${target} 을(를) 관리자에서 제거했습니다.`, ok: true });
+      await loadAdmins();
+    } catch (err) { console.error("admin remove failed:", err); setAdminMsg({ text: "제거에 실패했습니다.", ok: false }); }
+    finally { setAdminBusy(false); }
+  }
 
   async function saveGa(e: React.FormEvent) {
     e.preventDefault();
@@ -436,7 +482,30 @@ function Settings({ email }: { email: string }) {
         <h2>계정 정보</h2>
         <div className="set-row"><span>로그인 이메일</span><b>{email}</b></div>
         <div className="set-row"><span>권한</span><b>관리자</b></div>
-        <div className="hint" style={{ marginTop: 12 }}>새 관리자 추가는 Supabase Auth에 사용자를 만들고 admins 테이블에 이메일을 등록하면 됩니다. (로그인은 Google 계정으로만 가능합니다.)</div>
+        <div className="hint" style={{ marginTop: 12 }}>로그인은 Google 계정으로만 가능합니다. 새 관리자는 아래 “관리자 계정 관리”에서 이메일만 추가하면 됩니다.</div>
+      </div>
+      <div className="card">
+        <h2>관리자 계정 관리</h2>
+        {adminMsg && <div className={`form-msg ${adminMsg.ok ? "ok" : "err"}`}>{adminMsg.text}</div>}
+        <form onSubmit={addAdmin} style={{ display: "flex", gap: 8, alignItems: "flex-end" }}>
+          <div className="field" style={{ flex: 1, marginBottom: 0 }}>
+            <label htmlFor="new-admin">관리자 이메일 추가</label>
+            <input id="new-admin" type="email" value={newAdmin} onChange={(e) => setNewAdmin(e.target.value)} placeholder="name@supercoder.co" autoComplete="off" disabled={adminBusy} />
+          </div>
+          <button className="btn btn-blue" disabled={adminBusy || !newAdmin.trim()}>{adminBusy ? "처리 중…" : "추가"}</button>
+        </form>
+        <div className="hint" style={{ marginTop: 8 }}>추가한 이메일의 <b>Google 계정</b>으로 바로 로그인할 수 있습니다. (별도 비밀번호 생성 불필요)</div>
+        <div style={{ marginTop: 16 }}>
+          <div className="set-row" style={{ fontWeight: 700, color: "var(--ink)" }}><span>등록된 관리자</span><span>{adminsLoaded ? `${admins.length}명` : "…"}</span></div>
+          {adminsLoaded && admins.map((a) => (
+            <div key={a} className="set-row" style={{ alignItems: "center" }}>
+              <span>{a}{a === email ? " (나)" : ""}</span>
+              {a === email
+                ? <span className="hint" style={{ fontWeight: 400 }}>본인</span>
+                : <button className="icon-btn" title="관리자 제거" onClick={() => removeAdmin(a)} disabled={adminBusy}><i className="fa-solid fa-user-minus"></i></button>}
+            </div>
+          ))}
+        </div>
       </div>
       <div className="card">
         <h2>Google Analytics · 태그(gtag)</h2>
