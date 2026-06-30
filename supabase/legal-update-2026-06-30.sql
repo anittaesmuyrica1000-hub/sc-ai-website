@@ -11,14 +11,14 @@
 update public.legal_docs
 set body = replace(
       body,
-      $anchor1$|Agora|AI 면접 실시간 영상/음성 스트리밍 전송 / 저장되지 않음|실시간 면접 영상 및 음성 데이터|저장되지 않음|$anchor1$,
-      $repl1$|Agora|AI 면접 실시간 영상/음성 스트리밍 전송 / 저장되지 않음|실시간 면접 영상 및 음성 데이터|저장되지 않음|
-|Microsoft (Azure OpenAI Service)|AI 면접 리포트 생성·요약·역량 평가·질문 생성 등 LLM 추론 / 한국|면접 전사 텍스트, 이력서 텍스트(음성 미전송)|AI 면접일로부터 1년까지|
-|Microsoft (Azure AI Services)|면접 음성의 텍스트 변환(STT) / 한국|면접 음성 및 변환된 텍스트|AI 면접일로부터 1년까지|$repl1$
+      $anchor1$| Agora | AI 면접 실시간 영상/음성 스트리밍 전송 / 저장되지 않음 | 실시간 면접 영상 및 음성 데이터 | 저장되지 않음 |$anchor1$,
+      $repl1$| Agora | AI 면접 실시간 영상/음성 스트리밍 전송 / 저장되지 않음 | 실시간 면접 영상 및 음성 데이터 | 저장되지 않음 |
+| Microsoft (Azure OpenAI Service) | AI 면접 리포트 생성·요약·역량 평가·질문 생성 등 LLM 추론 / 한국 | 면접 전사 텍스트, 이력서 텍스트(음성 미전송) | AI 면접일로부터 1년까지 |
+| Microsoft (Azure AI Services) | 면접 음성의 텍스트 변환(STT) / 한국 | 면접 음성 및 변환된 텍스트 | AI 면접일로부터 1년까지 |$repl1$
     ),
     updated_at = now()
 where slug = 'privacy'
-  and body like '%|Agora|AI 면접 실시간 영상/음성 스트리밍 전송 / 저장되지 않음|%'
+  and body like '%| Agora | AI 면접 실시간 영상/음성 스트리밍 전송 / 저장되지 않음 | 실시간 면접 영상 및 음성 데이터 | 저장되지 않음 |%'
   and body not like '%Azure OpenAI Service)%';
 
 -- ── (2) 제4조에 LLM 학습 미사용 + Azure OpenAI 문장 추가(제2항 끝에 append) ──
