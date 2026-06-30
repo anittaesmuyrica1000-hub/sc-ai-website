@@ -55,10 +55,23 @@ export type Signup = {
   memo?: string | null;
   status?: string | null;
   admin_note?: string | null;
+  utm_source?: string | null;
+  utm_medium?: string | null;
+  utm_campaign?: string | null;
+  utm_id?: string | null;
+  utm_term?: string | null;
+  utm_content?: string | null;
 };
 
 // 도입문의 상담 상태 값
 export const SIGNUP_STATUSES = ["신규", "확인 완료", "상담 진행", "완료", "보류"] as const;
+
+// UTM 추적 파라미터 키(접수 시 /apply URL에서 읽어 signups에 저장)
+export const UTM_KEYS = ["utm_source", "utm_medium", "utm_campaign", "utm_id", "utm_term", "utm_content"] as const;
+export const UTM_LABEL: Record<string, string> = {
+  utm_source: "소스", utm_medium: "매체", utm_campaign: "캠페인",
+  utm_id: "캠페인 ID", utm_term: "키워드", utm_content: "콘텐츠",
+};
 
 // 서비스소개서 신청 리드(brochure_requests) 타입
 export type BrochureRequest = {

@@ -2,7 +2,9 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { supabase } from "@/lib/supabase";
+import { supabase, UTM_KEYS } from "@/lib/supabase";
+
+type Utm = Partial<Record<(typeof UTM_KEYS)[number], string>>;
 
 const emailRe = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
 
@@ -17,8 +19,9 @@ export default function ApplyForm() {
   const [formErr, setFormErr] = useState("");
   const [loading, setLoading] = useState(false);
   const [done, setDone] = useState(false);
+  const [utm, setUtm] = useState<Utm>({});
 
-  // index 최종 CTA 등에서 넘어온 ?name=&company=&email= 프리필
+  // index 최종 CTA 등에서 넘어온 ?name=&company=&email= 프리필 + UTM 캡처
   useEffect(() => {
     try {
       const qp = new URLSearchParams(window.location.search);
@@ -28,6 +31,13 @@ export default function ApplyForm() {
         company: qp.get("company") || f.company,
         email: qp.get("email") || f.email,
       }));
+      // UTM 유입 파라미터 캡처(있는 값만). 광고→/apply 직접 유입 링크 기준.
+      const u: Utm = {};
+      for (const k of UTM_KEYS) {
+        const v = (qp.get(k) || "").trim();
+        if (v) u[k] = v.slice(0, 300);
+      }
+      if (Object.keys(u).length) setUtm(u);
     } catch {}
   }, []);
 
@@ -62,13 +72,19 @@ export default function ApplyForm() {
 
     setLoading(true);
     try {
-      const res = await supabase.from("signups").insert(payload);
+      // UTM 포함 저장 시도. signups에 UTM 컬럼이 아직 없으면(마이그레이션 미적용)
+      // 실패할 수 있으므로, 그 경우 UTM 없이 재시도해 접수 유실을 방지한다.
+      let res = await supabase.from("signups").insert({ ...payload, ...utm });
+      if (res.error && Object.keys(utm).length) {
+        console.warn("signup insert with utm failed, retrying without utm:", res.error);
+        res = await supabase.from("signups").insert(payload);
+      }
       if (res.error) throw res.error;
       // 관리자 알림 메일(베스트 에포트 — 실패해도 신청 완료에는 영향 없음)
       fetch("/api/notify-signup", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
+        body: JSON.stringify({ ...payload, ...utm }),
       }).catch(() => {});
       setDone(true);
       setTimeout(() => window.scrollTo({ top: 0, behavior: "smooth" }), 0);

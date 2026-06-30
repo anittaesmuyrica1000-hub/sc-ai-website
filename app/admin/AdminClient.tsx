@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState, useCallback } from "react";
 import type { Session } from "@supabase/supabase-js";
-import { supabase, type Post, type Faq, type Signup, type BrochureRequest, type LegalDoc, type LegalVersion, type PageSeo, legalPath, RESERVED_LEGAL_SLUGS, SIGNUP_STATUSES, SEO_PAGES } from "@/lib/supabase";
+import { supabase, type Post, type Faq, type Signup, type BrochureRequest, type LegalDoc, type LegalVersion, type PageSeo, legalPath, RESERVED_LEGAL_SLUGS, SIGNUP_STATUSES, SEO_PAGES, UTM_KEYS, UTM_LABEL } from "@/lib/supabase";
 import { fmtDate } from "@/lib/format";
 import MarkdownEditor from "@/components/MarkdownEditor";
 import RichEditor, { type EditorTemplate } from "@/components/RichEditor";
@@ -1585,9 +1585,9 @@ function SignupsManager() {
   }, [rows, fStatus, fSize, fPeriod, q]);
 
   function exportCsv() {
-    const head = ["접수일시", "이름", "회사", "이메일", "직무/직책", "연락처", "채용규모", "상태", "문의내용", "내부메모"];
+    const head = ["접수일시", "이름", "회사", "이메일", "직무/직책", "연락처", "채용규모", "상태", "문의내용", "내부메모", "utm_source", "utm_medium", "utm_campaign", "utm_id", "utm_term", "utm_content"];
     const esc = (v: unknown) => `"${String(v ?? "").replace(/"/g, '""')}"`;
-    const lines = filtered.map((r) => [fmtDateTime(r.created_at), r.name, r.company, r.email, r.role ?? "", r.phone ?? "", r.size ?? "", r.status ?? "신규", r.memo ?? "", r.admin_note ?? ""].map(esc).join(","));
+    const lines = filtered.map((r) => [fmtDateTime(r.created_at), r.name, r.company, r.email, r.role ?? "", r.phone ?? "", r.size ?? "", r.status ?? "신규", r.memo ?? "", r.admin_note ?? "", ...UTM_KEYS.map((k) => r[k] ?? "")].map(esc).join(","));
     const csv = "﻿" + [head.map(esc).join(","), ...lines].join("\n");
     const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
     const url = URL.createObjectURL(blob); const a = document.createElement("a"); a.href = url; a.download = `signups-${new Date().toISOString().slice(0, 10)}.csv`; a.click(); URL.revokeObjectURL(url);
@@ -1632,7 +1632,7 @@ function SignupsManager() {
               {/* 데스크톱: 표 */}
               <div className="adm-table-wrap sig-table">
                 <table className="adm-table">
-                  <thead><tr><th>접수일</th><th>이름</th><th>회사명</th><th>업무 이메일</th><th>직무/직책</th><th>채용 규모</th><th>상태</th><th>관리</th></tr></thead>
+                  <thead><tr><th>접수일</th><th>이름</th><th>회사명</th><th>업무 이메일</th><th>직무/직책</th><th>채용 규모</th><th>유입</th><th>상태</th><th>관리</th></tr></thead>
                   <tbody>
                     {filtered.map((r) => (
                       <tr key={r.id}>
@@ -1642,6 +1642,7 @@ function SignupsManager() {
                         <td><a href={`mailto:${r.email}`}>{r.email}</a></td>
                         <td>{r.role || "—"}</td>
                         <td className="nowrap">{r.size ? (SIZE_LABEL[r.size] || r.size) : "—"}</td>
+                        <td className="nowrap">{r.utm_source ? <span className="utm-chip" title={UTM_KEYS.filter((k) => r[k]).map((k) => `${UTM_LABEL[k]}: ${r[k]}`).join("\n")}>{r.utm_source}{r.utm_medium ? ` / ${r.utm_medium}` : ""}</span> : "—"}</td>
                         <td className="nowrap">
                           <select className="status-sel" value={r.status || "신규"} onChange={(e) => updateRow(r.id, { status: e.target.value })}>
                             {SIGNUP_STATUSES.map((s) => <option key={s} value={s}>{s}</option>)}
@@ -1662,7 +1663,7 @@ function SignupsManager() {
                       <StatusBadge value={r.status} />
                     </div>
                     <div className="sig-card-sub">{r.name}{r.role ? ` · ${r.role}` : ""}{r.size ? ` · ${SIZE_LABEL[r.size] || r.size}` : ""}</div>
-                    <div className="sig-card-date">{fmtDate(r.created_at)} 접수</div>
+                    <div className="sig-card-date">{fmtDate(r.created_at)} 접수{r.utm_source ? ` · 유입 ${r.utm_source}${r.utm_medium ? `/${r.utm_medium}` : ""}` : ""}</div>
                     <div className="sig-card-acts" onClick={(e) => e.stopPropagation()}>
                       {r.phone && <a className="sig-act" href={`tel:${r.phone}`}><i className="fa-solid fa-phone"></i> 전화</a>}
                       <a className="sig-act" href={`mailto:${r.email}`}><i className="fa-solid fa-envelope"></i> 메일</a>
@@ -1717,6 +1718,18 @@ function SignupDetail({ row, onClose, onSave }: { row: Signup; onClose: () => vo
             {fields.map(([k, v]) => (<div key={k} className="detail-row"><dt>{k}</dt><dd>{k === "업무 이메일" ? <a href={`mailto:${v}`}>{v}</a> : v}</dd></div>))}
           </dl>
           <div className="detail-row block"><dt>문의 메모</dt><dd className="memo-box">{row.memo || "—"}</dd></div>
+          {UTM_KEYS.some((k) => row[k]) && (
+            <div className="detail-row block">
+              <dt>유입 경로 (UTM)</dt>
+              <dd>
+                <dl className="detail-grid" style={{ marginTop: 4 }}>
+                  {UTM_KEYS.filter((k) => row[k]).map((k) => (
+                    <div key={k} className="detail-row"><dt>{UTM_LABEL[k]}</dt><dd>{row[k]}</dd></div>
+                  ))}
+                </dl>
+              </dd>
+            </div>
+          )}
           <div className="field" style={{ marginTop: 16 }}>
             <label>상태</label>
             <select value={status} onChange={(e) => setStatus(e.target.value)}>{SIGNUP_STATUSES.map((s) => <option key={s} value={s}>{s}</option>)}</select>

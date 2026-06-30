@@ -460,3 +460,6 @@
     .quick-cards{grid-template-columns:1fr}
   }
   @media(max-width:880px){.admin-grid{grid-template-columns:1fr;gap:28px}.admin{padding:76px 16px 60px}}
+
+/* 도입문의 유입(UTM) 칩 */
+.utm-chip{display:inline-block;max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;vertical-align:middle;padding:2px 8px;border-radius:999px;background:var(--soft);color:var(--blue-d);font-size:12px;font-weight:600}
