@@ -403,7 +403,10 @@ function Settings({ email }: { email: string }) {
   async function saveGa(e: React.FormEvent) {
     e.preventDefault();
     const v = ga.trim();
-    if (v && !GA_ID_RE.test(v)) { setGaMsg({ text: "형식이 올바르지 않습니다. 예: G-XXXXXXXXXX", ok: false }); return; }
+    // 측정 ID(G-XXXX) 한 줄 또는 G-ID가 포함된 전체 gtag 스니펫 허용
+    if (v && !GA_ID_RE.test(v) && !/G-[A-Z0-9]{4,}/i.test(v)) {
+      setGaMsg({ text: "측정 ID(G-XXXXXXXXXX) 또는 G-ID가 포함된 gtag 스니펫을 입력해 주세요.", ok: false }); return;
+    }
     setGaBusy(true);
     try {
       const { error } = await supabase.from("site_settings")
@@ -432,14 +435,14 @@ function Settings({ email }: { email: string }) {
         </form>
       </div>
       <div className="card">
-        <h2>Google Analytics</h2>
+        <h2>Google Analytics · 태그(gtag)</h2>
         {gaMsg && <div className={`form-msg ${gaMsg.ok ? "ok" : "err"}`}>{gaMsg.text}</div>}
         <form onSubmit={saveGa}>
           <div className="field">
-            <label>측정 ID (Measurement ID)</label>
-            <input type="text" value={ga} onChange={(e) => setGa(e.target.value)} placeholder="G-XXXXXXXXXX" disabled={!gaLoaded} autoComplete="off" />
+            <label>측정 ID 또는 gtag 스니펫</label>
+            <textarea value={ga} onChange={(e) => setGa(e.target.value)} placeholder={"G-XXXXXXXXXX\n\n또는 Google 태그 전체 스니펫(<script>…</script>)을 그대로 붙여넣기"} disabled={!gaLoaded} autoComplete="off" rows={6} style={{ fontFamily: "monospace", fontSize: 13 }} />
           </div>
-          <div className="hint">analytics.google.com → 관리 → 데이터 스트림에서 발급되는 <b>G-</b>로 시작하는 ID. 비워서 저장하면 GA가 꺼집니다.</div>
+          <div className="hint"><b>G-</b>로 시작하는 측정 ID만 넣으면 표준 gtag가 자동 생성됩니다. analytics.google.com에서 받은 <b>전체 gtag 스니펫</b>을 그대로 붙여넣어도 됩니다(커스텀 설정·추가 태그 포함). 비워서 저장하면 GA가 꺼집니다.</div>
           <div className="form-actions"><button className="btn btn-blue" disabled={gaBusy || !gaLoaded}>{gaBusy ? "저장 중…" : "저장"}</button></div>
         </form>
       </div>
