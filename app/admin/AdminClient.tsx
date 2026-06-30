@@ -25,6 +25,9 @@ function fmtDateTime(s?: string) {
 export default function AdminClient() {
   const [session, setSession] = useState<Session | null>(null);
   const [authReady, setAuthReady] = useState(false);
+  // 관리자 멤버십(admins 테이블) — null=확인 중, true/false. Google 등 SSO는 누구나
+  // 인증 가능하므로, 세션만으로 통과시키지 않고 admins 이메일을 반드시 확인한다.
+  const [isAdmin, setIsAdmin] = useState<boolean | null>(null);
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => {
@@ -35,6 +38,16 @@ export default function AdminClient() {
     return () => sub.subscription.unsubscribe();
   }, []);
 
+  useEffect(() => {
+    const email = session?.user?.email;
+    if (!email) { setIsAdmin(null); return; }
+    let active = true;
+    setIsAdmin(null);
+    supabase.from("admins").select("email").eq("email", email).maybeSingle()
+      .then(({ data }) => { if (active) setIsAdmin(!!data); });
+    return () => { active = false; };
+  }, [session]);
+
   if (!authReady) {
     return (
       <main className="admin">
@@ -43,7 +56,33 @@ export default function AdminClient() {
     );
   }
   if (!session) return <LoginForm />;
+  if (isAdmin === null) {
+    return (
+      <main className="admin">
+        <div className="list-state"><i className="fa-solid fa-spinner fa-spin"></i> 권한 확인 중…</div>
+      </main>
+    );
+  }
+  if (!isAdmin) return <NotAdmin email={session.user.email ?? ""} />;
   return <Console email={session.user.email ?? ""} />;
+}
+
+// 인증은 됐지만 admins 목록에 없는 계정 — 접근 차단
+function NotAdmin({ email }: { email: string }) {
+  return (
+    <main className="admin" style={{ maxWidth: 460 }}>
+      <div className="admin-head">
+        <div>
+          <h1>접근 권한 없음</h1>
+          <div className="sub">이 계정은 관리자로 등록되어 있지 않습니다.</div>
+        </div>
+      </div>
+      <div className="card">
+        <p style={{ margin: "0 0 14px", color: "var(--slate)" }}><b>{email}</b> 계정에는 관리 콘솔 접근 권한이 없습니다. 관리자(admins) 등록이 필요하면 운영자에게 요청해 주세요.</p>
+        <div className="form-actions"><button className="btn btn-out" onClick={() => supabase.auth.signOut()}>다른 계정으로 로그인</button></div>
+      </div>
+    </main>
+  );
 }
 
 function LoginForm() {
@@ -51,6 +90,7 @@ function LoginForm() {
   const [password, setPassword] = useState("");
   const [err, setErr] = useState("");
   const [busy, setBusy] = useState(false);
+  const [googleBusy, setGoogleBusy] = useState(false);
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -66,6 +106,23 @@ function LoginForm() {
     }
   }
 
+  async function loginGoogle() {
+    setErr("");
+    setGoogleBusy(true);
+    try {
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: "google",
+        options: { redirectTo: `${window.location.origin}/admin` },
+      });
+      if (error) throw error;
+      // 성공 시 Google로 리다이렉트됨(이 줄 이후는 보통 실행 안 됨)
+    } catch (e2: unknown) {
+      const msg = e2 instanceof Error ? e2.message : String(e2);
+      setErr("Google 로그인을 시작하지 못했습니다. (" + msg + ")");
+      setGoogleBusy(false);
+    }
+  }
+
   return (
     <main className="admin" style={{ maxWidth: 420 }}>
       <div className="admin-head">
@@ -75,8 +132,12 @@ function LoginForm() {
         </div>
       </div>
       <div className="card">
+        {err && <div className="form-msg err">{err}</div>}
+        <button type="button" className="btn btn-out btn-google" onClick={loginGoogle} disabled={googleBusy} style={{ width: "100%", justifyContent: "center" }}>
+          <i className="fa-brands fa-google"></i> {googleBusy ? "Google로 이동 중…" : "Google로 로그인"}
+        </button>
+        <div className="login-divider"><span>또는 이메일로 로그인</span></div>
         <form onSubmit={onSubmit}>
-          {err && <div className="form-msg err">{err}</div>}
           <div className="field">
             <label htmlFor="login-email">이메일</label>
             <input type="email" id="login-email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="admin@supercoder.co" required />
