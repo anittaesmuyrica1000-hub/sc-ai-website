@@ -69,7 +69,7 @@ export default async function PostPage({ params }: { params: Promise<{ id: strin
             <span>{fmtDate(p.created_at)}</span>
           </div>
         </div>
-        {p.cover_url && <img className="post-hero" src={p.cover_url} alt="" />}
+        {p.cover_url && <img className="post-hero" src={p.cover_url} alt={p.cover_alt || p.title} />}
         <div className="post-content" dangerouslySetInnerHTML={{ __html: renderBody(p.content) }} />
         {Array.isArray(p.tags) && p.tags.length > 0 && (
           <ul className="post-tags" aria-label="주제 키워드">

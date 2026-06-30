@@ -21,6 +21,7 @@ export type Post = {
   category?: string | null;
   excerpt?: string | null;
   cover_url?: string | null;
+  cover_alt?: string | null;
   content: string;
   author?: string | null;
   published: boolean;

@@ -525,8 +525,8 @@ function Settings({ email }: { email: string }) {
 
 /* ===================== 블로그 관리 ===================== */
 
-type FormState = { id: string; title: string; category: string; author: string; cover_url: string; excerpt: string; content: string; published: boolean; tags: string[]; slug: string; meta_title: string; meta_description: string };
-const EMPTY: FormState = { id: "", title: "", category: "", author: "", cover_url: "", excerpt: "", content: "", published: true, tags: [], slug: "", meta_title: "", meta_description: "" };
+type FormState = { id: string; title: string; category: string; author: string; cover_url: string; cover_alt: string; excerpt: string; content: string; published: boolean; tags: string[]; slug: string; meta_title: string; meta_description: string };
+const EMPTY: FormState = { id: "", title: "", category: "", author: "", cover_url: "", cover_alt: "", excerpt: "", content: "", published: true, tags: [], slug: "", meta_title: "", meta_description: "" };
 const MAX_TAGS = 8;
 
 // 제목 → URL slug. 한글·영문 소문자·숫자·하이픈 허용, 공백은 하이픈, 그 외 제거.
@@ -666,7 +666,7 @@ function BlogManager() {
   function set<K extends keyof FormState>(k: K, v: FormState[K]) { setForm((f) => (f ? { ...f, [k]: v } : f)); }
   function enterNew() { setForm({ ...EMPTY }); setMsg(null); }
   function enterEdit(p: Post) {
-    setForm({ id: p.id, title: p.title || "", category: p.category || "", author: p.author || "", cover_url: p.cover_url || "", excerpt: p.excerpt || "", content: p.content || "", published: p.published !== false, tags: Array.isArray(p.tags) ? p.tags : [], slug: p.slug || "", meta_title: p.meta_title || "", meta_description: p.meta_description || "" });
+    setForm({ id: p.id, title: p.title || "", category: p.category || "", author: p.author || "", cover_url: p.cover_url || "", cover_alt: p.cover_alt || "", excerpt: p.excerpt || "", content: p.content || "", published: p.published !== false, tags: Array.isArray(p.tags) ? p.tags : [], slug: p.slug || "", meta_title: p.meta_title || "", meta_description: p.meta_description || "" });
     setMsg(null); window.scrollTo({ top: 0, behavior: "smooth" });
   }
   function closeForm() { setForm(null); setMsg(null); }
@@ -694,7 +694,7 @@ function BlogManager() {
     if (slug && !/^[\w가-힣-]+$/.test(slug)) { showMsg("URL slug는 한글·영문·숫자·하이픈만 사용하세요.", false); return; }
     const payload: Record<string, unknown> = {
       title: form.title.trim(), category: form.category.trim() || null, author: form.author.trim() || null,
-      cover_url: form.cover_url.trim() || null, excerpt: form.excerpt.trim() || null, content: form.content, published: form.published,
+      cover_url: form.cover_url.trim() || null, cover_alt: form.cover_alt.trim() || null, excerpt: form.excerpt.trim() || null, content: form.content, published: form.published,
       tags: form.tags.length ? form.tags : null,
       slug, meta_title: form.meta_title.trim() || null, meta_description: form.meta_description.trim() || null,
     };
@@ -774,7 +774,7 @@ function BlogManager() {
             <div className="field">
               <label htmlFor="f-cover">커버 이미지</label>
               <div className="cover-edit">
-                {form.cover_url ? <img className="cover-preview" src={form.cover_url} alt="" /> : <div className="cover-preview empty"><i className="fa-solid fa-image"></i></div>}
+                {form.cover_url ? <img className="cover-preview" src={form.cover_url} alt={form.cover_alt} /> : <div className="cover-preview empty"><i className="fa-solid fa-image"></i></div>}
                 <div className="cover-controls">
                   <label className="btn btn-out" style={{ cursor: uploadingCover ? "default" : "pointer", opacity: uploadingCover ? 0.6 : 1 }}>
                     {uploadingCover ? "업로드 중…" : <><i className="fa-solid fa-arrow-up-from-bracket"></i> 이미지 업로드</>}
@@ -784,6 +784,8 @@ function BlogManager() {
                 </div>
               </div>
               <input type="url" id="f-cover" placeholder="또는 이미지 URL 직접 입력 (https://...)" value={form.cover_url} onChange={(e) => set("cover_url", e.target.value)} />
+              <input type="text" id="f-cover-alt" placeholder="이미지 설명(alt) — 화면 낭독·검색엔진용. 예: AI 면접을 보는 지원자" value={form.cover_alt} onChange={(e) => set("cover_alt", e.target.value)} style={{ marginTop: 8 }} maxLength={150} />
+              <div className="hint">이미지를 볼 수 없는 사용자(스크린리더)와 검색엔진에 전달되는 설명입니다. 비우면 글 제목이 대체로 쓰입니다.</div>
             </div>
             <div className="field">
               <label htmlFor="f-excerpt">요약</label>
@@ -884,7 +886,7 @@ function BlogManager() {
                     <span>{fmtDate(new Date().toISOString())}</span>
                   </div>
                 </div>
-                {form.cover_url && <img className="post-hero" src={form.cover_url} alt="" />}
+                {form.cover_url && <img className="post-hero" src={form.cover_url} alt={form.cover_alt || form.title} />}
                 <div className="post-content" dangerouslySetInnerHTML={{ __html: renderBody(form.content) || '<p style="color:var(--slate-2)">본문이 비어 있습니다.</p>' }} />
               </div>
             </div>
