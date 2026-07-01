@@ -54,8 +54,8 @@ export default function BrochurePage() {
           <div className="brochure-intro">
             <p className="eyebrow"><i className="fa-solid fa-file-lines"></i> 서비스 소개서</p>
             <h1>
-              <span className="brochure-h1-d">채용의 &lsquo;감&rsquo;을 데이터로,<br />AI 면접이 만드는 변화</span>
-              <span className="brochure-h1-m">AI 면접, 채용을 재정의하다</span>
+              <span className="brochure-h1-d">채용 44일 &rarr; 15일,<br />AI 면접이 만든 변화</span>
+              <span className="brochure-h1-m">채용 44일 &rarr; 15일</span>
             </h1>
             <p>역량 모델링·AI 면접·분석 리포트부터 측정 가능한 ROI까지 — 슈퍼코더가 채용을 데이터로 바꾸는 방식을 소개서에 담았습니다. 입력하신 <b>회사 이메일</b>로 바로 보내드립니다.</p>
             <ul className="brochure-points">
