@@ -25,9 +25,7 @@
     background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
   .decl{background:transparent;min-height:74vh;display:flex;align-items:center;justify-content:center;position:relative;z-index:1;padding:48px 0}
   .decl .wrap{position:relative;z-index:2;max-width:840px;text-align:center}
-  /* tagchip — 섹션 상단 라벨 칩(히어로 'AI 면접 채용 검증' 등). 스코프 없이 재사용 */
-  .tagchip{display:inline-flex;align-items:center;gap:8px;background:#fff;border:1px solid var(--line);border-radius:999px;padding:7px 16px;font-size:13px;font-weight:700;color:var(--slate);margin-bottom:24px;box-shadow:0 4px 12px -6px rgba(20,40,90,.15)}
-  .tagchip i{color:var(--blue)}
+  /* tagchip 기본 스타일은 globals.css(공용)로 이동. 여기선 히어로(다크) 변형만. */
   /* 히어로(다크)에서만 tagchip 다크 변형 — 다른 섹션(FLOOD·VALUE·ROLE)은 흰 칩 유지 */
   .decl .tagchip{background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.16);color:#C7D2E8;box-shadow:none}
   .decl .tagchip i{color:#6E9BFF}

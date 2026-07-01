@@ -27,7 +27,7 @@ export default function BrochurePage() {
     <section className="brochure">
       <div className="wrap">
         <div className="brochure-top">
-          <p className="eyebrow"><i className="fa-solid fa-file-lines"></i> 서비스 소개서</p>
+          <div className="tagchip"><i className="fa-solid fa-file-lines"></i> 서비스 소개서</div>
           <h1>AI 면접 서비스 소개서 받기</h1>
           <p className="brochure-sub">역량 모델링·AI 면접·분석 리포트부터 측정 가능한 ROI·도입 사례까지 — 슈퍼코더가 채용을 데이터로 바꾸는 방식을 한 부에 담았습니다. 정보를 남기면 입력하신 <b>회사 이메일</b>로 바로 보내드립니다.</p>
         </div>

@@ -46,6 +46,9 @@ h2{font-size:clamp(28px,3.6vw,44px);font-weight:800;letter-spacing:0;line-height
 
 /* ===== Eyebrow / chip ===== */
 .eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:800;letter-spacing:.06em;color:var(--blue);text-transform:uppercase;margin-bottom:16px;background:var(--soft-2);padding:6px 14px;border-radius:999px}
+/* tagchip — 섹션/페이지 상단 라벨 칩(흰 배경+테두리+그림자+파란 아이콘). 랜딩·전 페이지 공용 SSOT. */
+.tagchip{display:inline-flex;align-items:center;gap:8px;background:#fff;border:1px solid var(--line);border-radius:999px;padding:7px 16px;font-size:13px;font-weight:700;color:var(--slate);margin-bottom:24px;box-shadow:0 4px 12px -6px rgba(20,40,90,.15)}
+.tagchip i{color:var(--blue)}
 
 /* ===== GNB / Header (partial: <site-header>) ===== */
 /* 섹션 인지형 GNB — partials.js가 헤더 아래 섹션을 감지해 클래스를 토글한다(Notion 식).
