@@ -55,14 +55,16 @@ export default function ApplyPage() {
   return (
     <section className="apply">
       <div className="wrap">
+        {/* 상단 중앙 헤딩 — 블로그·서비스소개서와 동일하게 중앙정렬 */}
+        <div className="apply-top">
+          <h1>
+            <span className="apply-h1-d">AI 면접 도입, 우리 회사에 맞게 시작하세요</span>
+            <span className="apply-h1-m">AI 면접 도입 문의</span>
+          </h1>
+          <p>채용 규모와 프로세스에 맞는 AI 면접 활용 방안을 안내해드립니다.</p>
+        </div>
         <div className="apply-grid">
           <div className="apply-intro">
-            {/* 제목: 데스크톱은 긴 문구, 모바일은 짧게 */}
-            <h1>
-              <span className="apply-h1-d">AI 면접 도입,<br />우리 회사에 맞게 시작하세요</span>
-              <span className="apply-h1-m">AI 면접 도입 문의</span>
-            </h1>
-            <p>채용 규모와 프로세스에 맞는 AI 면접 활용 방안을 안내해드립니다.</p>
             {/* 체크 포인트 — 모바일에선 숨김 */}
             <ul className="apply-points">
               <li><i className="fa-solid fa-circle-check"></i> 지원자 자동 AI 평가</li>
