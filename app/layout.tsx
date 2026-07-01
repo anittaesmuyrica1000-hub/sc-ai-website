@@ -17,7 +17,7 @@ export const metadata: Metadata = {
     "AI 면접이 지원자를 자동 검증하고, 채용팀에는 검증된 핵심 인재 리포트만 전달합니다. 가짜 이력서·과장 스펙을 걸러내는 채용 검증 솔루션 AI면접.",
   applicationName: "AI면접",
   verification: {
-    google: "oDEbTQ1eeTf8wR4lAn7m-QV6q2LII3NbrfRuzsIxgUs",
+    google: "cENYN-zUA2ecZGbCMZ8HIaWgnx5AfBaN2-XPVHJhaaQ",
     other: {
       "naver-site-verification": "d889488a4b87a1c71896d00766be357b830f430f",
     },
