@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./brochure.css";
 import BrochureForm from "./BrochureForm";
+import BrochurePreview from "./BrochurePreview";
 import { buildPageMetadata } from "@/lib/pageSeo";
 
 export const revalidate = 120;
@@ -21,62 +22,23 @@ export function generateMetadata() {
   return buildPageMetadata("/brochure", FALLBACK_METADATA);
 }
 
-const BROCHURE_LOGOS = [
-  { src: "/logos/woongjin-t.png", alt: "Woongjin" },
-  { src: "/logos/skonec-t.png", alt: "SKONEC entertainment" },
-  { src: "/logos/markany-t.png", alt: "MarkAny" },
-];
-
-// 신뢰 로고 마퀴 — 데스크톱(인트로 하단)·모바일(폼 아래) 재사용
-function BrochurePartners() {
-  return (
-    <>
-      <p className="brochure-partners-label">이미 500개 이상의 기업이 Supercoder와 함께하고 있습니다</p>
-      <div className="brochure-marquee">
-        <div className="brochure-marquee-track">
-          {Array.from({ length: 6 }).map((_, b) =>
-            BROCHURE_LOGOS.map((l, i) => (
-              <img key={`${b}-${i}`} src={l.src} alt={b === 0 ? l.alt : ""} aria-hidden={b === 0 ? undefined : true} />
-            ))
-          )}
-        </div>
-      </div>
-    </>
-  );
-}
-
 export default function BrochurePage() {
   return (
     <section className="brochure">
       <div className="wrap">
+        <div className="brochure-top">
+          <p className="eyebrow"><i className="fa-solid fa-file-lines"></i> 서비스 소개서</p>
+          <h1>AI 면접 서비스 소개서 받기</h1>
+          <p className="brochure-sub">역량 모델링·AI 면접·분석 리포트부터 측정 가능한 ROI·도입 사례까지 — 슈퍼코더가 채용을 데이터로 바꾸는 방식을 한 부에 담았습니다. 정보를 남기면 입력하신 <b>회사 이메일</b>로 바로 보내드립니다.</p>
+        </div>
         <div className="brochure-grid">
-          {/* 좌: 가치 · 담긴 내용 · 신뢰 로고 */}
-          <div className="brochure-intro">
-            <p className="eyebrow"><i className="fa-solid fa-file-lines"></i> 서비스 소개서</p>
-            <h1>
-              <span className="brochure-h1-d">채용 44일 &rarr; 15일,<br />AI 면접이 만든 변화</span>
-              <span className="brochure-h1-m">채용 44일 &rarr; 15일</span>
-            </h1>
-            <p>역량 모델링·AI 면접·분석 리포트부터 측정 가능한 ROI까지 — 슈퍼코더가 채용을 데이터로 바꾸는 방식을 소개서에 담았습니다. 입력하신 <b>회사 이메일</b>로 바로 보내드립니다.</p>
-            <ul className="brochure-points">
-              <li><i className="fa-solid fa-circle-check"></i> 채용을 데이터로 바꾸는 4단계 (역량 모델링·AI 면접·리포트)</li>
-              <li><i className="fa-solid fa-circle-check"></i> 측정 가능한 ROI — 채용 기간·비용·합격률 개선</li>
-              <li><i className="fa-solid fa-circle-check"></i> 채용팀·현업·지원자별 도입 효과</li>
-              <li><i className="fa-solid fa-circle-check"></i> 실제 도입 사례 &amp; 고객 후기</li>
-            </ul>
-            <div className="brochure-partners brochure-partners--desktop">
-              <BrochurePartners />
-            </div>
+          {/* 좌: 소개서 미리보기 캐러셀 */}
+          <div className="brochure-previewcol">
+            <BrochurePreview />
           </div>
-
           {/* 우: 신청 폼 */}
           <div className="brochure-formcol">
             <BrochureForm />
-          </div>
-
-          {/* 모바일: 로고를 폼 아래로 */}
-          <div className="brochure-partners brochure-partners--mobile">
-            <BrochurePartners />
           </div>
         </div>
       </div>

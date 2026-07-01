@@ -1,55 +1,60 @@
-/* 서비스소개서 페이지 — /apply(도입문의)와 동일한 좌우 2단.
-   좌: 가치·"소개서에 담긴 내용"·신뢰 로고 / 우: 신청 폼 카드. 모바일은 세로 스택. */
+/* 서비스소개서 페이지 — 에이치닷 '소개서 받기' 참고:
+   상단 제목/서브 + 좌(소개서 미리보기 캐러셀) / 우(신청 폼). 모바일은 세로 스택. */
 .brochure {
   background: linear-gradient(180deg, #EAF1FE 0%, #F4F8FF 48%, #fff 100%);
-  padding: 60px 0 92px;
+  padding: 56px 0 80px;
   min-height: calc(100vh - 64px);
 }
+
+.brochure-top { text-align: center; max-width: 760px; margin: 0 auto 40px; }
+.brochure-top h1 { font-size: clamp(26px, 3.4vw, 38px); font-weight: 800; letter-spacing: -.02em; color: var(--ink); line-height: 1.25; }
+.brochure-sub { font-size: 16px; color: var(--slate); line-height: 1.7; margin-top: 16px; }
+
 .brochure-grid {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-  gap: clamp(32px, 5vw, 72px);
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, .95fr);
+  gap: clamp(28px, 4vw, 56px);
   max-width: 1080px;
   margin: 0 auto;
-  align-items: center;
+  align-items: start;
 }
 .brochure-formcol { display: flex; flex-direction: column; }
 
-/* 좌측 인트로 */
-.brochure-intro { text-align: left; }
-.brochure-intro h1 { font-size: clamp(25px, 2.7vw, 34px); font-weight: 800; line-height: 1.34; letter-spacing: -.02em; color: var(--ink); }
-.brochure-intro > p { font-size: 16px; color: var(--slate); line-height: 1.72; margin-top: 20px; }
-.brochure-points { list-style: none; margin-top: 30px; display: grid; gap: 14px; }
-.brochure-points li { display: flex; align-items: center; gap: 10px; font-size: 15px; font-weight: 600; color: var(--ink); }
-.brochure-points li > i { color: var(--blue); font-size: 18px; flex-shrink: 0; }
-.brochure-h1-m { display: none; }
-.brochure-partners--mobile { display: none; }
+/* 미리보기 캐러셀 */
+.bpreview-stage {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border-radius: 16px;
+  overflow: hidden;
+  background: #0b1830;
+  box-shadow: 0 24px 60px -24px rgba(15, 23, 42, .45);
+  border: 1px solid rgba(255, 255, 255, .5);
+}
+.bpreview-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity .35s ease; }
+.bpreview-img.on { opacity: 1; }
+.bpreview-arrow {
+  position: absolute; top: 50%; transform: translateY(-50%); z-index: 2;
+  width: 40px; height: 40px; border-radius: 50%; border: none;
+  background: rgba(15, 23, 42, .55); color: #fff; display: grid; place-items: center;
+  cursor: pointer; font-size: 15px; transition: .15s;
+}
+.bpreview-arrow:hover { background: rgba(15, 23, 42, .82); }
+.bpreview-arrow.prev { left: 12px; }
+.bpreview-arrow.next { right: 12px; }
+.bpreview-dots { display: flex; justify-content: center; gap: 8px; margin-top: 16px; }
+.bpreview-dot { width: 8px; height: 8px; border-radius: 50%; border: none; background: var(--line); cursor: pointer; padding: 0; transition: .15s; }
+.bpreview-dot.on { background: var(--blue); width: 22px; border-radius: 5px; }
 
-/* 파트너 로고 마퀴(투명 PNG) */
-.brochure-partners { margin-top: 40px; padding-top: 30px; border-top: 1px solid var(--line); }
-.brochure-partners-label { font-size: 13px; font-weight: 700; color: var(--slate); margin-bottom: 18px; }
-.brochure-marquee { position: relative; overflow: hidden; width: 100%;
-  -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 8%, #000 92%, transparent 100%);
-          mask-image: linear-gradient(90deg, transparent 0, #000 8%, #000 92%, transparent 100%); }
-.brochure-marquee-track { display: flex; align-items: center; width: max-content; animation: brochure-scroll 36s linear infinite; }
-.brochure-marquee-track img { flex: 0 0 auto; margin-right: 40px; max-width: 104px; max-height: 34px; width: auto; height: auto; object-fit: contain; }
-@keyframes brochure-scroll { from { transform: translateX(0); } to { transform: translateX(-50%); } }
-@media (prefers-reduced-motion: reduce) { .brochure-marquee-track { animation: none; } }
-
-/* 우측 폼 카드 — 모달용 제약 해제, 컬럼 폭에 맞춤 */
+/* 폼 카드 — 모달용 제약 해제, 컬럼 폭에 맞춤 */
 .brochure-formcol .bro-card { width: 100%; max-width: none; max-height: none; overflow: visible; box-shadow: var(--shadow); }
 
 @media (max-width: 860px) {
-  .brochure-grid { grid-template-columns: minmax(0, 1fr); max-width: 540px; gap: 30px; }
-  .brochure-intro { text-align: center; }
-  .brochure-intro h1 { font-size: 22px; line-height: 1.4; word-break: keep-all; }
-  .brochure-intro h1 br { display: none; }
-  .brochure-intro > p { margin-top: 14px; }
-  .brochure-h1-d { display: none; }
-  .brochure-h1-m { display: inline; }
-  .brochure-points { display: none; }
-  .brochure-partners--desktop { display: none; }
-  .brochure-partners--mobile { display: block; text-align: center; margin-top: 30px; padding-top: 28px; }
+  .brochure-grid { grid-template-columns: minmax(0, 1fr); max-width: 520px; gap: 30px; }
+  .brochure-top { margin-bottom: 28px; }
 }
-@media (max-width: 420px) { .brochure-intro h1 { font-size: 20px; } }
-@media (max-width: 560px) { .brochure { padding: 40px 0 64px; } }
+@media (max-width: 560px) {
+  .brochure { padding: 36px 0 60px; }
+  .brochure-top h1 { font-size: 23px; }
+  .bpreview-arrow { width: 34px; height: 34px; font-size: 13px; }
+}
