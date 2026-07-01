@@ -64,14 +64,14 @@ export default function ApplyPage() {
               <span className="apply-h1-m">AI 면접 도입 문의</span>
             </h1>
             <p>채용 규모와 프로세스에 맞는 AI 면접 활용 방안을 안내해드립니다.</p>
-            {/* 체크 포인트 6개(2단) — 모바일에선 숨김 */}
+            {/* 체크 포인트 6개(2단) — 서비스덱 p8~11 근거. 모바일에선 숨김 */}
             <ul className="apply-points">
-              <li><i className="fa-solid fa-circle-check"></i> 지원자 자동 AI 평가</li>
-              <li><i className="fa-solid fa-circle-check"></i> 핵심 인재 리포트 제공</li>
-              <li><i className="fa-solid fa-circle-check"></i> 채용 규모별 맞춤 설계</li>
-              <li><i className="fa-solid fa-circle-check"></i> 기존 채용 프로세스 연동</li>
-              <li><i className="fa-solid fa-circle-check"></i> 영업일 1일 내 상담 회신</li>
-              <li><i className="fa-solid fa-circle-check"></i> 무료 데모·PoC 지원</li>
+              <li><i className="fa-solid fa-circle-check"></i> 역량 모델 기반 질문 자동 설계</li>
+              <li><i className="fa-solid fa-circle-check"></i> 24시간 화상·음성 AI 인터뷰</li>
+              <li><i className="fa-solid fa-circle-check"></i> 역량별 점수·근거 분석 리포트</li>
+              <li><i className="fa-solid fa-circle-check"></i> 지원자 역량 레이더 비교</li>
+              <li><i className="fa-solid fa-circle-check"></i> 이력서·1차 면접 자동화</li>
+              <li><i className="fa-solid fa-circle-check"></i> 검증된 핵심 후보만 선별</li>
             </ul>
             {/* 데스크톱: 로고를 인트로 안에 유지 */}
             <div className="apply-partners apply-partners--desktop">
