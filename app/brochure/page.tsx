@@ -8,7 +8,7 @@ export const revalidate = 120;
 const FALLBACK_METADATA: Metadata = {
   title: "서비스 소개서 신청 · AI 면접",
   description:
-    "AI 면접 서비스 소개서를 신청하세요. 제품 개요·주요 기능·도입 효과·요금까지, 입력한 회사 이메일로 바로 보내드립니다.",
+    "AI 면접 서비스 소개서를 신청하세요. 역량 모델링·AI 면접·분석 리포트부터 측정 가능한 ROI·도입 사례까지, 입력한 회사 이메일로 바로 보내드립니다.",
   alternates: { canonical: "/brochure" },
   openGraph: {
     title: "AI 면접 서비스 소개서 신청",
@@ -54,15 +54,15 @@ export default function BrochurePage() {
           <div className="brochure-intro">
             <p className="eyebrow"><i className="fa-solid fa-file-lines"></i> 서비스 소개서</p>
             <h1>
-              <span className="brochure-h1-d">AI 면접 도입 전,<br />소개서로 먼저 확인하세요</span>
-              <span className="brochure-h1-m">AI 면접 서비스 소개서</span>
+              <span className="brochure-h1-d">채용의 &lsquo;감&rsquo;을 데이터로,<br />AI 면접이 만드는 변화</span>
+              <span className="brochure-h1-m">AI 면접, 채용을 재정의하다</span>
             </h1>
-            <p>제품 개요부터 도입 효과·요금까지 한 부에 담았습니다. 정보를 남기면 입력하신 <b>회사 이메일</b>로 바로 보내드립니다.</p>
+            <p>역량 모델링·AI 면접·분석 리포트부터 측정 가능한 ROI까지 — 슈퍼코더가 채용을 데이터로 바꾸는 방식을 소개서에 담았습니다. 입력하신 <b>회사 이메일</b>로 바로 보내드립니다.</p>
             <ul className="brochure-points">
-              <li><i className="fa-solid fa-circle-check"></i> 제품 개요 &amp; 핵심 기능</li>
-              <li><i className="fa-solid fa-circle-check"></i> 도입 효과·ROI 검증 데이터</li>
-              <li><i className="fa-solid fa-circle-check"></i> 요금제 &amp; 도입 절차 안내</li>
-              <li><i className="fa-solid fa-circle-check"></i> 실제 고객 도입 사례</li>
+              <li><i className="fa-solid fa-circle-check"></i> 채용을 데이터로 바꾸는 4단계 (역량 모델링·AI 면접·리포트)</li>
+              <li><i className="fa-solid fa-circle-check"></i> 측정 가능한 ROI — 채용 기간·비용·합격률 개선</li>
+              <li><i className="fa-solid fa-circle-check"></i> 채용팀·현업·지원자별 도입 효과</li>
+              <li><i className="fa-solid fa-circle-check"></i> 실제 도입 사례 &amp; 고객 후기</li>
             </ul>
             <div className="brochure-partners brochure-partners--desktop">
               <BrochurePartners />
