@@ -57,6 +57,7 @@ export default function ApplyPage() {
       <div className="wrap">
         <div className="apply-grid">
           <div className="apply-intro">
+            <p className="eyebrow apply-eyebrow"><i className="fa-solid fa-bolt"></i> AI 면접 채용 검증</p>
             {/* 제목: 데스크톱은 긴 문구, 모바일은 짧게 */}
             <h1>
               <span className="apply-h1-d">AI 면접 도입,<br />우리 회사에 맞게 시작하세요</span>
@@ -69,6 +70,12 @@ export default function ApplyPage() {
               <li><i className="fa-solid fa-circle-check"></i> 핵심 인재 리포트 제공</li>
               <li><i className="fa-solid fa-circle-check"></i> 영업일 기준 1일 내 상담</li>
             </ul>
+            {/* 핵심 성과 수치(서비스덱 ROI) — 신뢰 + 좌측 높이 보강 */}
+            <div className="apply-stats">
+              <div className="apply-stat"><b>44일 <span className="ar">&rarr;</span> 15일</b><span>채용 기간 단축</span></div>
+              <div className="apply-stat"><b>~60%<span className="ar">&darr;</span></b><span>채용 비용 절감</span></div>
+              <div className="apply-stat"><b>2배</b><span>합격률 향상</span></div>
+            </div>
             {/* 데스크톱: 로고를 인트로 안에 유지 */}
             <div className="apply-partners apply-partners--desktop">
               <ApplyPartners />
