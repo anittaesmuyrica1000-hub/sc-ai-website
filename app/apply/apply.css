@@ -2,18 +2,15 @@
 
   /* APPLY */
   .apply{background:linear-gradient(180deg,#EAF1FE 0%,#F4F8FF 48%,#fff 100%);padding:60px 0 92px;min-height:calc(100vh - 64px)}
-  /* 2단: 좌-인트로(메시지·가치) / 우-폼 카드. 모바일은 세로 스택 */
+  /* 2단: 좌-인트로(메시지·가치) / 우-폼 카드. 좌측 헤드카피를 폼 상단에 맞춰 top-align. 모바일은 세로 스택 */
   .apply-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(32px,5vw,72px);max-width:1080px;margin:0 auto;align-items:start}
   .apply-formcol{display:flex;flex-direction:column}
 
-  /* 상단 중앙 헤딩 — 블로그·서비스소개서와 동일하게 중앙정렬 */
-  .apply-top{text-align:center;max-width:760px;margin:0 auto clamp(28px,4vw,44px)}
-  .apply-top h1{font-size:clamp(26px,3.4vw,38px);font-weight:800;line-height:1.25;letter-spacing:-.02em;color:var(--ink)}
-  .apply-top p{font-size:16px;color:var(--slate);line-height:1.7;margin-top:16px}
-
-  /* 좌측 인트로(체크포인트·로고) — 그리드로 수직 가운데 */
+  /* 좌측 인트로 — 좌측정렬, 그리드로 수직 가운데 */
   .apply-intro{text-align:left}
-  .apply-points{list-style:none;display:grid;gap:14px}
+  .apply-intro h1{font-size:clamp(25px,2.7vw,34px);font-weight:800;line-height:1.34;letter-spacing:-.02em;color:var(--ink)}
+  .apply-intro p{font-size:16px;color:var(--slate);line-height:1.72;margin-top:20px}
+  .apply-points{list-style:none;margin-top:30px;display:grid;gap:14px}
   .apply-points li{display:flex;align-items:center;gap:10px;font-size:15px;font-weight:600;color:var(--ink)}
   .apply-points li>i{color:var(--blue);font-size:18px;flex-shrink:0}
   /* 제목 반응형(모바일 짧게)·로고 위치(모바일 폼 아래) 토글 — 데스크톱 기본값 */
@@ -32,17 +29,19 @@
   @media(prefers-reduced-motion:reduce){.apply-marquee-track{animation:none}}
   @media(max-width:860px){
     .apply-grid{grid-template-columns:minmax(0,1fr);max-width:540px;gap:30px}
-    .apply-top{margin-bottom:24px}
-    .apply-top h1{font-size:22px;line-height:1.4;word-break:keep-all}
-    .apply-top h1 br{display:none}
-    /* 모바일: 제목 짧게 · 인트로(불릿) 숨김 · 로고는 폼 아래로 */
+    .apply-intro{text-align:center;padding-top:0}
+    .apply-intro h1{font-size:22px;line-height:1.4;word-break:keep-all}
+    .apply-intro h1 br{display:none}
+    .apply-intro p{margin-top:14px}
+    .apply-points{width:fit-content;margin-left:auto;margin-right:auto}
+    /* 모바일(에이치닷식): 제목 짧게 · 불릿 숨김 · 로고는 폼 아래로 */
     .apply-h1-d{display:none}
     .apply-h1-m{display:inline}
-    .apply-intro{display:none}
+    .apply-points{display:none}
     .apply-partners--desktop{display:none}
     .apply-partners--mobile{display:block;text-align:center;margin-top:30px;padding-top:28px}
   }
-  @media(max-width:420px){.apply-top h1{font-size:20px}}
+  @media(max-width:420px){.apply-intro h1{font-size:20px}}
 
   .apply-card{background:#fff;border:1px solid var(--line);border-radius:20px;box-shadow:var(--shadow);padding:34px}
   .apply-card .ct{font-size:22px;font-weight:800;letter-spacing:-.02em;color:var(--ink);margin-bottom:4px}
