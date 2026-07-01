@@ -1,22 +1,55 @@
-/* 서비스소개서 페이지 (모달 → 페이지 전환). 폼 카드는 공용 .bro-* 스타일 재사용. */
-.brochure-page {
-  min-height: 72vh;
-  display: flex;
-  justify-content: center;
-  padding: 100px 24px 80px;
-  background: var(--soft);
+/* 서비스소개서 페이지 — /apply(도입문의)와 동일한 좌우 2단.
+   좌: 가치·"소개서에 담긴 내용"·신뢰 로고 / 우: 신청 폼 카드. 모바일은 세로 스택. */
+.brochure {
+  background: linear-gradient(180deg, #EAF1FE 0%, #F4F8FF 48%, #fff 100%);
+  padding: 60px 0 92px;
+  min-height: calc(100vh - 64px);
 }
-.brochure-inner { width: 100%; max-width: 460px; }
-.brochure-hero { text-align: center; margin-bottom: 22px; }
-.brochure-hero .eyebrow { justify-content: center; }
-.brochure-hero h1 {
-  font-size: clamp(24px, 4vw, 30px);
-  font-weight: 800;
-  letter-spacing: -.02em;
-  color: var(--ink);
-  margin: 10px 0 8px;
+.brochure-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: clamp(32px, 5vw, 72px);
+  max-width: 1080px;
+  margin: 0 auto;
+  align-items: center;
 }
-.brochure-hero p { font-size: 15px; color: var(--slate); line-height: 1.6; }
+.brochure-formcol { display: flex; flex-direction: column; }
 
-/* 모달용 스크롤/높이 제약 해제 — 페이지에선 카드가 자연 높이로 */
-.brochure-page .bro-card { max-width: none; max-height: none; overflow: visible; }
+/* 좌측 인트로 */
+.brochure-intro { text-align: left; }
+.brochure-intro h1 { font-size: clamp(25px, 2.7vw, 34px); font-weight: 800; line-height: 1.34; letter-spacing: -.02em; color: var(--ink); }
+.brochure-intro > p { font-size: 16px; color: var(--slate); line-height: 1.72; margin-top: 20px; }
+.brochure-points { list-style: none; margin-top: 30px; display: grid; gap: 14px; }
+.brochure-points li { display: flex; align-items: center; gap: 10px; font-size: 15px; font-weight: 600; color: var(--ink); }
+.brochure-points li > i { color: var(--blue); font-size: 18px; flex-shrink: 0; }
+.brochure-h1-m { display: none; }
+.brochure-partners--mobile { display: none; }
+
+/* 파트너 로고 마퀴(투명 PNG) */
+.brochure-partners { margin-top: 40px; padding-top: 30px; border-top: 1px solid var(--line); }
+.brochure-partners-label { font-size: 13px; font-weight: 700; color: var(--slate); margin-bottom: 18px; }
+.brochure-marquee { position: relative; overflow: hidden; width: 100%;
+  -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 8%, #000 92%, transparent 100%);
+          mask-image: linear-gradient(90deg, transparent 0, #000 8%, #000 92%, transparent 100%); }
+.brochure-marquee-track { display: flex; align-items: center; width: max-content; animation: brochure-scroll 36s linear infinite; }
+.brochure-marquee-track img { flex: 0 0 auto; margin-right: 40px; max-width: 104px; max-height: 34px; width: auto; height: auto; object-fit: contain; }
+@keyframes brochure-scroll { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+@media (prefers-reduced-motion: reduce) { .brochure-marquee-track { animation: none; } }
+
+/* 우측 폼 카드 — 모달용 제약 해제, 컬럼 폭에 맞춤 */
+.brochure-formcol .bro-card { width: 100%; max-width: none; max-height: none; overflow: visible; box-shadow: var(--shadow); }
+
+@media (max-width: 860px) {
+  .brochure-grid { grid-template-columns: minmax(0, 1fr); max-width: 540px; gap: 30px; }
+  .brochure-intro { text-align: center; }
+  .brochure-intro h1 { font-size: 22px; line-height: 1.4; word-break: keep-all; }
+  .brochure-intro h1 br { display: none; }
+  .brochure-intro > p { margin-top: 14px; }
+  .brochure-h1-d { display: none; }
+  .brochure-h1-m { display: inline; }
+  .brochure-points { display: none; }
+  .brochure-partners--desktop { display: none; }
+  .brochure-partners--mobile { display: block; text-align: center; margin-top: 30px; padding-top: 28px; }
+}
+@media (max-width: 420px) { .brochure-intro h1 { font-size: 20px; } }
+@media (max-width: 560px) { .brochure { padding: 40px 0 64px; } }

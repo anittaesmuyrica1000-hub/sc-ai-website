@@ -85,6 +85,10 @@ export default function BrochureForm() {
 
   return (
     <div className="bro-card">
+      <div className="bro-head">
+        <h2>무료 소개서 신청</h2>
+        <p>아래 정보를 남기면 회사 이메일로 소개서를 바로 보내드립니다.</p>
+      </div>
       <form onSubmit={onSubmit} noValidate>
         <div className="b-row">
           <div className={`b-field${invalid.name ? " invalid" : ""}`}>
