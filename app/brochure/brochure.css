@@ -1,5 +1,6 @@
-/* 서비스소개서 페이지 — 에이치닷 '소개서 받기' 참고:
-   상단 제목/서브 + 좌(소개서 미리보기 캐러셀) / 우(신청 폼). 모바일은 세로 스택. */
+/* 서비스소개서 페이지 — 에이치닷(h.place) 참고:
+   상단 제목/서브 + 좌(소개서를 감싼 박스 안 미리보기 캐러셀) / 우(신청 폼).
+   좌우 등높이(align-items:stretch)로 왼쪽 박스가 오른쪽 폼 높이에 맞춰짐. */
 .brochure {
   background: linear-gradient(180deg, #EAF1FE 0%, #F4F8FF 48%, #fff 100%);
   padding: 56px 0 80px;
@@ -16,20 +17,27 @@
   gap: clamp(28px, 4vw, 56px);
   max-width: 1080px;
   margin: 0 auto;
-  align-items: start;
+  align-items: stretch; /* 좌우 등높이 — 왼쪽 박스가 폼 높이에 맞춰짐 */
 }
 .brochure-formcol { display: flex; flex-direction: column; }
 
+/* 좌: 소개서를 감싼 박스 (폼 높이에 맞춰 세로 중앙에 미리보기 배치) */
+.brochure-previewcol {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  background: linear-gradient(155deg, #EEF3FF 0%, #E4EAFB 100%);
+  border: 1px solid rgba(46, 108, 240, .12);
+  border-radius: 20px;
+  padding: clamp(24px, 3.2vw, 44px);
+}
+
 /* 미리보기 캐러셀 */
+.bpreview { width: 100%; }
 .bpreview-stage {
-  position: relative;
-  width: 100%;
-  aspect-ratio: 16 / 9;
-  border-radius: 16px;
-  overflow: hidden;
-  background: #0b1830;
-  box-shadow: 0 24px 60px -24px rgba(15, 23, 42, .45);
-  border: 1px solid rgba(255, 255, 255, .5);
+  position: relative; width: 100%; aspect-ratio: 16 / 9;
+  border-radius: 14px; overflow: hidden; background: #0b1830;
+  box-shadow: 0 22px 50px -22px rgba(15, 23, 42, .5);
 }
 .bpreview-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity .35s ease; }
 .bpreview-img.on { opacity: 1; }
@@ -42,31 +50,16 @@
 .bpreview-arrow:hover { background: rgba(15, 23, 42, .82); }
 .bpreview-arrow.prev { left: 12px; }
 .bpreview-arrow.next { right: 12px; }
-.bpreview-dots { display: flex; justify-content: center; gap: 8px; margin-top: 16px; }
-.bpreview-dot { width: 8px; height: 8px; border-radius: 50%; border: none; background: var(--line); cursor: pointer; padding: 0; transition: .15s; }
+.bpreview-dots { display: flex; justify-content: center; gap: 8px; margin-top: 18px; }
+.bpreview-dot { width: 8px; height: 8px; border-radius: 50%; border: none; background: rgba(46, 108, 240, .25); cursor: pointer; padding: 0; transition: .15s; }
 .bpreview-dot.on { background: var(--blue); width: 22px; border-radius: 5px; }
-
-/* 담긴 내용(체크리스트) + 신뢰 로고 — 미리보기 아래(A 요소) */
-.brochure-inclu { margin-top: 26px; }
-.brochure-inclu-label { font-size: 13px; font-weight: 800; letter-spacing: .02em; color: var(--slate); margin-bottom: 14px; }
-.brochure-points { list-style: none; display: grid; gap: 12px; }
-.brochure-points li { display: flex; align-items: center; gap: 10px; font-size: 15px; font-weight: 600; color: var(--ink); }
-.brochure-points li > i { color: var(--blue); font-size: 17px; flex-shrink: 0; }
-.brochure-partners { margin-top: 24px; padding-top: 22px; border-top: 1px solid var(--line); }
-.brochure-partners-label { font-size: 13px; font-weight: 700; color: var(--slate); margin-bottom: 16px; }
-.brochure-marquee { position: relative; overflow: hidden; width: 100%;
-  -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 8%, #000 92%, transparent 100%);
-          mask-image: linear-gradient(90deg, transparent 0, #000 8%, #000 92%, transparent 100%); }
-.brochure-marquee-track { display: flex; align-items: center; width: max-content; animation: brochure-scroll 36s linear infinite; }
-.brochure-marquee-track img { flex: 0 0 auto; margin-right: 40px; max-width: 104px; max-height: 34px; width: auto; height: auto; object-fit: contain; }
-@keyframes brochure-scroll { from { transform: translateX(0); } to { transform: translateX(-50%); } }
-@media (prefers-reduced-motion: reduce) { .brochure-marquee-track { animation: none; } }
 
 /* 폼 카드 — 모달용 제약 해제, 컬럼 폭에 맞춤 */
 .brochure-formcol .bro-card { width: 100%; max-width: none; max-height: none; overflow: visible; box-shadow: var(--shadow); }
 
 @media (max-width: 860px) {
-  .brochure-grid { grid-template-columns: minmax(0, 1fr); max-width: 520px; gap: 30px; }
+  .brochure-grid { grid-template-columns: minmax(0, 1fr); max-width: 520px; gap: 28px; }
+  .brochure-previewcol { padding: 22px; }
   .brochure-top { margin-bottom: 28px; }
 }
 @media (max-width: 560px) {
