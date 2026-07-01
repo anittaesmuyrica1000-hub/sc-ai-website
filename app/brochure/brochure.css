@@ -46,6 +46,22 @@
 .bpreview-dot { width: 8px; height: 8px; border-radius: 50%; border: none; background: var(--line); cursor: pointer; padding: 0; transition: .15s; }
 .bpreview-dot.on { background: var(--blue); width: 22px; border-radius: 5px; }
 
+/* 담긴 내용(체크리스트) + 신뢰 로고 — 미리보기 아래(A 요소) */
+.brochure-inclu { margin-top: 26px; }
+.brochure-inclu-label { font-size: 13px; font-weight: 800; letter-spacing: .02em; color: var(--slate); margin-bottom: 14px; }
+.brochure-points { list-style: none; display: grid; gap: 12px; }
+.brochure-points li { display: flex; align-items: center; gap: 10px; font-size: 15px; font-weight: 600; color: var(--ink); }
+.brochure-points li > i { color: var(--blue); font-size: 17px; flex-shrink: 0; }
+.brochure-partners { margin-top: 24px; padding-top: 22px; border-top: 1px solid var(--line); }
+.brochure-partners-label { font-size: 13px; font-weight: 700; color: var(--slate); margin-bottom: 16px; }
+.brochure-marquee { position: relative; overflow: hidden; width: 100%;
+  -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 8%, #000 92%, transparent 100%);
+          mask-image: linear-gradient(90deg, transparent 0, #000 8%, #000 92%, transparent 100%); }
+.brochure-marquee-track { display: flex; align-items: center; width: max-content; animation: brochure-scroll 36s linear infinite; }
+.brochure-marquee-track img { flex: 0 0 auto; margin-right: 40px; max-width: 104px; max-height: 34px; width: auto; height: auto; object-fit: contain; }
+@keyframes brochure-scroll { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+@media (prefers-reduced-motion: reduce) { .brochure-marquee-track { animation: none; } }
+
 /* 폼 카드 — 모달용 제약 해제, 컬럼 폭에 맞춤 */
 .brochure-formcol .bro-card { width: 100%; max-width: none; max-height: none; overflow: visible; box-shadow: var(--shadow); }
 
