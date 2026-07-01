@@ -5,7 +5,7 @@ import SiteFooter from "@/components/SiteFooter";
 import Chatbot from "@/components/Chatbot";
 import Analytics from "@/components/Analytics";
 
-const SITE_URL = "https://sc-ai-website.vercel.app";
+const SITE_URL = "https://www.supercoder.co";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),

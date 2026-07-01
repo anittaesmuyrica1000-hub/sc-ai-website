@@ -1,5 +1,5 @@
 # AIVIEW robots.txt
-# 운영 도메인(확정 2026-06-15): https://sc-ai-website.vercel.app — 변경 시 아래 Sitemap 경로도 갱신
+# 운영 도메인(2026-07-01 www.supercoder.co로 확정 — 기존 vercel.app 대체): https://www.supercoder.co — 변경 시 아래 Sitemap 경로도 갱신
 
 User-agent: *
 Allow: /
@@ -8,4 +8,4 @@ Allow: /
 User-agent: Yeti
 Allow: /
 
-Sitemap: https://sc-ai-website.vercel.app/sitemap.xml
+Sitemap: https://www.supercoder.co/sitemap.xml

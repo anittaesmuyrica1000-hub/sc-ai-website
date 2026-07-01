@@ -32,13 +32,13 @@ export default async function HomePage() {
       {
         "@type": "Organization",
         name: "AI면접",
-        url: "https://sc-ai-website.vercel.app/",
-        logo: "https://sc-ai-website.vercel.app/apple-touch-icon.png",
+        url: "https://www.supercoder.co/",
+        logo: "https://www.supercoder.co/apple-touch-icon.png",
         description:
           "AI 면접으로 지원자를 자동 검증하고 채용팀에 검증된 핵심 인재 리포트를 전달하는 B2B 채용 SaaS",
         sameAs: [],
       },
-      { "@type": "WebSite", name: "AI면접", url: "https://sc-ai-website.vercel.app/", inLanguage: "ko-KR" },
+      { "@type": "WebSite", name: "AI면접", url: "https://www.supercoder.co/", inLanguage: "ko-KR" },
       {
         "@type": "SoftwareApplication",
         name: "AI면접",

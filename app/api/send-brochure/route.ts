@@ -86,7 +86,7 @@ export async function POST(req: Request) {
   const subject = "[Supercoder] 요청하신 서비스소개서를 보내드립니다";
   const html = `
     <div style="font-family:Pretendard,'Apple SD Gothic Neo',Arial,sans-serif;max-width:600px;margin:0 auto;padding:56px 24px 40px;color:#1f2a44;text-align:center;word-break:keep-all">
-      <div style="text-align:left"><a href="https://sc-ai-website.vercel.app" style="display:inline-block"><img src="https://sc-ai-website.vercel.app/supercoder-email-logo.png" alt="Supercoder" width="216" height="30" style="display:block;width:216px;max-width:100%;height:auto;border:0"/></a></div>
+      <div style="text-align:left"><a href="https://www.supercoder.co" style="display:inline-block"><img src="https://www.supercoder.co/supercoder-email-logo.png" alt="Supercoder" width="216" height="30" style="display:block;width:216px;max-width:100%;height:auto;border:0"/></a></div>
       <hr style="border:none;border-top:1px solid #e9edf3;margin:22px 0 0"/>
       <p style="font-size:18px;line-height:1.75;margin:104px 0 0;font-weight:400;color:#2b3450">
         ${name}님, 안녕하세요.<br/>요청하신 <b style="font-weight:700">AI 면접 서비스 소개서</b> 보내드립니다.
@@ -96,7 +96,7 @@ export async function POST(req: Request) {
       </p>
       <p style="font-size:13px;color:#8a96ad;line-height:1.9;margin:36px 0 0;font-weight:400">
         링크는 보안을 위해 7일 후 만료됩니다.<br/>
-        문의는 회신 또는 <a href="https://sc-ai-website.vercel.app/apply" style="color:#3b6ef5;text-decoration:underline">도입 문의</a>로 남겨주세요.
+        문의는 회신 또는 <a href="https://www.supercoder.co/apply" style="color:#3b6ef5;text-decoration:underline">도입 문의</a>로 남겨주세요.
       </p>
       <hr style="border:none;border-top:1px solid #e9edf3;margin:120px 0 0"/>
       <p style="font-size:12px;color:#9aa6bf;line-height:1.9;margin:24px 0 0;font-weight:400;text-align:left">

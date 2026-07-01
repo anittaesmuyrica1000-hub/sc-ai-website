@@ -3,7 +3,7 @@ import { renderBody } from "@/lib/postRender";
 
 // 블로그 RSS 2.0 피드 — published 글 최신 50개. 네이버 서치어드바이저 RSS 제출·구독기 발견용.
 // 네이버 권장: 대표 이미지 + 본문 전체(content:encoded) 포함. /blog/rss.xml 로 제공.
-const SITE_URL = "https://sc-ai-website.vercel.app";
+const SITE_URL = "https://www.supercoder.co";
 
 export const dynamic = "force-dynamic";
 

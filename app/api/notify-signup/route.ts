@@ -37,7 +37,7 @@ export async function POST(req: Request) {
         <tr><td style="padding:4px 14px 4px 0;color:#6b7280">규모</td><td style="padding:4px 0">${esc(size || "-")}</td></tr>
         ${memo ? `<tr><td style="padding:4px 14px 4px 0;color:#6b7280;vertical-align:top">메모</td><td style="padding:4px 0;white-space:pre-wrap">${esc(memo)}</td></tr>` : ""}
       </table>
-      <p style="margin:20px 0 0"><a href="https://sc-ai-website.vercel.app/admin" style="display:inline-block;background:#3b6ef5;color:#fff;text-decoration:none;font-weight:700;padding:11px 22px;border-radius:8px">어드민에서 보기</a></p>
+      <p style="margin:20px 0 0"><a href="https://www.supercoder.co/admin" style="display:inline-block;background:#3b6ef5;color:#fff;text-decoration:none;font-weight:700;padding:11px 22px;border-radius:8px">어드민에서 보기</a></p>
     </div>`;
 
   try {
