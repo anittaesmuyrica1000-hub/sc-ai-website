@@ -44,12 +44,6 @@ function metricCard(label: string, value: number) {
 }
 
 export async function GET(req: NextRequest) {
-  // 임시: 서버가 쓰는 서비스계정 이메일/프로젝트 확인용(식별자, 비밀 아님). 확인 후 제거 예정.
-  if (new URL(req.url).searchParams.get("whoami")) {
-    const email = process.env.GMAIL_SA_CLIENT_EMAIL || "(GMAIL_SA_CLIENT_EMAIL 미설정)";
-    const projectId = email.includes("@") ? email.split("@")[1].split(".")[0] : "?";
-    return Response.json({ serviceAccountEmail: email, projectId });
-  }
   if (!authorized(req)) return Response.json({ ok: false, error: "unauthorized" }, { status: 401 });
   if (!gaConfigured()) return Response.json({ ok: false, error: "GA 서비스계정 미설정" }, { status: 500 });
   if (!mailerConfigured()) return Response.json({ ok: false, error: "메일러 미설정" }, { status: 500 });
