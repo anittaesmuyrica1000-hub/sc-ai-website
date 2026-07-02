@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { supabase, UTM_KEYS } from "@/lib/supabase";
+import { trackEvent } from "@/lib/track";
 
 type Utm = Partial<Record<(typeof UTM_KEYS)[number], string>>;
 
@@ -86,6 +87,8 @@ export default function ApplyForm() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ ...payload, ...utm }),
       }).catch(() => {});
+      // GA4 전환 이벤트 — 도입문의 폼 제출 완료(GA4에서 apply_lead를 주요 이벤트로 지정)
+      trackEvent("apply_lead", { form_type: "apply", company_size: fields.size });
       setDone(true);
       setTimeout(() => window.scrollTo({ top: 0, behavior: "smooth" }), 0);
     } catch (err) {

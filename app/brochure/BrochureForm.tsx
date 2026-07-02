@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { trackEvent } from "@/lib/track";
 
 // 서비스소개서 리드 폼(페이지판). 기존 모달과 동일하게 /api/send-brochure 호출 →
 // 회사 이메일로 보안 링크 전송. 모달과 달리 고유 URL(/brochure)이 있어 GA·UTM 추적이 가능하다.
@@ -60,6 +61,8 @@ export default function BrochureForm() {
         setFormErr(j?.message || "요청 처리 중 문제가 발생했습니다. 잠시 후 다시 시도해 주세요.");
         return;
       }
+      // GA4 전환 이벤트 — 서비스소개서 신청 완료(GA4에서 brochure_lead를 주요 이벤트로 지정)
+      trackEvent("brochure_lead", { form_type: "brochure", company_size: fields.size });
       setDone(true);
       setTimeout(() => window.scrollTo({ top: 0, behavior: "smooth" }), 0);
     } catch (err) {
