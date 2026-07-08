@@ -380,8 +380,8 @@
   .blog-preview .post-content li{margin-bottom:6px}
   .blog-preview .post-content .post-src{font-size:13.5px;opacity:.5;margin-top:-6px}
   /* 코드블록 — 라이브(post.css)와 동일한 monospace 박스 */
-  .blog-preview .post-content .post-code,.rich-area .post-code{background:#F4F5F7;border:1px solid #E3E7EE;border-radius:12px;padding:18px 20px;margin:0 0 20px;overflow-x:auto}
-  .blog-preview .post-content .post-code code,.rich-area .post-code code{display:block;font-family:'SFMono-Regular',Consolas,'D2Coding','Noto Sans KR',monospace;font-size:14px;line-height:1.75;color:#333B49;white-space:pre-wrap;word-break:break-word;font-weight:500}
+  .blog-preview .post-content .post-code,.rich-area .post-code{background:#FAFBFC;border:1px solid #EEF1F5;border-radius:12px;padding:18px 20px;margin:0 0 20px;overflow-x:auto}
+  .blog-preview .post-content .post-code code,.rich-area .post-code code{display:block;font-family:'SFMono-Regular',Consolas,'D2Coding','Noto Sans KR',monospace;font-size:14px;line-height:1.75;color:#3D4557;white-space:pre-wrap;word-break:break-word;font-weight:500}
   .blog-preview .post-content figure,.blog-preview .post-content .post-figure{margin:8px 0 24px}
   .blog-preview .post-content img{width:100%;border-radius:var(--r);display:block}
   .blog-preview .post-content .post-video{position:relative;width:100%;aspect-ratio:16/9;margin:8px 0 24px;border-radius:var(--r);overflow:hidden;background:#000}
