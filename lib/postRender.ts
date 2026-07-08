@@ -80,9 +80,13 @@ export function renderContent(text: string | null | undefined): string {
           .join("");
         return '<div class="post-tldr"><div class="tldr-head"><i class="fa-solid fa-bolt"></i> 핵심 요약</div><ul>' + items + "</ul></div>";
       }
-      // 코드블록(``` ... ```) — 프롬프트 등 원문 그대로 monospace 박스로. esc 후 출력이라 XSS 안전.
-      const codeFence = block.match(/^```[^\n]*\n([\s\S]*?)```$/);
-      if (codeFence) return '<pre class="post-code"><code>' + esc(codeFence[1].replace(/\n+$/, "")) + "</code></pre>";
+      // 코드블록(```lang ... ```) — 프롬프트 등 원문 그대로 monospace 박스로. lang은 라벨(data-lang)로 표시. esc 후 출력이라 XSS 안전.
+      const codeFence = block.match(/^```([A-Za-z0-9+#-]*)[^\n]*\n([\s\S]*?)```$/);
+      if (codeFence) {
+        const lang = codeFence[1].trim();
+        const code = esc(codeFence[2].replace(/\n+$/, ""));
+        return '<pre class="post-code"' + (lang ? ' data-lang="' + esc(lang) + '"' : "") + "><code>" + code + "</code></pre>";
+      }
       const img = block.match(/^!\[(.*?)\]\((.*?)\)$/);
       if (img) {
         const cap = img[1] ? "<figcaption>" + inline(img[1]) + "</figcaption>" : "";
