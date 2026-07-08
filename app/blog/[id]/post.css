@@ -29,10 +29,8 @@
   /* 출처 표기 — 본문보다 약하게(투명도↓·작게) */
   .post-content .post-src{font-size:13.5px;opacity:.5;margin-top:-6px}
   /* 코드블록 — 프롬프트 등 복붙용 monospace 박스 */
-  .post-content .post-code{position:relative;background:#F4F5F7;border:1px solid #E3E7EE;border-radius:12px;padding:16px 18px;margin:0 0 22px;overflow-x:auto}
-  .post-content .post-code[data-lang]{padding-top:40px}
-  .post-content .post-code[data-lang]::before{content:attr(data-lang);position:absolute;top:0;left:0;right:0;padding:8px 18px;font-size:11.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#8A93A8;background:#ECEEF2;border-bottom:1px solid #E3E7EE;border-radius:12px 12px 0 0}
-  .post-content .post-code code{display:block;font-family:'SFMono-Regular',Consolas,'D2Coding','Noto Sans KR',monospace;font-size:14px;line-height:1.7;color:#2A3346;white-space:pre-wrap;word-break:break-word;font-weight:500}
+  .post-content .post-code{background:#45474D;border:1px solid #3A3C42;border-radius:12px;padding:18px 20px;margin:0 0 22px;overflow-x:auto}
+  .post-content .post-code code{display:block;font-family:'SFMono-Regular',Consolas,'D2Coding','Noto Sans KR',monospace;font-size:14px;line-height:1.75;color:#E7E9EC;white-space:pre-wrap;word-break:break-word;font-weight:500}
   .post-figure{margin:8px 0 28px}
   .post-figure img{width:100%;border-radius:var(--r);display:block}
   .post-figure figcaption{margin-top:10px;font-size:13.5px;color:var(--slate-2);text-align:center}
