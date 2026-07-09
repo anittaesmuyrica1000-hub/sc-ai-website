@@ -598,6 +598,7 @@ function BlogManager() {
   const [uploadingCover, setUploadingCover] = useState(false);
   const [preview, setPreview] = useState(false);
   const [customTpls, setCustomTpls] = useState<CustomTemplate[]>([]);
+  const [sortByViews, setSortByViews] = useState(false); // false=최신순, true=조회순
   const isEdit = !!form?.id;
 
   const load = useCallback(async () => {
@@ -733,6 +734,10 @@ function BlogManager() {
   }
 
   const cats = Array.from(new Set(posts.map((p) => p.category).filter(Boolean))) as string[];
+  const totalViews = posts.reduce((sum, p) => sum + (p.views ?? 0), 0);
+  const shownPosts = sortByViews
+    ? [...posts].sort((a, b) => (b.views ?? 0) - (a.views ?? 0))
+    : posts;
 
   return (
     <>
@@ -898,17 +903,26 @@ function BlogManager() {
       )}
 
       <div className="card list-card">
-        <div className="list-head"><h2>등록된 글</h2><span className="count">{posts.length}개</span></div>
+        <div className="list-head">
+          <h2>등록된 글</h2>
+          <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
+            <span className="count">{posts.length}개 · 누적 조회 {totalViews.toLocaleString()}</span>
+            <button className="link-btn" onClick={() => setSortByViews((v) => !v)} title="정렬 기준 전환">
+              {sortByViews ? "조회순 ▼" : "최신순 ▼"}
+            </button>
+          </div>
+        </div>
         {loadErr ? <div className="list-state">목록을 불러오지 못했습니다.</div> : posts.length === 0 ? (
           <div className="list-state">아직 등록된 글이 없습니다. “새 글 작성”으로 시작해 보세요.</div>
         ) : (
           <div className="adm-table-wrap">
             <table className="adm-table">
-              <thead><tr><th>제목</th><th>상태</th><th>작성일</th><th>수정일</th><th>관리</th></tr></thead>
+              <thead><tr><th>제목</th><th className="nowrap">조회수</th><th>상태</th><th>작성일</th><th>수정일</th><th>관리</th></tr></thead>
               <tbody>
-                {posts.map((p) => (
+                {shownPosts.map((p) => (
                   <tr key={p.id}>
                     <td><div className="cell-title">{p.title}</div>{p.category && <div className="cell-sub">{p.category}</div>}</td>
+                    <td className="nowrap"><span className="views-cell"><i className="fa-regular fa-eye"></i> {(p.views ?? 0).toLocaleString()}</span></td>
                     <td className="nowrap">{p.published === false ? <span className="pill pill-gray">비공개</span> : <span className="pill pill-green">공개</span>}</td>
                     <td className="nowrap">{fmtDate(p.created_at)}</td>
                     <td className="nowrap">{p.updated_at ? fmtDate(p.updated_at) : "—"}</td>

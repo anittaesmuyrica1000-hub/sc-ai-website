@@ -5,6 +5,7 @@ import "./post.css";
 import { supabase, type Post } from "@/lib/supabase";
 import { fmtDate } from "@/lib/format";
 import { renderBody } from "@/lib/postRender";
+import ViewCounter from "@/components/ViewCounter";
 
 export const dynamic = "force-dynamic";
 
@@ -59,6 +60,7 @@ export default async function PostPage({ params }: { params: Promise<{ id: strin
 
   return (
     <main>
+      <ViewCounter id={p.id} />
       <article className="post-wrap">
         <Link href="/blog" className="post-back"><i className="fa-solid fa-arrow-left"></i> 블로그 목록</Link>
         <div className="post-head">

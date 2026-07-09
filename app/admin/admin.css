@@ -436,6 +436,9 @@
   .adm-table td.nowrap{white-space:nowrap}
   .adm-table a{color:var(--blue)}
   .adm-table tbody tr:hover{background:var(--soft)}
+  /* 블로그 조회수 셀 */
+  .views-cell{display:inline-flex;align-items:center;gap:6px;font-weight:700;color:var(--ink)}
+  .views-cell i{color:var(--slate-2);font-size:12px}
 
   @media(max-width:980px){
     .adm-side{position:fixed;left:0;top:0;z-index:60;transform:translateX(-100%);transition:transform .22s ease;box-shadow:0 20px 50px -20px rgba(0,0,0,.5)}
