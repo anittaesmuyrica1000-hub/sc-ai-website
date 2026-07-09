@@ -5,11 +5,11 @@ import { sendMail, mailerConfigured } from "@/lib/mailer";
 // 매일 오전 8시(KST) GA4 어제 지표 요약 + 인사이트를 이메일로 발송하는 크론 엔드포인트.
 // Vercel Cron이 GET으로 호출(설정: vercel.json). 스케줄 "0 23 * * *"(UTC) = 08:00 KST.
 // 보안: CRON_SECRET 설정 시 Authorization: Bearer <CRON_SECRET> 또는 ?key=<CRON_SECRET> 필요.
-// 수신자: ANALYTICS_REPORT_TO(기본 juhee.kim@supercoder.co).
+// 수신자: ANALYTICS_REPORT_TO(콤마로 여러 명 가능). 기본: juhee + 대표(jay.choi).
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-const DEFAULT_TO = "juhee.kim@supercoder.co";
+const DEFAULT_TO = "juhee.kim@supercoder.co, jay.choi@supercoder.co";
 const SITE = "https://www.supercoder.co";
 
 function authorized(req: NextRequest): boolean {
