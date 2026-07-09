@@ -440,14 +440,17 @@
   .views-cell{display:inline-flex;align-items:center;gap:6px;font-weight:700;color:var(--ink)}
   .views-cell i{color:var(--slate-2);font-size:12px}
   /* 어드민 목록 검색 */
-  .adm-search{position:relative;margin:2px 0 14px}
-  .adm-search > i{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--slate-2);font-size:13px;pointer-events:none}
-  .adm-search input{width:100%;height:42px;padding:0 40px;border:1px solid var(--line);border-radius:10px;background:#fff;font-family:inherit;font-size:14px;color:var(--ink)}
+  .adm-search{position:relative;margin:2px 0 16px}
+  .adm-search > i{position:absolute;left:16px;top:50%;transform:translateY(-50%);color:var(--slate-2);font-size:14px;pointer-events:none;transition:.15s}
+  .adm-search.on > i{color:var(--blue)}
+  .adm-search input{width:100%;height:46px;padding:0 92px 0 44px;border:1px solid var(--line);border-radius:12px;background:var(--soft);font-family:inherit;font-size:14.5px;color:var(--ink);transition:.15s}
   .adm-search input::placeholder{color:var(--slate-2)}
-  .adm-search input:focus{outline:none;border-color:var(--blue-2);box-shadow:0 0 0 3px rgba(91,141,247,.16)}
+  .adm-search input:focus{outline:none;background:#fff;border-color:var(--blue-2);box-shadow:0 0 0 3px rgba(91,141,247,.16)}
   .adm-search input::-webkit-search-cancel-button{display:none}
+  /* 실시간 결과 개수 배지 */
+  .adm-search-count{position:absolute;right:44px;top:50%;transform:translateY(-50%);font-size:12px;font-weight:800;color:var(--blue-d);background:var(--soft-2);border:1px solid var(--tint);padding:3px 9px;border-radius:999px;pointer-events:none}
   .adm-search-clear{position:absolute;right:8px;top:50%;transform:translateY(-50%);width:30px;height:30px;border:none;background:transparent;color:var(--slate);cursor:pointer;border-radius:7px;display:grid;place-items:center}
-  .adm-search-clear:hover{background:var(--soft);color:var(--ink)}
+  .adm-search-clear:hover{background:#fff;color:var(--ink)}
 
   @media(max-width:980px){
     .adm-side{position:fixed;left:0;top:0;z-index:60;transform:translateX(-100%);transition:transform .22s ease;box-shadow:0 20px 50px -20px rgba(0,0,0,.5)}

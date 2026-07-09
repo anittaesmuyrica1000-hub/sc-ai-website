@@ -907,17 +907,25 @@ function BlogManager() {
         <div className="list-head">
           <h2>등록된 글</h2>
           <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
-            <span className="count">{posts.length}개 · 누적 조회 {totalViews.toLocaleString()}</span>
+            <span className="count">{q ? `검색 ${shownPosts.length}개 / 전체 ${posts.length}개` : `${posts.length}개 · 누적 조회 ${totalViews.toLocaleString()}`}</span>
             <button className="link-btn" onClick={() => setSortByViews((v) => !v)} title="정렬 기준 전환">
               {sortByViews ? "조회순 ▼" : "최신순 ▼"}
             </button>
           </div>
         </div>
         {posts.length > 0 && (
-          <div className="adm-search">
+          <div className={`adm-search${query ? " on" : ""}`}>
             <i className="fa-solid fa-magnifying-glass"></i>
-            <input type="search" value={query} onChange={(e) => setQuery(e.target.value)} placeholder="제목·카테고리·요약으로 글 검색" aria-label="글 검색" />
-            {query && <button type="button" className="adm-search-clear" aria-label="지우기" onClick={() => setQuery("")}><i className="fa-solid fa-xmark"></i></button>}
+            <input
+              type="search"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              onKeyDown={(e) => { if (e.key === "Escape") setQuery(""); }}
+              placeholder="제목·카테고리로 글 찾기…  (ESC로 지우기)"
+              aria-label="글 검색"
+            />
+            {query && <span className="adm-search-count">{shownPosts.length}건</span>}
+            {query && <button type="button" className="adm-search-clear" aria-label="검색어 지우기" onClick={() => setQuery("")}><i className="fa-solid fa-xmark"></i></button>}
           </div>
         )}
         {loadErr ? <div className="list-state">목록을 불러오지 못했습니다.</div> : posts.length === 0 ? (
