@@ -599,6 +599,7 @@ function BlogManager() {
   const [preview, setPreview] = useState(false);
   const [customTpls, setCustomTpls] = useState<CustomTemplate[]>([]);
   const [sortByViews, setSortByViews] = useState(false); // false=최신순, true=조회순
+  const [query, setQuery] = useState("");
   const isEdit = !!form?.id;
 
   const load = useCallback(async () => {
@@ -735,9 +736,9 @@ function BlogManager() {
 
   const cats = Array.from(new Set(posts.map((p) => p.category).filter(Boolean))) as string[];
   const totalViews = posts.reduce((sum, p) => sum + (p.views ?? 0), 0);
-  const shownPosts = sortByViews
-    ? [...posts].sort((a, b) => (b.views ?? 0) - (a.views ?? 0))
-    : posts;
+  const q = query.trim().toLowerCase();
+  const shownPosts = (sortByViews ? [...posts].sort((a, b) => (b.views ?? 0) - (a.views ?? 0)) : posts)
+    .filter((p) => !q || [p.title, p.category, p.excerpt].filter(Boolean).join(" ").toLowerCase().includes(q));
 
   return (
     <>
@@ -912,8 +913,17 @@ function BlogManager() {
             </button>
           </div>
         </div>
+        {posts.length > 0 && (
+          <div className="adm-search">
+            <i className="fa-solid fa-magnifying-glass"></i>
+            <input type="search" value={query} onChange={(e) => setQuery(e.target.value)} placeholder="제목·카테고리·요약으로 글 검색" aria-label="글 검색" />
+            {query && <button type="button" className="adm-search-clear" aria-label="지우기" onClick={() => setQuery("")}><i className="fa-solid fa-xmark"></i></button>}
+          </div>
+        )}
         {loadErr ? <div className="list-state">목록을 불러오지 못했습니다.</div> : posts.length === 0 ? (
           <div className="list-state">아직 등록된 글이 없습니다. “새 글 작성”으로 시작해 보세요.</div>
+        ) : shownPosts.length === 0 ? (
+          <div className="list-state">‘{query.trim()}’ 검색 결과가 없습니다.</div>
         ) : (
           <div className="adm-table-wrap">
             <table className="adm-table">
