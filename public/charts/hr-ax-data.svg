@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="760" height="372" viewBox="0 0 760 372">
+<rect width="760" height="372" rx="14" fill="#FFFFFF" stroke="#E5EBF5"/>
+<text x="24" y="42" font-size="19" font-weight="800" fill="#142036" font-family="'Pretendard','Apple SD Gothic Neo','Noto Sans KR',sans-serif">한눈에 보는 2026 채용 데이터</text>
+<rect x="24" y="64" width="226" height="118" rx="12" fill="#F7F9FD" stroke="#E5EBF5"/>
+ <text x="44" y="122" font-size="36" font-weight="800" fill="#E0584A" font-family="'Pretendard','Apple SD Gothic Neo','Noto Sans KR',sans-serif">60%</text>
+ <text x="44" y="156" font-size="14.5" font-weight="600" fill="#566179" font-family="'Pretendard','Apple SD Gothic Neo','Noto Sans KR',sans-serif">챗GPT로 자소서 쓴 취준생</text>
+<rect x="267" y="64" width="226" height="118" rx="12" fill="#F7F9FD" stroke="#E5EBF5"/>
+ <text x="287" y="122" font-size="36" font-weight="800" fill="#E0584A" font-family="'Pretendard','Apple SD Gothic Neo','Noto Sans KR',sans-serif">48.5%</text>
+ <text x="287" y="156" font-size="14.5" font-weight="600" fill="#566179" font-family="'Pretendard','Apple SD Gothic Neo','Noto Sans KR',sans-serif">AI 작성 의심 자소서</text>
+<rect x="510" y="64" width="226" height="118" rx="12" fill="#F7F9FD" stroke="#E5EBF5"/>
+ <text x="530" y="122" font-size="36" font-weight="800" fill="#E0584A" font-family="'Pretendard','Apple SD Gothic Neo','Noto Sans KR',sans-serif">73%</text>
+ <text x="530" y="156" font-size="14.5" font-weight="600" fill="#566179" font-family="'Pretendard','Apple SD Gothic Neo','Noto Sans KR',sans-serif">AI 자소서 못 거르는 기업</text>
+<rect x="24" y="196" width="347" height="118" rx="12" fill="#F7F9FD" stroke="#E5EBF5"/>
+ <text x="44" y="254" font-size="36" font-weight="800" fill="#2E6CF0" font-family="'Pretendard','Apple SD Gothic Neo','Noto Sans KR',sans-serif">1,272만원</text>
+ <text x="44" y="288" font-size="14.5" font-weight="600" fill="#566179" font-family="'Pretendard','Apple SD Gothic Neo','Noto Sans KR',sans-serif">직원 1명 채용 비용 · 평균 32일</text>
+<rect x="388" y="196" width="347" height="118" rx="12" fill="#F7F9FD" stroke="#E5EBF5"/>
+ <text x="408" y="254" font-size="36" font-weight="800" fill="#2E6CF0" font-family="'Pretendard','Apple SD Gothic Neo','Noto Sans KR',sans-serif">65%</text>
+ <text x="408" y="288" font-size="14.5" font-weight="600" fill="#566179" font-family="'Pretendard','Apple SD Gothic Neo','Noto Sans KR',sans-serif">AI 채용 도구 도입·검토 기업</text>
+<text x="24" y="350" font-size="12.5" fill="#8A93A8" font-family="'Pretendard','Apple SD Gothic Neo','Noto Sans KR',sans-serif">진학사 캐치(2024) · 자소서 AI 분석(2024) · 고용노동부(2023) · 사람인(2022) · 잡코리아(2026)</text>
+</svg>

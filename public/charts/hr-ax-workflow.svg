@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="760" height="228" viewBox="0 0 760 228">
+<rect width="760" height="228" rx="14" fill="#FFFFFF" stroke="#E5EBF5"/>
+<text x="24" y="36" font-size="16" font-weight="800" fill="#142036" font-family="'Pretendard','Apple SD Gothic Neo','Noto Sans KR',sans-serif">1차 스크리닝, 이렇게 바뀝니다</text>
+<!-- Before -->
+<rect x="24" y="56" width="300" height="148" rx="14" fill="#F1F3F6" stroke="#E3E7EE"/>
+<text x="46" y="90" font-size="12.5" font-weight="800" letter-spacing="1" fill="#8A93A8" font-family="'Pretendard','Apple SD Gothic Neo','Noto Sans KR',sans-serif">BEFORE</text>
+<text x="46" y="124" font-size="25" font-weight="800" fill="#3A4252" font-family="'Pretendard','Apple SD Gothic Neo','Noto Sans KR',sans-serif">서류 읽기</text>
+<text x="46" y="154" font-size="14" fill="#6B7688" font-family="'Pretendard','Apple SD Gothic Neo','Noto Sans KR',sans-serif">수백 장을 사람이 직접</text>
+<text x="46" y="178" font-size="14" fill="#6B7688" font-family="'Pretendard','Apple SD Gothic Neo','Noto Sans KR',sans-serif">시간은 늘고, 가짜는 못 거름</text>
+<!-- arrow -->
+<line x1="338" y1="130" x2="418" y2="130" stroke="#2E6CF0" stroke-width="7" stroke-linecap="round"/>
+<path d="M410 118 L426 130 L410 142" fill="none" stroke="#2E6CF0" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
+<!-- After -->
+<rect x="436" y="56" width="300" height="148" rx="14" fill="#EAF1FE" stroke="#BFD3F5"/>
+<text x="458" y="90" font-size="12.5" font-weight="800" letter-spacing="1" fill="#1F54CC" font-family="'Pretendard','Apple SD Gothic Neo','Noto Sans KR',sans-serif">AFTER</text>
+<text x="458" y="124" font-size="25" font-weight="800" fill="#142036" font-family="'Pretendard','Apple SD Gothic Neo','Noto Sans KR',sans-serif">AI 1차 면접</text>
+<text x="458" y="154" font-size="14" fill="#3B4A66" font-family="'Pretendard','Apple SD Gothic Neo','Noto Sans KR',sans-serif">AI가 지원자 전원 검증</text>
+<text x="458" y="178" font-size="14" fill="#3B4A66" font-family="'Pretendard','Apple SD Gothic Neo','Noto Sans KR',sans-serif">검증된 핵심 후보만 사람이</text>
+</svg>
