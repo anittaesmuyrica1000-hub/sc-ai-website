@@ -738,7 +738,7 @@ function BlogManager() {
   const totalViews = posts.reduce((sum, p) => sum + (p.views ?? 0), 0);
   const q = query.trim().toLowerCase();
   const shownPosts = (sortByViews ? [...posts].sort((a, b) => (b.views ?? 0) - (a.views ?? 0)) : posts)
-    .filter((p) => !q || [p.title, p.category, p.excerpt].filter(Boolean).join(" ").toLowerCase().includes(q));
+    .filter((p) => !q || [p.title, p.category, p.excerpt, stripTags(p.content)].filter(Boolean).join(" ").toLowerCase().includes(q));
 
   return (
     <>
@@ -921,11 +921,15 @@ function BlogManager() {
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               onKeyDown={(e) => { if (e.key === "Escape") setQuery(""); }}
-              placeholder="제목·카테고리로 글 찾기…  (ESC로 지우기)"
+              placeholder="제목·내용·카테고리로 글 검색…"
               aria-label="글 검색"
             />
-            {query && <span className="adm-search-count">{shownPosts.length}건</span>}
-            {query && <button type="button" className="adm-search-clear" aria-label="검색어 지우기" onClick={() => setQuery("")}><i className="fa-solid fa-xmark"></i></button>}
+            {query && (
+              <>
+                <span className="adm-search-count">{shownPosts.length}건</span>
+                <button type="button" className="adm-search-clear" aria-label="검색어 지우기" title="지우기 (ESC)" onClick={() => setQuery("")}><i className="fa-solid fa-xmark"></i></button>
+              </>
+            )}
           </div>
         )}
         {loadErr ? <div className="list-state">목록을 불러오지 못했습니다.</div> : posts.length === 0 ? (

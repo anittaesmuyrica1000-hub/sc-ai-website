@@ -443,7 +443,7 @@
   .adm-search{position:relative;margin:2px 0 16px}
   .adm-search > i{position:absolute;left:16px;top:50%;transform:translateY(-50%);color:var(--slate-2);font-size:14px;pointer-events:none;transition:.15s}
   .adm-search.on > i{color:var(--blue)}
-  .adm-search input{width:100%;height:46px;padding:0 92px 0 44px;border:1px solid var(--line);border-radius:12px;background:var(--soft);font-family:inherit;font-size:14.5px;color:var(--ink);transition:.15s}
+  .adm-search input{width:100%;height:48px;padding:0 96px 0 46px;border:1px solid var(--line);border-radius:12px;background:#fff;font-family:inherit;font-size:15px;color:var(--ink);box-shadow:0 1px 2px rgba(16,24,40,.04);transition:.15s}
   .adm-search input::placeholder{color:var(--slate-2)}
   .adm-search input:focus{outline:none;background:#fff;border-color:var(--blue-2);box-shadow:0 0 0 3px rgba(91,141,247,.16)}
   .adm-search input::-webkit-search-cancel-button{display:none}
