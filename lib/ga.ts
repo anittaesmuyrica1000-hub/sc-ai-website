@@ -1,4 +1,5 @@
 import { JWT } from "google-auth-library";
+import { getRealLeadsYesterday, type RealLeads } from "./leads";
 
 // GA4 Data API 조회 — Gmail용과 동일한 Google 서비스계정을 재사용한다(스코프만 analytics.readonly).
 // 서비스계정 이메일(GMAIL_SA_CLIENT_EMAIL)에 GA4 속성 "뷰어" 권한 + 프로젝트에 GA Data API 활성화 필요.
@@ -146,7 +147,8 @@ export type DailyReport = {
   engagementRate: number;       // 0~1
   engagedSessions: number;
   avgEngagementPerSession: number; // 초(세션당 평균 참여시간)
-  keyEvents: number;            // 전환(주요 이벤트) 총합 — apply_lead+brochure_lead 등
+  keyEvents: number;            // 전환(주요 이벤트) 총합 — apply_lead+brochure_lead 등(GA 이벤트, 사내 포함)
+  realLeads: RealLeads;         // 실제 리드(Supabase, 사내 @supercoder.co 제외)
   // 전일 대비(그제) 비교용
   prev: { activeUsers: number; sessions: number; engagementRate: number; keyEvents: number };
   // 브레이크다운
@@ -254,6 +256,9 @@ export async function getDailyReport(): Promise<DailyReport> {
   seoulNow.setDate(seoulNow.getDate() - 1);
   const dateLabel = `${seoulNow.getFullYear()}-${String(seoulNow.getMonth() + 1).padStart(2, "0")}-${String(seoulNow.getDate()).padStart(2, "0")}`;
 
+  // 실제 리드(Supabase, 사내 제외) — GA 이벤트는 사내 테스트도 세므로 리드 지표는 DB 기준.
+  const realLeads = await getRealLeadsYesterday();
+
   // ── 자동 인사이트 ─────────────────────────────
   const insights: string[] = [];
   const pct = (cur: number, base: number) => (base ? Math.round(((cur - base) / base) * 100) : cur ? 100 : 0);
@@ -270,9 +275,9 @@ export async function getDailyReport(): Promise<DailyReport> {
   // 유입 1위
   const topCh = listOf(channels)[0];
   if (topCh) insights.push(`유입 1위: ${topCh.name} (${topCh.count.toLocaleString()} 세션).`);
-  // 전환
-  if (keyEventsYday > 0) insights.push(`전환 ${keyEventsYday}건(도입문의·소개서) 발생 — 전일 ${prev.keyEvents}건.`);
-  else insights.push(`어제 전환(apply_lead·brochure_lead) 0건 — 폼 유입/전환 점검 권장.`);
+  // 실제 리드(사내 제외) — Supabase 기준
+  if (realLeads.available && realLeads.total > 0) insights.push(`실제 리드 ${realLeads.total}건(도입문의 ${realLeads.apply}·소개서 ${realLeads.brochure}) — 사내(@supercoder.co) 제출 제외.`);
+  else if (realLeads.available) insights.push(`어제 실제 리드 0건(사내 제출 제외) — 폼 유입/전환 점검 권장.`);
   // 신규 비중
   if (activeUsers > 0) insights.push(`신규 ${newUsers.toLocaleString()}명 / 재방문 ${returningUsers.toLocaleString()}명 (재방문 ${Math.round((returningUsers / activeUsers) * 100)}%).`);
 
@@ -282,6 +287,7 @@ export async function getDailyReport(): Promise<DailyReport> {
     activeUsers, newUsers, returningUsers, sessions, pageViews,
     engagementRate, engagedSessions, avgEngagementPerSession,
     keyEvents: keyEventsYday,
+    realLeads,
     prev,
     topPages: listOf(pages),
     topChannels: listOf(channels),

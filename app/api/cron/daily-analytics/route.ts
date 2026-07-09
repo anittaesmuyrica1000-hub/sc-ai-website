@@ -97,8 +97,11 @@ export async function GET(req: NextRequest) {
             ${metricCard("조회수", s.pageViews.toLocaleString())}
             ${metricCard("신규 사용자", s.newUsers.toLocaleString())}
             ${metricCard("재방문 사용자", s.returningUsers.toLocaleString())}
-            ${metricCard("전환(리드)", s.keyEvents.toLocaleString())}
+            ${metricCard("실제 리드(외부)", s.realLeads.available ? s.realLeads.total.toLocaleString() : "—")}
           </tr></table>
+          <div style="font-size:11.5px;color:#5b6577;text-align:center;margin-top:8px">
+            리드 = 도입문의 ${s.realLeads.apply} · 소개서 ${s.realLeads.brochure} (사내 @supercoder.co 제출 제외 · Supabase 기준)
+          </div>
 
           ${sectionTitle("① 페이지 및 화면 — 많이 본 페이지 (조회수)")}
           ${table(rows(s.topPages, "어제 데이터 없음"))}
@@ -112,7 +115,7 @@ export async function GET(req: NextRequest) {
           ${sectionTitle("④ 인구통계 — 국가별 사용자")}
           ${table(rows(s.byCountry, "어제 데이터 없음"))}
 
-          ${sectionTitle("⑤ 이벤트/전환(CTA) — 방문자 행동 (이벤트 수)")}
+          ${sectionTitle("⑤ 이벤트/전환(CTA) — 방문자 행동 (GA 이벤트 수 · 사내 포함)")}
           ${table(rows(s.topEvents, "어제 데이터 없음"))}
 
           <div style="margin-top:24px;text-align:center">
@@ -127,7 +130,7 @@ export async function GET(req: NextRequest) {
     </body></html>`;
 
     await sendMail({ to, subject: `[Supercoder] 일일 애널리틱스 · ${s.dateLabel}`, html });
-    return Response.json({ ok: true, to, date: s.dateLabel, activeUsers: s.activeUsers, sessions: s.sessions, keyEvents: s.keyEvents, realtime: s.realtimeActiveUsers });
+    return Response.json({ ok: true, to, date: s.dateLabel, activeUsers: s.activeUsers, sessions: s.sessions, realLeads: s.realLeads, gaEvents_keyEvents: s.keyEvents, realtime: s.realtimeActiveUsers });
   } catch (e) {
     const msg = e instanceof Error ? e.message : String(e);
     console.error("daily-analytics failed:", msg);
