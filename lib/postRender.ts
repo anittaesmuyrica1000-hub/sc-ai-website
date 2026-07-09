@@ -6,11 +6,14 @@ import { esc } from "./format";
 function inline(s: string): string {
   let t = esc(s);
   t = t.replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>");
-  // 외부 링크(http/https)는 새 탭, 내부 상대경로(/apply 등)는 같은 탭으로 렌더
+  // 외부 링크(http/https)는 새 탭, 내부 상대경로(/apply 등)는 같은 탭으로 렌더.
+  // 자사(supercoder)·내부 링크는 CTA로 강조하고, 그 외 외부 링크는 출처로 보아 각주처럼 작고 약하게(post-cite).
   t = t.replace(/\[([^\]]+)\]\((https?:\/\/[^)\s]+|\/[^)\s]+)\)/g, (_m, text, url) => {
     const external = /^https?:/.test(url);
+    const cite = external && !/supercoder\.co/i.test(url);
+    const cls = cite ? ' class="post-cite"' : "";
     return external
-      ? `<a href="${url}" target="_blank" rel="noopener noreferrer">${text}</a>`
+      ? `<a href="${url}" target="_blank" rel="noopener noreferrer"${cls}>${text}</a>`
       : `<a href="${url}">${text}</a>`;
   });
   return t;

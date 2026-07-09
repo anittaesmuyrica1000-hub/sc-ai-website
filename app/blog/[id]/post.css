@@ -22,6 +22,9 @@
   .post-content hr,.post-content .post-hr{border:none;border-top:1px solid var(--line);margin:34px 0}
   .post-content a{color:var(--blue-d);font-weight:600;text-decoration:underline;text-underline-offset:2px;text-decoration-color:var(--blue-2)}
   .post-content a:hover{color:var(--blue)}
+  /* 출처 인라인 각주 — 파란 링크 대신 작고 약한 주석처럼 */
+  .post-content a.post-cite{font-size:.82em;color:var(--slate-2);font-weight:500;text-decoration:none;border-bottom:1px dotted #D5DCE8}
+  .post-content a.post-cite:hover{color:var(--slate);border-bottom-color:var(--slate-2)}
   .post-content ul.post-list{margin:0 0 22px;padding-left:4px;list-style:none;display:grid;gap:10px}
   .post-content ul.post-list li{position:relative;padding-left:26px}
   .post-content ul.post-list li::before{content:"";position:absolute;left:6px;top:13px;width:7px;height:7px;border-radius:50%;background:var(--blue)}
