@@ -193,6 +193,9 @@ footer{background:#fff;color:var(--slate);padding:64px 0 40px;font-size:14px;bor
 .legal.notfound{text-align:center;padding-top:140px}
 .legal.notfound .err-code{font-size:clamp(64px,14vw,120px);font-weight:800;line-height:1;color:var(--blue);letter-spacing:-.04em}
 .legal.notfound .btn{margin-top:28px}
+/* 404 '홈으로 돌아가기' 버튼: .legal a(파랑·밑줄) 상속을 덮어써 흰 글씨로 */
+.legal.notfound .btn-blue{color:#fff;text-decoration:none}
+.legal.notfound .btn-blue:hover{color:#fff}
 
 /* ===== 서비스소개서 리드 모달 (partials.js가 주입, 전 페이지 공용) ===== */
 /* backdrop-filter 제거: 입력 시마다 화면 전체 블러를 재계산해 타이핑이 버벅이던 문제 해소.

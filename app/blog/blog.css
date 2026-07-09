@@ -6,7 +6,17 @@
   .blog-head .lead{max-width:560px;margin:16px auto 0}
 
   /* 카테고리 필터 탭 */
-  .blog-filter{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin:34px 0 0;padding-bottom:8px}
+  /* 블로그 검색 */
+  .blog-search{position:relative;max-width:440px;margin:30px auto 0}
+  .blog-search > i{position:absolute;left:18px;top:50%;transform:translateY(-50%);color:var(--slate-2);font-size:14px;pointer-events:none}
+  .blog-search input{width:100%;height:50px;padding:0 44px 0 44px;border:1px solid var(--line);border-radius:999px;background:#fff;font-family:inherit;font-size:15px;color:var(--ink);box-shadow:var(--shadow);transition:.18s}
+  .blog-search input::placeholder{color:var(--slate-2)}
+  .blog-search input:focus{outline:none;border-color:var(--blue-2);box-shadow:0 0 0 4px rgba(91,141,247,.14)}
+  .blog-search input::-webkit-search-cancel-button{display:none}
+  .blog-search-clear{position:absolute;right:8px;top:50%;transform:translateY(-50%);width:34px;height:34px;border:none;background:transparent;color:var(--slate);cursor:pointer;border-radius:50%;display:grid;place-items:center}
+  .blog-search-clear:hover{background:var(--soft);color:var(--ink)}
+  .blog-result-count{text-align:center;color:var(--slate);font-size:14px;font-weight:600;margin:0 0 22px}
+  .blog-filter{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin:22px 0 0;padding-bottom:8px}
   .blog-filter button{border:1px solid var(--line);background:#fff;color:var(--slate);font-family:inherit;font-size:14px;font-weight:700;padding:9px 18px;border-radius:999px;cursor:pointer;transition:.18s}
   .blog-filter button:hover{border-color:var(--blue-2);color:var(--blue-d)}
   .blog-filter button.active{background:var(--ink);border-color:var(--ink);color:#fff}
