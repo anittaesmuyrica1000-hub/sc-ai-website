@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720" font-family="'Pretendard','Apple SD Gothic Neo','Malgun Gothic','Noto Sans KR',sans-serif">
+  <defs>
+    <radialGradient id="g1" cx="100%" cy="0%" r="70%"><stop offset="0" stop-color="#2E6CF0" stop-opacity="0.10"/><stop offset="0.62" stop-color="#2E6CF0" stop-opacity="0"/></radialGradient>
+    <radialGradient id="g2" cx="0%" cy="100%" r="60%"><stop offset="0" stop-color="#2E6CF0" stop-opacity="0.06"/><stop offset="0.6" stop-color="#2E6CF0" stop-opacity="0"/></radialGradient>
+    <linearGradient id="bar" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2E6CF0"/><stop offset="1" stop-color="#5B8DF7"/></linearGradient>
+    <linearGradient id="mk" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#2E6CF0"/><stop offset="1" stop-color="#5B8DF7"/></linearGradient>
+  </defs>
+  <rect width="1280" height="720" fill="#ffffff"/>
+  <rect width="1280" height="720" fill="url(#g1)"/>
+  <rect width="1280" height="720" fill="url(#g2)"/>
+  <rect x="0" y="104" width="8" height="512" rx="4" fill="url(#bar)"/>
+  <rect x="92" y="86" width="150" height="44" rx="22" fill="#EAF1FE" stroke="#DCE8FE"/>
+  <text x="167" y="115" text-anchor="middle" font-size="22" font-weight="800" fill="#1F54CC">채용 검증</text>
+  <text x="260" y="115" font-size="19" font-weight="700" fill="#8A93A8">AI 면접 · 채용 검증</text>
+  <text x="90" y="334" font-size="64" font-weight="800" letter-spacing="-3" fill="#142036"><tspan>지원자는 완벽히 준비합니다,</tspan></text>
+  <text x="90" y="410" font-size="64" font-weight="800" letter-spacing="-3" fill="#142036"><tspan>채용팀은 </tspan><tspan fill="#2E6CF0">무엇을 볼까</tspan></text>
+  <text x="92" y="488" font-size="26" font-weight="600" fill="#566179">준비된 답변 너머, 진짜 역량을 보는 법</text>
+  <rect x="92" y="612" width="40" height="40" rx="11" fill="url(#mk)"/>
+  <text x="112" y="639" text-anchor="middle" font-size="19" font-weight="900" fill="#fff" font-family="monospace">&lt;/&gt;</text>
+  <text x="144" y="641" font-size="26" font-weight="800" fill="#142036">Supercoder</text>
+  <circle cx="322" cy="633" r="3" fill="#8A93A8"/>
+  <text x="340" y="641" font-size="20" font-weight="600" fill="#566179">AI면접 블로그</text>
+</svg>
