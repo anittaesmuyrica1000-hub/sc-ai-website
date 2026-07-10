@@ -15,8 +15,8 @@
   .upd-nav-head{flex:0 0 auto}
   .upd-eyebrow{display:inline-flex;align-items:center;gap:7px;font-size:12px;font-weight:800;letter-spacing:.03em;color:var(--blue-d);background:var(--soft-2);padding:6px 12px;border-radius:999px}
   .upd-nav-head h2{font-size:24px;font-weight:800;letter-spacing:-.03em;color:var(--ink);margin:14px 0 0}
-  .upd-nav-list{flex:1 1 auto;min-height:0;display:flex;flex-direction:column;gap:2px;margin-top:20px;overflow-y:auto;padding:0 8px 24px 0}
-  .upd-nav-item{display:block;padding:11px 14px;border-radius:10px;border-left:2px solid transparent;transition:background .14s}
+  .upd-nav-list{flex:1 1 auto;min-height:0;display:flex;flex-direction:column;justify-content:flex-start;gap:2px;margin-top:20px;overflow-y:auto;padding:0 8px 24px 0}
+  .upd-nav-item{flex:0 0 auto;display:block;padding:11px 14px;border-radius:10px;border-left:2px solid transparent;transition:background .14s}
   .upd-nav-item:hover{background:var(--soft)}
   .upd-nav-item.on{background:var(--soft-2);border-left-color:var(--blue)}
   .upd-nav-date{display:block;font-size:12px;font-weight:700;color:var(--slate-2)}
