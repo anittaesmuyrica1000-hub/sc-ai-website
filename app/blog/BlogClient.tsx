@@ -3,7 +3,6 @@
 import { useMemo, useState } from "react";
 import Link from "next/link";
 import { type Post } from "@/lib/supabase";
-import { fmtDate } from "@/lib/format";
 
 const stripHtml = (s?: string | null) => String(s || "").replace(/<[^>]+>/g, " ");
 
@@ -96,14 +95,6 @@ export default function BlogClient({ posts, error }: { posts: Post[]; error: boo
                       <span className="post-cat">{p.category || "기타"}</span>
                       <h2>{p.title}</h2>
                       {p.excerpt && <p className="post-excerpt">{p.excerpt}</p>}
-                      {Array.isArray(p.tags) && p.tags.length > 0 && (
-                        <div className="post-tags">
-                          {p.tags.slice(0, 3).map((t) => (
-                            <span key={t} className="post-tag">{t}</span>
-                          ))}
-                        </div>
-                      )}
-                      <div className="post-date">{fmtDate(p.created_at)}</div>
                     </div>
                   </Link>
                 ))}
