@@ -32,6 +32,18 @@ export type Post = {
   views?: number | null;
 };
 
+// 제품 업데이트(릴리즈 노트/체인지로그) 타입 — 어드민 등록 + /update 페이지 렌더(비공개·링크 전용)
+export type Update = {
+  id: string;
+  created_at: string;
+  updated_at?: string | null;
+  title: string;
+  category?: string | null;   // 신규 기능 / 개선 / 버그 수정 / 공지
+  excerpt?: string | null;
+  content: string;
+  published: boolean;
+};
+
 // FAQ 타입 (어드민 관리 + 랜딩 노출)
 export type Faq = {
   id: string;

@@ -2,7 +2,8 @@
 
 import { useEffect, useMemo, useState, useCallback } from "react";
 import type { Session } from "@supabase/supabase-js";
-import { supabase, type Post, type Faq, type Signup, type BrochureRequest, type LegalDoc, type LegalVersion, type PageSeo, legalPath, RESERVED_LEGAL_SLUGS, SIGNUP_STATUSES, SEO_PAGES, UTM_KEYS, UTM_LABEL } from "@/lib/supabase";
+import { supabase, type Post, type Update, type Faq, type Signup, type BrochureRequest, type LegalDoc, type LegalVersion, type PageSeo, legalPath, RESERVED_LEGAL_SLUGS, SIGNUP_STATUSES, SEO_PAGES, UTM_KEYS, UTM_LABEL } from "@/lib/supabase";
+import { UPDATE_CATEGORIES } from "@/app/update/badge";
 import { fmtDate } from "@/lib/format";
 import MarkdownEditor from "@/components/MarkdownEditor";
 import RichEditor, { type EditorTemplate } from "@/components/RichEditor";
@@ -12,7 +13,7 @@ import { recommendTags } from "@/lib/keywords";
 // HTML 태그 제거(목록 미리보기·검증용)
 const stripTags = (s: string) => String(s || "").replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim();
 
-type Section = "dash" | "blog" | "faq" | "brochure" | "legal" | "seo" | "signups" | "settings";
+type Section = "dash" | "blog" | "updates" | "faq" | "brochure" | "legal" | "seo" | "signups" | "settings";
 
 function fmtDateTime(s?: string) {
   if (!s) return "—";
@@ -128,6 +129,7 @@ function LoginForm() {
 const NAV: { key: Section; label: string; icon: string }[] = [
   { key: "dash", label: "대시보드", icon: "fa-gauge-high" },
   { key: "blog", label: "블로그", icon: "fa-feather" },
+  { key: "updates", label: "업데이트", icon: "fa-bullhorn" },
   { key: "faq", label: "FAQ", icon: "fa-circle-question" },
   { key: "brochure", label: "소개서", icon: "fa-file-pdf" },
   { key: "legal", label: "약관", icon: "fa-scale-balanced" },
@@ -138,6 +140,7 @@ const NAV: { key: Section; label: string; icon: string }[] = [
 const TITLE: Record<Section, { h: string; d: string }> = {
   dash: { h: "대시보드", d: "전체 현황을 한눈에 확인합니다." },
   blog: { h: "블로그 관리", d: "블로그 글을 등록, 수정, 삭제합니다." },
+  updates: { h: "제품 업데이트 관리", d: "새 기능·개선 사항을 등록합니다. 비공개 페이지(/update)에 노출되며 고객에게 링크로 공유합니다." },
   faq: { h: "FAQ 관리", d: "자주 묻는 질문을 추가하고 수정합니다." },
   brochure: { h: "AI 면접 서비스 소개서", d: "도입문의 페이지와 웹사이트에서 제공되는 서비스 소개서를 관리합니다." },
   legal: { h: "약관 관리", d: "웹사이트 푸터의 약관(개인정보처리방침·이용약관)을 수정하거나 새 약관을 추가합니다." },
@@ -226,6 +229,7 @@ function Console({ email }: { email: string }) {
         <div className="adm-body">
           {section === "dash" && <Dashboard onGo={setSection} />}
           {section === "blog" && <BlogManager />}
+          {section === "updates" && <UpdatesManager />}
           {section === "faq" && <FaqManager />}
           {section === "brochure" && <BrochureSection />}
           {section === "legal" && <LegalManager />}
@@ -953,6 +957,180 @@ function BlogManager() {
                         <button className="icon-btn" title="보기" onClick={() => window.open(`/blog/${encodeURIComponent(p.slug || p.id)}`, "_blank")}><i className="fa-solid fa-arrow-up-right-from-square"></i></button>
                         <button className="icon-btn" title="수정" onClick={() => enterEdit(p)}><i className="fa-solid fa-pen"></i></button>
                         <button className="icon-btn del" title="삭제" onClick={() => del(p)}><i className="fa-solid fa-trash"></i></button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </div>
+    </>
+  );
+}
+
+/* ===================== 제품 업데이트 관리 ===================== */
+
+type UpdForm = { id: string; title: string; category: string; excerpt: string; content: string; published: boolean };
+const UPD_EMPTY: UpdForm = { id: "", title: "", category: "신규 기능", excerpt: "", content: "", published: true };
+
+function UpdatesManager() {
+  const [items, setItems] = useState<Update[]>([]);
+  const [form, setForm] = useState<UpdForm | null>(null);
+  const [msg, setMsg] = useState<{ text: string; ok: boolean } | null>(null);
+  const [saving, setSaving] = useState(false);
+  const [loadErr, setLoadErr] = useState(false);
+  const [preview, setPreview] = useState(false);
+  const isEdit = !!form?.id;
+
+  const load = useCallback(async () => {
+    try {
+      const res = await supabase.from("updates").select("*").order("created_at", { ascending: false });
+      if (res.error) throw res.error;
+      setItems((res.data as Update[]) || []);
+      setLoadErr(false);
+    } catch (err) { console.error("updates load failed:", err); setLoadErr(true); }
+  }, []);
+  useEffect(() => { load(); }, [load]);
+
+  function showMsg(text: string, ok: boolean) { setMsg({ text, ok }); }
+  function set<K extends keyof UpdForm>(k: K, v: UpdForm[K]) { setForm((f) => (f ? { ...f, [k]: v } : f)); }
+  function enterNew() { setForm({ ...UPD_EMPTY }); setMsg(null); window.scrollTo({ top: 0, behavior: "smooth" }); }
+  function enterEdit(u: Update) {
+    setForm({ id: u.id, title: u.title || "", category: u.category || "", excerpt: u.excerpt || "", content: u.content || "", published: u.published !== false });
+    setMsg(null); window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+  function closeForm() { setForm(null); setMsg(null); }
+
+  async function onSubmit(e: React.FormEvent) {
+    e.preventDefault(); if (!form) return;
+    if (!form.title.trim() || !form.content.trim()) { showMsg("제목과 본문은 필수입니다.", false); return; }
+    const payload: Record<string, unknown> = {
+      title: form.title.trim(), category: form.category.trim() || null,
+      excerpt: form.excerpt.trim() || null, content: form.content, published: form.published,
+    };
+    setSaving(true);
+    try {
+      const res = form.id
+        ? await supabase.from("updates").update({ ...payload, updated_at: new Date().toISOString() }).eq("id", form.id)
+        : await supabase.from("updates").insert(payload);
+      if (res.error) throw res.error;
+      showMsg(form.id ? "수정되었습니다." : "등록되었습니다.", true);
+      setForm(null); await load();
+    } catch (err) {
+      console.error("save failed:", err);
+      showMsg("저장에 실패했습니다. 로그인·권한을 확인하세요. (테이블이 없으면 supabase/updates-setup.sql을 먼저 실행)", false);
+    } finally { setSaving(false); }
+  }
+
+  async function del(u: Update) {
+    if (!confirm("“" + u.title + "”을(를) 삭제할까요? 되돌릴 수 없습니다.")) return;
+    try {
+      const res = await supabase.from("updates").delete().eq("id", u.id);
+      if (res.error) throw res.error;
+      if (form?.id === u.id) setForm(null);
+      await load();
+    } catch (err) { console.error("delete failed:", err); alert("삭제에 실패했습니다."); }
+  }
+
+  return (
+    <>
+      <div className="adm-note">
+        <i className="fa-solid fa-lock"></i> 이 페이지(<strong>/update</strong>)는 <strong>비공개</strong>입니다 — 메뉴(GNB)·검색에 노출되지 않으며, 고객에게 <strong>링크로만</strong> 공유됩니다.
+      </div>
+      <div className="adm-actions">
+        <button className="btn btn-blue" onClick={enterNew}><i className="fa-solid fa-plus"></i> 새 업데이트 등록</button>
+        <a className="btn btn-out" href="/update" target="_blank" rel="noopener noreferrer"><i className="fa-solid fa-arrow-up-right-from-square"></i> 업데이트 페이지 보기</a>
+      </div>
+
+      {form && (
+        <div className="card" style={{ marginBottom: 24 }}>
+          <h2>{isEdit ? "업데이트 수정" : "새 업데이트 등록"}</h2>
+          {msg && <div className={`form-msg ${msg.ok ? "ok" : "err"}`}>{msg.text}</div>}
+          <form onSubmit={onSubmit} noValidate>
+            <div className="field">
+              <label htmlFor="u-title">제목 <span className="req">*</span></label>
+              <input type="text" id="u-title" placeholder="예: 신규 지원서 통합 기능 출시" value={form.title} onChange={(e) => set("title", e.target.value)} />
+            </div>
+            <div className="field">
+              <label htmlFor="u-category">카테고리</label>
+              <input type="text" id="u-category" placeholder="예: 신규 기능" list="updCatList" value={form.category} onChange={(e) => set("category", e.target.value)} />
+              <datalist id="updCatList">{UPDATE_CATEGORIES.map((c) => <option key={c} value={c} />)}</datalist>
+              <p className="hint">신규 기능 · 개선 · 버그 수정 · 공지 등 — 리스트에 색상 배지로 표시됩니다.</p>
+            </div>
+            <div className="field">
+              <label htmlFor="u-excerpt">요약</label>
+              <input type="text" id="u-excerpt" placeholder="리스트에 보일 한 줄 요약" value={form.excerpt} onChange={(e) => set("excerpt", e.target.value)} />
+            </div>
+            <div className="field">
+              <label>본문 <span className="req">*</span></label>
+              <RichEditor
+                key={form.id || "new"}
+                value={renderBody(form.content)}
+                onChange={(html) => set("content", html)}
+                placeholder="업데이트 내용을 입력하세요. 제목·목록·표·이미지 등을 넣을 수 있습니다."
+              />
+            </div>
+            <label className="check"><input type="checkbox" checked={form.published} onChange={(e) => set("published", e.target.checked)} /> 공개(게시) — 해제 시 비공개(임시저장, /update에 안 보임)</label>
+            <div className="form-actions">
+              <button type="submit" className="btn btn-blue" disabled={saving}>{saving ? "저장 중…" : isEdit ? "수정 저장" : "등록하기"}</button>
+              <button type="button" className="btn btn-out" onClick={() => setPreview(true)}><i className="fa-solid fa-eye"></i> 미리보기</button>
+              <button type="button" className="btn btn-out" onClick={closeForm}>취소</button>
+            </div>
+          </form>
+        </div>
+      )}
+
+      {preview && form && (
+        <div className="adm-modal-bg" onClick={() => setPreview(false)}>
+          <div className="adm-modal wide" onClick={(e) => e.stopPropagation()}>
+            <div className="adm-modal-head">
+              <h3><i className="fa-solid fa-eye"></i> 미리보기 — 업데이트 페이지에 표시될 모습</h3>
+              <button className="icon-btn" title="닫기" onClick={() => setPreview(false)}><i className="fa-solid fa-xmark"></i></button>
+            </div>
+            <div className="adm-modal-body">
+              <div className="upd upd-preview" style={{ padding: 0 }}>
+                <div className="upd-article-head">
+                  {form.category && <span className="upd-badge b-blue">{form.category}</span>}
+                  <h1>{form.title || "(제목 없음)"}</h1>
+                  <span className="upd-date">{fmtDate(new Date().toISOString())}</span>
+                </div>
+                <div className="upd-content" dangerouslySetInnerHTML={{ __html: renderBody(form.content) || '<p style="color:var(--slate-2)">본문이 비어 있습니다.</p>' }} />
+              </div>
+            </div>
+            <div className="adm-modal-foot">
+              <button className="btn btn-out" onClick={() => setPreview(false)}>닫기</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      <div className="card list-card">
+        <div className="list-head">
+          <h2>등록된 업데이트</h2>
+          <span className="count">{items.length}개</span>
+        </div>
+        {loadErr ? (
+          <div className="list-state">목록을 불러오지 못했습니다. (테이블 미생성 시 supabase/updates-setup.sql 실행 필요)</div>
+        ) : items.length === 0 ? (
+          <div className="list-state">아직 등록된 업데이트가 없습니다. “새 업데이트 등록”으로 시작해 보세요.</div>
+        ) : (
+          <div className="adm-table-wrap">
+            <table className="adm-table">
+              <thead><tr><th>제목</th><th>상태</th><th>등록일</th><th>수정일</th><th>관리</th></tr></thead>
+              <tbody>
+                {items.map((u) => (
+                  <tr key={u.id}>
+                    <td><div className="cell-title">{u.title}</div>{u.category && <div className="cell-sub">{u.category}</div>}</td>
+                    <td className="nowrap">{u.published === false ? <span className="pill pill-gray">비공개</span> : <span className="pill pill-green">공개</span>}</td>
+                    <td className="nowrap">{fmtDate(u.created_at)}</td>
+                    <td className="nowrap">{u.updated_at ? fmtDate(u.updated_at) : "—"}</td>
+                    <td className="nowrap">
+                      <div className="row-actions">
+                        <button className="icon-btn" title="보기" onClick={() => window.open(`/update/${u.id}`, "_blank")}><i className="fa-solid fa-arrow-up-right-from-square"></i></button>
+                        <button className="icon-btn" title="수정" onClick={() => enterEdit(u)}><i className="fa-solid fa-pen"></i></button>
+                        <button className="icon-btn del" title="삭제" onClick={() => del(u)}><i className="fa-solid fa-trash"></i></button>
                       </div>
                     </td>
                   </tr>

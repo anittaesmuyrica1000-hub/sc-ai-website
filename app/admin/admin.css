@@ -256,6 +256,8 @@
 
   /* 상단 액션 버튼줄 */
   .adm-actions{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:20px}
+  .adm-note{display:flex;align-items:flex-start;gap:9px;background:var(--soft-2);border:1px solid var(--tint);border-radius:12px;padding:12px 15px;margin-bottom:16px;font-size:13.5px;line-height:1.55;color:var(--slate)}
+  .adm-note i{color:var(--blue-d);margin-top:2px}
 
   /* 사이드바 브랜드 텍스트 */
   .adm-brand-txt{font-size:15px;font-weight:800;color:#fff;letter-spacing:-.01em}
