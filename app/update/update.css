@@ -77,16 +77,20 @@
   .upd-content .post-table thead th{background:var(--soft-2);color:var(--ink);font-weight:800;font-size:13.5px;white-space:nowrap}
   .upd-content .post-table tbody tr:last-child td{border-bottom:none}
 
-  /* 태블릿·모바일: 앱 셸 해제 — 1단 세로 흐름(목록 위, 본문 아래), 페이지 스크롤·푸터 복원 */
-  @media(max-width:920px){
+  /* 반응형(그리팅) — 화면을 줄이면 우측 목차 → 좌측 목록 순으로 사라지고 가운데만 남는다. */
+
+  /* 중간 폭: 우측 '바로 가기'(목차) 숨김 → 좌 목록 + 가운데 본문(2단) */
+  @media(max-width:1024px){
+    .upd-toc{display:none}
+    .upd-shell.has-toc{grid-template-columns:250px 1fr}
+  }
+
+  /* 좁은 폭: 좌측 목록도 숨김 → 가운데 본문만. 앱 셸 해제(일반 흐름·푸터 복원) */
+  @media(max-width:760px){
     body:has(.upd-shell) footer{display:block}
     body:has(.upd-shell) header .wrap{max-width:1140px;padding:0 24px}
-    .upd-toc{display:none}
-    .upd-shell,.upd-shell.has-toc{grid-template-columns:1fr;gap:28px;padding:40px 20px 64px;height:auto}
-    .upd-nav{height:auto;display:block;min-height:0;padding-top:0}
-    .upd-nav-list{flex:none;flex-direction:row;flex-wrap:nowrap;overflow-x:auto;overflow-y:visible;gap:8px;min-height:0;margin-top:16px;padding:0 0 6px}
-    .upd-nav-item{flex:0 0 auto;min-width:200px;border-left:none;border:1px solid var(--line)}
-    .upd-nav-item.on{border-color:var(--blue-2)}
+    .upd-nav{display:none}
+    .upd-shell,.upd-shell.has-toc{grid-template-columns:1fr;gap:0;padding:36px 20px 64px;height:auto}
     .upd-main-col{height:auto;overflow:visible;padding:0}
     .upd-main{max-width:none}
     .upd-content{font-size:16px}
