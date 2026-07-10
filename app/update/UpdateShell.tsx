@@ -50,6 +50,7 @@ export default function UpdateShell({ items, active, error }: { items: Update[];
           <div className="upd-state">아직 등록된 업데이트가 없습니다.</div>
         ) : (
           <article className="upd-main">
+            <Link href="/update" className="upd-back-m"><i className="fa-solid fa-arrow-left"></i> 업데이트 목록</Link>
             <div className="upd-article-head">
               {active.category && <span className={`upd-badge ${badgeClass(active.category)}`}>{active.category}</span>}
               <h1>{active.title}</h1>
