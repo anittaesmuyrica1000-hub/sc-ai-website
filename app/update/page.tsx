@@ -9,8 +9,8 @@ export const dynamic = "force-dynamic";
 
 // 비공개(링크 전용) — 검색 색인 금지.
 export const metadata: Metadata = {
-  title: "제품 업데이트 · AIVIEW",
-  description: "AIVIEW 제품의 새로운 기능과 개선 사항 안내.",
+  title: "제품 업데이트 · 슈퍼코더AI면접",
+  description: "슈퍼코더AI면접 제품의 새로운 기능과 개선 사항 안내.",
   robots: { index: false, follow: false },
   alternates: { canonical: "/update" },
 };
@@ -37,7 +37,7 @@ export default async function UpdatePage() {
       <header className="upd-index-head">
         <div className="upd-eyebrow"><i className="fa-solid fa-bullhorn"></i> 제품 업데이트</div>
         <h1>업데이트 노트</h1>
-        <p>AIVIEW의 새로운 기능과 개선 사항을 가장 먼저 전해드립니다.</p>
+        <p>슈퍼코더AI면접의 새로운 기능과 개선 사항을 가장 먼저 전해드립니다.</p>
       </header>
 
       {error ? (

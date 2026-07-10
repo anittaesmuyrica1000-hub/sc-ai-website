@@ -1,4 +1,4 @@
-# AIVIEW robots.txt
+# 슈퍼코더AI면접 robots.txt
 # 운영 도메인(2026-07-01 www.supercoder.co로 확정 — 기존 vercel.app 대체): https://www.supercoder.co — 변경 시 아래 Sitemap 경로도 갱신
 
 User-agent: *

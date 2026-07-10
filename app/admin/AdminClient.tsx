@@ -112,7 +112,7 @@ function LoginForm() {
       <div className="admin-head">
         <div>
           <h1>관리자 로그인</h1>
-          <div className="sub">AIVIEW 관리 콘솔은 Google 계정으로 로그인합니다.</div>
+          <div className="sub">슈퍼코더AI면접 관리 콘솔은 Google 계정으로 로그인합니다.</div>
         </div>
       </div>
       <div className="card">
@@ -553,7 +553,7 @@ const BLOG_TEMPLATES: EditorTemplate[] = [
       '<div class="post-table-wrap"><table class="post-table"><thead><tr><th>항목</th><th>도입 전</th><th>도입 후</th></tr></thead><tbody>' +
       "<tr><td>채용 소요 기간</td><td>내용</td><td>내용</td></tr><tr><td>면접 검증 인원</td><td>내용</td><td>내용</td></tr></tbody></table></div>" +
       "<h2>도입 배경</h2><p>고객사가 어떤 채용 문제를 겪고 있었는지 적어주세요.</p>" +
-      "<h2>도입 과정</h2><p>AIVIEW를 어떻게 적용했는지 단계별로 설명합니다.</p>" +
+      "<h2>도입 과정</h2><p>슈퍼코더AI면접을 어떻게 적용했는지 단계별로 설명합니다.</p>" +
       "<h2>도입 효과</h2><ul><li>핵심 성과 1</li><li>핵심 성과 2</li></ul>" +
       "<blockquote>고객 인터뷰 한마디를 인용으로 넣어주세요.</blockquote>" +
       "<h2>마무리</h2><p>요약과 CTA를 적어주세요.</p>",
