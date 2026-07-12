@@ -16,6 +16,11 @@ const nextConfig = {
       { source: "/privacy.html", destination: "/privacy", permanent: true },
       { source: "/terms.html", destination: "/terms", permanent: true },
       { source: "/terms-applicant.html", destination: "/terms-applicant", permanent: true },
+      // 구 사이트의 죽은 경로(구글 색인·외부 링크로 유입돼 404) → 홈으로 흡수 (GA 404 추적 결과)
+      { source: "/en", destination: "/", permanent: true },
+      { source: "/en/:path*", destination: "/", permanent: true },
+      { source: "/customer", destination: "/", permanent: true },
+      { source: "/guideline", destination: "/", permanent: true },
     ];
   },
 };
