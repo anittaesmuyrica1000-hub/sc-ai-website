@@ -6,12 +6,11 @@
   body:has(.upd-shell) header.nav-invert .logo .nav-logo--invert{display:none}
   /* 앱 셸(좌·중 독립 스크롤)에선 사이트 푸터 숨김 — 그리팅과 동일 */
   body:has(.upd-shell) footer{display:none}
-  /* 헤더 컨테이너를 셸과 동일 폭·패딩으로 — GNB 로고와 '업데이트 노트' 좌측 정렬, 우측 도입문의와 바로가기 정렬 */
-  body:has(.upd-shell) header .wrap{max-width:1220px;padding:0 32px}
+  /* 헤더 컨테이너를 셸과 동일 폭·패딩으로 — GNB 로고와 '업데이트 노트' 좌측 정렬 */
+  body:has(.upd-shell) header .wrap{max-width:1080px;padding:0 32px}
 
-  /* 앱 셸: 헤더(64px) 아래를 꽉 채우고, 좌/중/우 컬럼이 각자 스크롤. 기본 2단, 목차 있으면 3단 */
-  .upd-shell{max-width:1220px;margin:0 auto;padding:0 32px;display:grid;grid-template-columns:250px 1fr;gap:48px;align-items:stretch;height:calc(100vh - 64px)}
-  .upd-shell.has-toc{grid-template-columns:250px 1fr 210px}
+  /* 앱 셸: 헤더(64px) 아래를 꽉 채우고, 좌 목록/중 본문 2단으로 각자 스크롤 */
+  .upd-shell{max-width:1080px;margin:0 auto;padding:0 32px;display:grid;grid-template-columns:250px 1fr;gap:48px;align-items:stretch;height:calc(100vh - 64px)}
 
   /* 좌측: 헤더 고정 + 토글 섹션(업데이트 노트/공지사항) 독립 스크롤 */
   .upd-nav{height:100%;display:flex;flex-direction:column;min-height:0;padding-top:44px}
@@ -36,17 +35,13 @@
   .upd-nav-title{display:block;font-size:14px;font-weight:600;color:var(--ink);margin-top:3px;line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
   .upd-nav-item.on .upd-nav-title{color:var(--blue-d);font-weight:700}
 
-  /* 중앙: 선택된 글 — 독립 스크롤 */
-  .upd-main-col{min-width:0;height:100%;overflow-y:auto;padding:44px 6px 72px 0;scroll-behavior:smooth}
-  .upd-main{max-width:820px}
-  .upd-content h2{scroll-margin-top:20px}
-
-  /* 우측: 이 글 바로가기(목차) — 독립 스크롤 */
-  .upd-toc{height:100%;overflow-y:auto;padding:52px 0 40px}
-  .upd-toc-head{font-size:12px;font-weight:800;letter-spacing:.04em;color:var(--slate-2);text-transform:uppercase;padding:0 12px 10px;margin-bottom:6px;border-bottom:1px solid var(--line)}
-  .upd-toc-list{display:flex;flex-direction:column;gap:1px;padding-top:8px}
-  .upd-toc-item{display:block;padding:8px 12px;border-radius:8px;border-left:2px solid transparent;font-size:13.5px;font-weight:600;color:var(--slate);line-height:1.45;transition:.14s}
-  .upd-toc-item:hover{background:var(--soft);color:var(--blue-d);border-left-color:var(--blue-2)}
+  /* 중앙: 선택된 글 — 독립 스크롤(블로그식) */
+  .upd-main-col{min-width:0;height:100%;overflow-y:auto;padding:40px 6px 72px 0;scroll-behavior:smooth}
+  .upd-main{max-width:760px}
+  /* 상세 → 대문(목록)으로 돌아가는 버튼 — 항상 표시 */
+  .upd-back{display:inline-flex;align-items:center;gap:7px;font-size:14px;font-weight:700;color:var(--slate);margin-bottom:22px}
+  .upd-back:hover{color:var(--blue-d)}
+  .upd-foot{margin-top:44px;padding-top:30px;border-top:1px solid var(--line)}
   .upd-article-head{padding-bottom:26px;border-bottom:1px solid var(--line)}
   .upd-article-head h1{font-size:clamp(26px,3.4vw,38px);font-weight:800;letter-spacing:-.03em;line-height:1.24;margin:14px 0 0;color:var(--ink)}
   .upd-date{font-size:14px;font-weight:600;color:var(--slate-2)}
@@ -79,9 +74,6 @@
   .upd-index-more i{transition:transform .15s}
   @media(max-width:640px){.upd-index{padding:88px 16px 64px}.upd-index-card{grid-template-columns:1fr;gap:10px;padding:22px 6px}.upd-index-date{padding-top:0}.upd-index-body h2{margin-top:6px}}
 
-  /* 상세 모바일 back 링크 — 데스크톱은 좌측 사이드바가 있으므로 숨김 */
-  .upd-back-m{display:none}
-
   /* 본문 — renderBody 출력 클래스 커버(블로그 상세와 동일 톤) */
   .upd-content{margin-top:32px;font-size:17px;line-height:1.85;color:#26324a}
   .upd-content p{margin:0 0 22px}
@@ -108,23 +100,13 @@
   .upd-content .post-table thead th{background:var(--soft-2);color:var(--ink);font-weight:800;font-size:13.5px;white-space:nowrap}
   .upd-content .post-table tbody tr:last-child td{border-bottom:none}
 
-  /* 반응형(그리팅) — 화면을 줄이면 우측 목차 → 좌측 목록 순으로 사라지고 가운데만 남는다. */
-
-  /* 중간 폭: 우측 '바로 가기'(목차) 숨김 → 좌 목록 + 가운데 본문(2단) */
-  @media(max-width:1024px){
-    .upd-toc{display:none}
-    .upd-shell.has-toc{grid-template-columns:250px 1fr}
-  }
-
-  /* 좁은 폭: 좌측 목록도 숨김 → 가운데 본문만. 앱 셸 해제(일반 흐름·푸터 복원) */
+  /* 반응형 — 좁은 폭(모바일)에선 좌측 목록을 숨기고 가운데 본문만. 앱 셸 해제(일반 흐름·푸터 복원). */
   @media(max-width:760px){
     body:has(.upd-shell) footer{display:block}
     body:has(.upd-shell) header .wrap{max-width:1140px;padding:0 24px}
     .upd-nav{display:none}
-    .upd-shell,.upd-shell.has-toc{grid-template-columns:1fr;gap:0;padding:36px 20px 64px;height:auto}
+    .upd-shell{grid-template-columns:1fr;gap:0;padding:32px 20px 64px;height:auto}
     .upd-main-col{height:auto;overflow:visible;padding:0}
     .upd-main{max-width:none}
     .upd-content{font-size:16px}
-    .upd-back-m{display:inline-flex;align-items:center;gap:7px;margin-bottom:20px;font-size:14px;font-weight:700;color:var(--slate)}
-    .upd-back-m:hover{color:var(--blue-d)}
   }
