@@ -174,7 +174,7 @@ function Console({ email }: { email: string }) {
       <aside className={`adm-side${navOpen ? " open" : ""}`}>
         <div className="adm-head">
           <button type="button" className="adm-brand" onClick={() => { setSection("dash"); setNavOpen(false); }} title="대시보드" aria-label="대시보드로">
-            <img className="adm-logo-full" src="/supercoder-nav.svg" alt="Supercoder" />
+            <img className="adm-logo-full" src="/supercoder-logo-white.svg" alt="Supercoder" />
             <img className="adm-logo-mark" src="/favicon.svg" alt="Supercoder" />
           </button>
           <button

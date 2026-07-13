@@ -222,9 +222,9 @@
   .adm-head{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:20px 14px 16px}
   .adm-brand{display:flex;align-items:center;padding:0 6px;text-decoration:none;cursor:pointer;border:none;background:none;font-family:inherit;transition:opacity .12s}
   .adm-brand:hover{opacity:.78}
-  .adm-brand img{width:auto;filter:brightness(0) invert(1)}
-  .adm-logo-full{height:22px}
-  .adm-logo-mark{display:none;height:24px}
+  .adm-brand img{width:auto}
+  .adm-logo-full{height:20px}
+  .adm-logo-mark{display:none;height:24px;filter:brightness(0) invert(1)}
   .adm-toggle{flex-shrink:0;width:32px;height:32px;border-radius:8px;display:grid;place-items:center;background:rgba(255,255,255,.06);border:0;color:#9aa6c2;cursor:pointer;font-size:14px;transition:.12s}
   .adm-toggle:hover{background:rgba(255,255,255,.16);color:#fff}
   .adm-badge{font-size:10px;font-weight:800;letter-spacing:.08em;background:rgba(255,255,255,.13);color:#fff;padding:3px 7px;border-radius:5px}
