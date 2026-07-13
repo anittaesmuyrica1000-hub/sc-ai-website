@@ -43,6 +43,7 @@ export type Update = {
   content: string;
   published: boolean;
   views?: number | null;
+  slug?: string | null;
 };
 
 // FAQ 타입 (어드민 관리 + 랜딩 노출)

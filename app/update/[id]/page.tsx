@@ -16,7 +16,8 @@ async function getData(id: string): Promise<{ items: Update[]; active: Update | 
       .order("created_at", { ascending: false });
     if (res.error) throw res.error;
     const items = (res.data as Update[]) || [];
-    const active = items.find((u) => u.id === id) || null;
+    // slug 우선, 없으면 UUID(id)로 — 기존 링크 호환
+    const active = items.find((u) => u.slug === id) || items.find((u) => u.id === id) || null;
     return { items, active };
   } catch (err) {
     console.error("update load failed:", err);
@@ -33,7 +34,7 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
     title: `${active.title} · 제품 업데이트`,
     description: active.excerpt || undefined,
     robots: { index: false, follow: false },
-    alternates: { canonical: `/update/${active.id}` },
+    alternates: { canonical: `/update/${active.slug || active.id}` },
   };
 }
 

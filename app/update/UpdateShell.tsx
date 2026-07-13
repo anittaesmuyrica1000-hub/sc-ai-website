@@ -16,7 +16,7 @@ export default function UpdateShell({ items, active, error }: { items: Update[];
   const activeIsNotice = active ? isNotice(active.category) : false;
 
   const renderItem = (u: Update) => (
-    <Link key={u.id} href={`/update/${u.id}`} className={`upd-nav-item${active?.id === u.id ? " on" : ""}`}>
+    <Link key={u.id} href={`/update/${u.slug || u.id}`} className={`upd-nav-item${active?.id === u.id ? " on" : ""}`}>
       <span className="upd-nav-date">{fmtDate(u.created_at)}</span>
       <span className="upd-nav-title">{u.title}</span>
     </Link>

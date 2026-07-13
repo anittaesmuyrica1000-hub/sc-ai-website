@@ -974,8 +974,8 @@ function BlogManager() {
 
 /* ===================== 제품 업데이트 관리 ===================== */
 
-type UpdForm = { id: string; title: string; category: string; excerpt: string; content: string; published: boolean };
-const UPD_EMPTY: UpdForm = { id: "", title: "", category: "신규 기능", excerpt: "", content: "", published: true };
+type UpdForm = { id: string; title: string; slug: string; category: string; excerpt: string; content: string; published: boolean };
+const UPD_EMPTY: UpdForm = { id: "", title: "", slug: "", category: "신규 기능", excerpt: "", content: "", published: true };
 
 // 본문(HTML)에서 한 줄 요약 자동 생성 — 태그 제거 후 첫 문장(또는 ~60자).
 function summarizeContent(html: string): string {
@@ -1023,7 +1023,7 @@ function UpdatesManager() {
   function onExcerptChange(v: string) { set("excerpt", v); setExcerptAuto(!v.trim()); }
   function enterNew() { setForm({ ...UPD_EMPTY }); setExcerptAuto(true); setMsg(null); window.scrollTo({ top: 0, behavior: "smooth" }); }
   function enterEdit(u: Update) {
-    setForm({ id: u.id, title: u.title || "", category: u.category || "", excerpt: u.excerpt || "", content: u.content || "", published: u.published !== false });
+    setForm({ id: u.id, title: u.title || "", slug: u.slug || "", category: u.category || "", excerpt: u.excerpt || "", content: u.content || "", published: u.published !== false });
     setExcerptAuto(!(u.excerpt || "").trim()); // 기존 요약이 있으면 자동 덮어쓰지 않음
     setMsg(null); window.scrollTo({ top: 0, behavior: "smooth" });
   }
@@ -1032,15 +1032,30 @@ function UpdatesManager() {
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault(); if (!form) return;
     if (!form.title.trim() || !form.content.trim()) { showMsg("제목과 본문은 필수입니다.", false); return; }
+    const slug = form.slug.trim() || null;
+    if (slug && !/^[\w가-힣-]+$/.test(slug)) { showMsg("URL slug는 한글·영문·숫자·하이픈만 사용하세요.", false); return; }
     const payload: Record<string, unknown> = {
       title: form.title.trim(), category: form.category.trim() || null,
       excerpt: (form.excerpt.trim() || summarizeContent(form.content)) || null, content: form.content, published: form.published,
+      slug,
     };
     setSaving(true);
     try {
-      const res = form.id
-        ? await supabase.from("updates").update({ ...payload, updated_at: new Date().toISOString() }).eq("id", form.id)
-        : await supabase.from("updates").insert(payload);
+      const run = (body: Record<string, unknown>) =>
+        form.id
+          ? supabase.from("updates").update({ ...body, updated_at: new Date().toISOString() }).eq("id", form.id)
+          : supabase.from("updates").insert(body);
+      let res = await run(payload);
+      // slug 중복
+      if (res.error && /duplicate|unique/i.test(`${res.error.message} ${res.error.details || ""}`) && /slug/i.test(`${res.error.message} ${res.error.details || ""}`)) {
+        showMsg("이미 사용 중인 URL slug입니다. 다른 값으로 바꿔 주세요.", false); setSaving(false); return;
+      }
+      // slug 컬럼이 아직 없으면(마이그레이션 전) slug만 빼고 다시 저장
+      if (res.error && /slug/i.test(`${res.error.message} ${res.error.details || ""}`)) {
+        const { slug: _s, ...rest } = payload; void _s;
+        res = await run(rest);
+        if (!res.error) alert("저장됐지만 URL slug는 보류됐어요.\nSupabase에 add-update-slug.sql 적용 후 다시 저장하면 반영됩니다.");
+      }
       if (res.error) throw res.error;
       showMsg(form.id ? "수정되었습니다." : "등록되었습니다.", true);
       setForm(null); await load();
@@ -1078,6 +1093,16 @@ function UpdatesManager() {
             <div className="field">
               <label htmlFor="u-title">제목 <span className="req">*</span></label>
               <input type="text" id="u-title" placeholder="예: 신규 지원서 통합 기능 출시" value={form.title} onChange={(e) => set("title", e.target.value)} />
+            </div>
+            <div className="field">
+              <label htmlFor="u-slug">URL 주소(slug) <span className="hint-inline">자유 입력 · 비우면 자동 ID 사용</span></label>
+              <div className="slug-row">
+                <span className="slug-prefix">/update/</span>
+                <input type="text" id="u-slug" placeholder="예: 2026-07-new-feature" value={form.slug}
+                  onChange={(e) => set("slug", e.target.value)} onBlur={(e) => set("slug", slugify(e.target.value))} />
+                <button type="button" className="btn btn-out btn-sm" onClick={() => set("slug", slugify(form.title))} disabled={!form.title.trim()}>제목에서 생성</button>
+              </div>
+              <p className="hint">최종 주소: <strong>/update/{form.slug.trim() || "(자동 ID)"}</strong></p>
             </div>
             <div className="field">
               <label htmlFor="u-category">카테고리</label>
@@ -1155,7 +1180,7 @@ function UpdatesManager() {
                     <td className="nowrap">{u.updated_at ? fmtDate(u.updated_at) : "—"}</td>
                     <td className="nowrap">
                       <div className="row-actions">
-                        <button className="icon-btn" title="보기" onClick={() => window.open(`/update/${u.id}`, "_blank")}><i className="fa-solid fa-arrow-up-right-from-square"></i></button>
+                        <button className="icon-btn" title="보기" onClick={() => window.open(`/update/${u.slug || u.id}`, "_blank")}><i className="fa-solid fa-arrow-up-right-from-square"></i></button>
                         <button className="icon-btn" title="수정" onClick={() => enterEdit(u)}><i className="fa-solid fa-pen"></i></button>
                         <button className="icon-btn del" title="삭제" onClick={() => del(u)}><i className="fa-solid fa-trash"></i></button>
                       </div>
