@@ -977,6 +977,16 @@ function BlogManager() {
 type UpdForm = { id: string; title: string; category: string; excerpt: string; content: string; published: boolean };
 const UPD_EMPTY: UpdForm = { id: "", title: "", category: "신규 기능", excerpt: "", content: "", published: true };
 
+// 본문(HTML)에서 한 줄 요약 자동 생성 — 태그 제거 후 첫 문장(또는 ~60자).
+function summarizeContent(html: string): string {
+  const text = String(html || "").replace(/<[^>]+>/g, " ").replace(/&[a-z]+;/gi, " ").replace(/\s+/g, " ").trim();
+  if (!text) return "";
+  const firstSentence = text.split(/(?<=[.!?。！？])\s/)[0];
+  const base = firstSentence && firstSentence.length <= 80 ? firstSentence : text;
+  if (base.length <= 60) return base;
+  return base.slice(0, 60).replace(/\s+\S*$/, "").trim() + "…";
+}
+
 function UpdatesManager() {
   const [items, setItems] = useState<Update[]>([]);
   const [form, setForm] = useState<UpdForm | null>(null);
@@ -984,6 +994,8 @@ function UpdatesManager() {
   const [saving, setSaving] = useState(false);
   const [loadErr, setLoadErr] = useState(false);
   const [preview, setPreview] = useState(false);
+  // 요약을 자동 채움 중인지(사용자가 직접 요약을 건드리면 false). 본문 작성 시 요약을 자동 생성.
+  const [excerptAuto, setExcerptAuto] = useState(true);
   const isEdit = !!form?.id;
 
   const load = useCallback(async () => {
@@ -998,9 +1010,21 @@ function UpdatesManager() {
 
   function showMsg(text: string, ok: boolean) { setMsg({ text, ok }); }
   function set<K extends keyof UpdForm>(k: K, v: UpdForm[K]) { setForm((f) => (f ? { ...f, [k]: v } : f)); }
-  function enterNew() { setForm({ ...UPD_EMPTY }); setMsg(null); window.scrollTo({ top: 0, behavior: "smooth" }); }
+  // 본문 변경 — 요약을 아직 자동 채움 상태면 본문에서 요약도 자동 갱신
+  function onContentChange(html: string) {
+    setForm((f) => {
+      if (!f) return f;
+      const next: UpdForm = { ...f, content: html };
+      if (excerptAuto) next.excerpt = summarizeContent(html);
+      return next;
+    });
+  }
+  // 요약 직접 수정 — 비우면 자동 채움 재개, 입력하면 자동 중단
+  function onExcerptChange(v: string) { set("excerpt", v); setExcerptAuto(!v.trim()); }
+  function enterNew() { setForm({ ...UPD_EMPTY }); setExcerptAuto(true); setMsg(null); window.scrollTo({ top: 0, behavior: "smooth" }); }
   function enterEdit(u: Update) {
     setForm({ id: u.id, title: u.title || "", category: u.category || "", excerpt: u.excerpt || "", content: u.content || "", published: u.published !== false });
+    setExcerptAuto(!(u.excerpt || "").trim()); // 기존 요약이 있으면 자동 덮어쓰지 않음
     setMsg(null); window.scrollTo({ top: 0, behavior: "smooth" });
   }
   function closeForm() { setForm(null); setMsg(null); }
@@ -1010,7 +1034,7 @@ function UpdatesManager() {
     if (!form.title.trim() || !form.content.trim()) { showMsg("제목과 본문은 필수입니다.", false); return; }
     const payload: Record<string, unknown> = {
       title: form.title.trim(), category: form.category.trim() || null,
-      excerpt: form.excerpt.trim() || null, content: form.content, published: form.published,
+      excerpt: (form.excerpt.trim() || summarizeContent(form.content)) || null, content: form.content, published: form.published,
     };
     setSaving(true);
     try {
@@ -1062,15 +1086,15 @@ function UpdatesManager() {
               <p className="hint">신규 기능 · 개선 · 버그 수정 · 공지 등 — 리스트에 색상 배지로 표시됩니다.</p>
             </div>
             <div className="field">
-              <label htmlFor="u-excerpt">요약</label>
-              <input type="text" id="u-excerpt" placeholder="리스트에 보일 한 줄 요약" value={form.excerpt} onChange={(e) => set("excerpt", e.target.value)} />
+              <label htmlFor="u-excerpt">요약 {excerptAuto && form.excerpt ? <span className="hint-inline"><i className="fa-solid fa-wand-magic-sparkles"></i> 본문에서 자동 생성됨 · 직접 입력하면 고정</span> : <span className="hint-inline">비우면 본문에서 자동 생성</span>}</label>
+              <input type="text" id="u-excerpt" placeholder="비우면 본문 첫 문장으로 자동 생성됩니다" value={form.excerpt} onChange={(e) => onExcerptChange(e.target.value)} />
             </div>
             <div className="field">
               <label>본문 <span className="req">*</span></label>
               <RichEditor
                 key={form.id || "new"}
                 value={renderBody(form.content)}
-                onChange={(html) => set("content", html)}
+                onChange={onContentChange}
                 placeholder="업데이트 내용을 입력하세요. 제목·목록·표·이미지 등을 넣을 수 있습니다."
               />
             </div>

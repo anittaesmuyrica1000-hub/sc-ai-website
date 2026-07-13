@@ -2,10 +2,10 @@ import Link from "next/link";
 import { type Update } from "@/lib/supabase";
 import { fmtDate } from "@/lib/format";
 import { renderBody } from "@/lib/postRender";
-import { badgeClass } from "./badge";
+import { badgeClass, isNoticeCategory } from "./badge";
 
-// 카테고리 "공지/안내"는 공지사항 섹션, 그 외는 업데이트 노트 섹션으로 분류.
-const isNotice = (cat?: string | null) => /공지|안내|notice/i.test(cat || "");
+// 카테고리 "공지/안내류"는 공지사항 섹션, 그 외는 업데이트 노트 섹션으로 분류.
+const isNotice = isNoticeCategory;
 
 // 좌: 토글 사이드 네비(업데이트 노트/공지사항), 중: 본문(블로그식). 우측 목차는 제거.
 export default function UpdateShell({ items, active, error }: { items: Update[]; active: Update | null; error?: boolean }) {

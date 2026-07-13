@@ -1,23 +1,14 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720" font-family="'Pretendard','Apple SD Gothic Neo','Malgun Gothic','Noto Sans KR',sans-serif">
-  <defs>
-    <radialGradient id="g1" cx="100%" cy="0%" r="70%"><stop offset="0" stop-color="#2E6CF0" stop-opacity="0.10"/><stop offset="0.62" stop-color="#2E6CF0" stop-opacity="0"/></radialGradient>
-    <radialGradient id="g2" cx="0%" cy="100%" r="60%"><stop offset="0" stop-color="#2E6CF0" stop-opacity="0.06"/><stop offset="0.6" stop-color="#2E6CF0" stop-opacity="0"/></radialGradient>
-    <linearGradient id="bar" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2E6CF0"/><stop offset="1" stop-color="#5B8DF7"/></linearGradient>
-    <linearGradient id="mk" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#2E6CF0"/><stop offset="1" stop-color="#5B8DF7"/></linearGradient>
-  </defs>
-  <rect width="1280" height="720" fill="#ffffff"/>
-  <rect width="1280" height="720" fill="url(#g1)"/>
-  <rect width="1280" height="720" fill="url(#g2)"/>
-  <rect x="0" y="104" width="8" height="512" rx="4" fill="url(#bar)"/>
-  <rect x="92" y="86" width="172" height="44" rx="22" fill="#EAF1FE" stroke="#DCE8FE"/>
-  <text x="178" y="115" text-anchor="middle" font-size="22" font-weight="800" fill="#1F54CC">채용 트렌드</text>
-  <text x="282" y="115" font-size="19" font-weight="700" fill="#8A93A8">AI 면접 · 채용 검증</text>
-  <text x="90" y="333" font-size="68" font-weight="800" letter-spacing="-3" fill="#142036"><tspan>HR의 AX, 어디서 시작할까</tspan></text>
-  <text x="90" y="413" font-size="68" font-weight="800" letter-spacing="-3" fill="#142036"><tspan>AI </tspan><tspan fill="#2E6CF0">1차 스크리닝</tspan><tspan>부터</tspan></text>
-  <text x="92" y="491" font-size="26" font-weight="600" fill="#566179">가짜 이력서 시대의 첫 자동화 지점</text>
-  <rect x="92" y="612" width="40" height="40" rx="11" fill="url(#mk)"/>
-  <text x="112" y="639" text-anchor="middle" font-size="19" font-weight="900" fill="#fff" font-family="monospace">&lt;/&gt;</text>
-  <text x="144" y="641" font-size="26" font-weight="800" fill="#142036">Supercoder</text>
-  <circle cx="322" cy="633" r="3" fill="#8A93A8"/>
-  <text x="340" y="641" font-size="20" font-weight="600" fill="#566179">AI면접 블로그</text>
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="675" viewBox="0 0 1200 675">
+<rect width="1200" height="675" fill="#7A5AF5"/>
+<g stroke="#FFFFFF" stroke-opacity="0.11" fill="none" stroke-width="2">
+<path d="M0 560 C 200 500,380 620,600 560 S 1000 500,1200 560"/>
+<path d="M0 600 C 220 545,400 660,620 600 S 1010 545,1200 600"/>
+<path d="M0 640 C 240 590,420 700,640 640 S 1020 590,1200 640"/></g>
+<circle cx="1050" cy="150" r="130" fill="#FFFFFF" opacity="0.06"/>
+<rect x="84" y="92" rx="21" width="160" height="46" fill="#FFFFFF" opacity="0.18"/>
+<circle cx="112" cy="115" r="5" fill="#FFFFFF"/>
+<text x="128" y="122" font-size="20" font-weight="800" fill="#FFFFFF" font-family="'Pretendard','Apple SD Gothic Neo','Noto Sans KR',sans-serif">채용 트렌드</text>
+<text x="1116" y="126" text-anchor="end" font-size="25" font-weight="800" fill="#FFFFFF" font-family="'Pretendard','Apple SD Gothic Neo','Noto Sans KR',sans-serif">Supercoder</text>
+<text x="84" y="286" font-size="48" font-weight="800" letter-spacing="-2" fill="#FFFFFF" font-family="'Pretendard','Apple SD Gothic Neo','Noto Sans KR',sans-serif">HR의 AX, 어디서 시작할까</text><text x="84" y="349" font-size="48" font-weight="800" letter-spacing="-2" fill="#FFFFFF" font-family="'Pretendard','Apple SD Gothic Neo','Noto Sans KR',sans-serif">가짜 이력서 대신</text><rect x="80" y="366" width="384.64" height="64" rx="11" fill="#0A1330" opacity="0.26"/><text x="100" y="412" font-size="48" font-weight="800" letter-spacing="-2" fill="#FFFFFF" font-family="'Pretendard','Apple SD Gothic Neo','Noto Sans KR',sans-serif">AI 1차 스크리닝</text>
+<text x="84" y="614" font-size="21" font-weight="600" fill="#FFFFFF" opacity="0.82" font-family="'Pretendard','Apple SD Gothic Neo','Noto Sans KR',sans-serif">supercoder.co · AI 면접 채용 검증 플랫폼</text>
 </svg>

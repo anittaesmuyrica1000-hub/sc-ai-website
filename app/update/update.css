@@ -53,6 +53,7 @@
   .upd-badge.b-green{color:#0f7a45;background:#e6f6ec}
   .upd-badge.b-amber{color:#9a6400;background:#fef2d9}
   .upd-badge.b-gray{color:var(--slate);background:#eef1f5}
+  .upd-badge.b-purple{color:#6b3fd4;background:#f0eaff}
 
   .upd-state{text-align:center;padding:80px 0;color:var(--slate-2);font-size:15px}
 
