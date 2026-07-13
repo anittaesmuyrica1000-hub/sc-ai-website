@@ -39,15 +39,17 @@ export default function AdminClient() {
     return () => sub.subscription.unsubscribe();
   }, []);
 
+  // 관리자 멤버십 확인 — 이메일이 바뀔 때만. (session 객체는 포커스 복귀 시 토큰 자동 갱신으로
+  // 매번 새로 생겨서, [session]으로 두면 재확인 중 Console이 언마운트돼 작성 중이던 폼이 사라진다.)
+  const authedEmail = session?.user?.email ?? null;
   useEffect(() => {
-    const email = session?.user?.email;
-    if (!email) { setIsAdmin(null); return; }
+    if (!authedEmail) { setIsAdmin(null); return; }
     let active = true;
     setIsAdmin(null);
-    supabase.from("admins").select("email").eq("email", email).maybeSingle()
+    supabase.from("admins").select("email").eq("email", authedEmail).maybeSingle()
       .then(({ data }) => { if (active) setIsAdmin(!!data); });
     return () => { active = false; };
-  }, [session]);
+  }, [authedEmail]);
 
   if (!authReady) {
     return (
