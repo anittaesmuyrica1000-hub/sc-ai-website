@@ -58,7 +58,7 @@ export default function UpdateIndex({ items, error }: { items: Update[]; error: 
             {filtered.map((u) => (
               <li key={u.id} className="upd-index-item">
                 <Link href={`/update/${u.slug || u.id}`} className="upd-index-card">
-                  <time className="upd-index-date">{fmtDate(u.created_at)}</time>
+                  <time className="upd-index-date">{fmtDate(u.publish_date || u.created_at)}</time>
                   <div className="upd-index-body">
                     {u.category && <span className={`upd-badge ${badgeClass(u.category)}`}>{u.category}</span>}
                     <h2>{u.title}</h2>

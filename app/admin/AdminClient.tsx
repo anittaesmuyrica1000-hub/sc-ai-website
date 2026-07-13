@@ -974,8 +974,13 @@ function BlogManager() {
 
 /* ===================== 제품 업데이트 관리 ===================== */
 
-type UpdForm = { id: string; title: string; slug: string; category: string; excerpt: string; content: string; published: boolean };
-const UPD_EMPTY: UpdForm = { id: "", title: "", slug: "", category: "신규 기능", excerpt: "", content: "", published: true };
+type UpdForm = { id: string; title: string; slug: string; category: string; publish_date: string; excerpt: string; content: string; published: boolean };
+const UPD_EMPTY: UpdForm = { id: "", title: "", slug: "", category: "신규 기능", publish_date: "", excerpt: "", content: "", published: true };
+// 오늘 날짜(KST) YYYY-MM-DD
+function todayKST(): string {
+  const d = new Date(new Date().toLocaleString("en-US", { timeZone: "Asia/Seoul" }));
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+}
 
 // 본문(HTML)에서 한 줄 요약 자동 생성 — 태그 제거 후 첫 문장(또는 ~60자).
 function summarizeContent(html: string): string {
@@ -1021,9 +1026,9 @@ function UpdatesManager() {
   }
   // 요약 직접 수정 — 비우면 자동 채움 재개, 입력하면 자동 중단
   function onExcerptChange(v: string) { set("excerpt", v); setExcerptAuto(!v.trim()); }
-  function enterNew() { setForm({ ...UPD_EMPTY }); setExcerptAuto(true); setMsg(null); window.scrollTo({ top: 0, behavior: "smooth" }); }
+  function enterNew() { setForm({ ...UPD_EMPTY, publish_date: todayKST() }); setExcerptAuto(true); setMsg(null); window.scrollTo({ top: 0, behavior: "smooth" }); }
   function enterEdit(u: Update) {
-    setForm({ id: u.id, title: u.title || "", slug: u.slug || "", category: u.category || "", excerpt: u.excerpt || "", content: u.content || "", published: u.published !== false });
+    setForm({ id: u.id, title: u.title || "", slug: u.slug || "", category: u.category || "", publish_date: (u.publish_date || "").slice(0, 10), excerpt: u.excerpt || "", content: u.content || "", published: u.published !== false });
     setExcerptAuto(!(u.excerpt || "").trim()); // 기존 요약이 있으면 자동 덮어쓰지 않음
     setMsg(null); window.scrollTo({ top: 0, behavior: "smooth" });
   }
@@ -1037,7 +1042,7 @@ function UpdatesManager() {
     const payload: Record<string, unknown> = {
       title: form.title.trim(), category: form.category.trim() || null,
       excerpt: (form.excerpt.trim() || summarizeContent(form.content)) || null, content: form.content, published: form.published,
-      slug,
+      slug, publish_date: form.publish_date || null,
     };
     setSaving(true);
     try {
@@ -1050,11 +1055,11 @@ function UpdatesManager() {
       if (res.error && /duplicate|unique/i.test(`${res.error.message} ${res.error.details || ""}`) && /slug/i.test(`${res.error.message} ${res.error.details || ""}`)) {
         showMsg("이미 사용 중인 URL slug입니다. 다른 값으로 바꿔 주세요.", false); setSaving(false); return;
       }
-      // slug 컬럼이 아직 없으면(마이그레이션 전) slug만 빼고 다시 저장
-      if (res.error && /slug/i.test(`${res.error.message} ${res.error.details || ""}`)) {
-        const { slug: _s, ...rest } = payload; void _s;
+      // 새 컬럼(slug/publish_date)이 아직 없으면(마이그레이션 전) 해당 값만 빼고 다시 저장
+      if (res.error && /slug|publish_date/i.test(`${res.error.message} ${res.error.details || ""}`)) {
+        const { slug: _s, publish_date: _p, ...rest } = payload; void _s; void _p;
         res = await run(rest);
-        if (!res.error) alert("저장됐지만 URL slug는 보류됐어요.\nSupabase에 add-update-slug.sql 적용 후 다시 저장하면 반영됩니다.");
+        if (!res.error) alert("저장됐지만 URL slug·배포일은 보류됐어요.\nSupabase에 add-update-slug.sql / add-update-publish-date.sql 적용 후 다시 저장하면 반영됩니다.");
       }
       if (res.error) throw res.error;
       showMsg(form.id ? "수정되었습니다." : "등록되었습니다.", true);
@@ -1109,6 +1114,10 @@ function UpdatesManager() {
               <input type="text" id="u-category" placeholder="예: 신규 기능" list="updCatList" value={form.category} onChange={(e) => set("category", e.target.value)} />
               <datalist id="updCatList">{UPDATE_CATEGORIES.map((c) => <option key={c} value={c} />)}</datalist>
               <p className="hint">신규 기능 · 개선 · 버그 수정 · 공지 등 — 리스트에 색상 배지로 표시됩니다.</p>
+            </div>
+            <div className="field">
+              <label htmlFor="u-pubdate">배포일 <span className="hint-inline">목록·페이지에 표시되는 날짜(직접 지정) · 비우면 생성일 사용</span></label>
+              <input type="date" id="u-pubdate" value={form.publish_date} onChange={(e) => set("publish_date", e.target.value)} style={{ maxWidth: 200 }} />
             </div>
             <div className="field">
               <label htmlFor="u-excerpt">요약 {excerptAuto && form.excerpt ? <span className="hint-inline"><i className="fa-solid fa-wand-magic-sparkles"></i> 본문에서 자동 생성됨 · 직접 입력하면 고정</span> : <span className="hint-inline">비우면 본문에서 자동 생성</span>}</label>
@@ -1169,14 +1178,14 @@ function UpdatesManager() {
         ) : (
           <div className="adm-table-wrap">
             <table className="adm-table">
-              <thead><tr><th>제목</th><th className="nowrap">조회수</th><th>상태</th><th>등록일</th><th>수정일</th><th>관리</th></tr></thead>
+              <thead><tr><th>제목</th><th className="nowrap">조회수</th><th>상태</th><th>배포일</th><th>수정일</th><th>관리</th></tr></thead>
               <tbody>
                 {items.map((u) => (
                   <tr key={u.id}>
                     <td><div className="cell-title">{u.title}</div>{u.category && <div className="cell-sub">{u.category}</div>}</td>
                     <td className="nowrap"><span className="views-cell"><i className="fa-regular fa-eye"></i> {(u.views ?? 0).toLocaleString()}</span></td>
                     <td className="nowrap">{u.published === false ? <span className="pill pill-gray">비공개</span> : <span className="pill pill-green">공개</span>}</td>
-                    <td className="nowrap">{fmtDate(u.created_at)}</td>
+                    <td className="nowrap">{fmtDate(u.publish_date || u.created_at)}</td>
                     <td className="nowrap">{u.updated_at ? fmtDate(u.updated_at) : "—"}</td>
                     <td className="nowrap">
                       <div className="row-actions">

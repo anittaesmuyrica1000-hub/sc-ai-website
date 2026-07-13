@@ -44,6 +44,7 @@ export type Update = {
   published: boolean;
   views?: number | null;
   slug?: string | null;
+  publish_date?: string | null; // 배포일(직접 지정, YYYY-MM-DD)
 };
 
 // FAQ 타입 (어드민 관리 + 랜딩 노출)

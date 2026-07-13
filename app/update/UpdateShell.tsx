@@ -60,7 +60,7 @@ export default function UpdateShell({ items, active, error }: { items: Update[];
             <div className="upd-article-head">
               {active.category && <span className={`upd-badge ${badgeClass(active.category)}`}>{active.category}</span>}
               <h1>{active.title}</h1>
-              <time className="upd-date">{fmtDate(active.created_at)}</time>
+              <time className="upd-date">{fmtDate(active.publish_date || active.created_at)}</time>
             </div>
             <div className="upd-content" dangerouslySetInnerHTML={{ __html: html }} />
           </article>
