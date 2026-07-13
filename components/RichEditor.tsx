@@ -36,6 +36,41 @@ type Props = {
   templates?: EditorTemplate[]; // 있으면 '템플릿' 드롭다운 노출(블로그 전용)
 };
 
+// 붙여넣기 HTML 정리 — 지원하는 서식 태그만 남기고(제목·굵게·목록·표·링크 등)
+// 나머지 태그는 내용만 남겨 풀고(span/font 등), style·class 등 잡스러운 속성은 전부 제거한다.
+const PASTE_ALLOWED = new Set([
+  "H1", "H2", "H3", "H4", "P", "BR", "STRONG", "B", "EM", "I", "U", "S",
+  "UL", "OL", "LI", "A", "BLOCKQUOTE", "HR", "PRE", "CODE",
+  "TABLE", "THEAD", "TBODY", "TR", "TH", "TD", "FIGURE", "IMG", "FIGCAPTION",
+]);
+function sanitizePastedHtml(html: string): string {
+  const doc = new DOMParser().parseFromString(html, "text/html");
+  const body = doc.body;
+  body.querySelectorAll("script,style,meta,link,noscript").forEach((n) => n.remove());
+  const walk = (node: Node) => {
+    Array.from(node.childNodes).forEach((child) => {
+      if (child.nodeType === Node.ELEMENT_NODE) {
+        const el = child as HTMLElement;
+        walk(el);
+        if (!PASTE_ALLOWED.has(el.tagName)) {
+          el.replaceWith(...Array.from(el.childNodes)); // 태그는 벗기고 내용만 유지
+        } else {
+          Array.from(el.attributes).forEach((a) => {
+            const keep =
+              (el.tagName === "A" && a.name === "href") ||
+              (el.tagName === "IMG" && (a.name === "src" || a.name === "alt"));
+            if (!keep) el.removeAttribute(a.name);
+          });
+        }
+      } else if (child.nodeType === Node.COMMENT_NODE) {
+        child.remove();
+      }
+    });
+  };
+  walk(body);
+  return body.innerHTML.trim();
+}
+
 export default function RichEditor({ value, onChange, placeholder, minHeight = 380, templates }: Props) {
   const wrapRef = useRef<HTMLDivElement>(null);
   const ref = useRef<HTMLDivElement>(null);
@@ -355,11 +390,17 @@ export default function RichEditor({ value, onChange, placeholder, minHeight = 3
     ref.current.focus();
     emit();
   }
-  // 붙여넣기는 서식 없는 텍스트로(엉킨 HTML 방지)
+  // 붙여넣기: 서식(HTML)을 유지하되 지원 태그만 남기고 정리(sanitize). HTML이 없으면 순수 텍스트.
   function onPaste(e: React.ClipboardEvent) {
     e.preventDefault();
-    const text = e.clipboardData.getData("text/plain");
-    document.execCommand("insertText", false, text);
+    const rawHtml = e.clipboardData.getData("text/html");
+    const clean = rawHtml ? sanitizePastedHtml(rawHtml) : "";
+    if (clean) {
+      document.execCommand("insertHTML", false, clean);
+    } else {
+      const text = e.clipboardData.getData("text/plain");
+      document.execCommand("insertText", false, text);
+    }
     emit();
   }
 

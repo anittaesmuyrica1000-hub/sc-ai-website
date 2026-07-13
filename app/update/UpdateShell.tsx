@@ -63,9 +63,6 @@ export default function UpdateShell({ items, active, error }: { items: Update[];
               <time className="upd-date">{fmtDate(active.created_at)}</time>
             </div>
             <div className="upd-content" dangerouslySetInnerHTML={{ __html: html }} />
-            <div className="upd-foot">
-              <Link href="/update" className="btn btn-out"><i className="fa-solid fa-arrow-left"></i> 목록으로</Link>
-            </div>
           </article>
         )}
       </div>
