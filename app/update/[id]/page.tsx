@@ -16,8 +16,15 @@ async function getData(id: string): Promise<{ items: Update[]; active: Update | 
       .order("created_at", { ascending: false });
     if (res.error) throw res.error;
     const items = (res.data as Update[]) || [];
-    // slug 우선, 없으면 UUID(id)로 — 기존 링크 호환
-    const active = items.find((u) => u.slug === id) || items.find((u) => u.id === id) || null;
+    // slug 우선, 없으면 UUID(id)로 — 기존 링크 호환.
+    // 한글 slug: URL 디코드 + 유니코드 NFC 정규화로 비교(맥 NFD 등 정규화 불일치 방지).
+    let key = id;
+    try { key = decodeURIComponent(id); } catch { /* 이미 디코드된 경우 */ }
+    key = key.normalize("NFC");
+    const active =
+      items.find((u) => (u.slug || "").normalize("NFC") === key) ||
+      items.find((u) => u.id === id) ||
+      null;
     return { items, active };
   } catch (err) {
     console.error("update load failed:", err);

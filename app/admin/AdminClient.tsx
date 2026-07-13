@@ -1032,7 +1032,7 @@ function UpdatesManager() {
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault(); if (!form) return;
     if (!form.title.trim() || !form.content.trim()) { showMsg("제목과 본문은 필수입니다.", false); return; }
-    const slug = form.slug.trim() || null;
+    const slug = (form.slug.trim().normalize("NFC")) || null; // NFC 정규화(한글 slug URL 매칭 일관성)
     if (slug && !/^[\w가-힣-]+$/.test(slug)) { showMsg("URL slug는 한글·영문·숫자·하이픈만 사용하세요.", false); return; }
     const payload: Record<string, unknown> = {
       title: form.title.trim(), category: form.category.trim() || null,
