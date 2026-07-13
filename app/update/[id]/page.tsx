@@ -37,6 +37,9 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
 }
 
 export default async function UpdateDetail({ params }: { params: Promise<{ id: string }> }) {
+  // 운영(main 사이트)에선 아직 숨김 — dev 프리뷰에서만 노출(준비 중). 운영 배포에선 404.
+  if (process.env.VERCEL_ENV === "production") notFound();
+
   const { id } = await params;
   const { items, active } = await getData(id);
   if (!active) notFound();

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { notFound } from "next/navigation";
 import "./update.css";
 import { supabase, type Update } from "@/lib/supabase";
 import UpdateIndex from "./UpdateIndex";
@@ -15,6 +16,9 @@ export const metadata: Metadata = {
 
 // 대문(index) — 블로그처럼 전체 업데이트를 카드 리스트 + 찾기로. 모든 기기 열람 가능.
 export default async function UpdatePage() {
+  // 운영(main 사이트)에선 아직 숨김 — dev 프리뷰에서만 노출(준비 중). 운영 배포에선 404.
+  if (process.env.VERCEL_ENV === "production") notFound();
+
   let items: Update[] = [];
   let error = false;
   try {
