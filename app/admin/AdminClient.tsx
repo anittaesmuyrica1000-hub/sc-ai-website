@@ -800,8 +800,9 @@ function BlogManager() {
               <div className="hint">이미지를 볼 수 없는 사용자(스크린리더)와 검색엔진에 전달되는 설명입니다. 비우면 글 제목이 대체로 쓰입니다.</div>
             </div>
             <div className="field">
-              <label htmlFor="f-excerpt">요약</label>
-              <input type="text" id="f-excerpt" placeholder="리스트에 보일 한 줄 요약" value={form.excerpt} onChange={(e) => set("excerpt", e.target.value)} />
+              <label htmlFor="f-excerpt">서브카피 <span className="hint-inline">블로그 대문 카드의 제목 아래 한 줄로 노출 · 명사형 권장</span></label>
+              <input type="text" id="f-excerpt" placeholder="예: 가짜 이력서 대신 AI 1차 스크리닝 (명사형 한 줄)" value={form.excerpt} onChange={(e) => set("excerpt", e.target.value)} />
+              <div className="hint">블로그 목록 카드에서 제목 아래 보이는 서브카피입니다. 문장(~습니다)보다 <strong>명사형</strong>으로 끝맺으면 더 간결합니다.</div>
             </div>
             <details className="seo-box">
               <summary>SEO 검색 노출 설정 <span className="hint-inline">비우면 제목·요약을 그대로 사용</span></summary>
