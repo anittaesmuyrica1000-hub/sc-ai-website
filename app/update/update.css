@@ -4,19 +4,16 @@
   body:has(.upd-shell) header{background:#fff;backdrop-filter:none;border-bottom:1px solid var(--line)}
   body:has(.upd-shell) header.nav-invert .logo .nav-logo--base{display:block}
   body:has(.upd-shell) header.nav-invert .logo .nav-logo--invert{display:none}
-  /* 앱 셸(좌·중 독립 스크롤)에선 사이트 푸터 숨김 — 그리팅과 동일 */
-  body:has(.upd-shell) footer{display:none}
   /* 헤더 컨테이너를 셸과 동일 폭·패딩으로 — GNB 로고와 '업데이트 노트' 좌측 정렬 */
   body:has(.upd-shell) header .wrap{max-width:1080px;padding:0 32px}
 
-  /* 앱 셸: 헤더(64px) 아래를 꽉 채우고, 좌 목록/중 본문 2단으로 각자 스크롤 */
-  .upd-shell{max-width:1080px;margin:0 auto;padding:0 32px;display:grid;grid-template-columns:250px 1fr;gap:48px;align-items:stretch;height:calc(100vh - 64px)}
+  /* 2단(좌 목록 + 중 본문). 페이지 통짜 스크롤(독립 스크롤 없음), 좌측은 sticky로 유지 */
+  .upd-shell{max-width:1080px;margin:0 auto;padding:44px 32px 80px;display:grid;grid-template-columns:250px 1fr;gap:48px;align-items:start}
 
-  /* 좌측: 헤더 고정 + 토글 섹션(업데이트 노트/공지사항) 독립 스크롤 */
-  .upd-nav{height:100%;display:flex;flex-direction:column;min-height:0;padding-top:44px}
-  .upd-nav-head{flex:0 0 auto}
+  /* 좌측: 스크롤 시 따라오도록 sticky (별도 스크롤바 없음) */
+  .upd-nav{position:sticky;top:88px}
   .upd-eyebrow{display:inline-flex;align-items:center;gap:7px;font-size:12px;font-weight:800;letter-spacing:.03em;color:var(--blue-d);background:var(--soft-2);padding:6px 12px;border-radius:999px}
-  .upd-sections{flex:1 1 auto;min-height:0;overflow-y:auto;margin-top:18px;padding-right:6px}
+  .upd-sections{margin-top:18px}
   /* 토글(아코디언) 섹션 — 네이티브 <details> */
   .upd-sec{border-bottom:1px solid var(--line)}
   .upd-sec-head{display:flex;align-items:center;gap:9px;padding:13px 6px;cursor:pointer;font-size:14.5px;font-weight:800;color:var(--ink);list-style:none;user-select:none}
@@ -35,8 +32,8 @@
   .upd-nav-title{display:block;font-size:14px;font-weight:600;color:var(--ink);margin-top:3px;line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
   .upd-nav-item.on .upd-nav-title{color:var(--blue-d);font-weight:700}
 
-  /* 중앙: 선택된 글 — 독립 스크롤(블로그식) */
-  .upd-main-col{min-width:0;height:100%;overflow-y:auto;padding:40px 6px 72px 0;scroll-behavior:smooth}
+  /* 중앙: 선택된 글 — 페이지 흐름(독립 스크롤 제거) */
+  .upd-main-col{min-width:0}
   .upd-main{max-width:760px}
   /* 상세 → 대문(목록)으로 돌아가는 버튼 — 항상 표시 */
   .upd-back{display:inline-flex;align-items:center;gap:7px;font-size:14px;font-weight:700;color:var(--slate);margin-bottom:22px}
