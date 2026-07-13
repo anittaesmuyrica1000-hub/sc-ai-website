@@ -535,6 +535,33 @@ type FormState = { id: string; title: string; category: string; author: string; 
 const EMPTY: FormState = { id: "", title: "", category: "", author: "", cover_url: "", cover_alt: "", excerpt: "", content: "", published: true, tags: [], slug: "", meta_title: "", meta_description: "" };
 const MAX_TAGS = 8;
 
+// 제목 → 명사형 서브카피 문형 후보. 제목에서 도메인 키워드(명사)를 뽑아 조사에 민감하지 않은
+// 명사 종결 프레임에 끼워 추천한다. (클릭 후 사용자가 다듬는 초안 용도.)
+const COPY_KEYWORDS = [
+  "대화형 AI 면접", "AI 역량검사", "AI 1차 스크리닝", "1차 스크리닝", "1차 검증",
+  "가짜 이력서", "면접 부정행위", "부정행위", "AI 리포트", "이력서",
+  "AI 면접", "역량검사", "스크리닝", "리포트", "자소서", "채용 자동화",
+  "채용 트렌드", "채용 검증", "검증", "지원자", "채용팀", "AX",
+];
+function pickCopyKeyword(title: string): string {
+  for (const k of COPY_KEYWORDS) if (title.includes(k)) return k;
+  const first = title.split(/[—\-–,·:|]/)[0].trim();
+  return first.replace(/(습니다|합니다|입니다|됩니다|할까|을까|까|나요|가요|요|다)$/, "").trim() || first;
+}
+function nounCopySuggestions(title: string): string[] {
+  const t = String(title || "").trim();
+  if (!t) return [];
+  const kw = pickCopyKeyword(t);
+  if (!kw) return [];
+  const list = [
+    `${kw}, 채용팀이 놓치면 안 될 핵심`,
+    `${kw} 완벽 정리`,
+    `${kw} — 채용을 바꾸는 결정적 차이`,
+    `${kw}, 지금 주목해야 할 이유`,
+  ];
+  return Array.from(new Set(list)).filter((s) => s.length <= 46);
+}
+
 // 제목 → URL slug. 한글·영문 소문자·숫자·하이픈 허용, 공백은 하이픈, 그 외 제거.
 function slugify(s: string) {
   return String(s || "")
@@ -803,6 +830,16 @@ function BlogManager() {
               <label htmlFor="f-excerpt">서브카피 <span className="hint-inline">블로그 대문 카드의 제목 아래 한 줄로 노출 · 명사형 권장</span></label>
               <input type="text" id="f-excerpt" placeholder="예: 가짜 이력서 대신 AI 1차 스크리닝 (명사형 한 줄)" value={form.excerpt} onChange={(e) => set("excerpt", e.target.value)} />
               <div className="hint">블로그 목록 카드에서 제목 아래 보이는 서브카피입니다. 문장(~습니다)보다 <strong>명사형</strong>으로 끝맺으면 더 간결합니다.</div>
+              {form.title.trim() && nounCopySuggestions(form.title).length > 0 && (
+                <div className="excerpt-suggest">
+                  <span className="es-label"><i className="fa-solid fa-wand-magic-sparkles"></i> 명사형 추천 <span className="hint-inline">클릭하면 채워집니다 · 이후 자유 편집</span></span>
+                  <div className="es-chips">
+                    {nounCopySuggestions(form.title).map((s, i) => (
+                      <button type="button" key={i} className="btn btn-out btn-sm es-chip" onClick={() => set("excerpt", s)}>{s}</button>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
             <details className="seo-box">
               <summary>SEO 검색 노출 설정 <span className="hint-inline">비우면 제목·요약을 그대로 사용</span></summary>

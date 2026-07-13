@@ -488,3 +488,10 @@
 /* 관리자 로그인 — Google(SSO) 버튼 + 구분선 */
 .btn-google{display:inline-flex;align-items:center;gap:8px}
 .btn-google .fa-google{color:#ea4335}
+
+/* 서브카피 명사형 추천 문형 */
+.excerpt-suggest{margin-top:10px}
+.excerpt-suggest .es-label{display:block;font-size:12px;font-weight:800;color:var(--blue-d);margin-bottom:7px}
+.excerpt-suggest .es-label .fa-wand-magic-sparkles{margin-right:5px}
+.excerpt-suggest .es-chips{display:flex;flex-wrap:wrap;gap:8px}
+.excerpt-suggest .es-chip{font-size:12.5px;font-weight:600;white-space:normal;text-align:left;line-height:1.35;padding:6px 12px;height:auto}
