@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import "../update.css";
 import { supabase, type Update } from "@/lib/supabase";
 import UpdateShell from "../UpdateShell";
+import ViewCounter from "@/components/ViewCounter";
 
 export const dynamic = "force-dynamic";
 
@@ -40,5 +41,10 @@ export default async function UpdateDetail({ params }: { params: Promise<{ id: s
   const { id } = await params;
   const { items, active } = await getData(id);
   if (!active) notFound();
-  return <UpdateShell items={items} active={active} />;
+  return (
+    <>
+      <ViewCounter id={active.id} rpc="increment_update_views" />
+      <UpdateShell items={items} active={active} />
+    </>
+  );
 }

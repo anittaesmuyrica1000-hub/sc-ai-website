@@ -1144,11 +1144,12 @@ function UpdatesManager() {
         ) : (
           <div className="adm-table-wrap">
             <table className="adm-table">
-              <thead><tr><th>제목</th><th>상태</th><th>등록일</th><th>수정일</th><th>관리</th></tr></thead>
+              <thead><tr><th>제목</th><th className="nowrap">조회수</th><th>상태</th><th>등록일</th><th>수정일</th><th>관리</th></tr></thead>
               <tbody>
                 {items.map((u) => (
                   <tr key={u.id}>
                     <td><div className="cell-title">{u.title}</div>{u.category && <div className="cell-sub">{u.category}</div>}</td>
+                    <td className="nowrap"><span className="views-cell"><i className="fa-regular fa-eye"></i> {(u.views ?? 0).toLocaleString()}</span></td>
                     <td className="nowrap">{u.published === false ? <span className="pill pill-gray">비공개</span> : <span className="pill pill-green">공개</span>}</td>
                     <td className="nowrap">{fmtDate(u.created_at)}</td>
                     <td className="nowrap">{u.updated_at ? fmtDate(u.updated_at) : "—"}</td>
