@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState, useCallback } from "react";
+import { useEffect, useMemo, useState, useCallback, useRef } from "react";
 import type { Session } from "@supabase/supabase-js";
 import { supabase, type Post, type Update, type Faq, type Signup, type BrochureRequest, type LegalDoc, type LegalVersion, type PageSeo, legalPath, RESERVED_LEGAL_SLUGS, SIGNUP_STATUSES, SEO_PAGES, UTM_KEYS, UTM_LABEL } from "@/lib/supabase";
 import { UPDATE_CATEGORIES } from "@/app/update/badge";
@@ -156,6 +156,32 @@ function Console({ email }: { email: string }) {
   const [navOpen, setNavOpen] = useState(false);
   const [acctOpen, setAcctOpen] = useState(false);
   const [collapsed, setCollapsed] = useState(false);
+
+  // 새로고침해도 현재 섹션 유지: URL 해시(#blog 등)와 동기화.
+  // (SSR 초기값은 "dash"로 두고, 마운트 후 해시를 읽어 복원 — 하이드레이션 불일치 방지.)
+  const skipFirstSync = useRef(true);
+  useEffect(() => {
+    const valid = new Set<Section>(["dash", "blog", "updates", "faq", "brochure", "legal", "seo", "signups", "settings"]);
+    const readHash = (): Section | null => {
+      const h = (window.location.hash || "").replace(/^#/, "") as Section;
+      return valid.has(h) ? h : null;
+    };
+    const s = readHash();
+    if (s) setSection(s);
+    const onHash = () => { const h = readHash(); if (h) setSection(h); };
+    window.addEventListener("hashchange", onHash);
+    return () => window.removeEventListener("hashchange", onHash);
+  }, []);
+  // 섹션 변경 시 해시 반영(히스토리 오염 없이 replace). 첫 렌더는 건너뜀(위 복원이 처리).
+  useEffect(() => {
+    if (skipFirstSync.current) { skipFirstSync.current = false; return; }
+    if (typeof window === "undefined") return;
+    const cur = (window.location.hash || "").replace(/^#/, "");
+    const target = section === "dash" ? "" : section;
+    if (cur !== target) {
+      window.history.replaceState(null, "", target ? `#${target}` : window.location.pathname + window.location.search);
+    }
+  }, [section]);
 
   useEffect(() => {
     if (typeof window !== "undefined" && localStorage.getItem("adm-collapsed") === "1") setCollapsed(true);
