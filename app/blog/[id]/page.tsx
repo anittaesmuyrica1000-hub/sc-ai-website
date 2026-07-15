@@ -11,14 +11,14 @@ export const dynamic = "force-dynamic";
 
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
-type PostNav = { slug: string | null; id: string; title: string } | null;
+type PostNav = { slug: string | null; id: string; title: string; cover_url?: string | null; created_at: string } | null;
 
 async function getAdjacentPosts(currentCreatedAt: string): Promise<{ prev: PostNav; next: PostNav }> {
   try {
     const [prevRes, nextRes] = await Promise.all([
-      supabase.from("posts").select("id, slug, title").eq("published", true)
+      supabase.from("posts").select("id, slug, title, cover_url, created_at").eq("published", true)
         .lt("created_at", currentCreatedAt).order("created_at", { ascending: false }).limit(1).maybeSingle(),
-      supabase.from("posts").select("id, slug, title").eq("published", true)
+      supabase.from("posts").select("id, slug, title, cover_url, created_at").eq("published", true)
         .gt("created_at", currentCreatedAt).order("created_at", { ascending: true }).limit(1).maybeSingle(),
     ]);
     return { prev: prevRes.data ?? null, next: nextRes.data ?? null };
@@ -100,18 +100,20 @@ export default async function PostPage({ params }: { params: Promise<{ id: strin
         )}
         {(prev || next) && (
           <div className="post-foot">
-            {prev ? (
-              <Link href={`/blog/${prev.slug || prev.id}`} className="btn btn-out post-nav-btn post-nav-prev">
-                <i className="fa-solid fa-arrow-left"></i>
-                <span className="post-nav-title">{prev.title}</span>
-              </Link>
-            ) : <span />}
-            {next && (
-              <Link href={`/blog/${next.slug || next.id}`} className="btn btn-blue post-nav-btn post-nav-next">
-                <span className="post-nav-title">{next.title}</span>
-                <i className="fa-solid fa-arrow-right"></i>
-              </Link>
-            )}
+            <p className="post-more-label">다른 글 읽기</p>
+            <div className="post-more-list">
+              {[prev, next].filter(Boolean).map((item) => (
+                <Link key={item!.id} href={`/blog/${item!.slug || item!.id}`} className="post-more-card">
+                  {item!.cover_url
+                    ? <img src={item!.cover_url} alt="" className="post-more-thumb" />
+                    : <span className="post-more-thumb post-more-thumb--empty" />}
+                  <span className="post-more-info">
+                    <span className="post-more-title">{item!.title}</span>
+                    <span className="post-more-date">{fmtDate(item!.created_at)}</span>
+                  </span>
+                </Link>
+              ))}
+            </div>
           </div>
         )}
       </article>
