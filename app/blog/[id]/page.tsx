@@ -11,6 +11,22 @@ export const dynamic = "force-dynamic";
 
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
+async function getNextPost(currentCreatedAt: string): Promise<{ slug: string | null; id: string; title: string } | null> {
+  try {
+    const { data } = await supabase
+      .from("posts")
+      .select("id, slug, title")
+      .eq("published", true)
+      .gt("created_at", currentCreatedAt)
+      .order("created_at", { ascending: true })
+      .limit(1)
+      .maybeSingle();
+    return data ?? null;
+  } catch {
+    return null;
+  }
+}
+
 // slug 우선 조회 → 없으면 UUID(id)로 (기존 색인된 주소 호환). slug 컬럼 미존재(마이그레이션 전)면 id로 폴백.
 async function getPost(key: string): Promise<Post | null> {
   try {
@@ -58,6 +74,8 @@ export default async function PostPage({ params }: { params: Promise<{ id: strin
   const p = await getPost(id);
   if (!p) notFound();
 
+  const nextPost = await getNextPost(p.created_at);
+
   return (
     <main>
       <ViewCounter id={p.id} />
@@ -81,7 +99,13 @@ export default async function PostPage({ params }: { params: Promise<{ id: strin
           </ul>
         )}
         <div className="post-foot">
-          <Link href="/blog" className="btn btn-out"><i className="fa-solid fa-arrow-left"></i> 목록으로</Link>
+          {nextPost ? (
+            <Link href={`/blog/${nextPost.slug || nextPost.id}`} className="btn btn-blue">
+              다음 글 <i className="fa-solid fa-arrow-right"></i>
+            </Link>
+          ) : (
+            <Link href="/blog" className="btn btn-out"><i className="fa-solid fa-arrow-left"></i> 목록으로</Link>
+          )}
         </div>
       </article>
       <script
