@@ -11,19 +11,19 @@ export const dynamic = "force-dynamic";
 
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
-async function getNextPost(currentCreatedAt: string): Promise<{ slug: string | null; id: string; title: string } | null> {
+type PostNav = { slug: string | null; id: string; title: string } | null;
+
+async function getAdjacentPosts(currentCreatedAt: string): Promise<{ prev: PostNav; next: PostNav }> {
   try {
-    const { data } = await supabase
-      .from("posts")
-      .select("id, slug, title")
-      .eq("published", true)
-      .gt("created_at", currentCreatedAt)
-      .order("created_at", { ascending: true })
-      .limit(1)
-      .maybeSingle();
-    return data ?? null;
+    const [prevRes, nextRes] = await Promise.all([
+      supabase.from("posts").select("id, slug, title").eq("published", true)
+        .lt("created_at", currentCreatedAt).order("created_at", { ascending: false }).limit(1).maybeSingle(),
+      supabase.from("posts").select("id, slug, title").eq("published", true)
+        .gt("created_at", currentCreatedAt).order("created_at", { ascending: true }).limit(1).maybeSingle(),
+    ]);
+    return { prev: prevRes.data ?? null, next: nextRes.data ?? null };
   } catch {
-    return null;
+    return { prev: null, next: null };
   }
 }
 
@@ -74,7 +74,7 @@ export default async function PostPage({ params }: { params: Promise<{ id: strin
   const p = await getPost(id);
   if (!p) notFound();
 
-  const nextPost = await getNextPost(p.created_at);
+  const { prev, next } = await getAdjacentPosts(p.created_at);
 
   return (
     <main>
@@ -98,11 +98,18 @@ export default async function PostPage({ params }: { params: Promise<{ id: strin
             ))}
           </ul>
         )}
-        {nextPost && (
+        {(prev || next) && (
           <div className="post-foot">
-            <Link href={`/blog/${nextPost.slug || nextPost.id}`} className="btn btn-blue">
-              다음 글 <i className="fa-solid fa-arrow-right"></i>
-            </Link>
+            {prev ? (
+              <Link href={`/blog/${prev.slug || prev.id}`} className="btn btn-out post-nav-btn">
+                <i className="fa-solid fa-arrow-left"></i> 이전 글
+              </Link>
+            ) : <span />}
+            {next && (
+              <Link href={`/blog/${next.slug || next.id}`} className="btn btn-blue post-nav-btn">
+                다음 글 <i className="fa-solid fa-arrow-right"></i>
+              </Link>
+            )}
           </div>
         )}
       </article>
