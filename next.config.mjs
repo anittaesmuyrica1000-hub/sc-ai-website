@@ -21,6 +21,24 @@ const nextConfig = {
       { source: "/en/:path*", destination: "/", permanent: true },
       { source: "/customer", destination: "/", permanent: true },
       { source: "/guideline", destination: "/", permanent: true },
+      // Search Console 404 정리(2026-07-14): 구 사이트 잔재 경로를 대응 페이지로 흡수.
+      // 대응 페이지가 있으면 그쪽으로, 없으면 홈(/)으로. (?lang=en_us 등 쿼리 붙은 변형도 경로만 매칭돼 함께 흡수)
+      { source: "/privacy-policy", destination: "/privacy", permanent: true },
+      { source: "/blogs", destination: "/blog", permanent: true },
+      { source: "/blogs/:path*", destination: "/blog", permanent: true },
+      { source: "/kr", destination: "/", permanent: true },
+      { source: "/kr/:path*", destination: "/", permanent: true },
+      { source: "/jobs/:path*", destination: "/", permanent: true },
+      { source: "/company", destination: "/", permanent: true },
+      { source: "/talent", destination: "/", permanent: true },
+      { source: "/talent-terms", destination: "/", permanent: true },
+      { source: "/testimonial", destination: "/", permanent: true },
+      { source: "/global-hiring", destination: "/", permanent: true },
+      { source: "/2-week-trial", destination: "/apply", permanent: true },
+      { source: "/contact-us", destination: "/apply", permanent: true },
+      { source: "/download", destination: "/brochure", permanent: true },
+      { source: "/download-brochure", destination: "/brochure", permanent: true },
+      { source: "/404", destination: "/", permanent: true },
     ];
   },
 };
