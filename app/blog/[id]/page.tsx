@@ -98,15 +98,13 @@ export default async function PostPage({ params }: { params: Promise<{ id: strin
             ))}
           </ul>
         )}
-        <div className="post-foot">
-          {nextPost ? (
+        {nextPost && (
+          <div className="post-foot">
             <Link href={`/blog/${nextPost.slug || nextPost.id}`} className="btn btn-blue">
               다음 글 <i className="fa-solid fa-arrow-right"></i>
             </Link>
-          ) : (
-            <Link href="/blog" className="btn btn-out"><i className="fa-solid fa-arrow-left"></i> 목록으로</Link>
-          )}
-        </div>
+          </div>
+        )}
       </article>
       <script
         type="application/ld+json"
