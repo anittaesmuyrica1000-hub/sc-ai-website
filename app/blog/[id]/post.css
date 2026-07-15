@@ -61,7 +61,10 @@
   .post-tags{list-style:none;display:flex;flex-wrap:wrap;gap:8px;margin:36px 0 0;padding:0}
   .post-tag{font-size:13.5px;font-weight:600;color:var(--blue-d);background:var(--soft);border:1px solid var(--line);border-radius:999px;padding:6px 13px}
   .post-foot{margin-top:40px;padding-top:30px;border-top:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:12px}
-  .post-nav-btn{min-width:110px}
+  .post-nav-btn{max-width:46%;gap:8px;overflow:hidden}
+  .post-nav-title{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+  .post-nav-next{flex-direction:row-reverse}
+  @media(max-width:560px){.post-nav-btn{max-width:48%;font-size:13px;padding:10px 14px}}
   @media(max-width:560px){.post-table th,.post-table td{padding:11px 13px;font-size:14px}}
   .blog-state{text-align:center;padding:120px 24px;color:var(--slate-2)}
   .blog-state i{font-size:36px;margin-bottom:18px;display:block;color:var(--line)}

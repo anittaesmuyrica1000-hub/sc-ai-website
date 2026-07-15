@@ -101,13 +101,15 @@ export default async function PostPage({ params }: { params: Promise<{ id: strin
         {(prev || next) && (
           <div className="post-foot">
             {prev ? (
-              <Link href={`/blog/${prev.slug || prev.id}`} className="btn btn-out post-nav-btn">
-                <i className="fa-solid fa-arrow-left"></i> 이전 글
+              <Link href={`/blog/${prev.slug || prev.id}`} className="btn btn-out post-nav-btn post-nav-prev">
+                <i className="fa-solid fa-arrow-left"></i>
+                <span className="post-nav-title">{prev.title}</span>
               </Link>
             ) : <span />}
             {next && (
-              <Link href={`/blog/${next.slug || next.id}`} className="btn btn-blue post-nav-btn">
-                다음 글 <i className="fa-solid fa-arrow-right"></i>
+              <Link href={`/blog/${next.slug || next.id}`} className="btn btn-blue post-nav-btn post-nav-next">
+                <span className="post-nav-title">{next.title}</span>
+                <i className="fa-solid fa-arrow-right"></i>
               </Link>
             )}
           </div>
