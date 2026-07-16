@@ -48,8 +48,10 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="ko">
+    <html lang="ko" translate="no">
       <head>
+        {/* 한국어 전용 사이트 — 브라우저 자동번역이 원문을 오역(예: '비용 절감'→'미안해요')하는 것을 방지 */}
+        <meta name="google" content="notranslate" />
         <link rel="preconnect" href="https://cdn.jsdelivr.net" crossOrigin="" />
         <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossOrigin="" />
         <link
