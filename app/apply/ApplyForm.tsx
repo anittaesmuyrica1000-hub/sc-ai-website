@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { supabase, UTM_KEYS } from "@/lib/supabase";
 import { trackEvent } from "@/lib/track";
@@ -21,6 +21,8 @@ export default function ApplyForm() {
   const [loading, setLoading] = useState(false);
   const [done, setDone] = useState(false);
   const [utm, setUtm] = useState<Utm>({});
+  const [honeypot, setHoneypot] = useState("");
+  const mountTime = useRef(Date.now());
 
   // index 최종 CTA 등에서 넘어온 ?name=&company=&email= 프리필 + UTM 캡처
   useEffect(() => {
@@ -50,6 +52,11 @@ export default function ApplyForm() {
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
     setFormErr("");
+    // 봇 감지: 허니팟 채워졌거나 5초 미만 제출 → 가짜 성공(재시도 방지)
+    if (honeypot || Date.now() - mountTime.current < 5000) {
+      setDone(true);
+      return;
+    }
     const next: Record<string, boolean> = {
       name: fields.name.trim() === "",
       company: fields.company.trim() === "",
@@ -114,6 +121,17 @@ export default function ApplyForm() {
       <div className="ct">도입 상담 신청</div>
       <div className="cs">남겨주신 정보를 바탕으로 담당자가 맞춤 도입 방안을 안내해드립니다.</div>
       <form onSubmit={onSubmit} noValidate>
+        {/* 허니팟: 사람은 안 보이는 필드, 봇이 채우면 제출 차단 */}
+        <input
+          type="text"
+          name="website"
+          value={honeypot}
+          onChange={(e) => setHoneypot(e.target.value)}
+          autoComplete="off"
+          tabIndex={-1}
+          aria-hidden="true"
+          style={{ position: "absolute", left: "-9999px", opacity: 0, height: 0, width: 0, pointerEvents: "none" }}
+        />
         <div className="field-row">
           <div className={`field${invalid.name ? " invalid" : ""}`}>
             <label htmlFor="f-name">이름 <span className="req">*</span></label>

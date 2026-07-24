@@ -1,7 +1,6 @@
 import { NextRequest } from "next/server";
 import { getDailyReport, fmtDuration, gaConfigured, type NameCount } from "@/lib/ga";
 import { sendMail, mailerConfigured } from "@/lib/mailer";
-
 // 매일 오전 8시(KST) GA4 어제 지표 요약 + 인사이트를 이메일로 발송하는 크론 엔드포인트.
 // Vercel Cron이 GET으로 호출(설정: vercel.json). 스케줄 "0 23 * * *"(UTC) = 08:00 KST.
 // 보안: CRON_SECRET 설정 시 Authorization: Bearer <CRON_SECRET> 또는 ?key=<CRON_SECRET> 필요.
