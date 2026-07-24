@@ -40,6 +40,8 @@ const nextConfig = {
       { source: "/download-brochure", destination: "/brochure", permanent: true },
       { source: "/404", destination: "/", permanent: true },
       { source: "/ai-interviewer", destination: "/", permanent: true },
+      { source: "/events-:slug", destination: "/", permanent: true },
+      { source: "/events/:path*", destination: "/", permanent: true },
     ];
   },
 };
