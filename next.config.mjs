@@ -42,6 +42,7 @@ const nextConfig = {
       { source: "/ai-interviewer", destination: "/", permanent: true },
       { source: "/events-:slug", destination: "/", permanent: true },
       { source: "/events/:path*", destination: "/", permanent: true },
+      { source: "/co/:path*", destination: "/", permanent: true },
     ];
   },
 };
