@@ -24,6 +24,11 @@ const nextConfig = {
       // Search Console 404 정리(2026-07-14): 구 사이트 잔재 경로를 대응 페이지로 흡수.
       // 대응 페이지가 있으면 그쪽으로, 없으면 홈(/)으로. (?lang=en_us 등 쿼리 붙은 변형도 경로만 매칭돼 함께 흡수)
       { source: "/privacy-policy", destination: "/privacy", permanent: true },
+      { source: "/promotion-ai-recruiter", destination: "/apply", permanent: true },
+      { source: "/download-jd", destination: "/apply", permanent: true },
+      { source: "/news", destination: "/blog", permanent: true },
+      { source: "/contact", destination: "/apply", permanent: true },
+      { source: "/blog/:path*", destination: "/blog", permanent: true },
       { source: "/blogs", destination: "/blog", permanent: true },
       { source: "/blogs/:path*", destination: "/blog", permanent: true },
       { source: "/kr", destination: "/", permanent: true },
