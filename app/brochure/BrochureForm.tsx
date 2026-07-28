@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { trackEvent } from "@/lib/track";
 
@@ -19,6 +19,8 @@ export default function BrochureForm() {
   const [formErr, setFormErr] = useState("");
   const [sending, setSending] = useState(false);
   const [done, setDone] = useState(false);
+  const [honeypot, setHoneypot] = useState("");
+  const mountTime = useRef(Date.now());
 
   function set<K extends keyof Fields>(k: K, v: string) {
     setFields((f) => ({ ...f, [k]: v }));
@@ -28,6 +30,11 @@ export default function BrochureForm() {
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
     setFormErr("");
+    // 봇 감지: 허니팟 채워졌거나 5초 미만 제출 → 가짜 성공(재시도 방지)
+    if (honeypot || Date.now() - mountTime.current < 5000) {
+      setDone(true);
+      return;
+    }
     const next: Record<string, boolean> = {
       name: fields.name.trim() === "",
       company: fields.company.trim() === "",
@@ -89,6 +96,17 @@ export default function BrochureForm() {
   return (
     <div className="bro-card">
       <form onSubmit={onSubmit} noValidate>
+        {/* 허니팟: 사람은 안 보이는 필드, 봇이 채우면 제출 차단 */}
+        <input
+          type="text"
+          name="website"
+          value={honeypot}
+          onChange={(e) => setHoneypot(e.target.value)}
+          autoComplete="off"
+          tabIndex={-1}
+          aria-hidden="true"
+          style={{ position: "absolute", left: "-9999px", opacity: 0, height: 0, width: 0, pointerEvents: "none" }}
+        />
         <div className="b-row">
           <div className={`b-field${invalid.name ? " invalid" : ""}`}>
             <label htmlFor="bro-name">이름 <span className="req">*</span></label>
