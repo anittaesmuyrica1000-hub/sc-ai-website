@@ -28,7 +28,6 @@ const nextConfig = {
       { source: "/download-jd", destination: "/apply", permanent: true },
       { source: "/news", destination: "/blog", permanent: true },
       { source: "/contact", destination: "/apply", permanent: true },
-      { source: "/blog/:path*", destination: "/blog", permanent: true },
       { source: "/blogs", destination: "/blog", permanent: true },
       { source: "/blogs/:path*", destination: "/blog", permanent: true },
       { source: "/kr", destination: "/", permanent: true },
