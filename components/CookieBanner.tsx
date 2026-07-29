@@ -27,14 +27,14 @@ export default function CookieBanner() {
   if (!visible) return null;
 
   return (
-    <div className="cookie-bar">
-      <p className="cookie-bar__text">
-        이 사이트는 방문 분석을 위해 쿠키를 사용합니다.{" "}
-        <Link href="/privacy" className="cookie-bar__link">개인정보처리방침</Link>
+    <div className="cookie-popup">
+      <p className="cookie-popup__text">
+        방문 분석을 위해 쿠키를 사용합니다.{" "}
+        <Link href="/privacy" className="cookie-popup__link">개인정보처리방침</Link>
       </p>
-      <div className="cookie-bar__actions">
-        <button className="btn btn-out cookie-bar__btn" onClick={decline}>필수만 허용</button>
-        <button className="btn btn-blue cookie-bar__btn" onClick={accept}>전체 동의</button>
+      <div className="cookie-popup__actions">
+        <button className="cookie-popup__btn cookie-popup__btn--out" onClick={decline}>거부</button>
+        <button className="cookie-popup__btn cookie-popup__btn--blue" onClick={accept}>동의</button>
       </div>
     </div>
   );
