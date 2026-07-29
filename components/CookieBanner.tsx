@@ -29,11 +29,11 @@ export default function CookieBanner() {
   return (
     <div className="cookie-popup">
       <p className="cookie-popup__text">
-        방문 분석을 위해 쿠키를 사용합니다.{" "}
+        더 나은 서비스를 위해 방문 통계를 수집합니다.{" "}
         <Link href="/privacy" className="cookie-popup__link">개인정보처리방침</Link>
       </p>
       <div className="cookie-popup__actions">
-        <button className="cookie-popup__btn cookie-popup__btn--out" onClick={decline}>거부</button>
+        <button className="cookie-popup__btn cookie-popup__btn--out" onClick={decline}>필수만</button>
         <button className="cookie-popup__btn cookie-popup__btn--blue" onClick={accept}>동의</button>
       </div>
     </div>
