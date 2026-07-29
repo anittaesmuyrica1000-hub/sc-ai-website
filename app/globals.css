@@ -283,7 +283,7 @@ body.nav-menu-open{overflow:hidden}
 body.nav-menu-open .cbot{display:none}
 
 /* ===== Cookie Popup (Stripe style) ===== */
-.cookie-popup{position:fixed;bottom:24px;right:24px;z-index:9999;background:#fff;border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);padding:20px 22px;width:300px;display:flex;flex-direction:column;gap:14px}
+.cookie-popup{position:fixed;bottom:96px;right:24px;z-index:9999;background:#fff;border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);padding:20px 22px;width:300px;display:flex;flex-direction:column;gap:14px}
 .cookie-popup__text{font-size:13.5px;color:var(--slate);line-height:1.6}
 .cookie-popup__link{color:var(--blue);font-weight:600;text-decoration:underline}
 .cookie-popup__actions{display:flex;gap:8px}
@@ -292,4 +292,4 @@ body.nav-menu-open .cbot{display:none}
 .cookie-popup__btn--out:hover{border-color:var(--blue-2);color:var(--blue-d)}
 .cookie-popup__btn--blue{background:var(--blue);color:#fff;box-shadow:0 4px 12px -4px rgba(46,108,240,.5)}
 .cookie-popup__btn--blue:hover{background:var(--blue-d)}
-@media(max-width:480px){.cookie-popup{bottom:16px;right:16px;left:16px;width:auto}}
+@media(max-width:480px){.cookie-popup{bottom:88px;right:16px;left:16px;width:auto}}
