@@ -281,3 +281,11 @@ footer{background:#fff;color:var(--slate);padding:64px 0 40px;font-size:14px;bor
 /* 모바일 메뉴 열림: 배경 스크롤 잠금 + 챗봇 숨김(메뉴와 겹침 방지) */
 body.nav-menu-open{overflow:hidden}
 body.nav-menu-open .cbot{display:none}
+
+/* ===== Cookie Banner ===== */
+.cookie-bar{position:fixed;bottom:0;left:0;right:0;z-index:9999;background:#fff;border-top:1px solid var(--line);box-shadow:0 -4px 24px -8px rgba(20,40,90,.12);display:flex;align-items:center;justify-content:space-between;gap:16px;padding:16px 24px}
+.cookie-bar__text{font-size:14px;color:var(--slate);flex:1}
+.cookie-bar__link{color:var(--blue);font-weight:600;text-decoration:underline}
+.cookie-bar__actions{display:flex;gap:10px;flex-shrink:0}
+.cookie-bar__btn{padding:10px 20px;font-size:14px}
+@media(max-width:640px){.cookie-bar{flex-direction:column;align-items:stretch;gap:12px;padding:16px}.cookie-bar__actions{justify-content:stretch}.cookie-bar__actions .cookie-bar__btn{flex:1}}
