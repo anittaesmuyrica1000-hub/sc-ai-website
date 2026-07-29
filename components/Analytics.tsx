@@ -27,20 +27,38 @@ function buildSnippet(raw: string): string {
   return "";
 }
 
+function hasConsent() {
+  return typeof localStorage !== "undefined" && localStorage.getItem("cookie_consent") === "all";
+}
+
 export default function Analytics() {
   const [snippet, setSnippet] = useState("");
 
   useEffect(() => {
     let active = true;
-    supabase
-      .from("site_settings")
-      .select("value")
-      .eq("key", "ga_measurement_id")
-      .maybeSingle()
-      .then(({ data }) => {
-        if (active) setSnippet(buildSnippet(String(data?.value || "")));
-      });
-    return () => { active = false; };
+    let raw = "";
+
+    async function load() {
+      if (!hasConsent()) return;
+      const { data } = await supabase
+        .from("site_settings")
+        .select("value")
+        .eq("key", "ga_measurement_id")
+        .maybeSingle();
+      raw = String(data?.value || "");
+      if (active) setSnippet(buildSnippet(raw));
+    }
+
+    load();
+
+    function onConsent() {
+      if (hasConsent()) load();
+    }
+    window.addEventListener("cookie_consent_updated", onConsent);
+    return () => {
+      active = false;
+      window.removeEventListener("cookie_consent_updated", onConsent);
+    };
   }, []);
 
   // 스니펫 안의 <script> 들을 실제 실행되는 script 엘리먼트로 head에 주입한다.
