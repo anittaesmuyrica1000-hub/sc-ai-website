@@ -33,8 +33,8 @@ export default function CookieBanner() {
         <Link href="/privacy" className="cookie-popup__link">개인정보처리방침</Link>
       </p>
       <div className="cookie-popup__actions">
-        <button className="cookie-popup__btn cookie-popup__btn--out" onClick={decline}>필수만</button>
-        <button className="cookie-popup__btn cookie-popup__btn--blue" onClick={accept}>동의</button>
+        <button className="cookie-popup__btn cookie-popup__btn--out" onClick={decline}>거부</button>
+        <button className="cookie-popup__btn cookie-popup__btn--blue" onClick={accept}>허용</button>
       </div>
     </div>
   );
