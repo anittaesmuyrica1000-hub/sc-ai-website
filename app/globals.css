@@ -197,25 +197,34 @@ footer{background:#fff;color:var(--slate);padding:64px 0 40px;font-size:14px;bor
 .legal.notfound .btn-blue{color:#fff;text-decoration:none}
 .legal.notfound .btn-blue:hover{color:#fff}
 
-/* ===== 약관 개정 이력 패널 (LegalViewClient) ===== */
-.legal-ver-panel{position:fixed;top:50%;right:32px;transform:translateY(-50%);width:176px;background:#fff;border:1px solid var(--line);border-radius:14px;box-shadow:0 4px 24px -4px rgba(15,23,42,.10);padding:10px 0;display:flex;flex-direction:column;gap:2px;z-index:40;max-height:70vh;overflow-y:auto}
-.legal-ver-head{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--slate-2);padding:6px 14px 4px}
-.legal-ver-btn{display:flex;align-items:center;gap:8px;padding:8px 14px;background:none;border:none;border-radius:8px;cursor:pointer;font-size:13px;color:var(--slate);text-align:left;transition:.12s;margin:0 4px;width:calc(100% - 8px)}
-.legal-ver-btn:hover{background:var(--soft);color:var(--ink)}
-.legal-ver-btn.active{background:var(--blue-soft,#eff6ff);color:var(--blue);font-weight:600}
-.legal-ver-dot{flex-shrink:0;width:7px;height:7px;border-radius:50%;background:var(--line);transition:.12s}
-.legal-ver-btn.active .legal-ver-dot{background:var(--blue)}
-/* 과거 버전 열람 중임을 알리는 배너 */
+/* ===== 약관 개정 이력 바 (하단 고정 토글, LegalViewClient) ===== */
+/* 하단 바가 있을 때 본문 하단 여백 확보 */
+.legal.legal-has-verbar{padding-bottom:120px}
+/* 하단 고정 컨테이너 */
+.legal-ver-bar{position:fixed;bottom:0;left:0;right:0;z-index:100;background:#fff;border-top:1px solid var(--line);box-shadow:0 -4px 20px -4px rgba(15,23,42,.10)}
+/* 항상 보이는 토글 헤더 */
+.legal-ver-bar-toggle{display:flex;align-items:center;gap:10px;width:100%;padding:13px 24px;background:none;border:none;cursor:pointer;font-size:14px;color:var(--slate);font-family:inherit;transition:.12s}
+.legal-ver-bar-toggle:hover{background:var(--soft)}
+.legal-ver-bar-toggle>.fa-clock-rotate-left{color:var(--slate-2);font-size:13px}
+.lvb-label{font-weight:700;color:var(--ink)}
+.lvb-cur{flex:1;font-size:13px;color:var(--blue);font-weight:600;text-align:left}
+.legal-ver-bar-toggle>.fa-chevron-up,.legal-ver-bar-toggle>.fa-chevron-down{color:var(--slate-2);font-size:12px}
+/* 펼쳐진 버전 목록 */
+.legal-ver-bar-list{display:flex;flex-direction:row;flex-wrap:wrap;gap:6px;padding:12px 24px;border-bottom:1px solid var(--line);background:#fafbfc}
+.legal-ver-btn{display:inline-flex;align-items:center;gap:6px;padding:7px 13px;background:#fff;border:1px solid var(--line);border-radius:20px;cursor:pointer;font-size:13px;color:var(--slate);font-family:inherit;transition:.12s;white-space:nowrap}
+.legal-ver-btn:hover{border-color:var(--blue-2);color:var(--ink)}
+.legal-ver-btn.active{background:var(--blue);border-color:var(--blue);color:#fff;font-weight:600}
+.legal-ver-dot{flex-shrink:0;width:6px;height:6px;border-radius:50%;background:currentColor;opacity:.4;transition:.12s}
+.legal-ver-btn.active .legal-ver-dot{opacity:1}
+/* 과거 버전 열람 중 배너 */
 .legal-ver-banner{display:flex;align-items:center;gap:10px;background:#fffbeb;border:1px solid #fcd34d;border-radius:10px;padding:10px 16px;font-size:13px;color:#92400e;margin-bottom:24px;flex-wrap:wrap}
 .legal-ver-banner i{font-size:13px;color:#d97706}
 .lvb-back{margin-left:auto;font-size:12px;font-weight:700;color:var(--blue);background:none;border:none;cursor:pointer;padding:0;white-space:nowrap}
 .lvb-back:hover{text-decoration:underline}
-/* 모바일 버전 선택기: 기본 숨김 → ≤1080px 표시 */
-.legal-ver-mobile{display:none;margin-top:14px}
-.legal-ver-mobile select{width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:10px;font-size:14px;font-family:inherit;color:var(--ink);background:#fff;cursor:pointer}
-@media(max-width:1080px){
-  .legal-ver-panel{display:none}
-  .legal-ver-mobile{display:block}
+@media(max-width:640px){
+  .legal-ver-bar-toggle{padding:12px 16px;gap:8px}
+  .legal-ver-bar-list{padding:10px 16px}
+  .lvb-cur{display:none}
 }
 
 /* ===== 서비스소개서 리드 모달 (partials.js가 주입, 전 페이지 공용) ===== */
