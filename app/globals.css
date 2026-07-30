@@ -197,6 +197,27 @@ footer{background:#fff;color:var(--slate);padding:64px 0 40px;font-size:14px;bor
 .legal.notfound .btn-blue{color:#fff;text-decoration:none}
 .legal.notfound .btn-blue:hover{color:#fff}
 
+/* ===== 약관 개정 이력 패널 (LegalViewClient) ===== */
+.legal-ver-panel{position:fixed;top:50%;right:32px;transform:translateY(-50%);width:176px;background:#fff;border:1px solid var(--line);border-radius:14px;box-shadow:0 4px 24px -4px rgba(15,23,42,.10);padding:10px 0;display:flex;flex-direction:column;gap:2px;z-index:40;max-height:70vh;overflow-y:auto}
+.legal-ver-head{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--slate-2);padding:6px 14px 4px}
+.legal-ver-btn{display:flex;align-items:center;gap:8px;padding:8px 14px;background:none;border:none;border-radius:8px;cursor:pointer;font-size:13px;color:var(--slate);text-align:left;transition:.12s;margin:0 4px;width:calc(100% - 8px)}
+.legal-ver-btn:hover{background:var(--soft);color:var(--ink)}
+.legal-ver-btn.active{background:var(--blue-soft,#eff6ff);color:var(--blue);font-weight:600}
+.legal-ver-dot{flex-shrink:0;width:7px;height:7px;border-radius:50%;background:var(--line);transition:.12s}
+.legal-ver-btn.active .legal-ver-dot{background:var(--blue)}
+/* 과거 버전 열람 중임을 알리는 배너 */
+.legal-ver-banner{display:flex;align-items:center;gap:10px;background:#fffbeb;border:1px solid #fcd34d;border-radius:10px;padding:10px 16px;font-size:13px;color:#92400e;margin-bottom:24px;flex-wrap:wrap}
+.legal-ver-banner i{font-size:13px;color:#d97706}
+.lvb-back{margin-left:auto;font-size:12px;font-weight:700;color:var(--blue);background:none;border:none;cursor:pointer;padding:0;white-space:nowrap}
+.lvb-back:hover{text-decoration:underline}
+/* 모바일 버전 선택기: 기본 숨김 → ≤1080px 표시 */
+.legal-ver-mobile{display:none;margin-top:14px}
+.legal-ver-mobile select{width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:10px;font-size:14px;font-family:inherit;color:var(--ink);background:#fff;cursor:pointer}
+@media(max-width:1080px){
+  .legal-ver-panel{display:none}
+  .legal-ver-mobile{display:block}
+}
+
 /* ===== 서비스소개서 리드 모달 (partials.js가 주입, 전 페이지 공용) ===== */
 /* backdrop-filter 제거: 입력 시마다 화면 전체 블러를 재계산해 타이핑이 버벅이던 문제 해소.
    대신 약간 더 진한 반투명 배경으로 분리감 유지. */

@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { getLegalDoc } from "@/lib/legal";
-import LegalView from "@/components/LegalView";
+import { getLegalDoc, getLegalVersions } from "@/lib/legal";
+import LegalViewClient from "@/components/LegalViewClient";
 import { buildPageMetadata } from "@/lib/pageSeo";
 
 export const dynamic = "force-dynamic";
@@ -18,8 +18,11 @@ export function generateMetadata() {
 
 // DB(legal_docs)에 'privacy' 약관이 있으면 그것을, 없으면 아래 정적 콘텐츠로 폴백
 export default async function PrivacyPage() {
-  const doc = await getLegalDoc("privacy");
-  if (doc) return <LegalView doc={doc} />;
+  const [doc, versions] = await Promise.all([
+    getLegalDoc("privacy"),
+    getLegalVersions("privacy"),
+  ]);
+  if (doc) return <LegalViewClient doc={doc} versions={versions} />;
   return <PrivacyStatic />;
 }
 
