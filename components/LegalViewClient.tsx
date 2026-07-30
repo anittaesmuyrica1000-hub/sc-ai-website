@@ -49,6 +49,7 @@ export default function LegalViewClient({ doc, versions, selectedVersion, basePa
   const effectiveDate = activeVersion ? activeVersion.effective_date : doc.effective_date;
   const versionNum = activeVersion ? activeVersion.version : doc.version;
 
+  const latestLabel = `최신 버전${doc.effective_date ? ` · ${doc.effective_date}` : doc.version ? ` (v${doc.version})` : ""}`;
   const triggerDate = activeVersion
     ? fmtEffective(activeVersion)
     : (doc.effective_date || (doc.version ? `v${doc.version}` : ""));
