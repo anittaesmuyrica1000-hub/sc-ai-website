@@ -197,35 +197,25 @@ footer{background:#fff;color:var(--slate);padding:64px 0 40px;font-size:14px;bor
 .legal.notfound .btn-blue{color:#fff;text-decoration:none}
 .legal.notfound .btn-blue:hover{color:#fff}
 
-/* ===== 약관 개정 이력 바 (하단 고정 토글, LegalViewClient) ===== */
-/* 하단 바가 있을 때 본문 하단 여백 확보 */
-.legal.legal-has-verbar{padding-bottom:120px}
-/* 하단 고정 컨테이너 */
-.legal-ver-bar{position:fixed;bottom:0;left:0;right:0;z-index:100;background:#fff;border-top:1px solid var(--line);box-shadow:0 -4px 20px -4px rgba(15,23,42,.10)}
-/* 항상 보이는 토글 헤더 */
-.legal-ver-bar-toggle{display:flex;align-items:center;gap:10px;width:100%;padding:13px 24px;background:none;border:none;cursor:pointer;font-size:14px;color:var(--slate);font-family:inherit;transition:.12s}
-.legal-ver-bar-toggle:hover{background:var(--soft)}
-.legal-ver-bar-toggle>.fa-clock-rotate-left{color:var(--slate-2);font-size:13px}
-.lvb-label{font-weight:700;color:var(--ink)}
-.lvb-cur{flex:1;font-size:13px;color:var(--blue);font-weight:600;text-align:left}
-.legal-ver-bar-toggle>.fa-chevron-up,.legal-ver-bar-toggle>.fa-chevron-down{color:var(--slate-2);font-size:12px}
-/* 펼쳐진 버전 목록 */
-.legal-ver-bar-list{display:flex;flex-direction:row;flex-wrap:wrap;gap:6px;padding:12px 24px;border-bottom:1px solid var(--line);background:#fafbfc}
-.legal-ver-btn{display:inline-flex;align-items:center;gap:6px;padding:7px 13px;background:#fff;border:1px solid var(--line);border-radius:20px;cursor:pointer;font-size:13px;color:var(--slate);font-family:inherit;transition:.12s;white-space:nowrap}
-.legal-ver-btn:hover{border-color:var(--blue-2);color:var(--ink)}
-.legal-ver-btn.active{background:var(--blue);border-color:var(--blue);color:#fff;font-weight:600}
-.legal-ver-dot{flex-shrink:0;width:6px;height:6px;border-radius:50%;background:currentColor;opacity:.4;transition:.12s}
-.legal-ver-btn.active .legal-ver-dot{opacity:1}
+/* ===== 약관 개정 이력 선택 드롭다운 (본문 하단 우측, LegalViewClient) ===== */
+.legal-ver-foot{display:flex;justify-content:flex-end;margin:40px 0 0}
+.legal-ver-select{
+  appearance:none;-webkit-appearance:none;
+  padding:11px 40px 11px 18px;
+  border:1px solid var(--line);border-radius:10px;
+  font-size:14px;font-family:inherit;color:var(--ink);
+  background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='7' viewBox='0 0 12 7'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%2394a3b8' stroke-width='1.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") no-repeat right 14px center;
+  cursor:pointer;min-width:160px;
+  box-shadow:0 1px 4px rgba(15,23,42,.06);
+  transition:.15s
+}
+.legal-ver-select:hover{border-color:var(--blue-2)}
+.legal-ver-select:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 3px rgba(59,130,246,.15)}
 /* 과거 버전 열람 중 배너 */
 .legal-ver-banner{display:flex;align-items:center;gap:10px;background:#fffbeb;border:1px solid #fcd34d;border-radius:10px;padding:10px 16px;font-size:13px;color:#92400e;margin-bottom:24px;flex-wrap:wrap}
 .legal-ver-banner i{font-size:13px;color:#d97706}
 .lvb-back{margin-left:auto;font-size:12px;font-weight:700;color:var(--blue);background:none;border:none;cursor:pointer;padding:0;white-space:nowrap}
 .lvb-back:hover{text-decoration:underline}
-@media(max-width:640px){
-  .legal-ver-bar-toggle{padding:12px 16px;gap:8px}
-  .legal-ver-bar-list{padding:10px 16px}
-  .lvb-cur{display:none}
-}
 
 /* ===== 서비스소개서 리드 모달 (partials.js가 주입, 전 페이지 공용) ===== */
 /* backdrop-filter 제거: 입력 시마다 화면 전체 블러를 재계산해 타이핑이 버벅이던 문제 해소.
