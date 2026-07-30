@@ -117,8 +117,9 @@ export async function GET(req: NextRequest) {
           ${sectionTitle("⑤ 이벤트/전환(CTA) — 방문자 행동 (GA 이벤트 수 · 사내 포함)")}
           ${table(rows(s.topEvents, "어제 데이터 없음"))}
 
-          <div style="margin-top:24px;text-align:center">
-            <a href="https://analytics.google.com/analytics/web/#/p543685790/reports/reportinghub" style="display:inline-block;background:#2e6cf0;color:#fff;text-decoration:none;font-weight:700;font-size:14px;padding:11px 22px;border-radius:10px">GA에서 자세히 보기</a>
+          <div style="margin-top:24px;text-align:center;display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
+            <a href="https://analytics.google.com/analytics/web/#/p543685790/reports/reportinghub" style="display:inline-block;background:#2e6cf0;color:#fff;text-decoration:none;font-weight:700;font-size:14px;padding:11px 22px;border-radius:10px">GA 대시보드</a>
+            <a href="https://analytics.google.com/analytics/web/#/analysis/a197816586p543685790/edit/cE1Zwzq1Q0yGbaQRGvC28g" style="display:inline-block;background:#1b2333;color:#fff;text-decoration:none;font-weight:700;font-size:14px;padding:11px 22px;border-radius:10px">정상 트래픽 모니터 (봇 제외)</a>
           </div>
           <div style="font-size:11px;color:#9aa4b5;margin-top:16px;text-align:center;line-height:1.6">
             매일 오전 8시(KST) 자동 발송 · 데이터는 GA4 처리 특성상 최대 24~48시간 내 소폭 조정될 수 있습니다.<br>
