@@ -217,10 +217,12 @@ function Console({ email }: { email: string }) {
         <nav className="adm-nav">
           {NAV.map((n) => (
             <button key={n.key} className={section === n.key ? "active" : ""} onClick={() => { setSection(n.key); setNavOpen(false); }}>
+              <i className={`fa-solid ${n.icon}`}></i>
               <span className="adm-label">{n.label}</span>
             </button>
           ))}
           <a className="adm-nav-link" href="/" target="_blank" rel="noopener noreferrer">
+            <i className="fa-solid fa-arrow-up-right-from-square"></i>
             <span className="adm-label">웹사이트로 가기</span>
           </a>
         </nav>
@@ -2046,7 +2048,7 @@ function SignupsManager() {
               {/* 데스크톱: 표 */}
               <div className="adm-table-wrap sig-table">
                 <table className="adm-table">
-                  <thead><tr><th>접수일</th><th>이름</th><th>회사명</th><th>업무 이메일</th><th>직무/직책</th><th>채용 규모</th><th>유입</th><th>상태</th><th>관리</th></tr></thead>
+                  <thead><tr><th>접수일</th><th>이름</th><th>회사명</th><th>업무 이메일</th><th>연락처</th><th>채용 규모</th><th>유입</th><th>상태</th><th>관리</th></tr></thead>
                   <tbody>
                     {filtered.map((r) => (
                       <tr key={r.id}>
@@ -2054,7 +2056,7 @@ function SignupsManager() {
                         <td className="nowrap">{r.name}</td>
                         <td>{r.company}</td>
                         <td><a href={`mailto:${r.email}`}>{r.email}</a></td>
-                        <td>{r.role || "—"}</td>
+                        <td className="nowrap">{r.phone ? <a href={`tel:${r.phone}`} style={{color:"var(--blue)"}}>{r.phone}</a> : "—"}</td>
                         <td className="nowrap">{r.size ? (SIZE_LABEL[r.size] || r.size) : "—"}</td>
                         <td className="nowrap">{r.utm_source ? <span className="utm-chip" title={UTM_KEYS.filter((k) => r[k]).map((k) => `${UTM_LABEL[k]}: ${r[k]}`).join("\n")}>{r.utm_source}{r.utm_medium ? ` / ${r.utm_medium}` : ""}</span> : "—"}</td>
                         <td className="nowrap">

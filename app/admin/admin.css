@@ -423,7 +423,7 @@
   .sig-card-acts .status-sel{margin-left:auto;padding:9px 11px;font-size:13px}
   @media(max-width:760px){
     .sig-table{display:none}
-    .sig-cards{display:flex;flex-direction:column;gap:10px}
+    .sig-cards{display:flex;flex-direction:column;gap:10px;padding:0 12px 16px}
     .detail-grid{grid-template-columns:1fr}
     .adm-modal-foot{flex-direction:column}
     .adm-modal-foot .btn{width:100%}
@@ -465,6 +465,17 @@
     .adm.collapsed .adm-side{width:280px;overflow:auto}
     .adm-body{padding:22px 18px 56px}
     .adm-bar{padding:16px 18px}
+  }
+  @media(max-width:640px){
+    .adm-filters{gap:8px}
+    .filt{width:100%}
+    .filt select,.filt input{width:100%}
+    .adm-body{padding:16px 14px 48px}
+    .adm-bar h1{font-size:17px}
+    .list-head{padding:16px 16px}
+    .list-head h2{font-size:16px}
+    .adm-actions{gap:8px}
+    .adm-actions .btn{font-size:13px;padding:9px 14px}
   }
   @media(max-width:1100px){
     .dash-stats{grid-template-columns:repeat(3,1fr)}
