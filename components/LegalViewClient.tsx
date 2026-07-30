@@ -14,8 +14,10 @@ function fmtEffective(v: LegalVersion): string {
 export default function LegalViewClient({ doc, versions }: { doc: LegalDoc; versions: LegalVersion[] }) {
   const [sel, setSel] = useState<LegalVersion | null>(null);
 
-  const hasHistory = versions.length > 0;
-  const currentLabel = doc.effective_date || (doc.version ? `v${doc.version}` : "현재 버전");
+  // 현재 버전과 동일한 스냅샷은 드롭다운에서 제외(중복 방지)
+  const historyVersions = versions.filter((v) => v.version !== doc.version);
+  const hasHistory = historyVersions.length > 0;
+  const currentLabel = `최신 버전${doc.effective_date ? ` · ${doc.effective_date}` : doc.version ? ` (v${doc.version})` : ""}`;
 
   const title = sel ? sel.title : doc.title;
   const meta = sel ? sel.meta : doc.meta;
@@ -54,11 +56,11 @@ export default function LegalViewClient({ doc, versions }: { doc: LegalDoc; vers
             value={sel?.id ?? "current"}
             onChange={(e) => {
               const id = e.target.value;
-              setSel(id === "current" ? null : (versions.find((v) => v.id === id) ?? null));
+              setSel(id === "current" ? null : (historyVersions.find((v) => v.id === id) ?? null));
             }}
           >
             <option value="current">{currentLabel}</option>
-            {versions.map((v) => (
+            {historyVersions.map((v) => (
               <option key={v.id} value={v.id}>{fmtEffective(v)}</option>
             ))}
           </select>

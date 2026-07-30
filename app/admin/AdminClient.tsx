@@ -23,6 +23,19 @@ function fmtDateTime(s?: string) {
   return `${d.getFullYear()}.${p(d.getMonth() + 1)}.${p(d.getDate())} ${p(d.getHours())}:${p(d.getMinutes())}`;
 }
 
+function fmtPhone(phone: string): string {
+  const d = phone.replace(/\D/g, "");
+  if (d.startsWith("02")) {
+    if (d.length === 9) return `${d.slice(0,2)}-${d.slice(2,5)}-${d.slice(5)}`;
+    if (d.length === 10) return `${d.slice(0,2)}-${d.slice(2,6)}-${d.slice(6)}`;
+  } else if (d.length === 10) {
+    return `${d.slice(0,3)}-${d.slice(3,6)}-${d.slice(6)}`;
+  } else if (d.length === 11) {
+    return `${d.slice(0,3)}-${d.slice(3,7)}-${d.slice(7)}`;
+  }
+  return phone;
+}
+
 export default function AdminClient() {
   const [session, setSession] = useState<Session | null>(null);
   const [authReady, setAuthReady] = useState(false);
@@ -1994,7 +2007,7 @@ function SignupsManager() {
       }
       if (q.trim()) {
         const s = q.trim().toLowerCase();
-        if (![r.name, r.company, r.email].some((v) => (v || "").toLowerCase().includes(s))) return false;
+        if (![r.name, r.company, r.email, r.phone].some((v) => (v || "").toLowerCase().includes(s))) return false;
       }
       return true;
     });
@@ -2056,7 +2069,7 @@ function SignupsManager() {
                         <td className="nowrap">{r.name}</td>
                         <td>{r.company}</td>
                         <td><a href={`mailto:${r.email}`}>{r.email}</a></td>
-                        <td className="nowrap">{r.phone ? <a href={`tel:${r.phone}`} style={{color:"var(--blue)"}}>{r.phone}</a> : "—"}</td>
+                        <td className="nowrap">{r.phone ? <a href={`tel:${r.phone}`} style={{color:"var(--blue)"}}>{fmtPhone(r.phone)}</a> : "—"}</td>
                         <td className="nowrap">{r.size ? (SIZE_LABEL[r.size] || r.size) : "—"}</td>
                         <td className="nowrap">{r.utm_source ? <span className="utm-chip" title={UTM_KEYS.filter((k) => r[k]).map((k) => `${UTM_LABEL[k]}: ${r[k]}`).join("\n")}>{r.utm_source}{r.utm_medium ? ` / ${r.utm_medium}` : ""}</span> : "—"}</td>
                         <td className="nowrap">
@@ -2079,6 +2092,7 @@ function SignupsManager() {
                       <StatusBadge value={r.status} />
                     </div>
                     <div className="sig-card-sub">{r.name}{r.role ? ` · ${r.role}` : ""}{r.size ? ` · ${SIZE_LABEL[r.size] || r.size}` : ""}</div>
+                    {r.phone && <div className="sig-card-phone"><i className="fa-solid fa-phone"></i> {fmtPhone(r.phone)}</div>}
                     <div className="sig-card-date">{fmtDate(r.created_at)} 접수{r.utm_source ? ` · 유입 ${r.utm_source}${r.utm_medium ? `/${r.utm_medium}` : ""}` : ""}</div>
                     <div className="sig-card-acts" onClick={(e) => e.stopPropagation()}>
                       {r.phone && <a className="sig-act" href={`tel:${r.phone}`}><i className="fa-solid fa-phone"></i> 전화</a>}
@@ -2113,7 +2127,7 @@ function SignupDetail({ row, onClose, onSave }: { row: Signup; onClose: () => vo
 
   const fields: [string, string][] = [
     ["이름", row.name], ["회사명", row.company], ["업무 이메일", row.email],
-    ["연락처", row.phone || "—"], ["직무/직책", row.role || "—"],
+    ["연락처", row.phone ? fmtPhone(row.phone) : "—"], ["직무/직책", row.role || "—"],
     ["연간 채용 규모", row.size ? (SIZE_LABEL[row.size] || row.size) : "—"],
     ["개인정보 동의", "동의 (필수 동의 후 접수)"], ["접수일시", fmtDateTime(row.created_at)],
   ];
@@ -2215,7 +2229,7 @@ function LeadTable({ table, title, empty, filename }: { table: string; title: st
                     <td>{r.company}</td>
                     <td><a href={`mailto:${r.email}`}>{r.email}</a></td>
                     <td>{r.role || "—"}</td>
-                    <td className="nowrap">{r.phone || "—"}</td>
+                    <td className="nowrap">{r.phone ? fmtPhone(r.phone) : "—"}</td>
                     <td className="nowrap">{r.size ? (SIZE_LABEL[r.size] || r.size) : "—"}</td>
                   </tr>
                 ))}

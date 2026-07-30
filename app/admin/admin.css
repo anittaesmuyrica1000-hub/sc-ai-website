@@ -251,7 +251,7 @@
   .adm-side{transition:width .18s ease}
   .adm.collapsed .adm-side{width:0;min-width:0;overflow:hidden}
   .adm.collapsed .adm-burger{display:inline-flex;align-items:center;justify-content:center}
-  .adm-body{padding:28px 32px 64px;max-width:1180px;width:100%}
+  .adm-body{padding:28px 32px 64px;width:100%}
   .adm-backdrop{display:none}
 
   /* 상단 액션 버튼줄 */
@@ -417,10 +417,16 @@
   .sig-card-head{display:flex;align-items:center;justify-content:space-between;gap:10px}
   .sig-card-co{font-size:16px;font-weight:800;color:var(--ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
   .sig-card-sub{font-size:13.5px;color:var(--slate);margin-top:6px}
+  .sig-card-phone{font-size:13.5px;font-weight:700;color:var(--blue);margin-top:6px;display:flex;align-items:center;gap:6px}
+  .sig-card-phone i{font-size:12px}
   .sig-card-date{font-size:12px;color:var(--slate-2);margin-top:3px}
   .sig-card-acts{display:flex;align-items:center;gap:8px;margin-top:13px;flex-wrap:wrap}
   .sig-card-acts .sig-act{padding:9px 14px;font-size:13px}
   .sig-card-acts .status-sel{margin-left:auto;padding:9px 11px;font-size:13px}
+  /* 태블릿(760~1060px): 유입 컬럼 숨김 → 테이블이 화면에 맞게 */
+  @media(max-width:1060px) and (min-width:761px){
+    .sig-table th:nth-child(7),.sig-table td:nth-child(7){display:none}
+  }
   @media(max-width:760px){
     .sig-table{display:none}
     .sig-cards{display:flex;flex-direction:column;gap:10px;padding:0 12px 16px}
