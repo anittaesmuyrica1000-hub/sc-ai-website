@@ -214,8 +214,17 @@ footer{background:#fff;color:var(--slate);padding:64px 0 40px;font-size:14px;bor
 /* 과거 버전 열람 중 배너 */
 .legal-ver-banner{display:flex;align-items:center;gap:10px;background:#fffbeb;border:1px solid #fcd34d;border-radius:10px;padding:10px 16px;font-size:13px;color:#92400e;margin-bottom:24px;flex-wrap:wrap}
 .legal-ver-banner i{font-size:13px;color:#d97706}
-.lvb-back{margin-left:auto;font-size:12px;font-weight:700;color:var(--blue);background:none;border:none;cursor:pointer;padding:0;white-space:nowrap}
+.lvb-back{margin-left:auto;font-size:12px;font-weight:700;color:var(--blue);background:none;border:none;cursor:pointer;padding:0;white-space:nowrap;text-decoration:none}
 .lvb-back:hover{text-decoration:underline}
+/* Specter 스타일 날짜 피커 (URL 모드) */
+.legal-ver-picker{position:relative;display:inline-flex;flex-direction:column;align-items:flex-end}
+.legal-ver-list{list-style:none;margin:0 0 4px;padding:4px 0;border:1px solid var(--line);border-radius:10px;background:#fff;box-shadow:0 4px 16px rgba(15,23,42,.12);min-width:210px}
+.legal-ver-list li a{display:block;padding:9px 18px;font-size:13px;color:var(--ink);text-decoration:none;transition:background .12s}
+.legal-ver-list li a:hover{background:var(--soft)}
+.legal-ver-list li a.active{color:var(--blue);font-weight:700;background:rgba(59,130,246,.06)}
+.legal-ver-trigger{display:flex;align-items:center;gap:8px;padding:9px 14px;border:1px solid var(--line);border-radius:10px;background:#fff;cursor:pointer;font-size:13px;font-weight:600;color:var(--ink);white-space:nowrap;box-shadow:0 1px 4px rgba(15,23,42,.06);transition:border-color .15s}
+.legal-ver-trigger:hover{border-color:var(--blue-2)}
+.legal-ver-trigger i{font-size:11px;color:var(--slate)}
 
 /* ===== 서비스소개서 리드 모달 (partials.js가 주입, 전 페이지 공용) ===== */
 /* backdrop-filter 제거: 입력 시마다 화면 전체 블러를 재계산해 타이핑이 버벅이던 문제 해소.
