@@ -49,10 +49,9 @@ export default function LegalViewClient({ doc, versions, selectedVersion, basePa
   const effectiveDate = activeVersion ? activeVersion.effective_date : doc.effective_date;
   const versionNum = activeVersion ? activeVersion.version : doc.version;
 
-  const latestLabel = `최신 버전${doc.effective_date ? ` · ${doc.effective_date}` : doc.version ? ` (v${doc.version})` : ""}`;
-  const triggerLabel = activeVersion
+  const triggerDate = activeVersion
     ? fmtEffective(activeVersion)
-    : latestLabel;
+    : (doc.effective_date || (doc.version ? `v${doc.version}` : ""));
 
   return (
     <main className="legal">
@@ -103,8 +102,8 @@ export default function LegalViewClient({ doc, versions, selectedVersion, basePa
                 onClick={() => setPickerOpen((v) => !v)}
                 aria-expanded={pickerOpen}
               >
-                <span>{triggerLabel}</span>
                 <i className={`fa-solid fa-chevron-${pickerOpen ? "up" : "down"}`} />
+                <span>{triggerDate}</span>
               </button>
             </div>
           ) : (
