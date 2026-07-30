@@ -23,6 +23,10 @@ export default async function PrivacyDatePage({ params }: { params: Promise<{ da
     getLegalVersions("privacy"),
   ]);
   if (!doc) return notFound();
+  // 최신 버전 날짜면 selectedVersion 없이 최신 버전 표시
+  if (doc.effective_date === date) {
+    return <LegalViewClient doc={doc} versions={versions} basePath="/privacy" />;
+  }
   const ver = versions.find((v) => v.effective_date === date);
   if (!ver) return notFound();
   return <LegalViewClient doc={doc} versions={versions} selectedVersion={ver} basePath="/privacy" />;
