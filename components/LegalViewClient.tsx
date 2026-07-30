@@ -78,7 +78,7 @@ export default function LegalViewClient({ doc, versions, selectedVersion, basePa
                 <ul className="legal-ver-list">
                   <li>
                     <Link
-                      href={basePath}
+                      href={doc.effective_date ? `${basePath}/${doc.effective_date}` : basePath}
                       className={!selectedVersion ? "active" : ""}
                       onClick={() => setPickerOpen(false)}
                     >
