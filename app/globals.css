@@ -220,7 +220,7 @@ footer{background:#fff;color:var(--slate);padding:64px 0 40px;font-size:14px;bor
 .legal-ver-picker{position:relative;display:inline-flex;flex-direction:column;align-items:stretch}
 .legal-ver-list{list-style:none;margin:0 0 4px;padding:4px 0;border:1px solid var(--line);border-radius:10px;background:#fff;box-shadow:0 4px 16px rgba(15,23,42,.12);min-width:0}
 .legal-ver-list li{list-style:none;margin:0;padding:0}
-.legal-ver-list li a{display:block;padding:9px 18px;font-size:13px;color:var(--ink);text-decoration:none;transition:background .12s}
+.legal-ver-list li a{display:block;padding:9px 18px;font-size:13px;color:var(--ink);text-decoration:none;transition:background .12s;text-align:right}
 .legal-ver-list li a:hover{background:var(--soft)}
 .legal-ver-list li a.active{color:var(--blue);font-weight:700;background:rgba(59,130,246,.06)}
 .legal-ver-trigger{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:9px 14px;border:1px solid var(--line);border-radius:10px;background:#fff;cursor:pointer;font-size:13px;font-weight:600;color:var(--ink);white-space:nowrap;box-shadow:0 1px 4px rgba(15,23,42,.06);transition:border-color .15s}
