@@ -22,7 +22,7 @@ export default async function PrivacyPage() {
     getLegalDoc("privacy"),
     getLegalVersions("privacy"),
   ]);
-  if (doc) return <LegalViewClient doc={doc} versions={versions} />;
+  if (doc) return <LegalViewClient doc={doc} versions={versions} basePath="/privacy" />;
   return <PrivacyStatic />;
 }
 
