@@ -56,17 +56,6 @@ export default function LegalViewClient({ doc, versions, selectedVersion, basePa
 
   return (
     <main className="legal">
-      {activeVersion && (
-        <div className="legal-ver-banner">
-          <i className="fa-solid fa-clock-rotate-left" />
-          {fmtEffective(activeVersion)} 시행 이전 버전입니다
-          {isUrlMode
-            ? <Link className="lvb-back" href={basePath}>최신 버전 보기 →</Link>
-            : <button className="lvb-back" onClick={() => setSel(null)}>최신 버전 보기 →</button>
-          }
-        </div>
-      )}
-
       <div className="legal-head">
         <h1 dangerouslySetInnerHTML={{ __html: title }} />
         {meta && <p className="legal-meta">{meta}</p>}
