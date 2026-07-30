@@ -151,6 +151,8 @@ export type DailyReport = {
   realLeads: RealLeads;         // 실제 리드(Supabase, 사내 @supercoder.co 제외)
   // 전일 대비(그제) 비교용
   prev: { activeUsers: number; sessions: number; engagementRate: number; keyEvents: number };
+  // 7일 이동 평균(그제 기준 7일, yesterday 미포함)
+  avg7: { activeUsers: number; sessions: number; engagementRate: number };
   // 브레이크다운
   topPages: NameCount[];
   topChannels: NameCount[];
@@ -219,14 +221,23 @@ export async function getDailyReport(): Promise<DailyReport> {
   const avgEngagementPerSession = sessions ? userEngagementDuration / sessions : 0;
   const returningUsers = Math.max(activeUsers - newUsers, 0);
 
-  // 브레이크다운 + 이벤트 (병렬)
-  const [pages, channels, devices, countries, events] = await Promise.all([
+  // 브레이크다운 + 이벤트 + 7일 이동 평균 (병렬)
+  // 7일 평균: 그제(2daysAgo)부터 8일 전까지 7일간 — yesterday 제외
+  const [pages, channels, devices, countries, events, sevenDay] = await Promise.all([
     runReport({ dateRanges: [yday], dimensions: [{ name: "pageTitle" }], metrics: [{ name: "screenPageViews" }], orderBys: [{ metric: { metricName: "screenPageViews" }, desc: true }], limit: 5 }),
     runReport({ dateRanges: [yday], dimensions: [{ name: "sessionDefaultChannelGroup" }], metrics: [{ name: "sessions" }], orderBys: [{ metric: { metricName: "sessions" }, desc: true }], limit: 5 }),
     runReport({ dateRanges: [yday], dimensions: [{ name: "deviceCategory" }], metrics: [{ name: "activeUsers" }], orderBys: [{ metric: { metricName: "activeUsers" }, desc: true }], limit: 5 }),
     runReport({ dateRanges: [yday], dimensions: [{ name: "country" }], metrics: [{ name: "activeUsers" }], orderBys: [{ metric: { metricName: "activeUsers" }, desc: true }], limit: 5 }),
     runReport({ dateRanges: [yday], dimensions: [{ name: "eventName" }], metrics: [{ name: "eventCount" }], orderBys: [{ metric: { metricName: "eventCount" }, desc: true }], limit: 8 }),
+    runReport({ dateRanges: [{ startDate: "8daysAgo", endDate: "2daysAgo" }], metrics: [{ name: "activeUsers" }, { name: "sessions" }, { name: "engagementRate" }] }),
   ]);
+
+  const s7r = sevenDay.rows?.[0]?.metricValues ?? [];
+  const avg7 = {
+    activeUsers: Math.round(n(s7r[0]?.value) / 7),
+    sessions: Math.round(n(s7r[1]?.value) / 7),
+    engagementRate: s7r[2]?.value ? Number(s7r[2].value) : 0, // GA가 기간 평균 반환
+  };
 
   const topEvents = listOf(events);
   // 전환(주요 이벤트) 합계 = 이벤트 목록에서 KEY_EVENT_NAMES 매칭 (metric keyEvents가 커넥터별로 불안정하여 이벤트수 기반)
@@ -263,23 +274,47 @@ export async function getDailyReport(): Promise<DailyReport> {
   const insights: string[] = [];
   const pct = (cur: number, base: number) => (base ? Math.round(((cur - base) / base) * 100) : cur ? 100 : 0);
   const arrow = (d: number) => (d > 0 ? `▲${d}%` : d < 0 ? `▼${Math.abs(d)}%` : "→0%");
-  // 사용자/세션 전일 대비
-  const dUsers = pct(activeUsers, prev.activeUsers);
-  insights.push(`활성 사용자 ${activeUsers.toLocaleString()}명 (전일 대비 ${arrow(dUsers)}), 세션 ${sessions.toLocaleString()} (${arrow(pct(sessions, prev.sessions))}).`);
-  // 참여율
+
+  // 1. 트래픽 규모: 전일 대비 + 7일 평균 대비
   const erNow = Math.round(engagementRate * 1000) / 10;
   const erPrev = Math.round(prev.engagementRate * 1000) / 10;
-  insights.push(`참여율 ${erNow}% (전일 ${erPrev}%), 세션당 평균 참여 ${fmtDuration(avgEngagementPerSession)}.`);
-  // 기기
-  if (byDeviceShare(listOf(devices))) insights.push(byDeviceShare(listOf(devices))!);
-  // 유입 1위
+  const dUsers = pct(activeUsers, prev.activeUsers);
+  const vs7 = avg7.sessions > 0 ? pct(sessions, avg7.sessions) : null;
+  const trafficLevel = vs7 !== null ? (vs7 >= 20 ? "🔥 좋은 날" : vs7 >= -20 ? "평균 수준" : "📉 저조") : "";
+  insights.push(
+    `활성 사용자 ${activeUsers.toLocaleString()}명 (전일 대비 ${arrow(dUsers)}), 세션 ${sessions.toLocaleString()}` +
+    (vs7 !== null ? ` (7일 평균 대비 ${arrow(vs7)}, 평균 ${avg7.sessions}건/일 → ${trafficLevel})` : "") + "."
+  );
+
+  // 2. 참여 품질: 참여율 + 수준 라벨 + 세션당 참여시간
+  const er7 = Math.round(avg7.engagementRate * 1000) / 10;
+  const erLabel = erNow >= 60 ? "양호" : erNow >= 40 ? "보통" : "낮음 — 랜딩/콘텐츠 점검 권장";
+  insights.push(`참여율 ${erNow}% [${erLabel}] (전일 ${erPrev}%, 7일 평균 ${er7}%), 세션당 평균 참여 ${fmtDuration(avgEngagementPerSession)}.`);
+
+  // 3. 전환(리드): 건수 + 전환율
+  if (realLeads.available) {
+    if (realLeads.total > 0) {
+      const convRate = sessions > 0 ? ((realLeads.total / sessions) * 100).toFixed(1) : "—";
+      insights.push(`실제 리드 ${realLeads.total}건 (도입문의 ${realLeads.apply} · 소개서 ${realLeads.brochure}) — 세션 전환율 ${convRate}%, 사내(@supercoder.co) 제외.`);
+    } else {
+      insights.push(`실제 리드 0건 (사내 제출 제외) — 폼 유입/CTA 전환 점검 권장.`);
+    }
+  }
+
+  // 4. 인기 페이지
+  const topPage = listOf(pages)[0];
+  if (topPage) insights.push(`최다 조회 페이지: "${topPage.name}" (${topPage.count.toLocaleString()}회).`);
+
+  // 5. 유입 1위 채널
   const topCh = listOf(channels)[0];
   if (topCh) insights.push(`유입 1위: ${topCh.name} (${topCh.count.toLocaleString()} 세션).`);
-  // 실제 리드(사내 제외) — Supabase 기준
-  if (realLeads.available && realLeads.total > 0) insights.push(`실제 리드 ${realLeads.total}건(도입문의 ${realLeads.apply}·소개서 ${realLeads.brochure}) — 사내(@supercoder.co) 제출 제외.`);
-  else if (realLeads.available) insights.push(`어제 실제 리드 0건(사내 제출 제외) — 폼 유입/전환 점검 권장.`);
-  // 신규 비중
-  if (activeUsers > 0) insights.push(`신규 ${newUsers.toLocaleString()}명 / 재방문 ${returningUsers.toLocaleString()}명 (재방문 ${Math.round((returningUsers / activeUsers) * 100)}%).`);
+
+  // 6. 신규 vs 재방문
+  if (activeUsers > 0) insights.push(`신규 ${newUsers.toLocaleString()}명 / 재방문 ${returningUsers.toLocaleString()}명 (재방문 비중 ${Math.round((returningUsers / activeUsers) * 100)}%).`);
+
+  // 7. 기기 우세
+  const devShare = byDeviceShare(listOf(devices));
+  if (devShare) insights.push(devShare);
 
   return {
     dateLabel,
@@ -289,6 +324,7 @@ export async function getDailyReport(): Promise<DailyReport> {
     keyEvents: keyEventsYday,
     realLeads,
     prev,
+    avg7,
     topPages: listOf(pages),
     topChannels: listOf(channels),
     byDevice: listOf(devices),
