@@ -219,6 +219,7 @@ footer{background:#fff;color:var(--slate);padding:64px 0 40px;font-size:14px;bor
 /* Specter 스타일 날짜 피커 (URL 모드) */
 .legal-ver-picker{position:relative;display:inline-flex;flex-direction:column;align-items:flex-end}
 .legal-ver-list{list-style:none;margin:0 0 4px;padding:4px 0;border:1px solid var(--line);border-radius:10px;background:#fff;box-shadow:0 4px 16px rgba(15,23,42,.12);min-width:210px}
+.legal-ver-list li{list-style:none;margin:0;padding:0}
 .legal-ver-list li a{display:block;padding:9px 18px;font-size:13px;color:var(--ink);text-decoration:none;transition:background .12s}
 .legal-ver-list li a:hover{background:var(--soft)}
 .legal-ver-list li a.active{color:var(--blue);font-weight:700;background:rgba(59,130,246,.06)}
