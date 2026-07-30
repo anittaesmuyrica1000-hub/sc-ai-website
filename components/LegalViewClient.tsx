@@ -82,7 +82,7 @@ export default function LegalViewClient({ doc, versions, selectedVersion, basePa
                       className={!selectedVersion ? "active" : ""}
                       onClick={() => setPickerOpen(false)}
                     >
-                      {latestLabel}
+                      {doc.effective_date || `v${doc.version}`}
                     </Link>
                   </li>
                   {historyVersions.map((v) => (
