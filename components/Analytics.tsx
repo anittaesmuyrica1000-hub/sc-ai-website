@@ -40,6 +40,8 @@ export default function Analytics() {
 
     async function load() {
       if (!hasConsent()) return;
+      // Vercel preview 배포에서는 GA 수집 제외 (운영 데이터 오염 방지)
+      if (process.env.NEXT_PUBLIC_VERCEL_ENV === "preview") return;
       const { data } = await supabase
         .from("site_settings")
         .select("value")
