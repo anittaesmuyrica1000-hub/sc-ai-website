@@ -37,7 +37,11 @@ export default function LegalViewClient({ doc, versions, selectedVersion, basePa
     return () => document.removeEventListener("mousedown", onClickOutside);
   }, [pickerOpen]);
 
-  const historyVersions = versions.filter((v) => v.version !== doc.version);
+  const historyVersions = versions.filter((v) =>
+    doc.effective_date && v.effective_date
+      ? v.effective_date !== doc.effective_date
+      : v.version !== doc.version
+  );
   const hasHistory = historyVersions.length > 0;
 
   // URL 모드: selectedVersion prop / 레거시 모드: sel 상태
