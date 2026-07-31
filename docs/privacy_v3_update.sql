@@ -22,18 +22,22 @@ CREATE TABLE IF NOT EXISTS legal_doc_versions (
 );
 
 -- STEP 1: 현재 개인정보처리방침을 이력에 보관
--- (이미 해당 버전이 보관되어 있으면 ON CONFLICT DO NOTHING으로 건너뜀)
+-- (이미 같은 버전이 보관되어 있으면 건너뜀 — NOT EXISTS 방식으로 중복 방지)
 INSERT INTO legal_doc_versions (slug, version, title, meta, body, effective_date)
 SELECT
-  slug,
-  COALESCE(version, 2),                         -- 현재 version 컬럼값, 없으면 2
-  title,
-  meta,
-  body,
-  COALESCE(effective_date, '2026-06-29'::date)  -- 현재 시행일, 없으면 v2 시행일
-FROM legal_docs
-WHERE slug = 'privacy'
-ON CONFLICT (slug, version) DO NOTHING;
+  ld.slug,
+  COALESCE(ld.version, 2),                         -- 현재 version 컬럼값, 없으면 2
+  ld.title,
+  ld.meta,
+  ld.body,
+  COALESCE(ld.effective_date, '2026-06-29'::date)  -- 현재 시행일, 없으면 v2 시행일
+FROM legal_docs ld
+WHERE ld.slug = 'privacy'
+  AND NOT EXISTS (
+    SELECT 1 FROM legal_doc_versions lv
+    WHERE lv.slug = ld.slug
+      AND lv.version = COALESCE(ld.version, 2)
+  );
 
 -- STEP 2: 개인정보처리방침 v3 업데이트 (시행일 2026-08-01)
 UPDATE legal_docs SET
