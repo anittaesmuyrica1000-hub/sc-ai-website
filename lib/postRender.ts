@@ -4,19 +4,23 @@ import { esc } from "./format";
 // esc 후 토큰만 치환하므로 XSS 안전. 결과는 dangerouslySetInnerHTML 로 출력.
 
 function inline(s: string): string {
-  let t = esc(s);
-  t = t.replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>");
-  // 외부 링크(http/https)는 새 탭, 내부 상대경로(/apply 등)는 같은 탭으로 렌더.
-  // 자사(supercoder)·내부 링크는 CTA로 강조하고, 그 외 외부 링크는 출처로 보아 각주처럼 작고 약하게(post-cite).
-  t = t.replace(/\[([^\]]+)\]\((https?:\/\/[^)\s]+|\/[^)\s]+)\)/g, (_m, text, url) => {
-    const external = /^https?:/.test(url);
-    const cite = external && !/supercoder\.co/i.test(url);
-    const cls = cite ? ' class="post-cite"' : "";
-    return external
-      ? `<a href="${url}" target="_blank" rel="noopener noreferrer"${cls}>${text}</a>`
-      : `<a href="${url}">${text}</a>`;
-  });
-  return t;
+  // Split on <br> tags to preserve them through HTML escaping
+  return s.split(/(<br\s*\/?>)/gi).map((part, i) => {
+    if (i % 2 === 1) return "<br>";
+    let t = esc(part);
+    t = t.replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>");
+    // 외부 링크(http/https)는 새 탭, 내부 상대경로(/apply 등)는 같은 탭으로 렌더.
+    // 자사(supercoder)·내부 링크는 CTA로 강조하고, 그 외 외부 링크는 출처로 보아 각주처럼 작고 약하게(post-cite).
+    t = t.replace(/\[([^\]]+)\]\((https?:\/\/[^)\s]+|\/[^)\s]+)\)/g, (_m, text, url) => {
+      const external = /^https?:/.test(url);
+      const cite = external && !/supercoder\.co/i.test(url);
+      const cls = cite ? ' class="post-cite"' : "";
+      return external
+        ? `<a href="${url}" target="_blank" rel="noopener noreferrer"${cls}>${text}</a>`
+        : `<a href="${url}">${text}</a>`;
+    });
+    return t;
+  }).join("");
 }
 
 function isTable(lines: string[]): boolean {
@@ -129,6 +133,7 @@ export function renderContent(text: string | null | undefined): string {
 // 블로그·FAQ·약관 공용. authenticated 관리자만 작성하므로 신뢰된 HTML로 취급.
 export function renderBody(s: string | null | undefined): string {
   const body = String(s || "");
-  const looksHtml = /<(p|h[1-6]|ul|ol|li|div|table|tr|td|br|strong|em|b|i|u|a|img|blockquote|hr|figure)\b/i.test(body);
+  // <br> 단독으로는 마크다운 내 인라인 줄바꿈이므로 HTML 판별에서 제외
+  const looksHtml = /<(p|h[1-6]|ul|ol|li|div|table|tr|td|strong|em|b|i|u|a|img|blockquote|hr|figure)\b/i.test(body);
   return looksHtml ? body : renderContent(body);
 }
