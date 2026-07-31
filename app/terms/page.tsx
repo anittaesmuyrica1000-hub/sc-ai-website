@@ -22,7 +22,7 @@ export default async function TermsPage() {
     getLegalDoc("terms"),
     getLegalVersions("terms"),
   ]);
-  if (doc) return <LegalViewClient doc={doc} versions={versions} />;
+  if (doc) return <LegalViewClient doc={doc} versions={versions} basePath="/terms" />;
   return <TermsStatic />;
 }
 
