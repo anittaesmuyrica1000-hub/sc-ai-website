@@ -529,7 +529,7 @@ function Settings({ email }: { email: string }) {
         <h2>계정 정보</h2>
         <div className="set-row"><span>로그인 이메일</span><b>{email}</b></div>
         <div className="set-row"><span>권한</span><b>관리자</b></div>
-        <div className="hint" style={{ marginTop: 12 }}>로그인은 Google 계정으로만 가능합니다. 새 관리자는 아래 “관리자 계정 관리”에서 이메일만 추가하면 됩니다.</div>
+        <div className="hint" style={{ marginTop: 12 }}>로그인은 Google 계정으로만 가능합니다. 새 관리자는 아래 "관리자 계정 관리"에서 이메일만 추가하면 됩니다.</div>
       </div>
       <div className="card">
         <h2>관리자 계정 관리</h2>
@@ -702,15 +702,15 @@ function BlogManager() {
     if (!label || !label.trim()) return;
     const name = label.trim();
     const idx = customTpls.findIndex((t) => t.label === name);
-    if (idx >= 0 && !confirm(`이미 있는 “${name}” 템플릿을 현재 본문으로 덮어쓸까요?`)) return;
+    if (idx >= 0 && !confirm(`이미 있는 "${name}" 템플릿을 현재 본문으로 덮어쓸까요?`)) return;
     const item: CustomTemplate = { id: `${Date.now()}-${Math.random().toString(36).slice(2)}`, label: name, html: form.content };
     const next = idx >= 0 ? customTpls.map((t, i) => (i === idx ? { ...item, id: t.id } : t)) : [...customTpls, item];
     writeLocalTpls(next);
     setCustomTpls(next);
-    showMsg(`“${name}” 템플릿을 저장했습니다.`, true);
+    showMsg(`"${name}" 템플릿을 저장했습니다.`, true);
   }
   function deleteTpl(t: CustomTemplate) {
-    if (!confirm(`템플릿 “${t.label}”을(를) 삭제할까요?`)) return;
+    if (!confirm(`템플릿 "${t.label}"을(를) 삭제할까요?`)) return;
     const next = customTpls.filter((x) => x.id !== t.id);
     writeLocalTpls(next);
     setCustomTpls(next);
@@ -1018,9 +1018,9 @@ function BlogManager() {
           </div>
         )}
         {loadErr ? <div className="list-state">목록을 불러오지 못했습니다.</div> : posts.length === 0 ? (
-          <div className="list-state">아직 등록된 글이 없습니다. “새 글 작성”으로 시작해 보세요.</div>
+          <div className="list-state">아직 등록된 글이 없습니다. "새 글 작성"으로 시작해 보세요.</div>
         ) : shownPosts.length === 0 ? (
-          <div className="list-state">‘{query.trim()}’ 검색 결과가 없습니다.</div>
+          <div className="list-state">'{query.trim()}' 검색 결과가 없습니다.</div>
         ) : (
           <div className="adm-table-wrap">
             <table className="adm-table">
@@ -1253,7 +1253,7 @@ function UpdatesManager() {
         {loadErr ? (
           <div className="list-state">목록을 불러오지 못했습니다. (테이블 미생성 시 supabase/updates-setup.sql 실행 필요)</div>
         ) : items.length === 0 ? (
-          <div className="list-state">아직 등록된 업데이트가 없습니다. “새 업데이트 등록”으로 시작해 보세요.</div>
+          <div className="list-state">아직 등록된 업데이트가 없습니다. "새 업데이트 등록"으로 시작해 보세요.</div>
         ) : (
           <div className="adm-table-wrap">
             <table className="adm-table">
@@ -1391,7 +1391,7 @@ function FaqManager() {
       <div className="card list-card">
         <div className="list-head"><h2>등록된 FAQ</h2><span className="count">{items.length}개</span></div>
         {loadErr ? <div className="list-state">{loadErr}</div> : items.length === 0 ? (
-          <div className="list-state">아직 등록된 FAQ가 없습니다. “FAQ 추가”로 시작해 보세요.</div>
+          <div className="list-state">아직 등록된 FAQ가 없습니다. "FAQ 추가"로 시작해 보세요.</div>
         ) : (
           <div className="adm-table-wrap">
             <table className="adm-table">
@@ -1433,23 +1433,15 @@ const SLUG_RE = /^[a-z0-9-]+$/;
 
 function LegalManager() {
   const [items, setItems] = useState<LegalDoc[]>([]);
+  const [docVersions, setDocVersions] = useState<Record<string, LegalVersion[]>>({});
   const [form, setForm] = useState<LegalForm | null>(null);
   const [msg, setMsg] = useState<{ text: string; ok: boolean } | null>(null);
   const [saving, setSaving] = useState(false);
   const [loadErr, setLoadErr] = useState<string | null>(null);
-  const [versions, setVersions] = useState<LegalVersion[]>([]);
-  const [previewVer, setPreviewVer] = useState<LegalVersion | null>(null);
+  const [historyTarget, setHistoryTarget] = useState<LegalDoc | null>(null);
+  const [historyDetail, setHistoryDetail] = useState<LegalVersion | null>(null);
   const isEdit = !!form?.id;
   const isReserved = !!form && !!RESERVED_LEGAL_SLUGS[form.slug];
-
-  // 편집 중인 약관의 버전 이력 불러오기(테이블 미적용 시 조용히 빈 목록)
-  const loadVersions = useCallback(async (slug: string) => {
-    try {
-      const res = await supabase.from("legal_doc_versions").select("*").eq("slug", slug).order("version", { ascending: false });
-      if (res.error) throw res.error;
-      setVersions((res.data as LegalVersion[]) || []);
-    } catch { setVersions([]); }
-  }, []);
 
   const load = useCallback(async () => {
     try {
@@ -1457,44 +1449,33 @@ function LegalManager() {
       if (res.error) throw res.error;
       setItems((res.data as LegalDoc[]) || []);
       setLoadErr(null);
-    } catch (err) { console.error("legal load failed:", err); setLoadErr("약관 목록을 불러오지 못했습니다. legal_docs 테이블 마이그레이션(supabase/legal-setup.sql)이 적용됐는지 확인해 주세요."); }
+    } catch (err) { console.error("legal load failed:", err); setLoadErr("약관 목록을 불러오지 못했습니다. legal_docs 테이블 마이그레이션이 적용됐는지 확인해 주세요."); }
   }, []);
-  useEffect(() => { load(); }, [load]);
+
+  const loadVersions = useCallback(async () => {
+    try {
+      const res = await supabase.from("legal_doc_versions").select("*").order("version", { ascending: false });
+      if (!res.error && res.data) {
+        const bySlug: Record<string, LegalVersion[]> = {};
+        for (const v of res.data as LegalVersion[]) {
+          if (!bySlug[v.slug]) bySlug[v.slug] = [];
+          bySlug[v.slug].push(v);
+        }
+        setDocVersions(bySlug);
+      }
+    } catch { /* legal_doc_versions 없으면 무시 */ }
+  }, []);
+
+  useEffect(() => { load(); loadVersions(); }, [load, loadVersions]);
 
   function showMsg(text: string, ok: boolean) { setMsg({ text, ok }); if (ok) setTimeout(() => setMsg(null), 3000); }
   function set<K extends keyof LegalForm>(k: K, v: LegalForm[K]) { setForm((f) => (f ? { ...f, [k]: v } : f)); }
-  function enterNew() { setForm({ ...LEGAL_EMPTY }); setVersions([]); setMsg(null); }
+  function enterNew() { setForm({ ...LEGAL_EMPTY }); setMsg(null); }
   function enterEdit(it: LegalDoc) {
     setForm({ id: it.id, slug: it.slug, title: it.title, meta: it.meta || "", body: it.body, sort_order: String(it.sort_order ?? ""), published: it.published !== false, effective_date: it.effective_date || "" });
-    setVersions([]); loadVersions(it.slug);
     setMsg(null); window.scrollTo({ top: 0, behavior: "smooth" });
   }
-  function closeForm() { setForm(null); setVersions([]); setMsg(null); }
-  // 과거 버전 내용을 폼에 불러오기(되돌리기) — 저장하면 새 버전으로 기록됨
-  function restoreVersion(v: LegalVersion) {
-    if (!confirm(`v${v.version} 내용을 편집기로 불러올까요?\n저장하면 새 버전으로 기록됩니다(기존 이력은 보존).`)) return;
-    set("title", v.title); set("meta", v.meta || ""); set("body", v.body); set("effective_date", v.effective_date || "");
-    setPreviewVer(null); showMsg(`v${v.version} 내용을 불러왔습니다. 확인 후 저장하세요.`, true);
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  }
-  // 버전 스냅샷 삭제(이력만 제거 — 공개된 현재 약관 본문엔 영향 없음).
-  // 삭제 후 현재 약관의 버전 번호를 남은 스냅샷 최댓값으로 재정렬(남은 게 없으면 v1).
-  async function deleteVersion(v: LegalVersion) {
-    if (!form) return;
-    if (!confirm(`버전 v${v.version} 기록을 삭제할까요?\n이력에서만 사라지며 현재 공개 약관 본문에는 영향이 없습니다. (되돌릴 수 없음)`)) return;
-    try {
-      const del = await supabase.from("legal_doc_versions").delete().eq("id", v.id);
-      if (del.error) throw del.error;
-      const remaining = versions.filter((x) => x.id !== v.id);
-      const newVer = remaining.length ? Math.max(...remaining.map((x) => x.version)) : 1;
-      // 현재 약관의 표시 버전을 남은 이력에 맞게 정렬
-      await supabase.from("legal_docs").update({ version: newVer }).eq("slug", form.slug);
-      setVersions(remaining);
-      await load();
-      showMsg(remaining.length ? `v${v.version} 기록을 삭제했습니다. (현재 버전 v${newVer})` : "모든 버전 이력을 삭제해 현재 버전이 v1로 초기화됐습니다.", true);
-      setPreviewVer(null);
-    } catch (err) { console.error("version delete failed:", err); alert("버전 삭제에 실패했습니다. 관리자 권한 또는 테이블 설정을 확인해 주세요."); }
-  }
+  function closeForm() { setForm(null); setMsg(null); }
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault(); if (!form) return;
@@ -1502,34 +1483,48 @@ function LegalManager() {
     if (!slug || !SLUG_RE.test(slug)) { showMsg("slug는 영문 소문자·숫자·하이픈만 사용하세요. (예: marketing-terms)", false); return; }
     if (!form.title.trim() || !form.body.trim()) { showMsg("제목과 본문은 필수입니다.", false); return; }
     const order = form.sort_order.trim() === "" ? items.length + 1 : Number(form.sort_order);
-    // 버전 번호 = 이미 쌓인 스냅샷의 최대 + 1 → 첫 저장은 v1, 이후 v2·v3…
-    const maxVer = versions.length ? Math.max(...versions.map((v) => v.version)) : 0;
-    const newVersion = maxVer + 1;
     const effDate = form.effective_date.trim() || null;
-    const base: Record<string, unknown> = { slug, title: form.title.trim(), meta: form.meta.trim() || null, body: form.body, sort_order: Number.isFinite(order) ? order : 0, published: form.published };
-    const payload: Record<string, unknown> = { ...base, effective_date: effDate, version: newVersion };
     setSaving(true);
     try {
-      const run = (body: Record<string, unknown>) =>
-        form.id
-          ? supabase.from("legal_docs").update({ ...body, updated_at: new Date().toISOString() }).eq("id", form.id)
-          : supabase.from("legal_docs").insert(body);
-      let res = await run(payload);
-      // effective_date/version 컬럼 미적용 시 해당 값 빼고 재시도(저장은 막지 않음)
-      let versioned = true;
-      if (res.error && /effective_date|version|column/i.test(`${res.error.message} ${res.error.details || ""}`)) {
-        res = await run(base); versioned = false;
+      if (form.id) {
+        // 수정 전 현재 버전을 이력에 보관
+        const { data: cur } = await supabase.from("legal_docs").select("slug,version,title,meta,body,effective_date").eq("id", form.id).maybeSingle();
+        if (cur) {
+          const curDoc = cur as LegalDoc;
+          const curVer = typeof curDoc.version === "number" ? curDoc.version : 1;
+          const { error: archErr } = await supabase.from("legal_doc_versions").insert({
+            slug: curDoc.slug, version: curVer, title: curDoc.title,
+            meta: curDoc.meta ?? null, body: curDoc.body, effective_date: curDoc.effective_date ?? null,
+          });
+          if (archErr && !archErr.message?.includes("duplicate") && !archErr.message?.includes("unique")) {
+            console.warn("version archive:", archErr.message);
+          }
+          const newVer = curVer + 1;
+          const res = await supabase.from("legal_docs").update({
+            slug, title: form.title.trim(), meta: form.meta.trim() || null, body: form.body,
+            sort_order: Number.isFinite(order) ? order : 0, published: form.published,
+            effective_date: effDate, version: newVer, updated_at: new Date().toISOString(),
+          }).eq("id", form.id);
+          if (res.error) throw res.error;
+        } else {
+          const res = await supabase.from("legal_docs").update({
+            slug, title: form.title.trim(), meta: form.meta.trim() || null, body: form.body,
+            sort_order: Number.isFinite(order) ? order : 0, published: form.published,
+            effective_date: effDate, updated_at: new Date().toISOString(),
+          }).eq("id", form.id);
+          if (res.error) throw res.error;
+        }
+        showMsg("수정되었습니다. 이전 버전이 이력에 보관되었습니다.", true);
+      } else {
+        const res = await supabase.from("legal_docs").insert({
+          slug, title: form.title.trim(), meta: form.meta.trim() || null, body: form.body,
+          sort_order: Number.isFinite(order) ? order : 0, published: form.published,
+          effective_date: effDate, version: 1,
+        });
+        if (res.error) throw res.error;
+        showMsg("등록되었습니다.", true);
       }
-      if (res.error) throw res.error;
-      // 버전 스냅샷 적재(테이블 미적용이면 조용히 건너뜀)
-      if (versioned) {
-        try {
-          await supabase.from("legal_doc_versions").insert({ slug, version: newVersion, title: form.title.trim(), meta: form.meta.trim() || null, body: form.body, effective_date: effDate });
-        } catch { /* 버전 테이블 미적용 — 무시 */ }
-      }
-      showMsg(form.id ? `수정되었습니다 (v${newVersion}).` : "등록되었습니다 (v1).", true);
-      if (!versioned) alert("저장됐지만 버전·시행일은 보류됐어요.\nSupabase에 legal-versioning-setup.sql 적용 후 다시 저장하면 버전 기록이 시작됩니다.");
-      setForm(null); setVersions([]); await load();
+      setForm(null); await load(); await loadVersions();
     } catch (err) {
       console.error("legal save failed:", err);
       const dup = String((err as { message?: string })?.message || "").toLowerCase().includes("duplicate");
@@ -1539,9 +1534,15 @@ function LegalManager() {
 
   async function del(it: LegalDoc) {
     if (!confirm("이 약관을 삭제할까요? 되돌릴 수 없습니다.\n\n" + it.slug)) return;
-    try { const res = await supabase.from("legal_docs").delete().eq("id", it.id); if (res.error) throw res.error; if (form?.id === it.id) setForm(null); await load(); }
-    catch (err) { console.error("legal delete failed:", err); alert("삭제에 실패했습니다."); }
+    try {
+      const res = await supabase.from("legal_docs").delete().eq("id", it.id);
+      if (res.error) throw res.error;
+      if (form?.id === it.id) setForm(null);
+      await load();
+    } catch (err) { console.error("legal delete failed:", err); alert("삭제에 실패했습니다."); }
   }
+
+  const historyVersions = historyTarget ? (docVersions[historyTarget.slug] || []) : [];
 
   return (
     <>
@@ -1575,7 +1576,7 @@ function LegalManager() {
                 <input type="text" id="lg-meta" placeholder="예: 운영: 주식회사 세컨드팀" value={form.meta} onChange={(e) => set("meta", e.target.value)} />
               </div>
               <div className="field">
-                <label htmlFor="lg-eff">시행일 <span className="hint-inline">버전 기록·공개 표기에 사용</span></label>
+                <label htmlFor="lg-eff">시행일</label>
                 <input type="date" id="lg-eff" value={form.effective_date} onChange={(e) => set("effective_date", e.target.value)} />
               </div>
             </div>
@@ -1589,85 +1590,111 @@ function LegalManager() {
             />
             <label className="check"><input type="checkbox" checked={form.published} onChange={(e) => set("published", e.target.checked)} /> 공개(노출) — 해제 시 비공개</label>
             <div className="form-actions">
-              <button type="submit" className="btn btn-blue" disabled={saving}>{saving ? "저장 중…" : isEdit ? "수정 저장" : "등록하기"}</button>
+              <button type="submit" className="btn btn-blue" disabled={saving}>{saving ? "저장 중…" : isEdit ? "수정 저장 (이전 버전 이력 보관)" : "등록하기"}</button>
               <button type="button" className="btn btn-out" onClick={closeForm}>취소</button>
             </div>
           </form>
-
-          {isEdit && (
-            <div className="ver-panel">
-              <h3 className="ver-title"><i className="fa-solid fa-clock-rotate-left"></i> 버전 내역 {versions.length > 0 && <span className="count">{versions.length}개</span>}</h3>
-              {versions.length === 0 ? (
-                <p className="hint">아직 기록된 버전이 없습니다. 저장하면 버전이 쌓이기 시작합니다. (버전 기능은 <code>legal-versioning-setup.sql</code> 적용 필요)</p>
-              ) : (
-                <ul className="ver-list">
-                  {versions.map((v) => (
-                    <li key={v.id} className="ver-item">
-                      <span className="ver-no">v{v.version}</span>
-                      <span className="ver-date">{v.effective_date ? `시행 ${v.effective_date}` : "시행일 미지정"}</span>
-                      <span className="ver-at">{v.created_at ? fmtDate(v.created_at) : ""} 저장</span>
-                      <span className="ver-acts">
-                        <button type="button" className="btn btn-out btn-sm" onClick={() => setPreviewVer(v)}>보기</button>
-                        <button type="button" className="btn btn-out btn-sm" onClick={() => restoreVersion(v)}>되돌리기</button>
-                        <button type="button" className="btn btn-out btn-sm ver-del" onClick={() => deleteVersion(v)}>삭제</button>
-                      </span>
-                    </li>
-                  ))}
-                </ul>
-              )}
-              {versions.length > 0 && <p className="hint" style={{ marginTop: 12 }}>💡 버전을 모두 삭제하면 현재 버전이 <strong>v1로 초기화</strong>됩니다. (삭제는 이력만 지우며 공개 약관 본문엔 영향 없음)</p>}
-            </div>
-          )}
-        </div>
-      )}
-
-      {previewVer && (
-        <div className="ver-modal" onClick={() => setPreviewVer(null)}>
-          <div className="ver-modal-box" onClick={(e) => e.stopPropagation()}>
-            <div className="ver-modal-head">
-              <strong>v{previewVer.version} 미리보기 {previewVer.effective_date ? `· 시행 ${previewVer.effective_date}` : ""}</strong>
-              <button type="button" className="icon-btn" aria-label="닫기" onClick={() => setPreviewVer(null)}><i className="fa-solid fa-xmark"></i></button>
-            </div>
-            <div className="ver-modal-body">
-              <h2 dangerouslySetInnerHTML={{ __html: previewVer.title }} />
-              {previewVer.meta && <p className="ver-modal-meta">{previewVer.meta}</p>}
-              <div className="md-preview-body post-content" dangerouslySetInnerHTML={{ __html: renderBody(previewVer.body) }} />
-            </div>
-            <div className="ver-modal-foot">
-              <button type="button" className="btn btn-blue btn-sm" onClick={() => restoreVersion(previewVer)}>이 버전으로 되돌리기</button>
-              <button type="button" className="btn btn-out btn-sm" onClick={() => setPreviewVer(null)}>닫기</button>
-            </div>
-          </div>
         </div>
       )}
 
       <div className="card list-card">
         <div className="list-head"><h2>등록된 약관</h2><span className="count">{items.length}개</span></div>
         {loadErr ? <div className="list-state">{loadErr}</div> : items.length === 0 ? (
-          <div className="list-state">아직 등록된 약관이 없습니다. “약관 추가”로 시작하거나, 마이그레이션(supabase/legal-setup.sql)으로 기존 약관을 시드하세요.</div>
+          <div className="list-state">아직 등록된 약관이 없습니다. "약관 추가"로 시작하거나 SQL로 초기 데이터를 시드하세요.</div>
         ) : (
           <div className="adm-table-wrap">
             <table className="adm-table">
-              <thead><tr><th>정렬</th><th>제목</th><th>공개 경로</th><th>노출</th><th>수정일</th><th>관리</th></tr></thead>
+              <thead><tr><th>정렬</th><th>제목</th><th>공개 경로</th><th>버전 이력</th><th>노출</th><th>수정일</th><th>관리</th></tr></thead>
               <tbody>
-                {items.map((it) => (
-                  <tr key={it.id}>
-                    <td className="nowrap">{it.sort_order}</td>
-                    <td><div className="cell-title" dangerouslySetInnerHTML={{ __html: it.title }} /><div className="cell-sub">{it.slug}{RESERVED_LEGAL_SLUGS[it.slug] ? " · 예약" : ""}{it.version ? ` · v${it.version}` : ""}{it.effective_date ? ` · 시행 ${it.effective_date}` : ""}</div></td>
-                    <td className="nowrap"><a href={legalPath(it.slug)} target="_blank" rel="noopener noreferrer">{legalPath(it.slug)}</a></td>
-                    <td className="nowrap">{it.published === false ? <span className="pill pill-gray">비공개</span> : <span className="pill pill-green">공개</span>}</td>
-                    <td className="nowrap">{it.updated_at ? fmtDate(it.updated_at) : "—"}</td>
-                    <td className="nowrap"><div className="row-actions">
-                      <button className="icon-btn" title="수정" onClick={() => enterEdit(it)}><i className="fa-solid fa-pen"></i></button>
-                      <button className="icon-btn del" title="삭제" onClick={() => del(it)}><i className="fa-solid fa-trash"></i></button>
-                    </div></td>
-                  </tr>
-                ))}
+                {items.map((it) => {
+                  const vers = docVersions[it.slug] || [];
+                  const isRes = !!RESERVED_LEGAL_SLUGS[it.slug];
+                  return (
+                    <tr key={it.id}>
+                      <td className="nowrap">{it.sort_order}</td>
+                      <td>
+                        <div className="cell-title" dangerouslySetInnerHTML={{ __html: it.title }} />
+                        <div className="cell-sub">{it.slug}{isRes ? " · 예약" : ""}{it.effective_date ? ` · 시행 ${it.effective_date}` : ""}</div>
+                      </td>
+                      <td className="nowrap"><a href={legalPath(it.slug)} target="_blank" rel="noopener noreferrer">{legalPath(it.slug)}</a></td>
+                      <td>
+                        <div style={{ display: "flex", flexDirection: "column", gap: 3, minWidth: 110 }}>
+                          <span className="pill pill-blue" style={{ fontSize: 11 }}>현재 {it.effective_date || "—"}</span>
+                          {vers.length > 0 && (
+                            <button className="link-btn" style={{ fontSize: 11, textAlign: "left", color: "var(--slate)" }}
+                              onClick={() => { setHistoryTarget(it); setHistoryDetail(null); }}>
+                              <i className="fa-solid fa-clock-rotate-left"></i> 이전 {vers.length}건
+                            </button>
+                          )}
+                        </div>
+                      </td>
+                      <td className="nowrap">{it.published === false ? <span className="pill pill-gray">비공개</span> : <span className="pill pill-green">공개</span>}</td>
+                      <td className="nowrap">{it.updated_at ? fmtDate(it.updated_at) : "—"}</td>
+                      <td className="nowrap">
+                        <div className="row-actions">
+                          <button className="icon-btn" title="수정" onClick={() => enterEdit(it)}><i className="fa-solid fa-pen"></i></button>
+                          {!isRes && <button className="icon-btn del" title="삭제" onClick={() => del(it)}><i className="fa-solid fa-trash"></i></button>}
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>
         )}
       </div>
+
+      {/* 버전 이력 모달 */}
+      {historyTarget && (
+        <div className="bro-bg" onClick={() => { setHistoryTarget(null); setHistoryDetail(null); }}>
+          <div className="bro-modal" style={{ maxWidth: 640, width: "95vw" }} onClick={(e) => e.stopPropagation()}>
+            <div className="bro-head">
+              <span className="bro-title"><i className="fa-solid fa-clock-rotate-left"></i> 약관 이력 — <code style={{ fontSize: "0.85em" }}>{historyTarget.slug}</code></span>
+              <button className="bro-close" onClick={() => { setHistoryTarget(null); setHistoryDetail(null); }}>×</button>
+            </div>
+            <div style={{ padding: "16px 20px", maxHeight: "70vh", overflowY: "auto" }}>
+              {!historyDetail ? (
+                <>
+                  <p style={{ color: "var(--slate)", fontSize: 13, marginBottom: 12 }}>수정 저장 시 이전 버전이 자동으로 보관됩니다.</p>
+                  {/* 현재 버전 */}
+                  <div style={{ display: "flex", alignItems: "center", gap: 10, padding: "10px 12px", background: "var(--bg-soft,#f8f9fa)", borderRadius: 8, marginBottom: 6 }}>
+                    <span className="pill pill-green" style={{ fontSize: 11 }}>현재</span>
+                    <span style={{ fontWeight: 600, fontSize: 13 }}>{historyTarget.effective_date || "날짜 미지정"}</span>
+                    <span style={{ color: "var(--slate)", fontSize: 12, marginLeft: "auto" }}>수정 {historyTarget.updated_at ? fmtDate(historyTarget.updated_at) : "—"}</span>
+                  </div>
+                  {/* 이전 버전들 */}
+                  {historyVersions.length === 0 ? (
+                    <p style={{ color: "var(--slate)", fontSize: 13, padding: "8px 0" }}>보관된 이전 버전이 없습니다.</p>
+                  ) : historyVersions.map((v) => (
+                    <div key={v.id} style={{ display: "flex", alignItems: "center", gap: 10, padding: "10px 12px", border: "1px solid var(--rule,#e5e7eb)", borderRadius: 8, marginBottom: 6 }}>
+                      <span className="pill pill-gray" style={{ fontSize: 11 }}>v{v.version}</span>
+                      <span style={{ fontWeight: 600, fontSize: 13 }}>{v.effective_date || "날짜 미지정"}</span>
+                      <span style={{ color: "var(--slate)", fontSize: 12 }}>보관 {v.created_at ? fmtDate(v.created_at) : "—"}</span>
+                      <button className="btn btn-out btn-sm" style={{ marginLeft: "auto", fontSize: 12 }} onClick={() => setHistoryDetail(v)}>
+                        <i className="fa-solid fa-eye"></i> 내용 보기
+                      </button>
+                    </div>
+                  ))}
+                </>
+              ) : (
+                <>
+                  <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 12 }}>
+                    <button className="btn btn-out btn-sm" onClick={() => setHistoryDetail(null)}>
+                      <i className="fa-solid fa-arrow-left"></i> 목록
+                    </button>
+                    <span style={{ fontWeight: 600, fontSize: 13 }}>v{historyDetail.version} · {historyDetail.effective_date || "날짜 미지정"}</span>
+                  </div>
+                  <pre style={{ fontFamily: "inherit", whiteSpace: "pre-wrap", wordBreak: "break-word", fontSize: 12, lineHeight: 1.6, margin: 0, color: "var(--ink)", background: "var(--bg-soft,#f8f9fa)", borderRadius: 6, padding: "12px 14px", maxHeight: 420, overflowY: "auto" }}>{historyDetail.body}</pre>
+                </>
+              )}
+            </div>
+            <div className="bro-foot">
+              <button className="btn btn-out" onClick={() => { setHistoryTarget(null); setHistoryDetail(null); }}>닫기</button>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 }

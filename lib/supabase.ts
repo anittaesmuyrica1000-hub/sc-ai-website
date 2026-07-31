@@ -117,7 +117,7 @@ export type LegalDoc = {
   updated_at?: string | null;
 };
 
-// 약관 버전 스냅샷(legal_doc_versions) — 저장할 때마다 1줄 적재
+// 약관 버전 이력(legal_doc_versions) 타입
 export type LegalVersion = {
   id: string;
   slug: string;
