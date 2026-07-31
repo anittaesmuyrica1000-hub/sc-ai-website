@@ -1590,7 +1590,7 @@ function LegalManager() {
             />
             <label className="check"><input type="checkbox" checked={form.published} onChange={(e) => set("published", e.target.checked)} /> 공개(노출) — 해제 시 비공개</label>
             <div className="form-actions">
-              <button type="submit" className="btn btn-blue" disabled={saving}>{saving ? "저장 중…" : isEdit ? "수정 저장 (이전 버전 이력 보관)" : "등록하기"}</button>
+              <button type="submit" className="btn btn-blue" disabled={saving}>{saving ? "저장 중…" : isEdit ? "수정 저장 (이전 이력 보관)" : "등록하기"}</button>
               <button type="button" className="btn btn-out" onClick={closeForm}>취소</button>
             </div>
           </form>
@@ -1604,7 +1604,7 @@ function LegalManager() {
         ) : (
           <div className="adm-table-wrap">
             <table className="adm-table">
-              <thead><tr><th>정렬</th><th>제목</th><th>공개 경로</th><th>버전 이력</th><th>노출</th><th>수정일</th><th>관리</th></tr></thead>
+              <thead><tr><th>정렬</th><th>제목</th><th>공개 경로</th><th>변경 이력</th><th>노출</th><th>수정일</th><th>관리</th></tr></thead>
               <tbody>
                 {items.map((it) => {
                   const vers = docVersions[it.slug] || [];
@@ -1656,7 +1656,7 @@ function LegalManager() {
             <div style={{ padding: "16px 20px", maxHeight: "70vh", overflowY: "auto" }}>
               {!historyDetail ? (
                 <>
-                  <p style={{ color: "var(--slate)", fontSize: 13, marginBottom: 12 }}>수정 저장 시 이전 버전이 자동으로 보관됩니다.</p>
+                  <p style={{ color: "var(--slate)", fontSize: 13, marginBottom: 12 }}>수정 저장 시 이전 이력이 자동으로 보관됩니다.</p>
                   {/* 현재 버전 */}
                   <div style={{ display: "flex", alignItems: "center", gap: 10, padding: "10px 12px", background: "var(--bg-soft,#f8f9fa)", borderRadius: 8, marginBottom: 6 }}>
                     <span className="pill pill-green" style={{ fontSize: 11 }}>현재</span>
