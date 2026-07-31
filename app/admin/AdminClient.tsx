@@ -1454,7 +1454,7 @@ function LegalManager() {
 
   const loadVersions = useCallback(async () => {
     try {
-      const res = await supabase.from("legal_doc_versions").select("*").order("version", { ascending: false });
+      const res = await supabase.from("legal_doc_versions").select("*").order("effective_date", { ascending: false, nullsFirst: false });
       if (!res.error && res.data) {
         const bySlug: Record<string, LegalVersion[]> = {};
         for (const v of res.data as LegalVersion[]) {
@@ -1668,7 +1668,6 @@ function LegalManager() {
                     <p style={{ color: "var(--slate)", fontSize: 13, padding: "8px 0" }}>보관된 이전 버전이 없습니다.</p>
                   ) : historyVersions.map((v) => (
                     <div key={v.id} style={{ display: "flex", alignItems: "center", gap: 10, padding: "10px 12px", border: "1px solid var(--rule,#e5e7eb)", borderRadius: 8, marginBottom: 6 }}>
-                      <span className="pill pill-gray" style={{ fontSize: 11 }}>v{v.version}</span>
                       <span style={{ fontWeight: 600, fontSize: 13 }}>{v.effective_date || "날짜 미지정"}</span>
                       <span style={{ color: "var(--slate)", fontSize: 12 }}>보관 {v.created_at ? fmtDate(v.created_at) : "—"}</span>
                       <button className="btn btn-out btn-sm" style={{ marginLeft: "auto", fontSize: 12 }} onClick={() => setHistoryDetail(v)}>
@@ -1683,7 +1682,7 @@ function LegalManager() {
                     <button className="btn btn-out btn-sm" onClick={() => setHistoryDetail(null)}>
                       <i className="fa-solid fa-arrow-left"></i> 목록
                     </button>
-                    <span style={{ fontWeight: 600, fontSize: 13 }}>v{historyDetail.version} · {historyDetail.effective_date || "날짜 미지정"}</span>
+                    <span style={{ fontWeight: 600, fontSize: 13 }}>{historyDetail.effective_date || "날짜 미지정"}</span>
                   </div>
                   <pre style={{ fontFamily: "inherit", whiteSpace: "pre-wrap", wordBreak: "break-word", fontSize: 12, lineHeight: 1.6, margin: 0, color: "var(--ink)", background: "var(--bg-soft,#f8f9fa)", borderRadius: 6, padding: "12px 14px", maxHeight: 420, overflowY: "auto" }}>{historyDetail.body}</pre>
                 </>
