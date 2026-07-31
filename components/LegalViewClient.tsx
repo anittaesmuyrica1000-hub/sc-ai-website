@@ -49,22 +49,18 @@ export default function LegalViewClient({ doc, versions, selectedVersion, basePa
   const effectiveDate = activeVersion ? activeVersion.effective_date : doc.effective_date;
   const versionNum = activeVersion ? activeVersion.version : doc.version;
 
-  const latestLabel = `최신 버전${doc.effective_date ? ` · ${doc.effective_date}` : doc.version ? ` (v${doc.version})` : ""}`;
+  const latestLabel = `최신${doc.effective_date ? ` · ${doc.effective_date}` : ""}`;
   const triggerDate = activeVersion
     ? fmtEffective(activeVersion)
-    : (doc.effective_date || (doc.version ? `v${doc.version}` : ""));
+    : (doc.effective_date || "—");
 
   return (
     <main className="legal">
       <div className="legal-head">
         <h1 dangerouslySetInnerHTML={{ __html: title }} />
         {meta && <p className="legal-meta">{meta}</p>}
-        {(effectiveDate || versionNum) && (
-          <p className="legal-version">
-            {effectiveDate ? `시행일 ${effectiveDate}` : ""}
-            {effectiveDate && versionNum ? " · " : ""}
-            {versionNum ? `버전 v${versionNum}` : ""}
-          </p>
+        {effectiveDate && (
+          <p className="legal-version">시행일 {effectiveDate}</p>
         )}
       </div>
 
@@ -82,7 +78,7 @@ export default function LegalViewClient({ doc, versions, selectedVersion, basePa
                       className={!selectedVersion ? "active" : ""}
                       onClick={() => setPickerOpen(false)}
                     >
-                      {doc.effective_date || `v${doc.version}`}
+                      {doc.effective_date || "최신"}
                     </Link>
                   </li>
                   {historyVersions.map((v) => (
