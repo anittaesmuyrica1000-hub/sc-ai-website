@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { getLegalDoc, getLegalVersions } from "@/lib/legal";
+import { getLegalDoc, getLegalVersions, versionToDoc } from "@/lib/legal";
 import LegalViewClient from "@/components/LegalViewClient";
 import { buildPageMetadata } from "@/lib/pageSeo";
 
@@ -16,13 +16,14 @@ export function generateMetadata() {
   return buildPageMetadata("/terms", FALLBACK_METADATA);
 }
 
-// DB(legal_docs)에 'terms' 약관이 있으면 그것을, 없으면 아래 정적 콘텐츠로 폴백
+// DB(legal_docs)에 'terms'가 있으면 그것을, 없으면 legal_doc_versions 최신 버전을 합성해 피커 표시
 export default async function TermsPage() {
   const [doc, versions] = await Promise.all([
     getLegalDoc("terms"),
     getLegalVersions("terms"),
   ]);
-  if (doc) return <LegalViewClient doc={doc} versions={versions} basePath="/terms" />;
+  const effectiveDoc = doc ?? (versions.length > 0 ? versionToDoc(versions[0]) : null);
+  if (effectiveDoc) return <LegalViewClient doc={effectiveDoc} versions={versions} basePath="/terms" />;
   return <TermsStatic />;
 }
 

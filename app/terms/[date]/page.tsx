@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { getLegalDoc, getLegalVersions } from "@/lib/legal";
+import { getLegalDoc, getLegalVersions, versionToDoc } from "@/lib/legal";
 import LegalViewClient from "@/components/LegalViewClient";
 import { buildPageMetadata } from "@/lib/pageSeo";
 
@@ -22,11 +22,12 @@ export default async function TermsDatePage({ params }: { params: Promise<{ date
     getLegalDoc("terms"),
     getLegalVersions("terms"),
   ]);
-  if (!doc) return notFound();
-  if (doc.effective_date === date) {
-    return <LegalViewClient doc={doc} versions={versions} basePath="/terms" />;
+  const effectiveDoc = doc ?? (versions.length > 0 ? versionToDoc(versions[0]) : null);
+  if (!effectiveDoc) return notFound();
+  if (effectiveDoc.effective_date === date) {
+    return <LegalViewClient doc={effectiveDoc} versions={versions} basePath="/terms" />;
   }
   const ver = versions.find((v) => v.effective_date === date);
   if (!ver) return notFound();
-  return <LegalViewClient doc={doc} versions={versions} selectedVersion={ver} basePath="/terms" />;
+  return <LegalViewClient doc={effectiveDoc} versions={versions} selectedVersion={ver} basePath="/terms" />;
 }
