@@ -104,10 +104,12 @@
   .upd-content .post-code{background:#FAFBFC;border:1px solid #EEF1F5;border-radius:12px;padding:18px 20px;margin:0 0 22px;overflow-x:auto}
   .upd-content .post-code code{display:block;font-family:'SFMono-Regular',Consolas,'D2Coding','Noto Sans KR',monospace;font-size:14px;line-height:1.75;color:#3D4557;white-space:pre-wrap;word-break:break-word}
   .upd-content .post-table-wrap{margin:8px 0 28px;overflow-x:auto;border:1px solid var(--line);border-radius:12px}
-  .upd-content .post-table{width:100%;border-collapse:collapse;font-size:15px;line-height:1.55}
-  .upd-content .post-table th,.upd-content .post-table td{padding:13px 16px;text-align:left;border-bottom:1px solid var(--line)}
-  .upd-content .post-table thead th{background:var(--soft-2);color:var(--ink);font-weight:800;font-size:13.5px;white-space:nowrap}
-  .upd-content .post-table tbody tr:last-child td{border-bottom:none}
+  .upd-content .post-table,.upd-content table{width:100%;border-collapse:collapse;font-size:15px;line-height:1.55}
+  .upd-content .post-table th,.upd-content .post-table td,.upd-content th,.upd-content td{padding:13px 16px;text-align:left;border-bottom:1px solid var(--line)}
+  .upd-content .post-table thead th,.upd-content thead th{background:var(--soft-2);color:var(--ink);font-weight:800;font-size:13.5px;white-space:nowrap}
+  .upd-content .post-table tbody tr:last-child td,.upd-content tbody tr:last-child td{border-bottom:none}
+  /* 클래스 없는 plain <table> 폴백 — 외곽 테두리 */
+  .upd-content table:not(.post-table){margin:8px 0 28px;border:1px solid var(--line);display:block;overflow-x:auto}
 
   /* 반응형 — 좁은 폭(모바일)에선 좌측 목록을 숨기고 가운데 본문만. 앱 셸 해제(일반 흐름·푸터 복원). */
   @media(max-width:760px){
