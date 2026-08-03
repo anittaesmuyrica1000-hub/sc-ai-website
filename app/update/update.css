@@ -109,7 +109,7 @@
   .upd-content .post-table thead th,.upd-content thead th{background:var(--soft-2);color:var(--ink);font-weight:800;font-size:13.5px;white-space:nowrap}
   .upd-content .post-table tbody tr:last-child td,.upd-content tbody tr:last-child td{border-bottom:none}
   /* 클래스 없는 plain <table> 폴백 — 외곽 테두리 */
-  .upd-content table:not(.post-table){margin:8px 0 28px;border:1px solid var(--line);display:block;overflow-x:auto}
+  .upd-content table:not(.post-table){margin:8px 0 28px;border:1px solid var(--line)}
 
   /* 반응형 — 좁은 폭(모바일)에선 좌측 목록을 숨기고 가운데 본문만. 앱 셸 해제(일반 흐름·푸터 복원). */
   @media(max-width:760px){
