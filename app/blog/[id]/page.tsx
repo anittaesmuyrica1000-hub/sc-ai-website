@@ -17,11 +17,14 @@ async function getAdjacentPosts(currentCreatedAt: string): Promise<{ prev: PostN
   try {
     const [prevRes, nextRes] = await Promise.all([
       supabase.from("posts").select("id, slug, title, cover_url, created_at").eq("published", true)
-        .lt("created_at", currentCreatedAt).order("created_at", { ascending: false }).limit(1).maybeSingle(),
+        .lt("created_at", currentCreatedAt).order("created_at", { ascending: false }).limit(2),
       supabase.from("posts").select("id, slug, title, cover_url, created_at").eq("published", true)
         .gt("created_at", currentCreatedAt).order("created_at", { ascending: true }).limit(1).maybeSingle(),
     ]);
-    return { prev: prevRes.data ?? null, next: nextRes.data ?? null };
+    const prevList = prevRes.data ?? [];
+    const next = nextRes.data ?? null;
+    // 이후 글이 없으면 이전 글 2개 표시 (최신 글도 항상 카드 2개 유지)
+    return { prev: prevList[0] ?? null, next: next ?? prevList[1] ?? null };
   } catch {
     return { prev: null, next: null };
   }
