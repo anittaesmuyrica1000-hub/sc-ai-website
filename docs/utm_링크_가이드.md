@@ -68,7 +68,6 @@ https://www.supercoder.co/?utm_source=stibee&utm_medium=email&utm_campaign=캠�
 2. **어드민 → 소개서 리드**: 동일하게 "유입" 열 + CSV.
 3. **GA4**: 보고서 → 획득 → 트래픽 획득(세션 소스/매체), 전환 이벤트 `apply_lead`·`brochure_lead` 분석.
 
-## DB 마이그레이션 (1회 필요)
+## DB 마이그레이션 (적용 완료)
 
-`brochure_requests`에는 UTM 컬럼이 아직 없다(`signups`는 적용 완료). Supabase 대시보드 → SQL Editor에서 `supabase/brochure-utm-setup.sql` 실행.
-컬럼 추가 전에도 소개서 신청 자체는 정상 동작한다(UTM 없이 저장하는 폴백 있음).
+`signups`·`brochure_requests` 모두 UTM 컬럼 적용 완료(brochure는 2026-08-06 `supabase/brochure-utm-setup.sql` 실행). 추가 작업 불필요.
