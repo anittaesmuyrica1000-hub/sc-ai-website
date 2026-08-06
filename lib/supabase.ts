@@ -83,7 +83,7 @@ export type Signup = {
 // 도입문의 상담 상태 값
 export const SIGNUP_STATUSES = ["신규", "확인 완료", "상담 진행", "완료", "보류"] as const;
 
-// UTM 추적 파라미터 키(접수 시 /apply URL에서 읽어 signups에 저장)
+// UTM 추적 파라미터 키(유입 URL에서 읽어 signups·brochure_requests에 저장. lib/utm.ts 참고)
 export const UTM_KEYS = ["utm_source", "utm_medium", "utm_campaign", "utm_id", "utm_term", "utm_content"] as const;
 export const UTM_LABEL: Record<string, string> = {
   utm_source: "소스", utm_medium: "매체", utm_campaign: "캠페인",
@@ -100,6 +100,12 @@ export type BrochureRequest = {
   role?: string | null;
   phone?: string | null;
   size?: string | null;
+  utm_source?: string | null;
+  utm_medium?: string | null;
+  utm_campaign?: string | null;
+  utm_id?: string | null;
+  utm_term?: string | null;
+  utm_content?: string | null;
 };
 
 // 약관(법적 문서) 타입 — admin 관리 + 법적 페이지 렌더

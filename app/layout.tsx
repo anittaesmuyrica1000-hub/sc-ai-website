@@ -5,6 +5,7 @@ import SiteFooter from "@/components/SiteFooter";
 import Chatbot from "@/components/Chatbot";
 import Analytics from "@/components/Analytics";
 import CookieBanner from "@/components/CookieBanner";
+import UtmCapture from "@/components/UtmCapture";
 
 const SITE_URL = "https://www.supercoder.co";
 
@@ -71,6 +72,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <Chatbot />
         <Analytics />
         <CookieBanner />
+        <UtmCapture />
       </body>
     </html>
   );

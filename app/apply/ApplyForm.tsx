@@ -2,10 +2,9 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { supabase, UTM_KEYS } from "@/lib/supabase";
+import { supabase } from "@/lib/supabase";
 import { trackEvent } from "@/lib/track";
-
-type Utm = Partial<Record<(typeof UTM_KEYS)[number], string>>;
+import { getUtm, type Utm } from "@/lib/utm";
 
 const emailRe = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
 
@@ -34,12 +33,8 @@ export default function ApplyForm() {
         company: qp.get("company") || f.company,
         email: qp.get("email") || f.email,
       }));
-      // UTM 유입 파라미터 캡처(있는 값만). 광고→/apply 직접 유입 링크 기준.
-      const u: Utm = {};
-      for (const k of UTM_KEYS) {
-        const v = (qp.get(k) || "").trim();
-        if (v) u[k] = v.slice(0, 300);
-      }
+      // UTM 유입 파라미터 캡처 — /apply URL 우선, 없으면 랜딩 등에서 세션에 저장된 값(lib/utm).
+      const u = getUtm();
       if (Object.keys(u).length) setUtm(u);
     } catch {}
   }, []);
