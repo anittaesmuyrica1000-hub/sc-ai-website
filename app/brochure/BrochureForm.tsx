@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { trackEvent } from "@/lib/track";
+import { getUtm, type Utm } from "@/lib/utm";
 
 // 서비스소개서 리드 폼(페이지판). 기존 모달과 동일하게 /api/send-brochure 호출 →
 // 회사 이메일로 보안 링크 전송. 모달과 달리 고유 URL(/brochure)이 있어 GA·UTM 추적이 가능하다.
@@ -20,7 +21,14 @@ export default function BrochureForm() {
   const [sending, setSending] = useState(false);
   const [done, setDone] = useState(false);
   const [honeypot, setHoneypot] = useState("");
+  const [utm, setUtm] = useState<Utm>({});
   const mountTime = useRef(Date.now());
+
+  // UTM 유입 파라미터 캡처 — /brochure URL 우선, 없으면 랜딩 등에서 세션에 저장된 값(lib/utm).
+  useEffect(() => {
+    const u = getUtm();
+    if (Object.keys(u).length) setUtm(u);
+  }, []);
 
   function set<K extends keyof Fields>(k: K, v: string) {
     setFields((f) => ({ ...f, [k]: v }));
@@ -60,7 +68,7 @@ export default function BrochureForm() {
       const res = await fetch("/api/send-brochure", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
+        body: JSON.stringify({ ...payload, ...utm }),
       });
       const j = await res.json().catch(() => null);
       if (!res.ok || !j?.ok) {

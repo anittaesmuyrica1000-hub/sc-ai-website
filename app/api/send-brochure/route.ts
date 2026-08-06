@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 import { sendMail, mailerConfigured } from "@/lib/mailer";
+import { UTM_KEYS } from "@/lib/supabase";
 
 // 서비스소개서 발송 API — 회사 이메일로 소개서(현재본) 보안 링크(7일 만료)를 전송.
 // 발송 방식 2가지 지원(우선순위):
@@ -33,6 +34,13 @@ export async function POST(req: Request) {
   const role = String(body.role ?? "").trim() || null;
   const phone = String(body.phone ?? "").trim() || null;
   const size = String(body.size ?? "").trim();
+
+  // UTM 유입 파라미터(있는 값만) — 리드 저장·관리자 알림에 함께 기록
+  const utm: Record<string, string> = {};
+  for (const k of UTM_KEYS) {
+    const v = String(body[k] ?? "").trim();
+    if (v) utm[k] = v.slice(0, 300);
+  }
 
   if (!name || !company || !size) return bad("필수 항목을 입력해 주세요.");
   if (!emailRe.test(email)) return bad("올바른 이메일을 입력해 주세요.");
@@ -77,10 +85,14 @@ export async function POST(req: Request) {
   const link = signed.signedUrl;
 
   // 3) 리드 저장(베스트 에포트 — 실패해도 메일 발송은 진행)
-  const { error: insErr } = await admin
-    .from("brochure_requests")
-    .insert({ name, company, email, role, phone, size });
-  if (insErr) console.error("send-brochure: 리드 저장 실패(무시)", insErr);
+  // UTM 포함 저장 시도. brochure_requests에 UTM 컬럼이 아직 없으면(마이그레이션 미적용)
+  // 실패할 수 있으므로, 그 경우 UTM 없이 재시도해 리드 유실을 방지한다.
+  let ins = await admin.from("brochure_requests").insert({ name, company, email, role, phone, size, ...utm });
+  if (ins.error && Object.keys(utm).length) {
+    console.warn("send-brochure: utm 포함 리드 저장 실패, utm 없이 재시도", ins.error);
+    ins = await admin.from("brochure_requests").insert({ name, company, email, role, phone, size });
+  }
+  if (ins.error) console.error("send-brochure: 리드 저장 실패(무시)", ins.error);
 
   // 4) 메일 본문
   const subject = "[Supercoder] 요청하신 서비스소개서를 보내드립니다";
@@ -121,7 +133,7 @@ export async function POST(req: Request) {
       subject: `[소개서 신청] ${company} · ${name}`,
       html: `<div style="font-family:Pretendard,Arial,sans-serif;font-size:14px;color:#1f2a44;word-break:keep-all">
         <h2 style="font-size:16px">서비스소개서 신청</h2>
-        <p>회사: <b>${esc(company)}</b><br/>이름: ${esc(name)}<br/>이메일: ${esc(email)}<br/>연락처: ${esc(phone || "-")}<br/>직책: ${esc(role || "-")}<br/>규모: ${esc(size)}</p>
+        <p>회사: <b>${esc(company)}</b><br/>이름: ${esc(name)}<br/>이메일: ${esc(email)}<br/>연락처: ${esc(phone || "-")}<br/>직책: ${esc(role || "-")}<br/>규모: ${esc(size)}${Object.keys(utm).length ? `<br/>유입: ${esc(UTM_KEYS.filter((k) => utm[k]).map((k) => `${k}=${utm[k]}`).join(", "))}` : ""}</p>
       </div>`,
     }).catch((e) => console.error("send-brochure: 관리자 알림 실패(무시)", e));
   }
