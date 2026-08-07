@@ -39,14 +39,9 @@ export default async function HomePage() {
         sameAs: [],
       },
       { "@type": "WebSite", name: "AI면접", url: "https://www.supercoder.co/", inLanguage: "ko-KR" },
-      {
-        "@type": "SoftwareApplication",
-        name: "AI면접",
-        applicationCategory: "BusinessApplication",
-        operatingSystem: "Web",
-        description: "AI 면접 기반 채용 검증 솔루션. 지원자를 자동 검증하고 핵심 인재 리포트를 제공합니다.",
-        offers: { "@type": "Offer", price: "0", priceCurrency: "KRW", description: "무료 도입 신청" },
-      },
+      // SoftwareApplication 스키마 제거(2026-08-07 SEO 진단): Google 리치 결과가
+      // aggregateRating/review를 요구하나 실데이터 없이 넣는 건 가이드라인 위반.
+      // 고객 평점 데이터 확보 시 aggregateRating과 함께 복원.
       {
         "@type": "FAQPage",
         mainEntity: faqs.map((f) => ({
