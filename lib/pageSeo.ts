@@ -23,9 +23,19 @@ const v = (s?: string | null) => {
   return t.length ? t : undefined;
 };
 
+// 사이트 공통 OG 기본값 — layout.tsx의 openGraph와 일치 유지.
+// Next.js는 페이지 metadata의 openGraph가 있으면 layout 것을 통째로 교체하므로,
+// 여기서 기본값을 함께 넣지 않으면 og:type·og:site_name·og:url·og:locale이 유실된다.
+const SITE_URL = "https://www.supercoder.co";
+const OG_DEFAULTS = {
+  type: "website",
+  siteName: "AI면접",
+  locale: "ko_KR",
+} as const;
+
 // 코드 기본 metadata 위에 어드민 초안(seo)을 덮어쓴다.
 // 어드민에서 비워 둔 필드는 fallback 값을 유지한다(부분 override).
-export function mergeSeo(fallback: Metadata, seo: PageSeo | null): Metadata {
+export function mergeSeo(fallback: Metadata, seo: PageSeo | null, path?: string): Metadata {
   if (!seo) return fallback;
 
   const title = v(seo.title) ?? (fallback.title as string | undefined);
@@ -42,6 +52,8 @@ export function mergeSeo(fallback: Metadata, seo: PageSeo | null): Metadata {
     ...(title !== undefined ? { title } : {}),
     ...(description !== undefined ? { description } : {}),
     openGraph: {
+      ...OG_DEFAULTS,
+      url: path !== undefined ? `${SITE_URL}${path === "/" ? "" : path}` : SITE_URL,
       ...fbOg,
       ...(ogTitle !== undefined ? { title: ogTitle } : {}),
       ...(ogDescription !== undefined ? { description: ogDescription } : {}),
@@ -61,5 +73,5 @@ export function mergeSeo(fallback: Metadata, seo: PageSeo | null): Metadata {
 // 한 번에: 경로의 초안을 조회해 fallback 에 병합한 Metadata 반환.
 export async function buildPageMetadata(path: string, fallback: Metadata): Promise<Metadata> {
   const seo = await getPageSeo(path);
-  return mergeSeo(fallback, seo);
+  return mergeSeo(fallback, seo, path);
 }

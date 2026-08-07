@@ -1,9 +1,24 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
+  // 프레임워크 정보(X-Powered-By: Next.js) 노출 제거 — 버전별 취약점 탐색 방지
+  poweredByHeader: false,
   // 정적 호스팅 기반(이미지 외부 도메인 cover_url 허용)
   images: {
     remotePatterns: [{ protocol: "https", hostname: "**" }],
+  },
+  // 보안 헤더 (SEO 진단 2026-08-07: 클릭재킹·MIME 스니핑·리퍼러 노출 방지)
+  async headers() {
+    return [
+      {
+        source: "/(.*)",
+        headers: [
+          { key: "X-Frame-Options", value: "SAMEORIGIN" },
+          { key: "X-Content-Type-Options", value: "nosniff" },
+          { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
+        ],
+      },
+    ];
   },
   // 구 정적 사이트의 .html URL을 새 라우트로 영구 리다이렉트 (SEO·기존 인바운드 링크 보존)
   async redirects() {
