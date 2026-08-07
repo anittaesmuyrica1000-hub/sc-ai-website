@@ -27,8 +27,13 @@ function buildSnippet(raw: string): string {
   return "";
 }
 
-function hasConsent() {
-  return typeof localStorage !== "undefined" && localStorage.getItem("cookie_consent") === "all";
+// Consent Mode v2: gtag는 항상 로드하되, 배너에서 '허용'을 누른 방문자만
+// analytics_storage를 granted로 둔다. 거부/미선택 상태에서는 쿠키 없는 익명 핑만
+// 전송되고 GA4가 이를 모델링해 전체 트래픽을 추정한다.
+function analyticsConsent(): "granted" | "denied" {
+  return typeof localStorage !== "undefined" && localStorage.getItem("cookie_consent") === "all"
+    ? "granted"
+    : "denied";
 }
 
 export default function Analytics() {
@@ -36,10 +41,8 @@ export default function Analytics() {
 
   useEffect(() => {
     let active = true;
-    let raw = "";
 
     async function load() {
-      if (!hasConsent()) return;
       // Vercel preview 배포에서는 GA 수집 제외 (운영 데이터 오염 방지)
       if (process.env.NEXT_PUBLIC_VERCEL_ENV === "preview") return;
       const { data } = await supabase
@@ -47,14 +50,15 @@ export default function Analytics() {
         .select("value")
         .eq("key", "ga_measurement_id")
         .maybeSingle();
-      raw = String(data?.value || "");
-      if (active) setSnippet(buildSnippet(raw));
+      if (active) setSnippet(buildSnippet(String(data?.value || "")));
     }
 
     load();
 
     function onConsent() {
-      if (hasConsent()) load();
+      const gtag = (window as { gtag?: (...args: unknown[]) => void }).gtag;
+      if (gtag) gtag("consent", "update", { analytics_storage: analyticsConsent() });
+      // gtag가 아직 없으면(스니펫 로드 전) 주입 시점에 현재 동의 상태가 반영된다.
     }
     window.addEventListener("cookie_consent_updated", onConsent);
     return () => {
@@ -67,9 +71,17 @@ export default function Analytics() {
   // (dangerouslySetInnerHTML 로는 스크립트가 실행되지 않으므로 직접 생성한다.)
   useEffect(() => {
     if (!snippet || !snippet.includes("<script")) return;
+    const added: HTMLScriptElement[] = [];
+    // 동의 기본값은 gtag('config') 명령보다 먼저 dataLayer에 들어가야 한다.
+    const consent = document.createElement("script");
+    consent.textContent =
+      "window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}" +
+      "gtag('consent','default',{ad_storage:'denied',ad_user_data:'denied'," +
+      `ad_personalization:'denied',analytics_storage:'${analyticsConsent()}'});`;
+    document.head.appendChild(consent);
+    added.push(consent);
     const tmp = document.createElement("div");
     tmp.innerHTML = snippet;
-    const added: HTMLScriptElement[] = [];
     tmp.querySelectorAll("script").forEach((old) => {
       const s = document.createElement("script");
       for (const attr of Array.from(old.attributes)) s.setAttribute(attr.name, attr.value);
