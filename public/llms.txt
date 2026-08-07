@@ -1,0 +1,26 @@
+# AI면접 (Supercoder)
+
+> AI 면접으로 지원자를 자동 검증하고, 채용팀에는 검증된 핵심 인재 리포트만 전달하는 B2B 채용 검증 SaaS. 채용공고만 등록하면 질문 생성부터 AI 면접 진행, 검증 리포트 작성까지 자동으로 진행된다. 지원자 선별은 AI가, 최종 판단은 사람이 한다.
+
+운영사: 주식회사 세컨드팀 (Supercoder)
+서비스 영역: AI 면접, 채용 검증, 서류 검증 자동화, 대량 지원자 선별
+대상 고객: 기업 채용팀·인사담당자 (B2B)
+언어: 한국어
+
+## 주요 페이지
+
+- [홈 — 서비스 소개](https://www.supercoder.co/): AI 면접 기반 채용 검증 프로세스, 리포트 구성(인터뷰 요약·종합 등급·역량 평가·강점/약점 분석), 도입사, FAQ
+- [도입 문의](https://www.supercoder.co/apply): 팀 채용 규모에 맞춘 AI 면접 검증 프로세스 상담 신청
+- [서비스 소개서 신청](https://www.supercoder.co/brochure): 역량 모델링·AI 면접·분석 리포트·도입 사례를 담은 소개서 요청
+- [블로그](https://www.supercoder.co/blog): AI 채용·면접 자동화·채용 검증·HR 트렌드 콘텐츠
+
+## 정책·약관
+
+- [개인정보처리방침](https://www.supercoder.co/privacy)
+- [서비스 이용약관](https://www.supercoder.co/terms)
+- [지원자용 서비스 이용약관](https://www.supercoder.co/terms-applicant)
+
+## 참고
+
+- 지원자용 AI 면접 응시 화면은 별도 앱(https://ai.supercoder.co)에서 제공된다.
+- 문의: 도입 문의 페이지(https://www.supercoder.co/apply)를 통해 접수.

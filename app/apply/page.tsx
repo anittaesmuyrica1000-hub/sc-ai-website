@@ -23,9 +23,9 @@ export function generateMetadata() {
 }
 
 const APPLY_LOGOS = [
-  { src: "/logos/woongjin-t.png", alt: "Woongjin" },
-  { src: "/logos/skonec-t.png", alt: "SKONEC entertainment" },
-  { src: "/logos/markany-t.png", alt: "MarkAny" },
+  { src: "/logos/woongjin-t.webp", alt: "Woongjin" },
+  { src: "/logos/skonec-t.webp", alt: "SKONEC entertainment" },
+  { src: "/logos/markany-t.webp", alt: "MarkAny" },
 ];
 
 // 신뢰 로고 마퀴 — 데스크톱(인트로 안)·모바일(폼 아래) 두 곳에서 재사용

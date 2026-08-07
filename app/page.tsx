@@ -19,9 +19,9 @@ const plain = (s: string) => String(s || "").replace(/<[^>]+>/g, " ").replace(/\
 export const revalidate = 120;
 
 const LOGOS = [
-  { src: "/logos/woongjin.png", alt: "Woongjin" },
-  { src: "/logos/skonec.png", alt: "SKONEC entertainment" },
-  { src: "/logos/markany.png", alt: "MarkAny" },
+  { src: "/logos/woongjin.webp", alt: "Woongjin" },
+  { src: "/logos/skonec.webp", alt: "SKONEC entertainment" },
+  { src: "/logos/markany.webp", alt: "MarkAny" },
 ];
 
 export default async function HomePage() {
@@ -218,7 +218,7 @@ export default async function HomePage() {
                 <h3>인터뷰 요약</h3>
                 <p>긴 영상을 다시 볼 필요 없이, 대화의 핵심만 자동 <strong>요약</strong>합니다.</p>
               </div>
-              <div className="hr-media"><img className="hr-img" src="/diagram-interview.png" alt="인터뷰 요약 도식" width={1080} height={570} loading="lazy" /></div>
+              <div className="hr-media"><img className="hr-img" src="/diagram-interview.webp" alt="인터뷰 요약 도식" width={1080} height={570} loading="lazy" /></div>
             </div>
             <div className="how-row">
               <div className="hr-info">
@@ -226,7 +226,7 @@ export default async function HomePage() {
                 <h3>종합평가</h3>
                 <p>복잡한 점수 대신 <strong>등급</strong>으로, 후보자 판단 기준을 빠르게 확인합니다.</p>
               </div>
-              <div className="hr-media"><img className="hr-img" src="/diagram-grade.png" alt="종합 등급 도식" width={1080} height={570} loading="lazy" /></div>
+              <div className="hr-media"><img className="hr-img" src="/diagram-grade.webp" alt="종합 등급 도식" width={1080} height={570} loading="lazy" /></div>
             </div>
             <div className="how-row">
               <div className="hr-info">
@@ -234,7 +234,7 @@ export default async function HomePage() {
                 <h3>역량평가</h3>
                 <p><strong>핵심 역량</strong>의 강점과 약점을 차트로 한눈에 비교합니다.</p>
               </div>
-              <div className="hr-media"><img className="hr-img" src="/diagram-competency.png" alt="역량 평가 도식" width={1080} height={570} loading="lazy" /></div>
+              <div className="hr-media"><img className="hr-img" src="/diagram-competency.webp" alt="역량 평가 도식" width={1080} height={570} loading="lazy" /></div>
             </div>
             <div className="how-row">
               <div className="hr-info">
@@ -242,7 +242,7 @@ export default async function HomePage() {
                 <h3>강점·약점 분석</h3>
                 <p><strong>강점과 약점</strong>을 구분해, 대면 면접에서 확인할 포인트까지 짚어줍니다.</p>
               </div>
-              <div className="hr-media"><img className="hr-img" src="/diagram-strength.png" alt="강점·약점 분석 도식" width={1080} height={570} loading="lazy" /></div>
+              <div className="hr-media"><img className="hr-img" src="/diagram-strength.webp" alt="강점·약점 분석 도식" width={1080} height={570} loading="lazy" /></div>
             </div>
           </div>
 

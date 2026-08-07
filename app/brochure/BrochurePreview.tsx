@@ -3,14 +3,14 @@
 import { useState } from "react";
 
 // 소개서 미리보기 캐러셀 — 에이치닷 '소개서 받기'처럼 좌측에 표지·주요 페이지를 넘겨보게.
-// 이미지는 서비스덱에서 뽑은 public/brochure-preview/*.jpg.
+// 이미지는 서비스덱에서 뽑은 public/brochure-preview/*.webp.
 const SLIDES = [
-  { src: "/brochure-preview/01-cover.jpg", alt: "AI 면접 서비스 소개서 표지" },
-  { src: "/brochure-preview/02-message.jpg", alt: "채용의 감을 데이터로 — 핵심 메시지" },
-  { src: "/brochure-preview/03-steps.jpg", alt: "AI 기반 구조화 채용 4단계" },
-  { src: "/brochure-preview/04-report.jpg", alt: "AI 면접 분석 리포트 예시" },
-  { src: "/brochure-preview/05-roi.jpg", alt: "측정 가능한 ROI — 채용 기간·비용·합격률" },
-  { src: "/brochure-preview/06-usecase.jpg", alt: "실제 도입 사례" },
+  { src: "/brochure-preview/01-cover.webp", alt: "AI 면접 서비스 소개서 표지" },
+  { src: "/brochure-preview/02-message.webp", alt: "채용의 감을 데이터로 — 핵심 메시지" },
+  { src: "/brochure-preview/03-steps.webp", alt: "AI 기반 구조화 채용 4단계" },
+  { src: "/brochure-preview/04-report.webp", alt: "AI 면접 분석 리포트 예시" },
+  { src: "/brochure-preview/05-roi.webp", alt: "측정 가능한 ROI — 채용 기간·비용·합격률" },
+  { src: "/brochure-preview/06-usecase.webp", alt: "실제 도입 사례" },
 ];
 
 export default function BrochurePreview() {
