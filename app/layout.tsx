@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import "./pretendard.css"; // Pretendard Variable dynamic subset — CSS는 번들, woff2 청크만 jsdelivr
+import "./fontawesome.css"; // Font Awesome 6 Free 서브셋 — 사용 아이콘만, 폰트는 /fonts 자체 호스팅
 import SiteHeader from "@/components/SiteHeader";
 import SiteFooter from "@/components/SiteFooter";
 import Chatbot from "@/components/Chatbot";
@@ -38,13 +40,13 @@ export const metadata: Metadata = {
     url: SITE_URL,
     title: "AI 면접으로 검증된 인재만 만나세요 · AI면접",
     description: "AI 면접이 지원자를 자동 검증하고, 채용팀에는 검증된 핵심 인재 리포트만 전달합니다.",
-    images: [{ url: "/og-image.png?v=2", width: 1200, height: 630 }],
+    images: [{ url: "/og-image.png?v=3", width: 1200, height: 630 }],
   },
   twitter: {
     card: "summary_large_image",
     title: "AI 면접으로 검증된 인재만 만나세요 · AI면접",
     description: "AI 면접이 자동 검증하고, 검증된 핵심 인재 리포트만 전달합니다.",
-    images: ["/og-image.png?v=2"],
+    images: ["/og-image.png?v=3"],
   },
 };
 
@@ -54,16 +56,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <head>
         {/* 한국어 전용 사이트 — 브라우저 자동번역이 원문을 오역(예: '비용 절감'→'미안해요')하는 것을 방지 */}
         <meta name="google" content="notranslate" />
+        {/* Pretendard woff2 청크(pretendard.css 참조)용 — CSS 자체는 번들에 포함되어 렌더 차단 외부 요청 없음 */}
         <link rel="preconnect" href="https://cdn.jsdelivr.net" crossOrigin="" />
-        <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossOrigin="" />
-        <link
-          rel="stylesheet"
-          href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css"
-        />
-        <link
-          rel="stylesheet"
-          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
-        />
       </head>
       <body>
         <SiteHeader />

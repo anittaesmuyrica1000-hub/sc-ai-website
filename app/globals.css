@@ -10,7 +10,7 @@
 :root{
   --blue:#2E6CF0; --blue-d:#1F54CC; --blue-2:#5B8DF7;
   --soft:#F4F8FF; --soft-2:#EAF1FE; --tint:#DCE8FE;
-  --ink:#142036; --slate:#566179; --slate-2:#8A93A8; --line:#E5EBF5;
+  --ink:#142036; --slate:#566179; --slate-2:#6D7689; --line:#E5EBF5; /* slate-2: 흰 배경 위 4.56:1 (WCAG AA) */
   --bg:#fff; --green:#16A34A; --amber:#E0890B; --red:#E0584A;
   --r:16px; --shadow:0 18px 48px -22px rgba(20,40,90,.22);
   /* 섹션 수직 리듬 토큰 — 전 섹션 공통 간격(SSOT). 데스크톱 ~120px, 모바일 하한 72px(Wise식 여백 리듬) */
@@ -22,7 +22,7 @@
 html{scroll-behavior:smooth}
 /* word-break:keep-all → 한국어를 어절(띄어쓰기) 단위로 줄바꿈해 단어가 글자 단위로 깨지지 않게.
    overflow-wrap:break-word → URL·이메일 등 띄어쓰기 없는 긴 토큰은 넘치지 않게 안전망. */
-body{font-family:'Pretendard','Apple SD Gothic Neo',-apple-system,'Segoe UI',sans-serif;color:var(--ink);background:var(--bg);line-height:1.62;-webkit-font-smoothing:antialiased;word-break:keep-all;overflow-wrap:break-word}
+body{font-family:'Pretendard Variable','Pretendard','Apple SD Gothic Neo',-apple-system,'Segoe UI',sans-serif;color:var(--ink);background:var(--bg);line-height:1.62;-webkit-font-smoothing:antialiased;word-break:keep-all;overflow-wrap:break-word}
 a{text-decoration:none;color:inherit}
 .wrap{max-width:1140px;margin:0 auto;padding:0 24px}
 /* 모바일 컨테이너 거터 24→16px (Wise 식 — 콘텐츠가 화면을 더 채움) */
@@ -45,7 +45,7 @@ h2{font-size:clamp(28px,3.6vw,44px);font-weight:800;letter-spacing:0;line-height
 .btn-white:hover{transform:translateY(-1px);box-shadow:0 12px 26px -8px rgba(255,255,255,.75)}
 
 /* ===== Eyebrow / chip ===== */
-.eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:800;letter-spacing:.06em;color:var(--blue);text-transform:uppercase;margin-bottom:16px;background:var(--soft-2);padding:6px 14px;border-radius:999px}
+.eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:800;letter-spacing:.06em;color:var(--blue-d);text-transform:uppercase;margin-bottom:16px;background:var(--soft-2);padding:6px 14px;border-radius:999px}
 /* tagchip — 섹션/페이지 상단 라벨 칩(흰 배경+테두리+그림자+파란 아이콘). 랜딩·전 페이지 공용 SSOT. */
 .tagchip{display:inline-flex;align-items:center;gap:8px;background:#fff;border:1px solid var(--line);border-radius:999px;padding:7px 16px;font-size:13px;font-weight:700;color:var(--slate);margin-bottom:24px;box-shadow:0 4px 12px -6px rgba(20,40,90,.15)}
 .tagchip i{color:var(--blue)}

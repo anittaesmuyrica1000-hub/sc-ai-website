@@ -17,7 +17,7 @@ const FALLBACK_METADATA: Metadata = {
     title: "블로그 · AI면접 | AI 면접 채용 인사이트",
     description: "AI 면접·채용 검증·HR 트렌드에 대한 인사이트를 전합니다.",
     url: "/blog",
-    images: [{ url: "/og-image.png?v=2", width: 1200, height: 630 }],
+    images: [{ url: "/og-image.png?v=3", width: 1200, height: 630 }],
   },
 };
 export function generateMetadata() {
