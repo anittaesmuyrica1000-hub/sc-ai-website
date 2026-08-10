@@ -86,11 +86,12 @@ export default async function HomePage() {
         <div className="marquee">
           <div className="marquee-track">
             {Array.from({ length: 6 }).map((_, block) =>
+              // 반복 블록 로고에도 alt를 채운다(SEO 진단 alt 누락 대응) — 중복 낭독은 aria-hidden으로 차단
               LOGOS.map((l, i) => (
                 <img
                   key={`${block}-${i}`}
                   src={l.src}
-                  alt={block === 0 ? l.alt : ""}
+                  alt={l.alt}
                   aria-hidden={block === 0 ? undefined : true}
                 />
               ))
