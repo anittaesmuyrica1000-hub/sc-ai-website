@@ -2,7 +2,7 @@
   .post-wrap{max-width:760px;margin:0 auto;padding:88px 24px 80px}
   .post-back{display:inline-flex;align-items:center;gap:7px;font-size:14px;font-weight:700;color:var(--slate);margin-bottom:26px}
   .post-back:hover{color:var(--blue-d)}
-  .post-head .cat{display:inline-block;font-size:12px;font-weight:800;letter-spacing:.04em;color:var(--blue);background:var(--soft-2);padding:5px 12px;border-radius:999px}
+  .post-head .cat{display:inline-block;font-size:12px;font-weight:800;letter-spacing:.04em;color:var(--blue-d);background:var(--soft-2);padding:5px 12px;border-radius:999px}
   .post-head h1{font-size:clamp(28px,4.4vw,42px);font-weight:800;letter-spacing:-.03em;line-height:1.24;margin:16px 0 0}
   .post-meta{margin-top:18px;display:flex;flex-wrap:wrap;gap:14px;font-size:14px;color:var(--slate-2);font-weight:600;padding-bottom:26px;border-bottom:1px solid var(--line)}
   .post-hero{width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:var(--r);margin:32px 0 8px;display:block}

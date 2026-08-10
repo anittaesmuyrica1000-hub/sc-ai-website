@@ -15,7 +15,7 @@ const FALLBACK_METADATA: Metadata = {
     title: "AI 면접 서비스 소개서 신청",
     description: "정보를 남기면 회사 이메일로 AI 면접 서비스 소개서를 바로 받아보실 수 있습니다.",
     url: "/brochure",
-    images: [{ url: "/og-image.png?v=2", width: 1200, height: 630 }],
+    images: [{ url: "/og-image.png?v=3", width: 1200, height: 630 }],
   },
 };
 export function generateMetadata() {

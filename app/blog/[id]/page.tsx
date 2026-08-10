@@ -66,7 +66,7 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
       title: p.meta_title?.trim() || p.title,
       description: metaDesc,
       url: path,
-      images: p.cover_url ? [{ url: p.cover_url }] : [{ url: "/og-image.png?v=2", width: 1200, height: 630 }],
+      images: p.cover_url ? [{ url: p.cover_url }] : [{ url: "/og-image.png?v=3", width: 1200, height: 630 }],
       tags: tags.length ? tags : undefined,
     },
   };
