@@ -2246,18 +2246,18 @@ function LeadTable({ table, title, empty, filename }: { table: string; title: st
         : (
           <div className="adm-table-wrap">
             <table className="adm-table">
-              <thead><tr><th>접수일</th><th>이름</th><th>회사</th><th>이메일</th><th>직무/직책</th><th>연락처</th><th>채용규모</th><th>유입</th></tr></thead>
+              <thead><tr><th>접수일</th><th>이름</th><th>회사</th><th>유입</th><th>이메일</th><th>직무/직책</th><th>연락처</th><th>채용규모</th></tr></thead>
               <tbody>
                 {rows.map((r) => (
                   <tr key={r.id}>
-                    <td className="nowrap">{fmtDate(r.created_at)}</td>
+                    <td className="nowrap">{fmtDateTime(r.created_at)}</td>
                     <td className="nowrap">{r.name}</td>
                     <td>{r.company}</td>
+                    <td className="nowrap">{r.utm_source ? <span className="utm-chip" title={UTM_KEYS.filter((k) => r[k]).map((k) => `${UTM_LABEL[k]}: ${r[k]}`).join("\n")}>{r.utm_source}{r.utm_medium ? ` / ${r.utm_medium}` : ""}</span> : "—"}</td>
                     <td><a href={`mailto:${r.email}`}>{r.email}</a></td>
                     <td>{r.role || "—"}</td>
                     <td className="nowrap">{r.phone ? fmtPhone(r.phone) : "—"}</td>
                     <td className="nowrap">{r.size ? (SIZE_LABEL[r.size] || r.size) : "—"}</td>
-                    <td className="nowrap">{r.utm_source ? <span className="utm-chip" title={UTM_KEYS.filter((k) => r[k]).map((k) => `${UTM_LABEL[k]}: ${r[k]}`).join("\n")}>{r.utm_source}{r.utm_medium ? ` / ${r.utm_medium}` : ""}</span> : "—"}</td>
                   </tr>
                 ))}
               </tbody>
