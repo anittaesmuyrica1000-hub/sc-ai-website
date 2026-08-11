@@ -106,6 +106,8 @@ export type BrochureRequest = {
   utm_id?: string | null;
   utm_term?: string | null;
   utm_content?: string | null;
+  downloaded_at?: string | null;
+  download_count?: number | null;
 };
 
 // 약관(법적 문서) 타입 — admin 관리 + 법적 페이지 렌더

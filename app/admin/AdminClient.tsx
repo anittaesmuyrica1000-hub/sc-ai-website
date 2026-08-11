@@ -2223,9 +2223,9 @@ function LeadTable({ table, title, empty, filename }: { table: string; title: st
   useEffect(() => { load(); }, [load]);
 
   function exportCsv() {
-    const head = ["접수일시", "이름", "회사", "이메일", "직무/직책", "연락처", "채용규모", "utm_source", "utm_medium", "utm_campaign", "utm_id", "utm_term", "utm_content"];
+    const head = ["접수일시", "다운로드일시", "다운로드횟수", "이름", "회사", "이메일", "직무/직책", "연락처", "채용규모", "utm_source", "utm_medium", "utm_campaign", "utm_id", "utm_term", "utm_content"];
     const esc = (v: unknown) => `"${String(v ?? "").replace(/"/g, '""')}"`;
-    const lines = rows.map((r) => [fmtDateTime(r.created_at), r.name, r.company, r.email, r.role ?? "", r.phone ?? "", r.size ?? "", ...UTM_KEYS.map((k) => r[k] ?? "")].map(esc).join(","));
+    const lines = rows.map((r) => [fmtDateTime(r.created_at), r.downloaded_at ? fmtDateTime(r.downloaded_at) : "", r.download_count ?? 0, r.name, r.company, r.email, r.role ?? "", r.phone ?? "", r.size ?? "", ...UTM_KEYS.map((k) => r[k] ?? "")].map(esc).join(","));
     const csv = "﻿" + [head.map(esc).join(","), ...lines].join("\n");
     const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
     const url = URL.createObjectURL(blob); const a = document.createElement("a"); a.href = url; a.download = `${filename}-${new Date().toISOString().slice(0, 10)}.csv`; a.click(); URL.revokeObjectURL(url);
@@ -2246,11 +2246,12 @@ function LeadTable({ table, title, empty, filename }: { table: string; title: st
         : (
           <div className="adm-table-wrap">
             <table className="adm-table">
-              <thead><tr><th>접수일</th><th>이름</th><th>회사</th><th>유입</th><th>이메일</th><th>직무/직책</th><th>연락처</th><th>채용규모</th></tr></thead>
+              <thead><tr><th>접수일</th><th>다운로드</th><th>이름</th><th>회사</th><th>유입</th><th>이메일</th><th>직무/직책</th><th>연락처</th><th>채용규모</th></tr></thead>
               <tbody>
                 {rows.map((r) => (
                   <tr key={r.id}>
                     <td className="nowrap">{fmtDateTime(r.created_at)}</td>
+                    <td className="nowrap">{r.downloaded_at ? <span title={r.download_count ? `${r.download_count}회 다운로드` : undefined}>{fmtDateTime(r.downloaded_at)}</span> : "—"}</td>
                     <td className="nowrap">{r.name}</td>
                     <td>{r.company}</td>
                     <td className="nowrap">{r.utm_source ? <span className="utm-chip" title={UTM_KEYS.filter((k) => r[k]).map((k) => `${UTM_LABEL[k]}: ${r[k]}`).join("\n")}>{r.utm_source}{r.utm_medium ? ` / ${r.utm_medium}` : ""}</span> : "—"}</td>

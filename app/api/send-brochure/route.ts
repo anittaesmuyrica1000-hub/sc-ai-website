@@ -74,25 +74,38 @@ export async function POST(req: Request) {
     return bad("현재 등록된 소개서가 없습니다. 관리자에게 문의해 주세요.", 500);
   }
 
-  // 2) 7일 서명 URL 생성
-  const { data: signed, error: signErr } = await admin.storage
-    .from("brochures")
-    .createSignedUrl(cur.path, LINK_TTL);
-  if (signErr || !signed?.signedUrl) {
-    console.error("send-brochure: 서명URL 생성 실패", signErr);
-    return bad("다운로드 링크 생성에 실패했습니다. 잠시 후 다시 시도해 주세요.", 500);
+  // 2) 리드 저장 + 다운로드 추적 토큰 확보(베스트 에포트 — 실패해도 메일 발송은 진행)
+  // download_token/UTM 컬럼이 아직 없으면(마이그레이션 미적용) 단계적으로 재시도해 리드 유실을 방지한다.
+  const base = { name, company, email, role, phone, size };
+  let token: string | null = null;
+  const withToken = await admin.from("brochure_requests").insert({ ...base, ...utm }).select("download_token").single();
+  if (!withToken.error) {
+    token = (withToken.data as { download_token?: string } | null)?.download_token ?? null;
+  } else {
+    console.warn("send-brochure: 토큰 포함 리드 저장 실패, 단계적 재시도", withToken.error);
+    let ins = await admin.from("brochure_requests").insert({ ...base, ...utm });
+    if (ins.error && Object.keys(utm).length) {
+      console.warn("send-brochure: utm 포함 리드 저장 실패, utm 없이 재시도", ins.error);
+      ins = await admin.from("brochure_requests").insert(base);
+    }
+    if (ins.error) console.error("send-brochure: 리드 저장 실패(무시)", ins.error);
   }
-  const link = signed.signedUrl;
 
-  // 3) 리드 저장(베스트 에포트 — 실패해도 메일 발송은 진행)
-  // UTM 포함 저장 시도. brochure_requests에 UTM 컬럼이 아직 없으면(마이그레이션 미적용)
-  // 실패할 수 있으므로, 그 경우 UTM 없이 재시도해 리드 유실을 방지한다.
-  let ins = await admin.from("brochure_requests").insert({ name, company, email, role, phone, size, ...utm });
-  if (ins.error && Object.keys(utm).length) {
-    console.warn("send-brochure: utm 포함 리드 저장 실패, utm 없이 재시도", ins.error);
-    ins = await admin.from("brochure_requests").insert({ name, company, email, role, phone, size });
+  // 3) 다운로드 링크 — 토큰이 있으면 클릭 추적 리다이렉트(/api/brochure-download에서 시각 기록),
+  // 없으면(마이그레이션 미적용 등) 기존처럼 7일 서명 URL 직행.
+  let link: string;
+  if (token) {
+    link = `https://www.supercoder.co/api/brochure-download?t=${token}`;
+  } else {
+    const { data: signed, error: signErr } = await admin.storage
+      .from("brochures")
+      .createSignedUrl(cur.path, LINK_TTL);
+    if (signErr || !signed?.signedUrl) {
+      console.error("send-brochure: 서명URL 생성 실패", signErr);
+      return bad("다운로드 링크 생성에 실패했습니다. 잠시 후 다시 시도해 주세요.", 500);
+    }
+    link = signed.signedUrl;
   }
-  if (ins.error) console.error("send-brochure: 리드 저장 실패(무시)", ins.error);
 
   // 4) 메일 본문
   const subject = "[Supercoder] 요청하신 서비스소개서를 보내드립니다";
