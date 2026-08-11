@@ -2250,7 +2250,7 @@ function LeadTable({ table, title, empty, filename }: { table: string; title: st
               <tbody>
                 {rows.map((r) => (
                   <tr key={r.id}>
-                    <td className="nowrap">{fmtDate(r.created_at)}</td>
+                    <td className="nowrap">{fmtDateTime(r.created_at)}</td>
                     <td className="nowrap">{r.name}</td>
                     <td>{r.company}</td>
                     <td><a href={`mailto:${r.email}`}>{r.email}</a></td>
