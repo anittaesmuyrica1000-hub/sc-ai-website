@@ -443,6 +443,8 @@
   .adm-table th{text-align:left;padding:12px;border-bottom:2px solid var(--line);color:var(--slate);font-weight:700;font-size:12px;white-space:nowrap}
   .adm-table td{padding:12px;border-bottom:1px solid var(--line);color:var(--ink);vertical-align:middle}
   .adm-table td.nowrap{white-space:nowrap}
+  /* 날짜·시간 셀 — 시간은 옅은 색으로 분리해 날짜와 구분 */
+  .adm-table .dt-time{color:var(--slate-2);margin-left:6px;font-variant-numeric:tabular-nums}
   .adm-table a{color:var(--blue)}
   .adm-table tbody tr:hover{background:var(--soft)}
   /* 블로그 조회수 셀 */
