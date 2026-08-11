@@ -2091,7 +2091,7 @@ function SignupsManager() {
                   <tbody>
                     {filtered.map((r) => (
                       <tr key={r.id}>
-                        <td className="nowrap">{fmtDate(r.created_at)}</td>
+                        <td className="nowrap"><DateTimeCell iso={r.created_at} /></td>
                         <td className="nowrap">{r.name}</td>
                         <td>{r.company}</td>
                         <td><a href={`mailto:${r.email}`}>{r.email}</a></td>
@@ -2119,7 +2119,7 @@ function SignupsManager() {
                     </div>
                     <div className="sig-card-sub">{r.name}{r.role ? ` · ${r.role}` : ""}{r.size ? ` · ${SIZE_LABEL[r.size] || r.size}` : ""}</div>
                     {r.phone && <div className="sig-card-phone"><i className="fa-solid fa-phone"></i> {fmtPhone(r.phone)}</div>}
-                    <div className="sig-card-date">{fmtDate(r.created_at)} 접수{r.utm_source ? ` · 유입 ${r.utm_source}${r.utm_medium ? `/${r.utm_medium}` : ""}` : ""}</div>
+                    <div className="sig-card-date"><DateTimeCell iso={r.created_at} /> 접수{r.utm_source ? ` · 유입 ${r.utm_source}${r.utm_medium ? `/${r.utm_medium}` : ""}` : ""}</div>
                     <div className="sig-card-acts" onClick={(e) => e.stopPropagation()}>
                       {r.phone && <a className="sig-act" href={`tel:${r.phone}`}><i className="fa-solid fa-phone"></i> 전화</a>}
                       <a className="sig-act" href={`mailto:${r.email}`}><i className="fa-solid fa-envelope"></i> 메일</a>
