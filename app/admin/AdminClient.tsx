@@ -2206,6 +2206,13 @@ function SignupDetail({ row, onClose, onSave }: { row: Signup; onClose: () => vo
 
 /* ===================== 리드 테이블 (brochure_requests 읽기 전용) ===================== */
 
+// 날짜·시간 셀 — 시간을 옅은 색 <span>으로 분리해 날짜와 헷갈리지 않게 표시
+function DateTimeCell({ iso, title }: { iso?: string | null; title?: string }) {
+  if (!iso) return <>—</>;
+  const [d, t] = fmtDateTime(iso).split(" ");
+  return <span title={title}>{d} <span className="dt-time">{t}</span></span>;
+}
+
 function LeadTable({ table, title, empty, filename }: { table: string; title: string; empty: string; filename: string }) {
   const [rows, setRows] = useState<BrochureRequest[]>([]);
   const [loadErr, setLoadErr] = useState<string | null>(null);
@@ -2250,8 +2257,8 @@ function LeadTable({ table, title, empty, filename }: { table: string; title: st
               <tbody>
                 {rows.map((r) => (
                   <tr key={r.id}>
-                    <td className="nowrap">{fmtDateTime(r.created_at)}</td>
-                    <td className="nowrap">{r.downloaded_at ? <span title={r.download_count ? `${r.download_count}회 다운로드` : undefined}>{fmtDateTime(r.downloaded_at)}</span> : "—"}</td>
+                    <td className="nowrap"><DateTimeCell iso={r.created_at} /></td>
+                    <td className="nowrap"><DateTimeCell iso={r.downloaded_at} title={r.download_count ? `${r.download_count}회 다운로드` : undefined} /></td>
                     <td className="nowrap">{r.name}</td>
                     <td>{r.company}</td>
                     <td className="nowrap">{r.utm_source ? <span className="utm-chip" title={UTM_KEYS.filter((k) => r[k]).map((k) => `${UTM_LABEL[k]}: ${r[k]}`).join("\n")}>{r.utm_source}{r.utm_medium ? ` / ${r.utm_medium}` : ""}</span> : "—"}</td>
