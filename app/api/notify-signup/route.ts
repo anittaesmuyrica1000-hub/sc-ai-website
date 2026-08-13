@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { sendMail, mailerConfigured } from "@/lib/mailer";
+import { TRACKING_KEYS } from "@/lib/supabase";
 
 // 도입문의(signups) 접수 시 관리자에게 알림 메일 발송. 폼 저장은 클라이언트에서 이미 완료된 뒤 호출(베스트 에포트).
 // 수신 주소: SALES_NOTIFY_TO 우선, 없으면 GMAIL_FROM. 둘 다 없으면 조용히 종료.
@@ -18,6 +19,10 @@ export async function POST(req: Request) {
   const phone = String(body.phone ?? "").trim();
   const size = String(body.size ?? "").trim();
   const memo = String(body.memo ?? "").trim();
+  // 유입 추적 정보(utm·클릭 ID·referrer) — 폼에서 함께 전달됨(있는 값만)
+  const utmLine = TRACKING_KEYS.filter((k) => String(body[k] ?? "").trim())
+    .map((k) => `${k}=${String(body[k]).trim().slice(0, 300)}`)
+    .join(", ");
 
   const NOTIFY_TO = process.env.SALES_NOTIFY_TO || process.env.GMAIL_FROM;
   // 알림 미설정/메일러 미설정이어도 폼 제출은 이미 성공했으므로 조용히 200 반환
@@ -36,6 +41,7 @@ export async function POST(req: Request) {
         <tr><td style="padding:4px 14px 4px 0;color:#6b7280">직책</td><td style="padding:4px 0">${esc(role || "-")}</td></tr>
         <tr><td style="padding:4px 14px 4px 0;color:#6b7280">규모</td><td style="padding:4px 0">${esc(size || "-")}</td></tr>
         ${memo ? `<tr><td style="padding:4px 14px 4px 0;color:#6b7280;vertical-align:top">메모</td><td style="padding:4px 0;white-space:pre-wrap">${esc(memo)}</td></tr>` : ""}
+        ${utmLine ? `<tr><td style="padding:4px 14px 4px 0;color:#6b7280;vertical-align:top">유입</td><td style="padding:4px 0;word-break:break-all">${esc(utmLine)}</td></tr>` : ""}
       </table>
       <p style="margin:20px 0 0"><a href="https://www.supercoder.co/admin" style="display:inline-block;background:#3b6ef5;color:#fff;text-decoration:none;font-weight:700;padding:11px 22px;border-radius:8px">어드민에서 보기</a></p>
     </div>`;

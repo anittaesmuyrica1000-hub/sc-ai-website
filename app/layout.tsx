@@ -8,6 +8,7 @@ import Chatbot from "@/components/Chatbot";
 import Analytics from "@/components/Analytics";
 import CookieBanner from "@/components/CookieBanner";
 import UtmCapture from "@/components/UtmCapture";
+import { Analytics as VercelAnalytics } from "@vercel/analytics/next";
 
 const SITE_URL = "https://www.supercoder.co";
 
@@ -65,6 +66,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <SiteFooter />
         <Chatbot />
         <Analytics />
+        <VercelAnalytics />
         <CookieBanner />
         <UtmCapture />
       </body>
