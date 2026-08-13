@@ -572,9 +572,22 @@ function Settings({ email }: { email: string }) {
 
 /* ===================== 블로그 관리 ===================== */
 
-type FormState = { id: string; title: string; category: string; author: string; cover_url: string; cover_alt: string; excerpt: string; content: string; published: boolean; tags: string[]; slug: string; meta_title: string; meta_description: string };
-const EMPTY: FormState = { id: "", title: "", category: "", author: "", cover_url: "", cover_alt: "", excerpt: "", content: "", published: true, tags: [], slug: "", meta_title: "", meta_description: "" };
+type FormState = { id: string; title: string; category: string; author: string; cover_url: string; cover_alt: string; excerpt: string; content: string; published: boolean; tags: string[]; slug: string; meta_title: string; meta_description: string; publish_at: string };
+const EMPTY: FormState = { id: "", title: "", category: "", author: "", cover_url: "", cover_alt: "", excerpt: "", content: "", published: true, tags: [], slug: "", meta_title: "", meta_description: "", publish_at: "" };
 const MAX_TAGS = 8;
+
+// ISO(UTC) → <input type="datetime-local"> 값(로컬 시간, "YYYY-MM-DDTHH:mm")
+function isoToLocalInput(iso?: string | null): string {
+  if (!iso) return "";
+  const d = new Date(iso);
+  if (isNaN(d.getTime())) return "";
+  const pad = (n: number) => String(n).padStart(2, "0");
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+}
+// 예약 시각이 아직 안 지난 글인지 (목록 상태 뱃지용)
+function isScheduled(p: Post): boolean {
+  return p.published !== false && !!p.publish_at && new Date(p.publish_at).getTime() > Date.now();
+}
 
 // 제목 → 명사형 서브카피 문형 후보. 제목에서 도메인 키워드(명사)를 뽑아 조사에 민감하지 않은
 // 명사 종결 프레임에 끼워 추천한다. (클릭 후 사용자가 다듬는 초안 용도.)
@@ -742,7 +755,7 @@ function BlogManager() {
   function set<K extends keyof FormState>(k: K, v: FormState[K]) { setForm((f) => (f ? { ...f, [k]: v } : f)); }
   function enterNew() { setForm({ ...EMPTY }); setMsg(null); }
   function enterEdit(p: Post) {
-    setForm({ id: p.id, title: p.title || "", category: p.category || "", author: p.author || "", cover_url: p.cover_url || "", cover_alt: p.cover_alt || "", excerpt: p.excerpt || "", content: p.content || "", published: p.published !== false, tags: Array.isArray(p.tags) ? p.tags : [], slug: p.slug || "", meta_title: p.meta_title || "", meta_description: p.meta_description || "" });
+    setForm({ id: p.id, title: p.title || "", category: p.category || "", author: p.author || "", cover_url: p.cover_url || "", cover_alt: p.cover_alt || "", excerpt: p.excerpt || "", content: p.content || "", published: p.published !== false, tags: Array.isArray(p.tags) ? p.tags : [], slug: p.slug || "", meta_title: p.meta_title || "", meta_description: p.meta_description || "", publish_at: isoToLocalInput(p.publish_at) });
     setMsg(null); window.scrollTo({ top: 0, behavior: "smooth" });
   }
   function closeForm() { setForm(null); setMsg(null); }
@@ -773,6 +786,7 @@ function BlogManager() {
       cover_url: form.cover_url.trim() || null, cover_alt: form.cover_alt.trim() || null, excerpt: form.excerpt.trim() || null, content: form.content, published: form.published,
       tags: form.tags.length ? form.tags : null,
       slug, meta_title: form.meta_title.trim() || null, meta_description: form.meta_description.trim() || null,
+      publish_at: form.publish_at ? new Date(form.publish_at).toISOString() : null,
     };
     setSaving(true);
     try {
@@ -785,11 +799,11 @@ function BlogManager() {
       if (res.error && /duplicate|unique/i.test(`${res.error.message} ${res.error.details || ""}`) && /slug/i.test(`${res.error.message} ${res.error.details || ""}`)) {
         showMsg("이미 사용 중인 URL slug입니다. 다른 값으로 바꿔 주세요.", false); setSaving(false); return;
       }
-      // 새 컬럼(tags/slug/meta_*)이 아직 없으면(마이그레이션 전) 해당 값만 빼고 다시 저장 — 본문 저장은 막지 않는다.
-      if (res.error && /tags|slug|meta_title|meta_description/i.test(`${res.error.message} ${res.error.details || ""}`)) {
-        const { tags, slug: _s, meta_title, meta_description, ...rest } = payload; void tags; void _s; void meta_title; void meta_description;
+      // 새 컬럼(tags/slug/meta_*/publish_at)이 아직 없으면(마이그레이션 전) 해당 값만 빼고 다시 저장 — 본문 저장은 막지 않는다.
+      if (res.error && /tags|slug|meta_title|meta_description|publish_at/i.test(`${res.error.message} ${res.error.details || ""}`)) {
+        const { tags, slug: _s, meta_title, meta_description, publish_at, ...rest } = payload; void tags; void _s; void meta_title; void meta_description; void publish_at;
         res = await run(rest);
-        if (!res.error) alert("글은 저장됐지만 태그·URL·메타 항목은 보류됐어요.\nSupabase에 마이그레이션(SQL) 적용 후 다시 저장하면 반영됩니다.");
+        if (!res.error) alert("글은 저장됐지만 태그·URL·메타·예약 항목은 보류됐어요.\nSupabase에 마이그레이션(SQL) 적용 후 다시 저장하면 반영됩니다.");
       }
       if (res.error) throw res.error;
       showMsg(form.id ? "수정되었습니다." : "등록되었습니다.", true);
@@ -951,8 +965,19 @@ function BlogManager() {
               <p className="hint">상단 도구의 <strong>📄 템플릿</strong>에서 기본 템플릿과 내 템플릿을 불러올 수 있습니다.</p>
             </div>
             <label className="check"><input type="checkbox" checked={form.published} onChange={(e) => set("published", e.target.checked)} /> 공개(게시) — 해제 시 비공개(임시저장)</label>
+            <div className="field">
+              <label htmlFor="f-publish-at">예약 발행 일시 <span className="hint-inline">선택 · 비워두면 즉시 발행</span></label>
+              <input type="datetime-local" id="f-publish-at" value={form.publish_at} onChange={(e) => set("publish_at", e.target.value)} disabled={!form.published} />
+              <div className="hint">
+                {!form.published
+                  ? "비공개(임시저장) 상태에서는 예약이 동작하지 않습니다. 공개(게시)에 체크한 뒤 예약 시각을 지정하세요."
+                  : form.publish_at && new Date(form.publish_at).getTime() > Date.now()
+                    ? `이 글은 ${new Date(form.publish_at).toLocaleString("ko-KR")}부터 사이트에 노출됩니다. 그 전에는 목록·검색·RSS에 보이지 않습니다.`
+                    : "미래 시각을 지정하면 그 시각부터 자동으로 노출됩니다. 지금 시각 이전이거나 비워두면 즉시 노출됩니다."}
+              </div>
+            </div>
             <div className="form-actions">
-              <button type="submit" className="btn btn-blue" disabled={saving}>{saving ? "저장 중…" : isEdit ? "수정 저장" : "등록하기"}</button>
+              <button type="submit" className="btn btn-blue" disabled={saving}>{saving ? "저장 중…" : isEdit ? "수정 저장" : form.publish_at && form.published && new Date(form.publish_at).getTime() > Date.now() ? "예약 등록" : "등록하기"}</button>
               <button type="button" className="btn btn-out" onClick={() => setPreview(true)}><i className="fa-solid fa-eye"></i> 미리보기</button>
               <button type="button" className="btn btn-out" onClick={closeForm}>취소</button>
             </div>
@@ -1030,7 +1055,7 @@ function BlogManager() {
                   <tr key={p.id}>
                     <td><div className="cell-title">{p.title}</div>{p.category && <div className="cell-sub">{p.category}</div>}</td>
                     <td className="nowrap"><span className="views-cell"><i className="fa-regular fa-eye"></i> {(p.views ?? 0).toLocaleString()}</span></td>
-                    <td className="nowrap">{p.published === false ? <span className="pill pill-gray">비공개</span> : <span className="pill pill-green">공개</span>}</td>
+                    <td className="nowrap">{p.published === false ? <span className="pill pill-gray">비공개</span> : isScheduled(p) ? <span className="pill pill-amber" title={`${new Date(p.publish_at!).toLocaleString("ko-KR")} 발행 예정`}>예약</span> : <span className="pill pill-green">공개</span>}</td>
                     <td className="nowrap">{fmtDate(p.created_at)}</td>
                     <td className="nowrap">{p.updated_at ? fmtDate(p.updated_at) : "—"}</td>
                     <td className="nowrap">

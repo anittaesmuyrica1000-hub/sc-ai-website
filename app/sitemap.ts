@@ -1,5 +1,5 @@
 import type { MetadataRoute } from "next";
-import { supabase } from "@/lib/supabase";
+import { supabase, publishAtVisibleOr } from "@/lib/supabase";
 
 // 동적 사이트맵 — 고정 페이지 + Supabase의 published 블로그 글을 자동 포함.
 // /sitemap.xml 로 제공된다(기존 정적 public/sitemap.xml 대체). 글을 추가하면 자동 반영.
@@ -26,6 +26,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       .from("posts")
       .select("id,slug,updated_at,created_at")
       .eq("published", true)
+      .or(publishAtVisibleOr())
       .order("created_at", { ascending: false });
     if (!res.error && res.data) {
       posts = (res.data as PostRow[]).map((p) => ({

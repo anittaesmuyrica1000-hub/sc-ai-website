@@ -1,0 +1,23 @@
+[
+  {"url": "https://www.supercoder.co/",
+   "shots": [
+     ["landing-01-hero.png", null],
+     ["landing-02-value.png", "document.getElementById('value').scrollIntoView()"],
+     ["landing-03-role.png", "document.getElementById('role').scrollIntoView()"],
+     ["landing-04-how.png", "document.getElementById('how').scrollIntoView()"],
+     ["landing-05-proof.png", "document.getElementById('proof').scrollIntoView()"],
+     ["landing-06-voices.png", "document.getElementById('voices').scrollIntoView()"],
+     ["landing-07-faq.png", "document.getElementById('faq').scrollIntoView()"],
+     ["landing-08-final.png", "document.getElementById('final').scrollIntoView()"]
+   ]},
+  {"url": "https://www.supercoder.co/apply",
+   "shots": [["apply.png", null]]},
+  {"url": "https://www.supercoder.co/blog",
+   "shots": [["blog-list.png", null], ["blog-list-2.png", "window.scrollBy(0, 800)"]]},
+  {"url": "https://www.supercoder.co/blog/ai-recruitment-trends-2026",
+   "shots": [["blog-post.png", null], ["blog-post-2.png", "window.scrollBy(0, 1200)"]]},
+  {"url": "https://www.supercoder.co/privacy",
+   "shots": [["privacy.png", null]]},
+  {"url": "https://www.supercoder.co/admin",
+   "shots": [["admin-gate.png", null]]}
+]

@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import "./blog.css";
-import { supabase, type Post } from "@/lib/supabase";
+import { supabase, publishAtVisibleOr, type Post } from "@/lib/supabase";
 import BlogClient from "./BlogClient";
 import { buildPageMetadata } from "@/lib/pageSeo";
 
@@ -32,6 +32,7 @@ export default async function BlogPage() {
       .from("posts")
       .select("*")
       .eq("published", true)
+      .or(publishAtVisibleOr())
       .order("created_at", { ascending: false });
     if (res.error) throw res.error;
     posts = (res.data as Post[]) || [];
