@@ -341,6 +341,57 @@ export default function RichEditor({ value, onChange, placeholder, minHeight = 3
     return m ? Number(m[1]) : 100;
   }
 
+  // ── 표 열 너비 드래그 조절 — 열 사이 세로 경계선을 잡고 좌우로 끌면 너비가 바뀐다 ──
+  // 너비는 머리글(th)에 %로 기록되어 저장 HTML에 남고, 사이트(post.css)에서도 그대로 적용된다.
+  const colDrag = useRef<{ table: HTMLTableElement; idx: number; startX: number; startW: number } | null>(null);
+  const [colHover, setColHover] = useState(false);
+
+  function colBoundaryAt(e: React.PointerEvent): { table: HTMLTableElement; idx: number } | null {
+    const cell = (e.target as HTMLElement).closest?.("td,th") as HTMLTableCellElement | null;
+    const table = cell?.closest("table");
+    if (!cell || !table) return null;
+    const row = cell.parentElement as HTMLTableRowElement;
+    if (cell.cellIndex >= row.cells.length - 1) return null; // 마지막 열의 오른쪽 끝은 제외
+    const r = cell.getBoundingClientRect();
+    return r.right - e.clientX <= 6 && r.right - e.clientX >= -2 ? { table, idx: cell.cellIndex } : null;
+  }
+  function onAreaPointerMove(e: React.PointerEvent) {
+    if (colDrag.current) return;
+    setColHover(!!colBoundaryAt(e));
+  }
+  function onAreaPointerDown(e: React.PointerEvent) {
+    const hit = colBoundaryAt(e);
+    if (!hit) return;
+    e.preventDefault(); // 경계선 드래그 중 커서 이동/텍스트 선택 방지
+    const headCell = hit.table.rows[0]?.cells[hit.idx];
+    if (!headCell) return;
+    colDrag.current = { table: hit.table, idx: hit.idx, startX: e.clientX, startW: headCell.getBoundingClientRect().width };
+    const move = (ev: PointerEvent) => {
+      const d = colDrag.current;
+      if (!d) return;
+      const tw = d.table.getBoundingClientRect().width;
+      if (!tw) return;
+      const w = d.startW + (ev.clientX - d.startX);
+      const pct = Math.max(8, Math.min(85, (w / tw) * 100));
+      const th = d.table.rows[0]?.cells[d.idx];
+      if (th) th.style.width = `${pct.toFixed(1)}%`;
+    };
+    const up = () => {
+      document.removeEventListener("pointermove", move);
+      document.removeEventListener("pointerup", up);
+      colDrag.current = null;
+      emit();
+    };
+    document.addEventListener("pointermove", move);
+    document.addEventListener("pointerup", up);
+  }
+  // 열 너비 초기화 — 기록된 width를 지워 균등 분배로 복원
+  function resetColWidths() {
+    if (!tableEl) return;
+    Array.from(tableEl.rows).forEach((r) => Array.from(r.cells).forEach((c) => c.style.removeProperty("width")));
+    emit();
+  }
+
   // ── 이미지 크기/정렬 ──────────────────────────────────────
   function applyImgStyle(fig: HTMLElement) {
     const width = fig.dataset.width; // '40' 등(%) — 없으면 100%
@@ -557,12 +608,14 @@ export default function RichEditor({ value, onChange, placeholder, minHeight = 3
 
       <div
         ref={ref}
-        className="rich-area post-content"
+        className={"rich-area post-content" + (colHover ? " rich-colresize" : "")}
         contentEditable
         suppressContentEditableWarning
         onInput={emit}
         onBlur={emit}
         onPaste={onPaste}
+        onPointerMove={onAreaPointerMove}
+        onPointerDown={onAreaPointerDown}
         data-placeholder={placeholder || "내용을 입력하세요…"}
         style={{ minHeight }}
       />
@@ -585,6 +638,7 @@ export default function RichEditor({ value, onChange, placeholder, minHeight = 3
               className={currentTableWidth() === pct ? "is-on" : undefined}
               onClick={() => setTableWidth(pct)}>{pct}%</button>
           ))}
+          <button type="button" title="열 너비 초기화 — 드래그로 조절한 열 너비를 균등 분배로 되돌립니다" onClick={resetColWidths}><i className="fa-solid fa-table-columns" /><i className="fa-solid fa-rotate-left rich-mini" /></button>
           <span className="rich-bar-sep" />
           <button type="button" className="rich-bar-del" title="표 삭제" onClick={delTable}><i className="fa-solid fa-trash" /></button>
         </div>

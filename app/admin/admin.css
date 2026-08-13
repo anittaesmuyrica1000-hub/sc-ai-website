@@ -71,6 +71,8 @@
   .rich-area{padding:18px;min-height:380px;max-height:64vh;overflow-y:auto;outline:none;font-size:15px;line-height:1.75;color:var(--ink)}
   .rich-area:empty:before{content:attr(data-placeholder);color:var(--slate-2)}
   .rich-area:focus{box-shadow:inset 0 0 0 2px rgba(46,108,240,.12)}
+  /* 표 열 경계선 위에 있을 때 좌우 리사이즈 커서 */
+  .rich-area.rich-colresize,.rich-area.rich-colresize *{cursor:col-resize}
   .rich-area h2{font-size:20px;font-weight:800;margin:18px 0 10px;color:var(--ink)}
   .rich-area h3{font-size:16.5px;font-weight:700;margin:16px 0 8px;color:var(--ink)}
   .rich-area h2:first-child,.rich-area h3:first-child,.rich-area p:first-child{margin-top:0}
