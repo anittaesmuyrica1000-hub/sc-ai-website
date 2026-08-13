@@ -28,6 +28,10 @@
   .post-content ul.post-list{margin:0 0 22px;padding-left:4px;list-style:none;display:grid;gap:10px}
   .post-content ul.post-list li{position:relative;padding-left:26px}
   .post-content ul.post-list li::before{content:"";position:absolute;left:6px;top:13px;width:7px;height:7px;border-radius:50%;background:var(--blue)}
+  /* ol.post-list — 전역 리셋으로 기본 list-style이 날아가므로 커스텀 카운터로 복원 */
+  .post-content ol.post-list{margin:0 0 22px;padding-left:0;list-style:none;display:grid;gap:10px;counter-reset:post-ol}
+  .post-content ol.post-list li{position:relative;padding-left:26px;counter-increment:post-ol}
+  .post-content ol.post-list li::before{content:counter(post-ol) ".";position:absolute;left:0;top:0;font-weight:700;color:var(--blue-d);font-size:15px}
   /* 어드민(WYSIWYG) 저장 HTML의 클래스 없는 목록 — 전역 리셋으로 여백이 0이 되므로 post-list와 같은 간격 부여 */
   .post-content ol:not(.post-list),.post-content ul:not(.post-list){margin:0 0 22px;padding-left:24px;display:grid;gap:10px}
   /* 채용검증 클러스터 4편 — 불릿 목록을 연회색 카드 박스로(요약박스와 통일감) */
