@@ -324,6 +324,22 @@ export default function RichEditor({ value, onChange, placeholder, minHeight = 3
     cellRef.current = null;
     emit();
   }
+  // 표 폭 — 래퍼(.post-table-wrap)에 인라인 width(%)를 지정. 100%는 스타일 제거(기본값 복원).
+  // 사이트 post.css의 .post-table{width:100%}는 래퍼를 채우는 값이라 래퍼 폭만 줄이면 그대로 반영된다.
+  function setTableWidth(pct: number) {
+    if (!tableEl) return;
+    const target = (tableEl.closest(".post-table-wrap") as HTMLElement | null) || tableEl;
+    if (pct >= 100) target.removeAttribute("style");
+    else target.setAttribute("style", `width:${pct}%`);
+    emit();
+    requestAnimationFrame(reposition);
+  }
+  function currentTableWidth(): number {
+    if (!tableEl) return 100;
+    const target = (tableEl.closest(".post-table-wrap") as HTMLElement | null) || tableEl;
+    const m = (target.getAttribute("style") || "").match(/width:\s*(\d+)%/);
+    return m ? Number(m[1]) : 100;
+  }
 
   // ── 이미지 크기/정렬 ──────────────────────────────────────
   function applyImgStyle(fig: HTMLElement) {
@@ -563,6 +579,12 @@ export default function RichEditor({ value, onChange, placeholder, minHeight = 3
           <span className="rich-bar-sep" />
           <button type="button" title="행 삭제" onClick={delRow}>행<i className="fa-solid fa-minus rich-mini" /></button>
           <button type="button" title="열 삭제" onClick={delCol}>열<i className="fa-solid fa-minus rich-mini" /></button>
+          <span className="rich-bar-sep" />
+          {[50, 70, 100].map((pct) => (
+            <button key={pct} type="button" title={`표 폭 ${pct}%`}
+              className={currentTableWidth() === pct ? "is-on" : undefined}
+              onClick={() => setTableWidth(pct)}>{pct}%</button>
+          ))}
           <span className="rich-bar-sep" />
           <button type="button" className="rich-bar-del" title="표 삭제" onClick={delTable}><i className="fa-solid fa-trash" /></button>
         </div>
