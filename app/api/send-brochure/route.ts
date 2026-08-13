@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 import { sendMail, mailerConfigured } from "@/lib/mailer";
-import { UTM_KEYS } from "@/lib/supabase";
+import { TRACKING_KEYS } from "@/lib/supabase";
 
 // 서비스소개서 발송 API — 회사 이메일로 소개서(현재본) 보안 링크(7일 만료)를 전송.
 // 발송 방식 2가지 지원(우선순위):
@@ -35,9 +35,9 @@ export async function POST(req: Request) {
   const phone = String(body.phone ?? "").trim() || null;
   const size = String(body.size ?? "").trim();
 
-  // UTM 유입 파라미터(있는 값만) — 리드 저장·관리자 알림에 함께 기록
+  // 유입 추적 파라미터(utm·클릭 ID·referrer, 있는 값만) — 리드 저장·관리자 알림에 함께 기록
   const utm: Record<string, string> = {};
-  for (const k of UTM_KEYS) {
+  for (const k of TRACKING_KEYS) {
     const v = String(body[k] ?? "").trim();
     if (v) utm[k] = v.slice(0, 300);
   }
@@ -146,7 +146,7 @@ export async function POST(req: Request) {
       subject: `[소개서 신청] ${company} · ${name}`,
       html: `<div style="font-family:Pretendard,Arial,sans-serif;font-size:14px;color:#1f2a44;word-break:keep-all">
         <h2 style="font-size:16px">서비스소개서 신청</h2>
-        <p>회사: <b>${esc(company)}</b><br/>이름: ${esc(name)}<br/>이메일: ${esc(email)}<br/>연락처: ${esc(phone || "-")}<br/>직책: ${esc(role || "-")}<br/>규모: ${esc(size)}${Object.keys(utm).length ? `<br/>유입: ${esc(UTM_KEYS.filter((k) => utm[k]).map((k) => `${k}=${utm[k]}`).join(", "))}` : ""}</p>
+        <p>회사: <b>${esc(company)}</b><br/>이름: ${esc(name)}<br/>이메일: ${esc(email)}<br/>연락처: ${esc(phone || "-")}<br/>직책: ${esc(role || "-")}<br/>규모: ${esc(size)}${Object.keys(utm).length ? `<br/>유입: ${esc(TRACKING_KEYS.filter((k) => utm[k]).map((k) => `${k}=${utm[k]}`).join(", "))}` : ""}</p>
       </div>`,
     }).catch((e) => console.error("send-brochure: 관리자 알림 실패(무시)", e));
   }

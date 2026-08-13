@@ -78,6 +78,9 @@ export type Signup = {
   utm_id?: string | null;
   utm_term?: string | null;
   utm_content?: string | null;
+  gclid?: string | null;
+  fbclid?: string | null;
+  referrer?: string | null;
 };
 
 // 도입문의 상담 상태 값
@@ -85,9 +88,12 @@ export const SIGNUP_STATUSES = ["신규", "확인 완료", "상담 진행", "완
 
 // UTM 추적 파라미터 키(유입 URL에서 읽어 signups·brochure_requests에 저장. lib/utm.ts 참고)
 export const UTM_KEYS = ["utm_source", "utm_medium", "utm_campaign", "utm_id", "utm_term", "utm_content"] as const;
+// UTM 외 유입 추적 필드 — 광고 클릭 ID(구글 자동 태깅 gclid, 메타 fbclid) + utm 없는 유입의 referrer 호스트명
+export const TRACKING_KEYS = [...UTM_KEYS, "gclid", "fbclid", "referrer"] as const;
 export const UTM_LABEL: Record<string, string> = {
   utm_source: "소스", utm_medium: "매체", utm_campaign: "캠페인",
   utm_id: "캠페인 ID", utm_term: "키워드", utm_content: "콘텐츠",
+  gclid: "구글 광고 클릭 ID", fbclid: "메타 광고 클릭 ID", referrer: "유입 사이트",
 };
 
 // 서비스소개서 신청 리드(brochure_requests) 타입
@@ -106,6 +112,9 @@ export type BrochureRequest = {
   utm_id?: string | null;
   utm_term?: string | null;
   utm_content?: string | null;
+  gclid?: string | null;
+  fbclid?: string | null;
+  referrer?: string | null;
   downloaded_at?: string | null;
   download_count?: number | null;
 };

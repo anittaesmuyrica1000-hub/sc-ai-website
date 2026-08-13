@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState, useCallback, useRef } from "react";
 import type { Session } from "@supabase/supabase-js";
-import { supabase, type Post, type Update, type Faq, type Signup, type BrochureRequest, type LegalDoc, type LegalVersion, type PageSeo, legalPath, RESERVED_LEGAL_SLUGS, SIGNUP_STATUSES, SEO_PAGES, UTM_KEYS, UTM_LABEL } from "@/lib/supabase";
+import { supabase, type Post, type Update, type Faq, type Signup, type BrochureRequest, type LegalDoc, type LegalVersion, type PageSeo, legalPath, RESERVED_LEGAL_SLUGS, SIGNUP_STATUSES, SEO_PAGES, TRACKING_KEYS, UTM_LABEL } from "@/lib/supabase";
 import { UPDATE_CATEGORIES } from "@/app/update/badge";
 import { fmtDate } from "@/lib/format";
 import MarkdownEditor from "@/components/MarkdownEditor";
@@ -2040,9 +2040,9 @@ function SignupsManager() {
   }, [rows, fStatus, fSize, fPeriod, q]);
 
   function exportCsv() {
-    const head = ["접수일시", "이름", "회사", "이메일", "직무/직책", "연락처", "채용규모", "상태", "문의내용", "내부메모", "utm_source", "utm_medium", "utm_campaign", "utm_id", "utm_term", "utm_content"];
+    const head = ["접수일시", "이름", "회사", "이메일", "직무/직책", "연락처", "채용규모", "상태", "문의내용", "내부메모", ...TRACKING_KEYS];
     const esc = (v: unknown) => `"${String(v ?? "").replace(/"/g, '""')}"`;
-    const lines = filtered.map((r) => [fmtDateTime(r.created_at), r.name, r.company, r.email, r.role ?? "", r.phone ?? "", r.size ?? "", r.status ?? "신규", r.memo ?? "", r.admin_note ?? "", ...UTM_KEYS.map((k) => r[k] ?? "")].map(esc).join(","));
+    const lines = filtered.map((r) => [fmtDateTime(r.created_at), r.name, r.company, r.email, r.role ?? "", r.phone ?? "", r.size ?? "", r.status ?? "신규", r.memo ?? "", r.admin_note ?? "", ...TRACKING_KEYS.map((k) => r[k] ?? "")].map(esc).join(","));
     const csv = "﻿" + [head.map(esc).join(","), ...lines].join("\n");
     const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
     const url = URL.createObjectURL(blob); const a = document.createElement("a"); a.href = url; a.download = `signups-${new Date().toISOString().slice(0, 10)}.csv`; a.click(); URL.revokeObjectURL(url);
@@ -2097,7 +2097,7 @@ function SignupsManager() {
                         <td><a href={`mailto:${r.email}`}>{r.email}</a></td>
                         <td className="nowrap">{r.phone ? <a href={`tel:${r.phone}`} style={{color:"var(--blue)"}}>{fmtPhone(r.phone)}</a> : "—"}</td>
                         <td className="nowrap">{r.size ? (SIZE_LABEL[r.size] || r.size) : "—"}</td>
-                        <td className="nowrap">{r.utm_source ? <span className="utm-chip" title={UTM_KEYS.filter((k) => r[k]).map((k) => `${UTM_LABEL[k]}: ${r[k]}`).join("\n")}>{r.utm_source}{r.utm_medium ? ` / ${r.utm_medium}` : ""}</span> : "—"}</td>
+                        <td className="nowrap"><UtmChip r={r} /></td>
                         <td className="nowrap">
                           <select className="status-sel" value={r.status || "신규"} onChange={(e) => updateRow(r.id, { status: e.target.value })}>
                             {SIGNUP_STATUSES.map((s) => <option key={s} value={s}>{s}</option>)}
@@ -2119,7 +2119,7 @@ function SignupsManager() {
                     </div>
                     <div className="sig-card-sub">{r.name}{r.role ? ` · ${r.role}` : ""}{r.size ? ` · ${SIZE_LABEL[r.size] || r.size}` : ""}</div>
                     {r.phone && <div className="sig-card-phone"><i className="fa-solid fa-phone"></i> {fmtPhone(r.phone)}</div>}
-                    <div className="sig-card-date"><DateTimeCell iso={r.created_at} /> 접수{r.utm_source ? ` · 유입 ${r.utm_source}${r.utm_medium ? `/${r.utm_medium}` : ""}` : ""}</div>
+                    <div className="sig-card-date"><DateTimeCell iso={r.created_at} /> 접수{trafficLabel(r) ? ` · 유입 ${trafficLabel(r)}` : ""}</div>
                     <div className="sig-card-acts" onClick={(e) => e.stopPropagation()}>
                       {r.phone && <a className="sig-act" href={`tel:${r.phone}`}><i className="fa-solid fa-phone"></i> 전화</a>}
                       <a className="sig-act" href={`mailto:${r.email}`}><i className="fa-solid fa-envelope"></i> 메일</a>
@@ -2174,12 +2174,12 @@ function SignupDetail({ row, onClose, onSave }: { row: Signup; onClose: () => vo
             {fields.map(([k, v]) => (<div key={k} className="detail-row"><dt>{k}</dt><dd>{k === "업무 이메일" ? <a href={`mailto:${v}`}>{v}</a> : v}</dd></div>))}
           </dl>
           <div className="detail-row block"><dt>문의 메모</dt><dd className="memo-box">{row.memo || "—"}</dd></div>
-          {UTM_KEYS.some((k) => row[k]) && (
+          {TRACKING_KEYS.some((k) => row[k]) && (
             <div className="detail-row block">
-              <dt>유입 경로 (UTM)</dt>
+              <dt>유입 경로</dt>
               <dd>
                 <dl className="detail-grid" style={{ marginTop: 4 }}>
-                  {UTM_KEYS.filter((k) => row[k]).map((k) => (
+                  {TRACKING_KEYS.filter((k) => row[k]).map((k) => (
                     <div key={k} className="detail-row"><dt>{UTM_LABEL[k]}</dt><dd>{row[k]}</dd></div>
                   ))}
                 </dl>
@@ -2213,6 +2213,22 @@ function DateTimeCell({ iso, title }: { iso?: string | null; title?: string }) {
   return <span title={title}>{d} <span className="dt-time">{t}</span></span>;
 }
 
+// 유입 표시 라벨 — utm_source 우선, 없으면 광고 클릭 ID(gclid=구글·fbclid=메타), 그것도 없으면 referrer 호스트명
+function trafficLabel(r: Signup | BrochureRequest): string | null {
+  if (r.utm_source) return `${r.utm_source}${r.utm_medium ? ` / ${r.utm_medium}` : ""}`;
+  if (r.gclid) return "google / 광고클릭";
+  if (r.fbclid) return "meta / 광고클릭";
+  if (r.referrer) return r.referrer.replace(/^www\./, "");
+  return null;
+}
+
+// 유입 칩(도입문의·소개서 리드 테이블 공용) — 호버 시 전체 추적 값 툴팁
+function UtmChip({ r }: { r: Signup | BrochureRequest }) {
+  const label = trafficLabel(r);
+  if (!label) return <>—</>;
+  return <span className="utm-chip" title={TRACKING_KEYS.filter((k) => r[k]).map((k) => `${UTM_LABEL[k]}: ${r[k]}`).join("\n")}>{label}</span>;
+}
+
 function LeadTable({ table, title, empty, filename }: { table: string; title: string; empty: string; filename: string }) {
   const [rows, setRows] = useState<BrochureRequest[]>([]);
   const [loadErr, setLoadErr] = useState<string | null>(null);
@@ -2230,9 +2246,9 @@ function LeadTable({ table, title, empty, filename }: { table: string; title: st
   useEffect(() => { load(); }, [load]);
 
   function exportCsv() {
-    const head = ["접수일시", "다운로드일시", "다운로드횟수", "이름", "회사", "이메일", "직무/직책", "연락처", "채용규모", "utm_source", "utm_medium", "utm_campaign", "utm_id", "utm_term", "utm_content"];
+    const head = ["접수일시", "다운로드일시", "다운로드횟수", "이름", "회사", "이메일", "직무/직책", "연락처", "채용규모", ...TRACKING_KEYS];
     const esc = (v: unknown) => `"${String(v ?? "").replace(/"/g, '""')}"`;
-    const lines = rows.map((r) => [fmtDateTime(r.created_at), r.downloaded_at ? fmtDateTime(r.downloaded_at) : "", r.download_count ?? 0, r.name, r.company, r.email, r.role ?? "", r.phone ?? "", r.size ?? "", ...UTM_KEYS.map((k) => r[k] ?? "")].map(esc).join(","));
+    const lines = rows.map((r) => [fmtDateTime(r.created_at), r.downloaded_at ? fmtDateTime(r.downloaded_at) : "", r.download_count ?? 0, r.name, r.company, r.email, r.role ?? "", r.phone ?? "", r.size ?? "", ...TRACKING_KEYS.map((k) => r[k] ?? "")].map(esc).join(","));
     const csv = "﻿" + [head.map(esc).join(","), ...lines].join("\n");
     const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
     const url = URL.createObjectURL(blob); const a = document.createElement("a"); a.href = url; a.download = `${filename}-${new Date().toISOString().slice(0, 10)}.csv`; a.click(); URL.revokeObjectURL(url);
@@ -2261,7 +2277,7 @@ function LeadTable({ table, title, empty, filename }: { table: string; title: st
                     <td className="nowrap"><DateTimeCell iso={r.downloaded_at} title={r.download_count ? `${r.download_count}회 다운로드` : undefined} /></td>
                     <td className="nowrap">{r.name}</td>
                     <td>{r.company}</td>
-                    <td className="nowrap">{r.utm_source ? <span className="utm-chip" title={UTM_KEYS.filter((k) => r[k]).map((k) => `${UTM_LABEL[k]}: ${r[k]}`).join("\n")}>{r.utm_source}{r.utm_medium ? ` / ${r.utm_medium}` : ""}</span> : "—"}</td>
+                    <td className="nowrap"><UtmChip r={r} /></td>
                     <td><a href={`mailto:${r.email}`}>{r.email}</a></td>
                     <td>{r.role || "—"}</td>
                     <td className="nowrap">{r.phone ? fmtPhone(r.phone) : "—"}</td>
