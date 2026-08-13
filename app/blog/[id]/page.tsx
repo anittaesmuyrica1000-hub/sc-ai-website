@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import "./post.css";
-import { supabase, type Post } from "@/lib/supabase";
+import { supabase, publishAtVisibleOr, isScheduledFuture, type Post } from "@/lib/supabase";
 import { fmtDate } from "@/lib/format";
 import { renderBody } from "@/lib/postRender";
 import ViewCounter from "@/components/ViewCounter";
@@ -17,8 +17,10 @@ async function getAdjacentPosts(currentCreatedAt: string): Promise<{ prev: PostN
   try {
     const [prevRes, nextRes] = await Promise.all([
       supabase.from("posts").select("id, slug, title, cover_url, created_at").eq("published", true)
+        .or(publishAtVisibleOr())
         .lt("created_at", currentCreatedAt).order("created_at", { ascending: false }).limit(2),
       supabase.from("posts").select("id, slug, title, cover_url, created_at").eq("published", true)
+        .or(publishAtVisibleOr())
         .gt("created_at", currentCreatedAt).order("created_at", { ascending: true }).limit(1).maybeSingle(),
     ]);
     const prevList = prevRes.data ?? [];
@@ -41,6 +43,7 @@ async function getPost(key: string): Promise<Post | null> {
       if (!byId.error && byId.data) p = byId.data as Post;
     }
     if (!p || p.published === false) return null;
+    if (isScheduledFuture(p.publish_at)) return null; // 예약 시각 전에는 비노출
     return p;
   } catch (err) {
     console.error("post load failed:", err);

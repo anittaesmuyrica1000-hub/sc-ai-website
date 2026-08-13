@@ -1,4 +1,4 @@
-import { supabase } from "@/lib/supabase";
+import { supabase, publishAtVisibleOr } from "@/lib/supabase";
 import { renderBody } from "@/lib/postRender";
 
 // 블로그 RSS 2.0 피드 — published 글 최신 50개. 네이버 서치어드바이저 RSS 제출·구독기 발견용.
@@ -41,6 +41,7 @@ export async function GET() {
       .from("posts")
       .select("id,slug,title,excerpt,category,content,cover_url,created_at,updated_at")
       .eq("published", true)
+      .or(publishAtVisibleOr())
       .order("created_at", { ascending: false })
       .limit(50);
     if (!res.error && res.data) posts = res.data as Row[];

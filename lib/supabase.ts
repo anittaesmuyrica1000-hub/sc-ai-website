@@ -12,6 +12,17 @@ if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {
 
 export const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
+// 예약 발행 필터 — .eq("published", true)와 함께 .or(...)에 넣어 사용.
+// publish_at이 NULL(즉시 발행)이거나 이미 지난 글만 공개 노출한다.
+export function publishAtVisibleOr(): string {
+  return `publish_at.is.null,publish_at.lte.${new Date().toISOString()}`;
+}
+
+// 예약 시각이 아직 안 된 글인지 (단건 조회 후 노출 판단용)
+export function isScheduledFuture(publishAt?: string | null): boolean {
+  return !!publishAt && new Date(publishAt).getTime() > Date.now();
+}
+
 // 블로그 포스트 타입
 export type Post = {
   id: string;
@@ -30,6 +41,7 @@ export type Post = {
   meta_title?: string | null;
   meta_description?: string | null;
   views?: number | null;
+  publish_at?: string | null; // 예약 발행 시각(UTC). NULL이면 즉시 발행
 };
 
 // 제품 업데이트(릴리즈 노트/체인지로그) 타입 — 어드민 등록 + /update 페이지 렌더(비공개·링크 전용)
