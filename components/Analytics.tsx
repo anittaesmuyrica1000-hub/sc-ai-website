@@ -3,8 +3,9 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
 
-// GA4 측정 ID 형식(G-XXXXXXXXXX).
+// GA4 측정 ID 형식(G-XXXXXXXXXX) · GTM 컨테이너 ID 형식(GTM-XXXXXXX).
 const GA_ID_RE = /^G-[A-Z0-9]{4,}$/i;
+const GTM_ID_RE = /^GTM-[A-Z0-9]{4,}$/i;
 
 // 저장값(site_settings.ga_measurement_id)으로 Google 태그(gtag)를 주입한다.
 // 값은 둘 중 하나를 허용한다:
@@ -24,6 +25,26 @@ function buildSnippet(raw: string): string {
   }
   // 전체 스니펫을 붙여넣은 경우: 측정 ID가 들어 있을 때만 신뢰하고 그대로 사용
   if (v.includes("<script") && /G-[A-Z0-9]{4,}/i.test(v)) return v;
+  return "";
+}
+
+// 저장값(site_settings.gtm_container_id)으로 Google Tag Manager 컨테이너를 주입한다.
+// GA와 동일하게 컨테이너 ID 한 줄(GTM-XXXXXXX) 또는 전체 GTM 스니펫을 허용한다.
+// GTM은 dataLayer 기반이므로 아래 consent default 스크립트가 먼저 실행되면
+// 컨테이너 안의 태그들도 Consent Mode v2 상태를 그대로 따른다.
+// <noscript> iframe 폴백은 이 스크립트 자체가 JS로 주입되므로 의미가 없어 넣지 않는다.
+function buildGtmSnippet(raw: string): string {
+  const v = raw.trim();
+  if (!v) return "";
+  if (GTM_ID_RE.test(v)) {
+    return (
+      `<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});` +
+      `var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;` +
+      `j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);` +
+      `})(window,document,'script','dataLayer','${v}');</script>`
+    );
+  }
+  if (v.includes("<script") && /GTM-[A-Z0-9]{4,}/i.test(v)) return v;
   return "";
 }
 
@@ -47,10 +68,11 @@ export default function Analytics() {
       if (process.env.NEXT_PUBLIC_VERCEL_ENV === "preview") return;
       const { data } = await supabase
         .from("site_settings")
-        .select("value")
-        .eq("key", "ga_measurement_id")
-        .maybeSingle();
-      if (active) setSnippet(buildSnippet(String(data?.value || "")));
+        .select("key,value")
+        .in("key", ["ga_measurement_id", "gtm_container_id"]);
+      const get = (k: string) => String((data || []).find((r) => r.key === k)?.value || "");
+      // GTM을 먼저 두어 컨테이너 안의 태그가 GA 직접 태그보다 늦지 않게 한다.
+      if (active) setSnippet(buildGtmSnippet(get("gtm_container_id")) + buildSnippet(get("ga_measurement_id")));
     }
 
     load();

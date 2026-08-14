@@ -8,7 +8,7 @@ Supercoder AI 웹사이트 — **AIVIEW** 제품 랜딩 + 블로그/도입문의
 
 - Remote: https://github.com/anittaesmuyrica1000-hub/sc-ai-website.git
 - **브랜치 전략:** `dev` = 작업 기본(GitHub default branch), `main` = 운영(Vercel Production Branch). 별도 지시가 없으면 **`dev`에서 작업·커밋·push**하고, 테스트 후 PR(`dev`→`main`) 머지로 운영 반영.
-- 운영 도메인: https://sc-ai-website.vercel.app (Vercel Production = `main` 브랜치)
+- 운영 도메인: https://www.supercoder.co (Vercel Production = `main` 브랜치). `supercoder.co`는 www로 308 리다이렉트. 옛 `sc-ai-website.vercel.app`은 2026-07-01 제거되어 404 — 링크로 쓰지 않는다.
 - **DB는 dev·운영 공유** — 같은 Supabase 프로젝트(`supercoder-aiview`)를 쓴다. dev에서의 admin 설정·DB 변경(GA·약관·SEO·도입문의 등)은 운영에도 즉시 반영됨에 유의.
 
 ## Architecture
