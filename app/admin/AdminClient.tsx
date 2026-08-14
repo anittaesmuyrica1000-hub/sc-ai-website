@@ -440,6 +440,7 @@ function Dashboard({ onGo }: { onGo: (s: Section) => void }) {
 /* ===================== 설정 ===================== */
 
 const GA_ID_RE = /^G-[A-Z0-9]{4,}$/i;
+const GTM_ID_RE = /^GTM-[A-Z0-9]{4,}$/i;
 
 const ADMIN_EMAIL_RE = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
 
@@ -449,6 +450,12 @@ function Settings({ email }: { email: string }) {
   const [gaLoaded, setGaLoaded] = useState(false);
   const [gaMsg, setGaMsg] = useState<{ text: string; ok: boolean } | null>(null);
   const [gaBusy, setGaBusy] = useState(false);
+
+  // Google Tag Manager 컨테이너 ID (site_settings.gtm_container_id)
+  const [gtm, setGtm] = useState("");
+  const [gtmLoaded, setGtmLoaded] = useState(false);
+  const [gtmMsg, setGtmMsg] = useState<{ text: string; ok: boolean } | null>(null);
+  const [gtmBusy, setGtmBusy] = useState(false);
 
   // 관리자 계정 관리 (admins 테이블)
   const [admins, setAdmins] = useState<string[]>([]);
@@ -472,6 +479,13 @@ function Settings({ email }: { email: string }) {
         if (error) { setGaMsg({ text: "설정 테이블이 없습니다. supabase/site-settings-setup.sql을 먼저 실행해 주세요.", ok: false }); }
         else { setGa(String(data?.value || "")); }
         setGaLoaded(true);
+      });
+    supabase.from("site_settings").select("value").eq("key", "gtm_container_id").maybeSingle()
+      .then(({ data, error }) => {
+        if (!active) return;
+        if (error) { setGtmMsg({ text: "설정 테이블이 없습니다. supabase/site-settings-setup.sql을 먼저 실행해 주세요.", ok: false }); }
+        else { setGtm(String(data?.value || "")); }
+        setGtmLoaded(true);
       });
     return () => { active = false; };
   }, []);
@@ -523,6 +537,23 @@ function Settings({ email }: { email: string }) {
     finally { setGaBusy(false); }
   }
 
+  async function saveGtm(e: React.FormEvent) {
+    e.preventDefault();
+    const v = gtm.trim();
+    // 컨테이너 ID(GTM-XXXXXXX) 한 줄 또는 GTM-ID가 포함된 전체 스니펫 허용
+    if (v && !GTM_ID_RE.test(v) && !/GTM-[A-Z0-9]{4,}/i.test(v)) {
+      setGtmMsg({ text: "컨테이너 ID(GTM-XXXXXXX) 또는 GTM-ID가 포함된 스니펫을 입력해 주세요.", ok: false }); return;
+    }
+    setGtmBusy(true);
+    try {
+      const { error } = await supabase.from("site_settings")
+        .upsert({ key: "gtm_container_id", value: v, updated_at: new Date().toISOString() }, { onConflict: "key" });
+      if (error) throw error;
+      setGtmMsg({ text: v ? "저장됐습니다. 잠시 후 사이트에 적용됩니다." : "컨테이너 ID를 비웠습니다(GTM 비활성화).", ok: true });
+    } catch (err) { console.error("gtm save failed:", err); setGtmMsg({ text: "저장에 실패했습니다. 설정 테이블(site-settings-setup.sql) 적용 여부를 확인해 주세요.", ok: false }); }
+    finally { setGtmBusy(false); }
+  }
+
   return (
     <div className="settings-grid">
       <div className="card">
@@ -564,6 +595,18 @@ function Settings({ email }: { email: string }) {
           </div>
           <div className="hint"><b>G-</b>로 시작하는 측정 ID만 넣으면 표준 gtag가 자동 생성됩니다. analytics.google.com에서 받은 <b>전체 gtag 스니펫</b>을 그대로 붙여넣어도 됩니다(커스텀 설정·추가 태그 포함). 비워서 저장하면 GA가 꺼집니다.</div>
           <div className="form-actions"><button className="btn btn-blue" disabled={gaBusy || !gaLoaded}>{gaBusy ? "저장 중…" : "저장"}</button></div>
+        </form>
+      </div>
+      <div className="card">
+        <h2>Google 태그 관리자(GTM)</h2>
+        {gtmMsg && <div className={`form-msg ${gtmMsg.ok ? "ok" : "err"}`}>{gtmMsg.text}</div>}
+        <form onSubmit={saveGtm}>
+          <div className="field">
+            <label>컨테이너 ID 또는 GTM 스니펫</label>
+            <textarea value={gtm} onChange={(e) => setGtm(e.target.value)} placeholder={"GTM-XXXXXXX\n\n또는 GTM 컨테이너 스니펫(<script>…</script>)을 그대로 붙여넣기"} disabled={!gtmLoaded} autoComplete="off" rows={6} style={{ fontFamily: "monospace", fontSize: 13 }} />
+          </div>
+          <div className="hint"><b>GTM-</b>으로 시작하는 컨테이너 ID만 넣으면 표준 GTM 스니펫이 자동 생성됩니다. 쿠키 배너의 동의 상태(Consent Mode v2)가 컨테이너 안의 태그에도 그대로 적용됩니다. <b>GTM 컨테이너 안에서 GA4 태그를 발행할 계획이면 위 GA 측정 ID는 비워 두세요</b> — 둘 다 켜면 조회수가 이중 집계됩니다. 비워서 저장하면 GTM이 꺼집니다.</div>
+          <div className="form-actions"><button className="btn btn-blue" disabled={gtmBusy || !gtmLoaded}>{gtmBusy ? "저장 중…" : "저장"}</button></div>
         </form>
       </div>
     </div>
