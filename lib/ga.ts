@@ -1,5 +1,6 @@
 import { JWT } from "google-auth-library";
 import { getRealLeadsYesterday, type RealLeads } from "./leads";
+import { collectBlogViews, type BlogViews } from "./blogViews";
 
 // GA4 Data API 조회 — Gmail용과 동일한 Google 서비스계정을 재사용한다(스코프만 analytics.readonly).
 // 서비스계정 이메일(GMAIL_SA_CLIENT_EMAIL)에 GA4 속성 "뷰어" 권한 + 프로젝트에 GA Data API 활성화 필요.
@@ -146,9 +147,11 @@ export type DailyReport = {
   pageViews: number;
   engagementRate: number;       // 0~1
   engagedSessions: number;
+  engagementPending: boolean;   // GA4가 어제 세션 지표를 아직 확정하지 않음 → 참여율 0%는 오탐
   avgEngagementPerSession: number; // 초(세션당 평균 참여시간)
   keyEvents: number;            // 전환(주요 이벤트) 총합 — apply_lead+brochure_lead 등(GA 이벤트, 사내 포함)
   realLeads: RealLeads;         // 실제 리드(Supabase, 사내 @supercoder.co 제외)
+  blogViews: BlogViews;         // 서버측 블로그 조회수(동의 무관) — GA4 누락분 감시용
   // 전일 대비(그제) 비교용
   prev: { activeUsers: number; sessions: number; engagementRate: number; keyEvents: number };
   // 7일 이동 평균(그제 기준 7일, yesterday 미포함)
@@ -219,6 +222,10 @@ export async function getDailyReport(): Promise<DailyReport> {
   const engagedSessions = n(yr[5]?.value);
   const userEngagementDuration = n(yr[6]?.value); // 초 합계
   const avgEngagementPerSession = sessions ? userEngagementDuration / sessions : 0;
+  // 크론은 KST 08:00에 도는데, GA4는 세션 스코프 지표(engagementRate·engagedSessions)를 그때까지
+  // 확정하지 못해 0을 반환한다(이벤트 수는 이미 채워져 있어 모순처럼 보임). 참여시간이 있는데
+  // 참여 세션이 0이면 미확정으로 판정하고, 0%를 "낮음" 경보로 쓰지 않는다.
+  const engagementPending = engagedSessions === 0 && userEngagementDuration > 0;
   const returningUsers = Math.max(activeUsers - newUsers, 0);
 
   // 브레이크다운 + 이벤트 + 7일 이동 평균 (병렬)
@@ -268,7 +275,8 @@ export async function getDailyReport(): Promise<DailyReport> {
   const dateLabel = `${seoulNow.getFullYear()}-${String(seoulNow.getMonth() + 1).padStart(2, "0")}-${String(seoulNow.getDate()).padStart(2, "0")}`;
 
   // 실제 리드(Supabase, 사내 제외) — GA 이벤트는 사내 테스트도 세므로 리드 지표는 DB 기준.
-  const realLeads = await getRealLeadsYesterday();
+  // 서버측 블로그 조회수 — 쿠키 동의와 무관하게 집계되므로 GA4 누락 규모를 감시할 수 있다.
+  const [realLeads, blogViews] = await Promise.all([getRealLeadsYesterday(), collectBlogViews()]);
 
   // ── 자동 인사이트 ─────────────────────────────
   const insights: string[] = [];
@@ -286,10 +294,32 @@ export async function getDailyReport(): Promise<DailyReport> {
     (vs7 !== null ? ` (7일 평균 대비 ${arrow(vs7)}, 평균 ${avg7.sessions}건/일 → ${trafficLevel})` : "") + "."
   );
 
+  // 1-b. 서버측 실측(쿠키 동의 무관) — GA4 세션은 '허용을 누른 방문자' 표본이라 이 값과 함께 읽어야 한다.
+  if (blogViews.available && blogViews.delta !== null && blogViews.hours) {
+    const gap = pageViews > 0 ? (blogViews.delta / pageViews).toFixed(1) : null;
+    insights.push(
+      `서버측 블로그 조회 +${blogViews.delta.toLocaleString()}회 (최근 ${blogViews.hours}시간, 쿠키 동의 무관 집계` +
+      (blogViews.perDay !== null ? ` · 최근 평균 ${blogViews.perDay}회/일` : "") + ")" +
+      (gap ? ` — GA4 조회수 ${pageViews.toLocaleString()}회의 ${gap}배.` : ".")
+    );
+  } else if (blogViews.available) {
+    insights.push(
+      `서버측 블로그 누적 조회 ${blogViews.total.toLocaleString()}회 (공개 ${blogViews.postsCount}건) — 일별 증가분은 스냅샷이 2일치 모이면 표시됩니다.`
+    );
+  }
+
   // 2. 참여 품질: 참여율 + 수준 라벨 + 세션당 참여시간
   const er7 = Math.round(avg7.engagementRate * 1000) / 10;
-  const erLabel = erNow >= 60 ? "양호" : erNow >= 40 ? "보통" : "낮음 — 랜딩/콘텐츠 점검 권장";
-  insights.push(`참여율 ${erNow}% [${erLabel}] (전일 ${erPrev}%, 7일 평균 ${er7}%), 세션당 평균 참여 ${fmtDuration(avgEngagementPerSession)}.`);
+  if (engagementPending) {
+    // 미확정 상태의 0%를 "낮음" 경보로 내보내면 매일 오탐이 된다(2026-08-17 점검에서 확인).
+    insights.push(
+      `참여율 집계 중 (GA4가 어제 세션 지표를 아직 확정하지 않음) — 확정치는 그제 ${erPrev}%, 7일 평균 ${er7}%. ` +
+      `세션당 평균 참여 ${fmtDuration(avgEngagementPerSession)}.`
+    );
+  } else {
+    const erLabel = erNow >= 60 ? "양호" : erNow >= 40 ? "보통" : "낮음 — 랜딩/콘텐츠 점검 권장";
+    insights.push(`참여율 ${erNow}% [${erLabel}] (전일 ${erPrev}%, 7일 평균 ${er7}%), 세션당 평균 참여 ${fmtDuration(avgEngagementPerSession)}.`);
+  }
 
   // 3. 전환(리드): 건수 + 전환율
   if (realLeads.available) {
@@ -320,9 +350,10 @@ export async function getDailyReport(): Promise<DailyReport> {
     dateLabel,
     realtimeActiveUsers,
     activeUsers, newUsers, returningUsers, sessions, pageViews,
-    engagementRate, engagedSessions, avgEngagementPerSession,
+    engagementRate, engagedSessions, engagementPending, avgEngagementPerSession,
     keyEvents: keyEventsYday,
     realLeads,
+    blogViews,
     prev,
     avg7,
     topPages: listOf(pages),
