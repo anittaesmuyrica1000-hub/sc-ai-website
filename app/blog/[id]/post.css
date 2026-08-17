@@ -68,6 +68,13 @@
   /* 주제 키워드·해시태그(검색 노출용) */
   .post-tags{list-style:none;display:flex;flex-wrap:wrap;gap:8px;margin:36px 0 0;padding:0}
   .post-tag{font-size:13.5px;font-weight:600;color:var(--blue-d);background:var(--soft);border:1px solid var(--line);border-radius:999px;padding:6px 13px}
+  /* 글 하단 전환 CTA — 검색 유입 독자를 도입문의·소개서로 연결 */
+  .post-cta{margin:48px 0 0;padding:32px 30px;background:var(--soft-2);border:1px solid var(--tint);border-radius:var(--r)}
+  .post-cta__label{display:inline-flex;align-items:center;gap:7px;margin:0;font-size:12.5px;font-weight:800;letter-spacing:.06em;color:var(--blue-d)}
+  .post-cta__title{margin:12px 0 0;font-size:23px;font-weight:800;letter-spacing:-.02em;line-height:1.38;color:var(--ink)}
+  .post-cta__desc{margin:12px 0 0;font-size:15.5px;line-height:1.65;color:var(--slate)}
+  .post-cta__actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:22px}
+  @media(max-width:560px){.post-cta{padding:26px 20px}.post-cta__title{font-size:20px}.post-cta__actions .btn{width:100%;justify-content:center}}
   .post-foot{margin-top:56px;padding-top:36px;border-top:1px solid var(--line)}
   .post-more-label{font-size:15px;font-weight:700;color:var(--slate);margin:0 0 16px}
   .post-more-list{display:flex;flex-direction:column;gap:4px}

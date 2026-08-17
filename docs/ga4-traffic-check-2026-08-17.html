@@ -1,0 +1,773 @@
+<title>GA4 계측 격차 진단</title>
+<style>
+  :root {
+    --ground: #F1F3F6;
+    --surface: #FFFFFF;
+    --surface-2: #F8F9FB;
+    --ink: #131924;
+    --ink-2: #454E5E;
+    --muted: #6E7787;
+    --line: #DDE2EA;
+    --line-soft: #EAEEF4;
+    --accent: #2149B8;
+    --accent-soft: #E7EDFA;
+    --accent-dim: #A9BCE6;
+    --warn: #A85B10;
+    --warn-soft: #F8EEDF;
+    --good: #16704F;
+    --good-soft: #E2F0EA;
+    --font-sans: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Pretendard", "Malgun Gothic", system-ui, sans-serif;
+    --font-mono: ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas, monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ground: #0D1117;
+      --surface: #151B24;
+      --surface-2: #1B2230;
+      --ink: #E7ECF4;
+      --ink-2: #B2BBCA;
+      --muted: #8A94A6;
+      --line: #27303E;
+      --line-soft: #1E2635;
+      --accent: #7FA2FF;
+      --accent-soft: #1B2740;
+      --accent-dim: #3A4B75;
+      --warn: #E0A44E;
+      --warn-soft: #2C2314;
+      --good: #4FBF95;
+      --good-soft: #12281F;
+    }
+  }
+  :root[data-theme="dark"] {
+    --ground: #0D1117;
+    --surface: #151B24;
+    --surface-2: #1B2230;
+    --ink: #E7ECF4;
+    --ink-2: #B2BBCA;
+    --muted: #8A94A6;
+    --line: #27303E;
+    --line-soft: #1E2635;
+    --accent: #7FA2FF;
+    --accent-soft: #1B2740;
+    --accent-dim: #3A4B75;
+    --warn: #E0A44E;
+    --warn-soft: #2C2314;
+    --good: #4FBF95;
+    --good-soft: #12281F;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--ground);
+    color: var(--ink);
+    font-family: var(--font-sans);
+    font-size: 16px;
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .page {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 56px 24px 96px;
+    display: flex;
+    flex-direction: column;
+    gap: 44px;
+  }
+
+  .eyebrow {
+    font-family: var(--font-mono);
+    font-size: 11.5px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 0;
+  }
+
+  h1 {
+    font-size: clamp(30px, 5.4vw, 44px);
+    line-height: 1.18;
+    letter-spacing: -0.025em;
+    font-weight: 800;
+    margin: 12px 0 0;
+    text-wrap: balance;
+  }
+
+  .lede {
+    font-size: 18.5px;
+    line-height: 1.66;
+    color: var(--ink-2);
+    margin: 18px 0 0;
+    max-width: 64ch;
+  }
+  .lede strong { color: var(--ink); font-weight: 700; }
+
+  h2 {
+    font-size: 21px;
+    letter-spacing: -0.015em;
+    font-weight: 750;
+    margin: 0;
+    text-wrap: balance;
+  }
+  h3 {
+    font-size: 15px;
+    font-weight: 700;
+    margin: 0 0 6px;
+    letter-spacing: -0.005em;
+  }
+  p { margin: 0; max-width: 68ch; }
+  section { display: flex; flex-direction: column; gap: 16px; }
+
+  .sec-head { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+
+  .chip {
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 3px 8px;
+    border-radius: 3px;
+    white-space: nowrap;
+    font-weight: 600;
+  }
+  .chip--fact { background: var(--good-soft); color: var(--good); }
+  .chip--bug  { background: var(--warn-soft); color: var(--warn); }
+  .chip--est  { background: var(--surface-2); color: var(--muted); border: 1px solid var(--line); }
+
+  hr.rule { border: 0; border-top: 1px solid var(--line); margin: 0; }
+
+  /* verdict panel */
+  .verdict {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-left: 3px solid var(--accent);
+    border-radius: 4px;
+    padding: 22px 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .verdict p { max-width: 66ch; color: var(--ink-2); }
+  .verdict .headline { color: var(--ink); font-size: 17px; font-weight: 700; line-height: 1.55; }
+
+  /* gauges */
+  .gauges {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+    gap: 12px;
+  }
+  .gauge {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    padding: 16px 18px 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .gauge__label {
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .gauge__val {
+    font-size: 30px;
+    font-weight: 780;
+    letter-spacing: -0.03em;
+    line-height: 1.15;
+  }
+  .gauge__val .unit { font-size: 15px; font-weight: 600; color: var(--muted); letter-spacing: 0; margin-left: 2px; }
+  .gauge__note { font-size: 13px; color: var(--muted); line-height: 1.5; }
+  .gauge--flag .gauge__val { color: var(--accent); }
+
+  /* figure */
+  figure {
+    margin: 0;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    padding: 20px 20px 16px;
+  }
+  figcaption {
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.55;
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid var(--line-soft);
+  }
+  .fig-title { font-size: 14.5px; font-weight: 700; margin: 0 0 2px; }
+  .fig-sub { font-size: 12.5px; color: var(--muted); margin: 0 0 14px; }
+  .chart-wrap { position: relative; overflow-x: auto; }
+  svg { display: block; width: 100%; height: auto; }
+
+  /* SVG paint via CSS classes — var() is unreliable inside presentation attributes */
+  #chart-line .grid      { stroke: var(--line-soft); stroke-width: 1; }
+  #chart-line .tick      { fill: var(--muted); font-size: 11px; font-family: var(--font-mono); }
+  #chart-line .ann-line  { stroke: var(--muted); stroke-width: 1; stroke-dasharray: 3 3; }
+  #chart-line .ann-text  { fill: var(--muted); font-size: 11px; font-family: var(--font-mono); }
+  #chart-line .series    { fill: none; stroke: var(--accent); stroke-width: 2; stroke-linejoin: round; stroke-linecap: round; }
+  #chart-line .dot       { fill: var(--surface); stroke: var(--accent); stroke-width: 2; }
+  #chart-line .dot--last { fill: var(--accent); }
+  #chart-line .val       { fill: var(--ink); font-size: 12px; font-weight: 700; font-family: var(--font-mono); }
+  #chart-line .cross     { stroke: var(--accent-dim); stroke-width: 1; }
+  #chart-line .hot       { fill: none; stroke: var(--accent); stroke-width: 2; }
+
+  .tip {
+    position: absolute;
+    pointer-events: none;
+    opacity: 0;
+    transform: translate(-50%, -100%);
+    background: var(--ink);
+    color: var(--ground);
+    font-size: 12px;
+    font-family: var(--font-mono);
+    padding: 5px 8px;
+    border-radius: 3px;
+    white-space: nowrap;
+    z-index: 4;
+    transition: opacity .1s linear;
+  }
+  .tip.on { opacity: 1; }
+
+  /* horizontal compare bars */
+  .cmp { display: flex; flex-direction: column; gap: 18px; }
+  .cmp__row { display: flex; flex-direction: column; gap: 7px; }
+  .cmp__top { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
+  .cmp__name { font-size: 14px; font-weight: 650; }
+  .cmp__name small { display: block; font-weight: 400; font-size: 12.5px; color: var(--muted); margin-top: 1px; }
+  .cmp__num { font-family: var(--font-mono); font-size: 20px; font-weight: 700; letter-spacing: -0.02em; white-space: nowrap; }
+  .cmp__track { height: 14px; background: var(--surface-2); border: 1px solid var(--line-soft); border-radius: 3px; overflow: hidden; }
+  .cmp__fill { height: 100%; border-radius: 2px 3px 3px 2px; }
+
+  /* evidence blocks */
+  .ev {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    padding: 18px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .ev p { font-size: 14.5px; color: var(--ink-2); }
+  .ev code, code.inline {
+    font-family: var(--font-mono);
+    font-size: 12.5px;
+    background: var(--surface-2);
+    border: 1px solid var(--line-soft);
+    padding: 1px 5px;
+    border-radius: 3px;
+    color: var(--ink-2);
+  }
+
+  ul.tight { margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 7px; }
+  ul.tight li { font-size: 14.5px; color: var(--ink-2); max-width: 66ch; }
+  ul.tight li strong { color: var(--ink); font-weight: 650; }
+
+  /* tables */
+  .tbl-wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 4px; background: var(--surface); }
+  table { border-collapse: collapse; width: 100%; font-size: 14px; min-width: 520px; }
+  th, td { text-align: left; padding: 11px 14px; border-bottom: 1px solid var(--line-soft); vertical-align: top; }
+  thead th {
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 600;
+    background: var(--surface-2);
+    border-bottom: 1px solid var(--line);
+    white-space: nowrap;
+  }
+  tbody tr:last-child td { border-bottom: 0; }
+  td.num { font-family: var(--font-mono); text-align: right; white-space: nowrap; }
+  td .why { display: block; color: var(--muted); font-size: 13px; margin-top: 3px; line-height: 1.5; }
+  .pri {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    padding: 2px 7px;
+    border-radius: 3px;
+    white-space: nowrap;
+  }
+  .pri--0 { background: var(--accent); color: var(--surface); }
+  .pri--1 { background: var(--accent-soft); color: var(--accent); }
+  .pri--2 { background: var(--surface-2); color: var(--muted); border: 1px solid var(--line); }
+
+  details {
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    background: var(--surface);
+    padding: 0;
+  }
+  details > summary {
+    cursor: pointer;
+    padding: 12px 16px;
+    font-size: 13.5px;
+    font-weight: 650;
+    color: var(--ink-2);
+    list-style: none;
+  }
+  details > summary::-webkit-details-marker { display: none; }
+  details > summary::before { content: "▸ "; color: var(--muted); }
+  details[open] > summary::before { content: "▾ "; }
+  details[open] > summary { border-bottom: 1px solid var(--line); }
+  details .tbl-wrap { border: 0; border-radius: 0; }
+  details table { min-width: 400px; }
+
+  a { color: var(--accent); text-decoration: none; border-bottom: 1px solid var(--accent-dim); }
+  a:hover { border-bottom-color: var(--accent); }
+  a:focus-visible, summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 2px; }
+
+  footer.meta {
+    font-size: 13px;
+    color: var(--muted);
+    border-top: 1px solid var(--line);
+    padding-top: 20px;
+    line-height: 1.65;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { transition: none !important; animation: none !important; }
+  }
+  @media (max-width: 560px) {
+    .page { padding: 40px 18px 72px; gap: 36px; }
+    .gauge__val { font-size: 26px; }
+  }
+</style>
+
+<div class="page">
+
+  <header>
+    <p class="eyebrow">자동 점검 루틴 · 2026-08-17 KST · www.supercoder.co</p>
+    <h1>트래픽은 회복 중이다.<br>GA4가 못 보고 있을 뿐이다.</h1>
+    <p class="lede">
+      GA4 기준 세션은 3주째 하루 2~5건으로 평탄해, 점검 루틴은 매일 “회복 실패”를 찍고 있다.
+      그런데 동의와 무관하게 서버에서 세는 블로그 조회수는 <strong>4일간 168회(하루 42회)</strong> 늘었다.
+      두 계측기가 같은 사이트를 놓고 <strong>4~18배</strong> 다른 값을 말한다. 틀린 쪽은 GA4다.
+    </p>
+  </header>
+
+  <div class="verdict">
+    <p class="headline">판정 — “회복 안 됨”은 트래픽의 문제가 아니라 계측의 문제다.</p>
+    <p>
+      7월 수치(하루 32~47세션)는 프리뷰 도메인 봇·내부 트래픽이 섞인 값이었고, 7/30 배포로 그 오염이 제거됐다.
+      여기에 쿠키 배너(7/29)와 Consent Mode v2(8/7)가 겹쳐, 배너를 누르지 않은 방문자는 GA4에서 아예 사라진다.
+      돌아갈 7월 기준선은 애초에 존재하지 않는다. <strong>회복 기준 “15세션”은 폐기해야 한다.</strong>
+    </p>
+  </div>
+
+  <div class="gauges">
+    <div class="gauge">
+      <span class="gauge__label">GA4 세션 / 일</span>
+      <span class="gauge__val">3.7<span class="unit">건</span></span>
+      <span class="gauge__note">최근 7일(8/10–8/16) 26건. 직전 7일 23건 → 사실상 정체</span>
+    </div>
+    <div class="gauge gauge--flag">
+      <span class="gauge__label">서버측 블로그 조회 / 일</span>
+      <span class="gauge__val">42<span class="unit">회</span></span>
+      <span class="gauge__note">8/13→8/17 +168회. 라이프타임 평균 12.9회/일의 3.3배</span>
+    </div>
+    <div class="gauge">
+      <span class="gauge__label">GA4 포착률</span>
+      <span class="gauge__val">≤23<span class="unit">%</span></span>
+      <span class="gauge__note">같은 4일: GA4 전체 조회 38회 vs 블로그만 168회</span>
+    </div>
+  </div>
+
+  <hr class="rule">
+
+  <section>
+    <div class="sec-head">
+      <h2>근거 1 — 7/30의 절벽은 트래픽이 아니라 봇이 사라진 자리</h2>
+      <span class="chip chip--fact">확정</span>
+    </div>
+    <p>
+      GA4 일별 세션은 7/29(47건) → 7/30(7건)에서 한 번에 무너진 뒤 지금까지 평탄하다.
+      그 날짜는 정확히 <code class="inline">Analytics.tsx</code>에 프리뷰 배포 GA 제외 로직이 들어간 날이다.
+      점진적 하락이 아니라 하루 만의 수직 절벽은, 트래픽이 빠진 게 아니라 <em>집계에서 한 소스가 빠진</em> 모양이다.
+    </p>
+
+    <figure>
+      <p class="fig-title">GA4 일별 세션</p>
+      <p class="fig-sub">2026-07-27 – 08-16 · 일일 애널리틱스 메일 기준 · 7/31은 메일 누락</p>
+      <div class="chart-wrap" id="wrap-line">
+        <svg id="chart-line" viewBox="0 0 720 250" role="img"
+             aria-label="GA4 일별 세션 추이. 7월 29일 47건에서 7월 30일 7건으로 급락한 뒤 8월 내내 하루 0~6건으로 평탄하다.">
+        </svg>
+        <div class="tip" id="tip-line"></div>
+      </div>
+      <figcaption>
+        절벽 이전 구간의 참여율은 2.8%~6.7%로, 사람 트래픽에서는 나오지 않는 값이었다.
+        7월 수치를 회복 목표로 삼는 것은 봇을 다시 불러오자는 뜻이 된다.
+      </figcaption>
+    </figure>
+
+    <details>
+      <summary>일별 원자료 보기 (활성 사용자 · 세션)</summary>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>날짜</th><th>활성 사용자</th><th>세션</th><th>비고</th></tr></thead>
+          <tbody id="tbl-line"></tbody>
+        </table>
+      </div>
+    </details>
+  </section>
+
+  <hr class="rule">
+
+  <section>
+    <div class="sec-head">
+      <h2>근거 2 — 동의를 거치지 않는 카운터는 성장을 보고 있다</h2>
+      <span class="chip chip--fact">확정</span>
+    </div>
+    <p>
+      블로그 상세는 <code class="inline">increment_post_views</code> RPC로 조회수를 DB에 직접 센다.
+      쿠키 동의와 무관하게 동작하므로, GA4가 놓치는 방문자도 여기에는 남는다.
+      8/13 결과보고서에 박힌 스냅샷(823회)과 오늘 값(991회)을 비교하면 4일간 +168회다.
+    </p>
+
+    <figure>
+      <p class="fig-title">같은 4일, 두 계측기</p>
+      <p class="fig-sub">서버측: 8/13 오후–8/17 오후 · GA4: 8/13–8/16 (4개 완전일)</p>
+      <div class="cmp">
+        <div class="cmp__row">
+          <div class="cmp__top">
+            <span class="cmp__name">서버측 블로그 조회 <small>Supabase posts.views 증분 — 블로그 상세만</small></span>
+            <span class="cmp__num" style="color:var(--accent)">168회</span>
+          </div>
+          <div class="cmp__track"><div class="cmp__fill" style="width:100%;background:var(--accent)"></div></div>
+        </div>
+        <div class="cmp__row">
+          <div class="cmp__top">
+            <span class="cmp__name">GA4 조회수 <small>랜딩·블로그·문의 등 전체 페이지 합계</small></span>
+            <span class="cmp__num">38회</span>
+          </div>
+          <div class="cmp__track"><div class="cmp__fill" style="width:22.6%;background:var(--accent-dim)"></div></div>
+        </div>
+      </div>
+      <figcaption>
+        비교가 GA4에 유리하게 기울어져 있다는 점이 중요하다. 위쪽은 블로그 <em>상세만</em>, 아래쪽은 <em>전 페이지</em> 합계다.
+        같은 조건(블로그 상세)으로 맞추면 GA4 쪽은 4일간 9회로, 격차는 약 18배까지 벌어진다.
+      </figcaption>
+    </figure>
+
+    <div class="ev">
+      <h3>이 +168회가 봇 한 마리의 흔적이 아닌 이유</h3>
+      <ul class="tight">
+        <li><strong>30개 글에 분산됐다.</strong> 증가한 글 30개, 변동 없음 7개, 감소 0개. 크롤러 스윕이면 전 글에 고르게 찍힌다.</li>
+        <li><strong>증가 상위가 검색 수요와 일치한다.</strong> 1위 “AI 면접 질문 리스트”(+32), 2위 “대화형 AI 면접이란”(+21) — 주제 인기 순서다.</li>
+        <li><strong>GA4와 같은 글을 가리킨다.</strong> 8/16 GA4 최다 조회 페이지도 “AI 면접 질문 리스트”였다. 두 계측기가 같은 트래픽을 다른 배율로 보고 있다는 뜻이다.</li>
+        <li><strong>유입 1위는 계속 Organic Search다.</strong> 8/13–8/16 내내 1위 채널이 검색이었다. SEO가 지금 유일하게 작동하는 채널이다.</li>
+      </ul>
+    </div>
+
+    <div class="ev">
+      <h3>이 숫자의 한계 — 42회/일은 상한, 3.7세션은 하한</h3>
+      <p>
+        <code>ViewCounter</code>는 브라우저 JS로 세므로, JS를 실행하는 헤드리스 크롤러(AI 크롤러 등)는 여기에도 잡힌다.
+        따라서 실제 사람 수는 42회/일보다 낮을 수 있다. 반대로 GA4의 3.7세션은 “배너에서 허용을 누른 사람”만이므로 확실한 하한이다.
+        <strong>진실은 두 값 사이에 있고, GA4 쪽 끝에 붙어 있지는 않다.</strong>
+      </p>
+    </div>
+  </section>
+
+  <hr class="rule">
+
+  <section>
+    <div class="sec-head">
+      <h2>근거 3 — 매일 오는 “참여율 0%” 경보는 버그다</h2>
+      <span class="chip chip--bug">오탐 확인</span>
+    </div>
+    <p>
+      일일 메일은 3주 내내 “참여율 0% [낮음 — 랜딩/콘텐츠 점검 권장]”을 띄웠다. 그런데 같은 메일이
+      세션당 참여시간 1분 36초, <code class="inline">user_engagement</code> 4건을 함께 보고한다. 양립할 수 없는 조합이다.
+    </p>
+    <div class="ev">
+      <h3>결정적 증거 — 같은 날짜가 하루 뒤에 값이 바뀐다</h3>
+      <ul class="tight">
+        <li>8/15자 메일: 8/15 참여율 <strong>0%</strong></li>
+        <li>8/16자 메일: “전일(=8/15) <strong>100%</strong>”</li>
+      </ul>
+      <p>
+        원인은 코드 인덱스가 아니라 데이터 신선도다. <code>lib/ga.ts:198–220</code>의 지표 순서는 정상이고,
+        <code>vercel.json</code>의 cron이 <code>0 23 * * *</code>(= KST 08:00)에 <code>yesterday</code>를 조회한다.
+        전날이 끝난 지 8시간뿐이어서 세션 스코프 지표(<code>engagementRate</code>·<code>engagedSessions</code>)가
+        아직 확정되지 않은 채 0으로 돌아온다. 이벤트 수는 이미 채워져 있으니 모순처럼 보인다.
+      </p>
+    </div>
+    <p>
+      영향은 단순한 표기 오류를 넘어선다. 매일 근거 없는 “랜딩/콘텐츠 점검 권장”이 발송되면서,
+      실제로 점검이 필요한 신호와 구분되지 않게 됐다.
+    </p>
+  </section>
+
+  <hr class="rule">
+
+  <section>
+    <div class="sec-head">
+      <h2>왜 방문자가 GA4에서 사라지는가</h2>
+      <span class="chip chip--est">추정 · 근거 있음</span>
+    </div>
+    <p>
+      <code class="inline">CookieBanner.tsx</code>는 <strong>‘허용’ 또는 ‘거부’를 누를 때만</strong> localStorage에 값을 쓴다.
+      배너를 무시하고 읽다 떠난 방문자는 저장값이 없고, <code class="inline">analyticsConsent()</code>는 그 상태를
+      <code class="inline">denied</code>로 판정한다. 배너는 화면을 막지 않는 오른쪽 하단 팝업이라, 대부분의 방문자가 그냥 무시한다.
+    </p>
+    <p>
+      Consent Mode의 행동 모델링이 이 공백을 메워줄 수 있지만, 활성화 임계치가 대략 “비동의 일 1,000 이벤트 × 7일” 수준이다.
+      하루 수십 건 규모에서는 켜지지 않는다. 즉 비동의 방문자는 추정으로 복원되지도 않고 그대로 사라진다.
+      관측된 4~18배 격차와 정확히 맞는 설명이다.
+    </p>
+  </section>
+
+  <hr class="rule">
+
+  <section>
+    <div class="sec-head">
+      <h2>가장 큰 기회 — 작동하는 유일한 채널에 전환 경로가 없다</h2>
+      <span class="chip chip--fact">확정</span>
+    </div>
+    <p>
+      하루 42회 조회는 거의 전부 검색으로 들어온 블로그 상세다. 그런데
+      <code class="inline">app/blog/[id]/page.tsx</code>가 글 끝에 렌더하는 것은 태그 목록과 이전/다음 글 카드뿐이다.
+      <strong>도입문의·서비스소개서로 가는 CTA가 한 개도 없다.</strong>
+      검색으로 확보한 트래픽이 전환 경로 없이 종료되고 있고, 최근 4일 리드는 1건(8/13)이다.
+    </p>
+  </section>
+
+  <hr class="rule">
+
+  <section>
+    <h2>다음 액션</h2>
+    <div class="tbl-wrap">
+      <table>
+        <thead>
+          <tr><th>우선</th><th>액션</th><th>담당</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="pri pri--0">P0</span></td>
+            <td>회복 기준 “15세션” 폐기, 실측 KPI로 교체
+              <span class="why">GA4 세션은 ‘동의한 방문자 표본’으로 재정의. 판정 기준은 서버측 조회 증분 + 리드 건수로.</span></td>
+            <td>점검 루틴</td>
+          </tr>
+          <tr>
+            <td><span class="pri pri--0">P0</span></td>
+            <td>블로그 상세 하단에 도입문의·소개서 CTA 추가
+              <span class="why">유일하게 작동하는 채널(42조회/일)이 전환 경로 없이 끝난다. 기존 <code>.btn</code> 토큰 재사용 — 승인 후 구현.</span></td>
+            <td>구현</td>
+          </tr>
+          <tr>
+            <td><span class="pri pri--1">P1</span></td>
+            <td><code>posts.views</code> 총합 일별 스냅샷 자동 저장
+              <span class="why">지금 남은 과거 스냅샷은 결과보고서 docx의 823회 하나뿐이다. daily-analytics cron에 한 줄 적재하면 시계열이 생긴다.</span></td>
+            <td>구현</td>
+          </tr>
+          <tr>
+            <td><span class="pri pri--1">P1</span></td>
+            <td>참여율 오탐 수정
+              <span class="why">세션 지표는 확정된 ‘그제’ 값으로 표기하거나, <code>engagedSessions=0</code>인데 <code>user_engagement&gt;0</code>이면 “집계 중”으로 표시하고 경보를 억제.</span></td>
+            <td>구현</td>
+          </tr>
+          <tr>
+            <td><span class="pri pri--1">P1</span></td>
+            <td>Vercel Web Analytics를 점검 루틴에 편입
+              <span class="why">쿠키리스 실측이 이미 수집되고 있는데(<code>layout.tsx:69</code>) 루틴이 보지 않는다. MCP 재인증 필요 — 아래 참조.</span></td>
+            <td>사용자</td>
+          </tr>
+          <tr>
+            <td><span class="pri pri--2">P2</span></td>
+            <td>Search Console 상위 쿼리 확인 → 내부링크·CTA 보강
+              <span class="why">유입 1위가 계속 Organic Search다. 노출 상위 키워드 글에 먼저 CTA를 붙이는 게 효율이 높다.</span></td>
+            <td>마케팅</td>
+          </tr>
+          <tr>
+            <td><span class="pri pri--2">P2</span></td>
+            <td>미공개 4건 중 비교 검색 수요 글 발행 검토
+              <span class="why">“국내 AI 면접 서비스·솔루션 7개 비교(2026)” 등. 공유 DB라 공개 즉시 운영 노출 — 명시적 승인 후에만.</span></td>
+            <td>사용자 승인</td>
+          </tr>
+          <tr>
+            <td><span class="pri pri--2">P2</span></td>
+            <td>배너 ‘거부’ 시 Vercel Analytics 처리 방침 결정
+              <span class="why">쿠키리스라 법적 필수는 아니지만, “방문 통계를 수집합니다”라고 안내하고 거부를 받은 뒤에도 계속 수집한다. 문구·동작 정합성 문제.</span></td>
+            <td>사용자</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <h2>이번 점검에서 막힌 것</h2>
+    <ul class="tight">
+      <li><strong>Vercel MCP</strong> — <code>jayjaewoongchoi-2571's projects</code> 팀에 연결돼 있어 <code>juhee-team</code> 프로젝트 접근이 403이다. 쿠키리스 실측을 못 읽었다.</li>
+      <li><strong>Vercel CLI 토큰</strong> — <code>invalidToken</code>. <code>vercel login</code> 재실행 필요.</li>
+      <li><strong>Supabase MCP <code>execute_sql</code></strong> — 권한 없음. 블로그 조회수는 anon 키 REST로 우회했지만, 리드 원본(<code>signups</code>·<code>brochure_requests</code>)은 anon이 읽을 수 없어 메일 집계값에 의존했다.</li>
+    </ul>
+  </section>
+
+  <footer class="meta">
+    점검 2026-08-17 KST · 대상 www.supercoder.co (GA4 <code class="inline">G-Y5LT1VFLV2</code>)<br>
+    데이터 출처 — GA4: 일일 애널리틱스 메일 21건(7/27–8/16) · 서버측 조회수: Supabase <code class="inline">posts</code> REST 조회(8/17) 및 결과보고서 docx 스냅샷(8/13) · 코드: <code class="inline">lib/ga.ts</code>, <code class="inline">components/Analytics.tsx</code>, <code class="inline">components/CookieBanner.tsx</code>, <code class="inline">app/blog/[id]/page.tsx</code>
+  </footer>
+</div>
+
+<script>
+  (function () {
+    var DATA = [
+      { d: "7/27", u: 27, s: 32 },
+      { d: "7/28", u: 24, s: 36 },
+      { d: "7/29", u: 40, s: 47, note: "쿠키 배너 배포" },
+      { d: "7/30", u: 2,  s: 7,  note: "프리뷰 GA 제외 배포" },
+      { d: "7/31", u: null, s: null, note: "메일 누락" },
+      { d: "8/01", u: 0,  s: 0 },
+      { d: "8/02", u: 3,  s: 4 },
+      { d: "8/03", u: 1,  s: 2 },
+      { d: "8/04", u: 0,  s: 1 },
+      { d: "8/05", u: 1,  s: 3 },
+      { d: "8/06", u: 2,  s: 2 },
+      { d: "8/07", u: 2,  s: 5, note: "Consent Mode v2 배포" },
+      { d: "8/08", u: 3,  s: 6 },
+      { d: "8/09", u: 2,  s: 4 },
+      { d: "8/10", u: 3,  s: 4 },
+      { d: "8/11", u: 3,  s: 4 },
+      { d: "8/12", u: 3,  s: 3 },
+      { d: "8/13", u: 5,  s: 5 },
+      { d: "8/14", u: 3,  s: 5 },
+      { d: "8/15", u: 3,  s: 3 },
+      { d: "8/16", u: 2,  s: 2 }
+    ];
+
+    // ---- table view (also the no-JS-independent record) ----
+    var tb = document.getElementById("tbl-line");
+    if (tb) {
+      DATA.forEach(function (r) {
+        var tr = document.createElement("tr");
+        tr.innerHTML =
+          "<td>" + r.d + "</td>" +
+          '<td class="num">' + (r.u === null ? "—" : r.u) + "</td>" +
+          '<td class="num">' + (r.s === null ? "—" : r.s) + "</td>" +
+          "<td>" + (r.note || "") + "</td>";
+        tb.appendChild(tr);
+      });
+    }
+
+    // ---- line chart ----
+    var svg = document.getElementById("chart-line");
+    if (!svg) return;
+    var NS = "http://www.w3.org/2000/svg";
+    var W = 720, H = 250;
+    var mL = 38, mR = 14, mT = 26, mB = 34;
+    var iw = W - mL - mR, ih = H - mT - mB;
+    var yMax = 50;
+
+    function x(i) { return mL + (iw * i) / (DATA.length - 1); }
+    function y(v) { return mT + ih - (ih * v) / yMax; }
+
+    function el(name, attrs) {
+      var n = document.createElementNS(NS, name);
+      for (var k in attrs) n.setAttribute(k, attrs[k]);
+      return n;
+    }
+
+    // gridlines + y labels
+    [0, 10, 20, 30, 40, 50].forEach(function (v) {
+      svg.appendChild(el("line", { class: "grid", x1: mL, x2: W - mR, y1: y(v), y2: y(v) }));
+      var t = el("text", { class: "tick", x: mL - 9, y: y(v) + 4, "text-anchor": "end" });
+      t.textContent = v;
+      svg.appendChild(t);
+    });
+
+    // x labels
+    [0, 5, 10, 15, 20].forEach(function (i) {
+      var t = el("text", { class: "tick", x: x(i), y: H - 12, "text-anchor": "middle" });
+      t.textContent = DATA[i].d;
+      svg.appendChild(t);
+    });
+
+    // 7/30 annotation
+    var ai = 3;
+    svg.appendChild(el("line", { class: "ann-line", x1: x(ai), x2: x(ai), y1: mT - 8, y2: mT + ih }));
+    var an = el("text", { class: "ann-text", x: x(ai) + 7, y: mT - 12 });
+    an.textContent = "7/30 프리뷰 GA 제외 배포";
+    svg.appendChild(an);
+
+    // path segments (break on null)
+    var seg = [], segs = [];
+    DATA.forEach(function (r, i) {
+      if (r.s === null) { if (seg.length) segs.push(seg); seg = []; }
+      else seg.push([x(i), y(r.s)]);
+    });
+    if (seg.length) segs.push(seg);
+
+    segs.forEach(function (pts) {
+      var d = pts.map(function (p, j) { return (j ? "L" : "M") + p[0] + " " + p[1]; }).join(" ");
+      svg.appendChild(el("path", { class: "series", d: d }));
+    });
+
+    // dots; emphasize endpoint
+    DATA.forEach(function (r, i) {
+      if (r.s === null) return;
+      var last = i === DATA.length - 1;
+      svg.appendChild(el("circle", {
+        class: last ? "dot dot--last" : "dot",
+        cx: x(i), cy: y(r.s), r: last ? 4.5 : 2.6
+      }));
+    });
+
+    // direct label on the peak and the cliff
+    [{ i: 2, dx: 0, dy: -12, a: "middle" }, { i: 3, dx: 9, dy: 5, a: "start" }].forEach(function (m) {
+      var t = el("text", { class: "val", x: x(m.i) + m.dx, y: y(DATA[m.i].s) + m.dy, "text-anchor": m.a });
+      t.textContent = DATA[m.i].s;
+      svg.appendChild(t);
+    });
+
+    // ---- hover layer ----
+    var cross = el("line", { class: "cross", x1: 0, x2: 0, y1: mT, y2: mT + ih, opacity: 0 });
+    svg.appendChild(cross);
+    var hot = el("circle", { class: "hot", r: 5, opacity: 0 });
+    svg.appendChild(hot);
+
+    var tip = document.getElementById("tip-line");
+    var wrap = document.getElementById("wrap-line");
+
+    function move(ev) {
+      var box = svg.getBoundingClientRect();
+      var px = ((ev.clientX - box.left) / box.width) * W;
+      var i = Math.round(((px - mL) / iw) * (DATA.length - 1));
+      i = Math.max(0, Math.min(DATA.length - 1, i));
+      var r = DATA[i];
+      cross.setAttribute("x1", x(i));
+      cross.setAttribute("x2", x(i));
+      cross.setAttribute("opacity", 1);
+      if (r.s === null) {
+        hot.setAttribute("opacity", 0);
+        tip.textContent = r.d + " · 메일 누락";
+      } else {
+        hot.setAttribute("cx", x(i));
+        hot.setAttribute("cy", y(r.s));
+        hot.setAttribute("opacity", 1);
+        tip.textContent = r.d + " · 세션 " + r.s + " · 사용자 " + r.u;
+      }
+      tip.classList.add("on");
+      tip.style.left = ((x(i) / W) * box.width) + "px";
+      tip.style.top = (((r.s === null ? mT + ih / 2 : y(r.s)) / H) * box.height - 10) + "px";
+    }
+    function leave() {
+      cross.setAttribute("opacity", 0);
+      hot.setAttribute("opacity", 0);
+      tip.classList.remove("on");
+    }
+    wrap.addEventListener("mousemove", move);
+    wrap.addEventListener("mouseleave", leave);
+  })();
+</script>
