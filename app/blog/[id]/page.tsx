@@ -11,24 +11,40 @@ export const dynamic = "force-dynamic";
 
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
-type PostNav = { slug: string | null; id: string; title: string; cover_url?: string | null; created_at: string } | null;
+type PostNav = { slug: string | null; id: string; title: string; cover_url?: string | null; created_at: string };
 
-async function getAdjacentPosts(currentCreatedAt: string): Promise<{ prev: PostNav; next: PostNav }> {
+const NAV_COLS = "id, slug, title, cover_url, created_at";
+
+// 글 하단 추천 글 — 같은 카테고리에서 우선 채워 주제 클러스터(내부링크)를 만든다.
+// 시간순 이전/다음 글은 주제와 무관해 내부링크가 검색엔진에 주제 신호를 주지 못했다(2026-08-18 GSC 점검).
+// 같은 카테고리 글이 부족하면 최신 글로 채워 항상 카드 3개를 유지한다.
+async function getRelatedPosts(currentId: string, category: string | null): Promise<PostNav[]> {
+  const visible = () =>
+    supabase.from("posts").select(NAV_COLS).eq("published", true).or(publishAtVisibleOr()).neq("id", currentId);
   try {
-    const [prevRes, nextRes] = await Promise.all([
-      supabase.from("posts").select("id, slug, title, cover_url, created_at").eq("published", true)
-        .or(publishAtVisibleOr())
-        .lt("created_at", currentCreatedAt).order("created_at", { ascending: false }).limit(2),
-      supabase.from("posts").select("id, slug, title, cover_url, created_at").eq("published", true)
-        .or(publishAtVisibleOr())
-        .gt("created_at", currentCreatedAt).order("created_at", { ascending: true }).limit(1).maybeSingle(),
-    ]);
-    const prevList = prevRes.data ?? [];
-    const next = nextRes.data ?? null;
-    // 이후 글이 없으면 이전 글 2개 표시 (최신 글도 항상 카드 2개 유지)
-    return { prev: prevList[0] ?? null, next: next ?? prevList[1] ?? null };
+    const picked: PostNav[] = [];
+    const seen = new Set<string>([currentId]);
+    const add = (rows: PostNav[] | null) => {
+      for (const r of rows ?? []) {
+        if (picked.length >= 3 || seen.has(r.id)) continue;
+        picked.push(r);
+        seen.add(r.id);
+      }
+    };
+
+    // 1) 같은 카테고리 · 조회수 높은 순 — 실제로 읽히는 글로 연결
+    if (category) {
+      const same = await visible().eq("category", category).order("views", { ascending: false }).limit(3);
+      add(same.data as PostNav[] | null);
+    }
+    // 2) 부족분은 최신 글로 채운다
+    if (picked.length < 3) {
+      const recent = await visible().order("created_at", { ascending: false }).limit(8);
+      add(recent.data as PostNav[] | null);
+    }
+    return picked;
   } catch {
-    return { prev: null, next: null };
+    return [];
   }
 }
 
@@ -80,7 +96,7 @@ export default async function PostPage({ params }: { params: Promise<{ id: strin
   const p = await getPost(id);
   if (!p) notFound();
 
-  const { prev, next } = await getAdjacentPosts(p.created_at);
+  const related = await getRelatedPosts(p.id, p.category || null);
 
   return (
     <main>
@@ -118,18 +134,20 @@ export default async function PostPage({ params }: { params: Promise<{ id: strin
           </div>
         </aside>
 
-        {(prev || next) && (
+        {related.length > 0 && (
           <div className="post-foot">
-            <p className="post-more-label">다른 글 읽기</p>
+            <p className="post-more-label">
+              {p.category ? `${p.category} 관련 글 더 보기` : "함께 읽으면 좋은 글"}
+            </p>
             <div className="post-more-list">
-              {[prev, next].filter(Boolean).map((item) => (
-                <Link key={item!.id} href={`/blog/${item!.slug || item!.id}`} className="post-more-card">
-                  {item!.cover_url
-                    ? <img src={item!.cover_url} alt="" className="post-more-thumb" />
+              {related.map((item) => (
+                <Link key={item.id} href={`/blog/${item.slug || item.id}`} className="post-more-card">
+                  {item.cover_url
+                    ? <img src={item.cover_url} alt="" className="post-more-thumb" />
                     : <span className="post-more-thumb post-more-thumb--empty" />}
                   <span className="post-more-info">
-                    <span className="post-more-title">{item!.title}</span>
-                    <span className="post-more-date">{fmtDate(item!.created_at)}</span>
+                    <span className="post-more-title">{item.title}</span>
+                    <span className="post-more-date">{fmtDate(item.created_at)}</span>
                   </span>
                 </Link>
               ))}
