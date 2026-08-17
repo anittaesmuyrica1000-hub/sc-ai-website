@@ -106,7 +106,7 @@ export default async function PostPage({ params }: { params: Promise<{ id: strin
         )}
         {/* 글 하단 전환 CTA — 검색 유입(블로그 조회의 대부분)이 전환 경로 없이 끝나지 않도록. 버튼은 공유 토큰(.btn) 재사용. */}
         <aside className="post-cta">
-          <p className="post-cta__label"><i className="fa-solid fa-circle-check"></i> AIVIEW · AI 면접</p>
+          <p className="post-cta__label"><i className="fa-solid fa-circle-check"></i> 슈퍼코더 AI면접</p>
           <h2 className="post-cta__title">지원자 검증은 AI가 하고, 채용팀은 리포트만 봅니다.</h2>
           <p className="post-cta__desc">
             1차 검증을 AI 면접으로 자동화하면, 서류로는 확인되지 않던 부분까지 걸러진 뒤 채용팀에 넘어옵니다.
