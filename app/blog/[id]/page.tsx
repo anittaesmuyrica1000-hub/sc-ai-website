@@ -72,11 +72,15 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
   const p = await getPost(id);
   if (!p) return { title: "글을 찾을 수 없습니다" };
   const tags = Array.isArray(p.tags) ? p.tags.filter(Boolean) : [];
-  const metaTitle = p.meta_title?.trim() || `${p.title} · 블로그`;
+  const metaTitle = p.meta_title?.trim();
   const metaDesc = p.meta_description?.trim() || p.excerpt || undefined;
   const path = `/blog/${p.slug || p.id}`;
+  // 어드민에서 '검색 제목'을 지정했으면 그 값을 그대로 <title>로 쓴다(absolute).
+  // 루트 layout의 title.template("%s · AI면접")이 덧붙으면 meta_title에 이미 들어 있는
+  // 브랜드와 중복돼 42~49자가 되고, 구글이 30~35자에서 잘라 키워드가 사라진다(2026-08-18 점검).
+  // 미지정 시에는 기존처럼 템플릿을 그대로 적용해 브랜드가 붙게 둔다.
   return {
-    title: metaTitle,
+    title: metaTitle ? { absolute: metaTitle } : `${p.title} · 블로그`,
     description: metaDesc,
     keywords: tags.length ? tags : undefined,
     alternates: { canonical: path },
