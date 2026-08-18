@@ -309,6 +309,20 @@ export async function getDailyReport(): Promise<DailyReport> {
       (dPrev !== null ? `, 전일 대비 ${arrow(dPrev)}` : "") + ")" +
       (gap ? ` — GA4 조회수 ${pageViews.toLocaleString()}회의 ${gap}배.` : ".")
     );
+
+    // 배너 반응 분해 — 미클릭과 거부는 GA4에서 똑같이 사라지므로 여기서만 구분된다.
+    const c = serverViews.consent;
+    const named = c.none + c.denied + c.granted;
+    if (serverViews.hasConsentDim && named > 0) {
+      const share = (v: number) => `${Math.round((v / named) * 100)}%`;
+      insights.push(
+        `쿠키 배너 반응: 미클릭 ${c.none.toLocaleString()}회(${share(c.none)}) · ` +
+        `거부 ${c.denied.toLocaleString()}회(${share(c.denied)}) · ` +
+        `허용 ${c.granted.toLocaleString()}회(${share(c.granted)})` +
+        (c.unknown > 0 ? ` · 미분류 ${c.unknown.toLocaleString()}회` : "") +
+        ` — 배너 클릭률 ${share(c.denied + c.granted)}.`
+      );
+    }
   }
 
   // 1-b. 서버측 실측(쿠키 동의 무관) — GA4 세션은 '허용을 누른 방문자' 표본이라 이 값과 함께 읽어야 한다.

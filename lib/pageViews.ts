@@ -8,15 +8,22 @@ const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
 export type PathCount = { name: string; count: number };
+// 쿠키 동의 상태별 조회수 — 미클릭(none)과 거부(denied)는 GA4에서 똑같이 사라지므로 여기서만 구분된다.
+export type ConsentSplit = { none: number; denied: number; granted: number; unknown: number };
 export type ServerPageViews = {
   available: boolean;   // page_views 조회 성공 여부
   total: number;        // 어제(KST) 전체 조회수
   paths: number;        // 조회된 서로 다른 경로 수
   top: PathCount[];     // 상위 경로
   prevTotal: number | null; // 그제 전체 조회수(전일 대비용)
+  consent: ConsentSplit;    // 동의 상태별 분해
+  hasConsentDim: boolean;   // consent 차원 사용 가능 여부(마이그레이션 적용 후 true)
 };
 
-const EMPTY: ServerPageViews = { available: false, total: 0, paths: 0, top: [], prevTotal: null };
+const EMPTY: ServerPageViews = {
+  available: false, total: 0, paths: 0, top: [], prevTotal: null,
+  consent: { none: 0, denied: 0, granted: 0, unknown: 0 }, hasConsentDim: false,
+};
 
 // KST 기준 n일 전 날짜(YYYY-MM-DD)
 function kstDate(daysAgo: number): string {
@@ -33,25 +40,43 @@ export async function getServerPageViewsYesterday(limit = 5): Promise<ServerPage
   const yday = kstDate(1);
   const dby = kstDate(2);
 
-  const [y, d] = await Promise.all([
-    admin.from("page_views").select("path,count").eq("view_date", yday),
-    admin.from("page_views").select("count").eq("view_date", dby),
-  ]);
-
-  if (y.error) {
-    // 테이블 미생성(42P01/PGRST205) 등 — 이 지표만 비활성
-    console.warn("page_views unavailable:", y.error.message);
-    return EMPTY;
+  // consent 차원은 마이그레이션(add-page-views-consent.sql) 적용 후에만 존재 → 실패 시 경로만으로 재조회
+  let rows: { path: string; count: number; consent?: string }[] = [];
+  let hasConsentDim = true;
+  const withConsent = await admin.from("page_views").select("path,count,consent").eq("view_date", yday);
+  if (withConsent.error) {
+    hasConsentDim = false;
+    const plain = await admin.from("page_views").select("path,count").eq("view_date", yday);
+    if (plain.error) {
+      // 테이블 미생성(42P01/PGRST205) 등 — 이 지표만 비활성
+      console.warn("page_views unavailable:", plain.error.message);
+      return EMPTY;
+    }
+    rows = (plain.data ?? []) as typeof rows;
+  } else {
+    rows = (withConsent.data ?? []) as typeof rows;
   }
 
-  const rows = y.data ?? [];
+  const d = await admin.from("page_views").select("count").eq("view_date", dby);
+
   const total = rows.reduce((a, r) => a + (r.count ?? 0), 0);
-  const top = [...rows]
-    .sort((a, b) => (b.count ?? 0) - (a.count ?? 0))
+
+  // 같은 경로가 동의 상태별로 여러 행이므로 경로 기준으로 합산한 뒤 상위를 뽑는다
+  const byPath = new Map<string, number>();
+  for (const r of rows) byPath.set(r.path, (byPath.get(r.path) ?? 0) + (r.count ?? 0));
+  const top = [...byPath.entries()]
+    .sort((a, b) => b[1] - a[1])
     .slice(0, limit)
-    .map((r) => ({ name: r.path as string, count: (r.count ?? 0) as number }));
+    .map(([name, count]) => ({ name, count }));
+
+  const consent: ConsentSplit = { none: 0, denied: 0, granted: 0, unknown: 0 };
+  for (const r of rows) {
+    const k = (r.consent ?? "unknown") as keyof ConsentSplit;
+    if (k in consent) consent[k] += r.count ?? 0;
+    else consent.unknown += r.count ?? 0;
+  }
 
   const prevTotal = d.error ? null : (d.data ?? []).reduce((a, r) => a + (r.count ?? 0), 0);
 
-  return { available: true, total, paths: rows.length, top, prevTotal };
+  return { available: true, total, paths: byPath.size, top, prevTotal, consent, hasConsentDim };
 }
