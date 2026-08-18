@@ -6,7 +6,8 @@ import SiteHeader from "@/components/SiteHeader";
 import SiteFooter from "@/components/SiteFooter";
 import Chatbot from "@/components/Chatbot";
 import Analytics from "@/components/Analytics";
-import CookieBanner from "@/components/CookieBanner";
+// 쿠키 동의 배너는 2026-08-18 내림(옵트아웃 전환). 방문 규모가 커지면 아래 마운트만 되살리면 된다.
+// import CookieBanner from "@/components/CookieBanner";
 import UtmCapture from "@/components/UtmCapture";
 import { Analytics as VercelAnalytics } from "@vercel/analytics/next";
 
@@ -67,7 +68,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <Chatbot />
         <Analytics />
         <VercelAnalytics />
-        <CookieBanner />
+        {/* <CookieBanner /> — 2026-08-18 내림. 되살릴 땐 상단 import와 함께 주석 해제. */}
         <UtmCapture />
       </body>
     </html>
