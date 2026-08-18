@@ -28,8 +28,8 @@ security definer
 set search_path = public
 as $$
 declare
-  clean   text;
-  consent text;
+  clean     text;
+  v_consent text;  -- 변수명을 컬럼명(consent)과 다르게 둔다. 같으면 INSERT에서 모호성 오류(42702).
 begin
   clean := left(coalesce(p_path, ''), 200);
 
@@ -44,15 +44,15 @@ begin
   end if;
 
   -- 허용된 값만 통과, 나머지는 unknown 으로 정규화
-  consent := case coalesce(p_consent, '')
-               when 'none'    then 'none'
-               when 'denied'  then 'denied'
-               when 'granted' then 'granted'
-               else 'unknown'
-             end;
+  v_consent := case coalesce(p_consent, '')
+                 when 'none'    then 'none'
+                 when 'denied'  then 'denied'
+                 when 'granted' then 'granted'
+                 else 'unknown'
+               end;
 
   insert into public.page_views (view_date, path, consent, count, updated_at)
-  values ((now() at time zone 'Asia/Seoul')::date, clean, consent, 1, now())
+  values ((now() at time zone 'Asia/Seoul')::date, clean, v_consent, 1, now())
   on conflict (view_date, path, consent)
   do update set count = public.page_views.count + 1, updated_at = now();
 end;
