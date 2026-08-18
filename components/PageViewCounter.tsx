@@ -28,7 +28,17 @@ export default function PageViewCounter() {
       /* sessionStorage 불가 환경은 그냥 진행 */
     }
 
-    supabase.rpc("increment_page_view", { p_path: pathname }).then(({ error }) => {
+    // 쿠키 동의 상태를 집계 차원으로 함께 보낸다(개인식별자 아님).
+    // 미클릭(none)과 거부(denied)는 GA4에서 똑같이 사라지므로, 이 값이 있어야 둘을 구분할 수 있다.
+    let consent: "none" | "denied" | "granted" = "none";
+    try {
+      const v = localStorage.getItem("cookie_consent");
+      consent = v === "all" ? "granted" : v === "essential" ? "denied" : "none";
+    } catch {
+      /* localStorage 불가 환경은 none으로 둔다 */
+    }
+
+    supabase.rpc("increment_page_view", { p_path: pathname, p_consent: consent }).then(({ error }) => {
       if (error) console.debug("page view skipped:", error.message);
     });
   }, [pathname]);
