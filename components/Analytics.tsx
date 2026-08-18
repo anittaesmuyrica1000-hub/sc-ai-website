@@ -51,14 +51,10 @@ function buildGtmSnippet(raw: string): string {
 // Consent Mode v2: gtag는 항상 로드하되, 배너에서 '허용'을 누른 방문자만
 // analytics_storage를 granted로 둔다. 거부/미선택 상태에서는 쿠키 없는 익명 핑만
 // 전송되고 GA4가 이를 모델링해 전체 트래픽을 추정한다.
-// 2026-08-18: 쿠키 동의 배너를 내리고 옵트아웃 모델로 전환.
-// 국내(PIPA)는 분석 쿠키 사전 동의를 의무화하지 않는다 — 처리방침 고지 + 거부 수단 제공이 기준.
-// 배너 시절 '거부'를 눌러 'essential'을 저장한 방문자는 그대로 존중해 denied를 유지하고,
-// 값이 없는 방문자는 granted로 둔다. 배너를 다시 붙이면 'all'/'essential' 값이 그대로 동작한다.
-// (광고 관련 신호 ad_storage·ad_user_data·ad_personalization은 계속 denied — 아래 consent default 참고)
 function analyticsConsent(): "granted" | "denied" {
-  if (typeof localStorage === "undefined") return "granted";
-  return localStorage.getItem("cookie_consent") === "essential" ? "denied" : "granted";
+  return typeof localStorage !== "undefined" && localStorage.getItem("cookie_consent") === "all"
+    ? "granted"
+    : "denied";
 }
 
 export default function Analytics() {
