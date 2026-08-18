@@ -1,6 +1,7 @@
 import { JWT } from "google-auth-library";
 import { getRealLeadsYesterday, type RealLeads } from "./leads";
 import { collectBlogViews, type BlogViews } from "./blogViews";
+import { getServerPageViewsYesterday, type ServerPageViews } from "./pageViews";
 
 // GA4 Data API 조회 — Gmail용과 동일한 Google 서비스계정을 재사용한다(스코프만 analytics.readonly).
 // 서비스계정 이메일(GMAIL_SA_CLIENT_EMAIL)에 GA4 속성 "뷰어" 권한 + 프로젝트에 GA Data API 활성화 필요.
@@ -152,6 +153,7 @@ export type DailyReport = {
   keyEvents: number;            // 전환(주요 이벤트) 총합 — apply_lead+brochure_lead 등(GA 이벤트, 사내 포함)
   realLeads: RealLeads;         // 실제 리드(Supabase, 사내 @supercoder.co 제외)
   blogViews: BlogViews;         // 서버측 블로그 조회수(동의 무관) — GA4 누락분 감시용
+  serverViews: ServerPageViews; // 서버측 전 페이지 조회수(동의 무관) — 실제 방문 규모
   // 전일 대비(그제) 비교용
   prev: { activeUsers: number; sessions: number; engagementRate: number; keyEvents: number };
   // 7일 이동 평균(그제 기준 7일, yesterday 미포함)
@@ -276,7 +278,11 @@ export async function getDailyReport(): Promise<DailyReport> {
 
   // 실제 리드(Supabase, 사내 제외) — GA 이벤트는 사내 테스트도 세므로 리드 지표는 DB 기준.
   // 서버측 블로그 조회수 — 쿠키 동의와 무관하게 집계되므로 GA4 누락 규모를 감시할 수 있다.
-  const [realLeads, blogViews] = await Promise.all([getRealLeadsYesterday(), collectBlogViews()]);
+  const [realLeads, blogViews, serverViews] = await Promise.all([
+    getRealLeadsYesterday(),
+    collectBlogViews(),
+    getServerPageViewsYesterday(),
+  ]);
 
   // ── 자동 인사이트 ─────────────────────────────
   const insights: string[] = [];
@@ -293,6 +299,17 @@ export async function getDailyReport(): Promise<DailyReport> {
     `활성 사용자 ${activeUsers.toLocaleString()}명 (전일 대비 ${arrow(dUsers)}), 세션 ${sessions.toLocaleString()}` +
     (vs7 !== null ? ` (7일 평균 대비 ${arrow(vs7)}, 평균 ${avg7.sessions}건/일 → ${trafficLevel})` : "") + "."
   );
+
+  // 1-a. 서버측 전 페이지 조회(쿠키 동의 무관) — 실제 방문 규모. GA4 조회수와 배수 비교.
+  if (serverViews.available && serverViews.total > 0) {
+    const gap = pageViews > 0 ? (serverViews.total / pageViews).toFixed(1) : null;
+    const dPrev = serverViews.prevTotal ? pct(serverViews.total, serverViews.prevTotal) : null;
+    insights.push(
+      `서버측 전체 조회 ${serverViews.total.toLocaleString()}회 (경로 ${serverViews.paths}개, 쿠키 동의 무관 집계` +
+      (dPrev !== null ? `, 전일 대비 ${arrow(dPrev)}` : "") + ")" +
+      (gap ? ` — GA4 조회수 ${pageViews.toLocaleString()}회의 ${gap}배.` : ".")
+    );
+  }
 
   // 1-b. 서버측 실측(쿠키 동의 무관) — GA4 세션은 '허용을 누른 방문자' 표본이라 이 값과 함께 읽어야 한다.
   if (blogViews.available && blogViews.delta !== null && blogViews.hours) {
@@ -354,6 +371,7 @@ export async function getDailyReport(): Promise<DailyReport> {
     keyEvents: keyEventsYday,
     realLeads,
     blogViews,
+    serverViews,
     prev,
     avg7,
     topPages: listOf(pages),

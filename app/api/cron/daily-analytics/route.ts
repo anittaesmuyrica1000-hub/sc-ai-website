@@ -102,14 +102,22 @@ export async function GET(req: NextRequest) {
             리드 = 도입문의 ${s.realLeads.apply} · 소개서 ${s.realLeads.brochure} (사내 @supercoder.co 제출 제외 · Supabase 기준)
           </div>
           ${
-            s.blogViews.available
+            s.blogViews.available || s.serverViews.available
               ? `<table width="100%" cellspacing="6" cellpadding="0" style="border-collapse:separate;margin-top:6px"><tr>
+            ${s.serverViews.available ? metricCard("서버측 전체 조회(어제)", s.serverViews.total.toLocaleString()) : ""}
             ${metricCard("블로그 조회 증가(서버측)", s.blogViews.delta !== null ? `+${s.blogViews.delta.toLocaleString()}` : "집계 시작")}
             ${metricCard("블로그 누적 조회", s.blogViews.total.toLocaleString())}
           </tr></table>
           <div style="font-size:11.5px;color:#5b6577;text-align:center;margin-top:8px">
             서버측 조회수는 쿠키 동의와 무관하게 집계됩니다 — 배너에서 '허용'을 누르지 않아 GA4에서 빠진 방문자가 포함됩니다.
           </div>`
+              : ""
+          }
+
+          ${
+            s.serverViews.available && s.serverViews.top.length
+              ? sectionTitle("⑥ 서버측 페이지별 조회 (동의 무관 · 실제 방문 규모)") +
+                table(rows(s.serverViews.top, "어제 데이터 없음"))
               : ""
           }
 

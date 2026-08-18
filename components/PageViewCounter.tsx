@@ -1,0 +1,37 @@
+"use client";
+
+import { useEffect } from "react";
+import { usePathname } from "next/navigation";
+import { supabase } from "@/lib/supabase";
+
+// 전 페이지 서버측 조회수 +1 — 경로가 바뀔 때마다 1회 호출(클라이언트 라우팅 포함).
+// 쿠키·개인식별자를 쓰지 않고 경로별 카운터만 올리므로 쿠키 동의와 무관하게 집계된다.
+// GA4는 배너 미클릭 방문자를 denied 처리해 약 19%만 잡히므로, 실제 방문 규모는 이 값으로 본다.
+// increment_page_view RPC(SECURITY DEFINER)가 경로 형식 검증과 /admin·/api 제외를 담당한다.
+// 마이그레이션(add-page-views.sql) 전이거나 실패해도 조용히 무시 → 화면엔 영향 없음.
+export default function PageViewCounter() {
+  const pathname = usePathname();
+
+  useEffect(() => {
+    if (!pathname) return;
+    // Vercel preview 배포는 집계 제외 (운영 데이터 오염 방지 — Analytics.tsx와 동일 기준)
+    if (process.env.NEXT_PUBLIC_VERCEL_ENV === "preview") return;
+    // 관리자 화면은 내부 트래픽이라 세지 않는다(RPC에서도 한 번 더 막는다)
+    if (pathname.startsWith("/admin")) return;
+
+    // 같은 세션에서 같은 경로는 1회만 — 새로고침 연타로 부풀지 않도록(블로그 ViewCounter와 동일 방식)
+    const key = `pv:${pathname}`;
+    try {
+      if (sessionStorage.getItem(key)) return;
+      sessionStorage.setItem(key, "1");
+    } catch {
+      /* sessionStorage 불가 환경은 그냥 진행 */
+    }
+
+    supabase.rpc("increment_page_view", { p_path: pathname }).then(({ error }) => {
+      if (error) console.debug("page view skipped:", error.message);
+    });
+  }, [pathname]);
+
+  return null;
+}
