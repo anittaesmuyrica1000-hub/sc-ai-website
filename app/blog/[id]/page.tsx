@@ -95,12 +95,50 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
   };
 }
 
+// 본문 안 FAQ(물음표로 끝나는 H3 문답)를 골라 FAQPage 구조화 데이터로 내보낸다.
+// 홈에는 FAQPage 스키마가 있는데 블로그 상세만 BlogPosting 하나뿐이라 FAQ가 검색에 노출되지 않았다(2026-08-19 점검).
+// H2 제목 문구('자주 묻는 질문' 등)에 의존하면 글마다 제목이 달라 놓친다. 그래서 모양으로 찾는다.
+// 2026-08-19 기준 발행글 전수 점검에서 질문형 H3가 2개 이상인 글은 3개였고 모두 실제 FAQ였다.
+const ENTITIES: Record<string, string> = { "&amp;": "&", "&lt;": "<", "&gt;": ">", "&quot;": '"', "&#39;": "'", "&nbsp;": " " };
+const stripTags = (s: string) =>
+  s.replace(/<[^>]+>/g, " ")
+    .replace(/&(amp|lt|gt|quot|#39|nbsp);/g, (m) => ENTITIES[m] || m)
+    .replace(/\s+/g, " ")
+    .trim();
+
+// 끝의 따옴표·괄호를 걷어낸 뒤 물음표로 끝나면 질문으로 본다.
+const looksLikeQuestion = (s: string) => /[?？]$/.test(s.replace(/["'”’」』）)\]\s]+$/, ""));
+
+// 'Q. ' 'Q1.' 같은 번호 접두어와 감싼 따옴표를 떼어 스키마 name을 깔끔하게 만든다.
+// 'Q'만으로는 떼지 않는다("QA는 무엇인가요?"가 잘리면 안 된다).
+const cleanQuestion = (s: string) =>
+  s.replace(/^Q\d*[.．)]\s*/i, "")
+    .replace(/^["'“”『「]+/, "")
+    .replace(/["'“”』」]+$/, "")
+    .trim();
+
+function extractFaq(html: string): { q: string; a: string }[] {
+  const items: { q: string; a: string }[] = [];
+  const re = /<h3>([\s\S]*?)<\/h3>([\s\S]*?)(?=<h[23]>|$)/g;
+  let m: RegExpExecArray | null;
+  while ((m = re.exec(html)) && items.length < 20) {
+    const raw = stripTags(m[1]);
+    if (!looksLikeQuestion(raw)) continue;
+    const a = stripTags(m[2]);
+    const q = cleanQuestion(raw);
+    if (q && a) items.push({ q, a });
+  }
+  return items.length >= 2 ? items : [];
+}
+
 export default async function PostPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const p = await getPost(id);
   if (!p) notFound();
 
   const related = await getRelatedPosts(p.id, p.category || null);
+  const bodyHtml = renderBody(p.content);
+  const faq = extractFaq(bodyHtml);
 
   return (
     <main>
@@ -116,7 +154,7 @@ export default async function PostPage({ params }: { params: Promise<{ id: strin
           </div>
         </div>
         {p.cover_url && <img className="post-hero" src={p.cover_url} alt={p.cover_alt || p.title} />}
-        <div className="post-content" data-slug={p.slug || undefined} dangerouslySetInnerHTML={{ __html: renderBody(p.content) }} />
+        <div className="post-content" data-slug={p.slug || undefined} dangerouslySetInnerHTML={{ __html: bodyHtml }} />
         {Array.isArray(p.tags) && p.tags.length > 0 && (
           <ul className="post-tags" aria-label="주제 키워드">
             {p.tags.filter(Boolean).map((t) => (
@@ -176,6 +214,22 @@ export default async function PostPage({ params }: { params: Promise<{ id: strin
           }),
         }}
       />
+      {faq.length >= 2 && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "FAQPage",
+              mainEntity: faq.map((f) => ({
+                "@type": "Question",
+                name: f.q,
+                acceptedAnswer: { "@type": "Answer", text: f.a },
+              })),
+            }),
+          }}
+        />
+      )}
     </main>
   );
 }

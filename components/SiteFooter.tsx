@@ -34,7 +34,7 @@ export default function SiteFooter() {
         <div className="foot-biz">
           <span>주식회사 세컨드팀</span>
           <span>대표 최재웅</span>
-          <span>서울시 서초구 효령로55길 19 4층</span>
+          <span>서울시 서초구 효령로55길 19 5층</span>
           <span>사업자등록번호 212-88-02079</span>
           <span>대표번호 0507-1322-0473</span>
           <span>support@supercoder.co</span>
