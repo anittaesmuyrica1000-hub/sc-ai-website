@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 import { sendMail, mailerConfigured } from "@/lib/mailer";
 import { TRACKING_KEYS } from "@/lib/supabase";
+import { isValidEmail, isPersonalEmail, isValidPhone, isValidHowFound, howFoundText, HOW_FOUND_ETC } from "@/lib/leadForm";
 
 // 서비스소개서 발송 API — 회사 이메일로 소개서(현재본) 보안 링크(7일 만료)를 전송.
 // 발송 방식 2가지 지원(우선순위):
@@ -13,7 +14,6 @@ import { TRACKING_KEYS } from "@/lib/supabase";
 
 export const runtime = "nodejs";
 
-const emailRe = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
 const LINK_TTL = 60 * 60 * 24 * 7; // 7일
 
 function bad(message: string, status = 400) {
@@ -32,8 +32,11 @@ export async function POST(req: Request) {
   const company = String(body.company ?? "").trim();
   const email = String(body.email ?? "").trim();
   const role = String(body.role ?? "").trim() || null;
-  const phone = String(body.phone ?? "").trim() || null;
+  const phone = String(body.phone ?? "").trim();
   const size = String(body.size ?? "").trim();
+  // 유입 경로 직접 응답(폼 필수) — utm·referrer가 안 잡히는 유입을 메운다
+  const howFound = String(body.how_found ?? "").trim();
+  const howFoundDetail = String(body.how_found_detail ?? "").trim().slice(0, 300) || null;
 
   // 유입 추적 파라미터(utm·클릭 ID·referrer, 있는 값만) — 리드 저장·관리자 알림에 함께 기록
   const utm: Record<string, string> = {};
@@ -43,7 +46,11 @@ export async function POST(req: Request) {
   }
 
   if (!name || !company || !size) return bad("필수 항목을 입력해 주세요.");
-  if (!emailRe.test(email)) return bad("올바른 이메일을 입력해 주세요.");
+  if (!isValidEmail(email)) return bad("올바른 이메일 형식으로 입력해 주세요.");
+  if (isPersonalEmail(email)) return bad("naver, gmail 등 개인 메일은 사용할 수 없습니다. 회사 이메일을 입력해 주세요.");
+  if (!isValidPhone(phone)) return bad("연락 가능한 번호를 입력해 주세요.");
+  if (!isValidHowFound(howFound)) return bad("유입 경로를 선택해 주세요.");
+  if (howFound === HOW_FOUND_ETC && !howFoundDetail) return bad("유입 경로를 입력해 주세요.");
 
   const SUPABASE_URL = process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL;
   const SERVICE_ROLE = process.env.SUPABASE_SERVICE_ROLE_KEY;
@@ -77,13 +84,18 @@ export async function POST(req: Request) {
   // 2) 리드 저장 + 다운로드 추적 토큰 확보(베스트 에포트 — 실패해도 메일 발송은 진행)
   // download_token/UTM 컬럼이 아직 없으면(마이그레이션 미적용) 단계적으로 재시도해 리드 유실을 방지한다.
   const base = { name, company, email, role, phone, size };
+  const how = { how_found: howFound, how_found_detail: howFoundDetail };
   let token: string | null = null;
-  const withToken = await admin.from("brochure_requests").insert({ ...base, ...utm }).select("download_token").single();
+  const withToken = await admin.from("brochure_requests").insert({ ...base, ...how, ...utm }).select("download_token").single();
   if (!withToken.error) {
     token = (withToken.data as { download_token?: string } | null)?.download_token ?? null;
   } else {
     console.warn("send-brochure: 토큰 포함 리드 저장 실패, 단계적 재시도", withToken.error);
-    let ins = await admin.from("brochure_requests").insert({ ...base, ...utm });
+    let ins = await admin.from("brochure_requests").insert({ ...base, ...how, ...utm });
+    if (ins.error) {
+      console.warn("send-brochure: how_found 포함 리드 저장 실패, 유입경로 없이 재시도", ins.error);
+      ins = await admin.from("brochure_requests").insert({ ...base, ...utm });
+    }
     if (ins.error && Object.keys(utm).length) {
       console.warn("send-brochure: utm 포함 리드 저장 실패, utm 없이 재시도", ins.error);
       ins = await admin.from("brochure_requests").insert(base);
@@ -146,7 +158,7 @@ export async function POST(req: Request) {
       subject: `[소개서 신청] ${company} · ${name}`,
       html: `<div style="font-family:Pretendard,Arial,sans-serif;font-size:14px;color:#1f2a44;word-break:keep-all">
         <h2 style="font-size:16px">서비스소개서 신청</h2>
-        <p>회사: <b>${esc(company)}</b><br/>이름: ${esc(name)}<br/>이메일: ${esc(email)}<br/>연락처: ${esc(phone || "-")}<br/>직책: ${esc(role || "-")}<br/>규모: ${esc(size)}${Object.keys(utm).length ? `<br/>유입: ${esc(TRACKING_KEYS.filter((k) => utm[k]).map((k) => `${k}=${utm[k]}`).join(", "))}` : ""}</p>
+        <p>회사: <b>${esc(company)}</b><br/>이름: ${esc(name)}<br/>이메일: ${esc(email)}<br/>연락처: ${esc(phone || "-")}<br/>직책: ${esc(role || "-")}<br/>규모: ${esc(size)}<br/>알게 된 경로: ${esc(howFoundText(howFound, howFoundDetail) || "-")}${Object.keys(utm).length ? `<br/>유입: ${esc(TRACKING_KEYS.filter((k) => utm[k]).map((k) => `${k}=${utm[k]}`).join(", "))}` : ""}</p>
       </div>`,
     }).catch((e) => console.error("send-brochure: 관리자 알림 실패(무시)", e));
   }

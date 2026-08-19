@@ -246,6 +246,8 @@ footer{background:#fff;color:var(--slate);padding:64px 0 40px;font-size:14px;bor
 .bro-card input::placeholder{color:var(--slate-2)}
 .bro-card input:focus,.bro-card select:focus{outline:none;border-color:var(--blue-2);box-shadow:0 0 0 3px rgba(91,141,247,.16)}
 .bro-card .b-field.invalid input,.bro-card .b-field.invalid select{border-color:var(--red);box-shadow:0 0 0 3px rgba(224,88,74,.13)}
+.bro-card .b-hint{color:var(--slate-2);font-size:12px;line-height:1.5;margin-top:5px}
+.bro-card .b-field.invalid .b-hint{display:none}
 .bro-card .b-err{display:none;color:var(--red);font-size:12px;margin-top:5px}
 .bro-card .b-field.invalid .b-err{display:block}
 .bro-agree{display:flex;align-items:center;justify-content:space-between;gap:12px;font-size:13px;color:var(--slate);margin:6px 0 18px;line-height:1.5}
