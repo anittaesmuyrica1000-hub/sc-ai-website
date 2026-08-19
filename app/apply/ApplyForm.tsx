@@ -5,15 +5,19 @@ import Link from "next/link";
 import { supabase } from "@/lib/supabase";
 import { trackEvent } from "@/lib/track";
 import { getUtm, type Utm } from "@/lib/utm";
+import {
+  emailError, EMAIL_ERROR_MSG, isValidPhone,
+  HOW_FOUND_OPTIONS, HOW_FOUND_ETC, isValidHowFound,
+} from "@/lib/leadForm";
 
-const emailRe = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
-
-type Fields = { name: string; company: string; email: string; role: string; phone: string; size: string; memo: string };
-const EMPTY: Fields = { name: "", company: "", email: "", role: "", phone: "", size: "", memo: "" };
+type Fields = { name: string; company: string; email: string; role: string; phone: string; size: string; howFound: string; howFoundEtc: string; memo: string };
+const EMPTY: Fields = { name: "", company: "", email: "", role: "", phone: "", size: "", howFound: "", howFoundEtc: "", memo: "" };
 
 export default function ApplyForm() {
   const [fields, setFields] = useState<Fields>(EMPTY);
   const [invalid, setInvalid] = useState<Record<string, boolean>>({});
+  // 이메일은 형식 오류·개인메일 차단으로 사유가 갈려 안내 문구를 따로 둔다
+  const [emailMsg, setEmailMsg] = useState(EMAIL_ERROR_MSG.empty);
   const [agree, setAgree] = useState(false);
   const [agreeInvalid, setAgreeInvalid] = useState(false);
   const [formErr, setFormErr] = useState("");
@@ -44,6 +48,13 @@ export default function ApplyForm() {
     setInvalid((m) => ({ ...m, [k]: false }));
   }
 
+  // 이메일은 입력을 마쳤을 때(blur) 먼저 알려준다 — 제출 버튼에서 막히는 것보다 덜 답답하다
+  function checkEmail() {
+    if (!fields.email.trim()) return;
+    const e = emailError(fields.email);
+    if (e) { setEmailMsg(EMAIL_ERROR_MSG[e]); setInvalid((m) => ({ ...m, email: true })); }
+  }
+
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
     setFormErr("");
@@ -52,11 +63,16 @@ export default function ApplyForm() {
       setDone(true);
       return;
     }
+    const emailErr = emailError(fields.email);
+    if (emailErr) setEmailMsg(EMAIL_ERROR_MSG[emailErr]);
     const next: Record<string, boolean> = {
       name: fields.name.trim() === "",
       company: fields.company.trim() === "",
-      email: !emailRe.test(fields.email.trim()),
+      email: emailErr !== null,
+      phone: !isValidPhone(fields.phone),
       size: fields.size.trim() === "",
+      howFound: !isValidHowFound(fields.howFound),
+      howFoundEtc: fields.howFound === HOW_FOUND_ETC && fields.howFoundEtc.trim() === "",
     };
     setInvalid(next);
     const agreeBad = !agree;
@@ -68,16 +84,25 @@ export default function ApplyForm() {
       company: fields.company.trim(),
       email: fields.email.trim(),
       role: fields.role.trim() || null,
-      phone: fields.phone.trim() || null,
+      phone: fields.phone.trim(),
       size: fields.size,
       memo: fields.memo.trim() || null,
+    };
+    // 유입 경로 직접 응답 — utm·referrer가 안 잡히는 유입(카톡·메일 등)을 메운다
+    const howFound = {
+      how_found: fields.howFound,
+      how_found_detail: fields.howFound === HOW_FOUND_ETC ? fields.howFoundEtc.trim() : null,
     };
 
     setLoading(true);
     try {
-      // UTM 포함 저장 시도. signups에 UTM 컬럼이 아직 없으면(마이그레이션 미적용)
-      // 실패할 수 있으므로, 그 경우 UTM 없이 재시도해 접수 유실을 방지한다.
-      let res = await supabase.from("signups").insert({ ...payload, ...utm });
+      // 마이그레이션(docs/sql/add-how-found.sql·UTM 컬럼)이 아직 안 적용됐을 수 있으므로
+      // 전체 → 유입경로 제외 → UTM까지 제외 순으로 축소 재시도해 접수 유실을 막는다.
+      let res = await supabase.from("signups").insert({ ...payload, ...howFound, ...utm });
+      if (res.error) {
+        console.warn("signup insert with how_found failed, retrying without it:", res.error);
+        res = await supabase.from("signups").insert({ ...payload, ...utm });
+      }
       if (res.error && Object.keys(utm).length) {
         console.warn("signup insert with utm failed, retrying without utm:", res.error);
         res = await supabase.from("signups").insert(payload);
@@ -87,10 +112,10 @@ export default function ApplyForm() {
       fetch("/api/notify-signup", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...payload, ...utm }),
+        body: JSON.stringify({ ...payload, ...howFound, ...utm }),
       }).catch(() => {});
       // GA4 전환 이벤트 — 도입문의 폼 제출 완료(GA4에서 apply_lead를 주요 이벤트로 지정)
-      trackEvent("apply_lead", { form_type: "apply", company_size: fields.size });
+      trackEvent("apply_lead", { form_type: "apply", company_size: fields.size, how_found: fields.howFound });
       setDone(true);
       setTimeout(() => window.scrollTo({ top: 0, behavior: "smooth" }), 0);
     } catch (err) {
@@ -141,9 +166,10 @@ export default function ApplyForm() {
         </div>
 
         <div className={`field${invalid.email ? " invalid" : ""}`}>
-          <label htmlFor="f-email">업무 이메일 <span className="req">*</span></label>
-          <input type="email" id="f-email" placeholder="you@company.com" value={fields.email} onChange={(e) => set("email", e.target.value)} />
-          <div className="err">올바른 이메일을 입력해 주세요.</div>
+          <label htmlFor="f-email">회사 이메일 <span className="req">*</span></label>
+          <input type="email" id="f-email" placeholder="you@company.com" value={fields.email} onChange={(e) => set("email", e.target.value)} onBlur={checkEmail} />
+          <div className="hint">naver, gmail 등 개인 메일은 사용할 수 없습니다.</div>
+          <div className="err">{emailMsg}</div>
         </div>
 
         <div className="field-row">
@@ -151,9 +177,10 @@ export default function ApplyForm() {
             <label htmlFor="f-role">직무/직책</label>
             <input type="text" id="f-role" placeholder="예: 인사팀장" value={fields.role} onChange={(e) => set("role", e.target.value)} />
           </div>
-          <div className="field">
-            <label htmlFor="f-phone">연락처</label>
+          <div className={`field${invalid.phone ? " invalid" : ""}`}>
+            <label htmlFor="f-phone">연락처 <span className="req">*</span></label>
             <input type="tel" id="f-phone" placeholder="010-0000-0000" value={fields.phone} onChange={(e) => set("phone", e.target.value)} />
+            <div className="err">연락 가능한 번호를 입력해 주세요.</div>
           </div>
         </div>
 
@@ -168,6 +195,23 @@ export default function ApplyForm() {
           </select>
           <div className="err">채용 규모를 선택해 주세요.</div>
         </div>
+
+        <div className={`field${invalid.howFound ? " invalid" : ""}`}>
+          <label htmlFor="f-how">어떻게 알게 되셨나요? <span className="req">*</span></label>
+          <select id="f-how" value={fields.howFound} onChange={(e) => set("howFound", e.target.value)}>
+            <option value="" disabled>유입 경로를 선택해 주세요</option>
+            {HOW_FOUND_OPTIONS.map((o) => <option key={o.v} value={o.v}>{o.l}</option>)}
+          </select>
+          <div className="err">유입 경로를 선택해 주세요.</div>
+        </div>
+
+        {fields.howFound === HOW_FOUND_ETC && (
+          <div className={`field${invalid.howFoundEtc ? " invalid" : ""}`}>
+            <label htmlFor="f-how-etc">어떤 경로였는지 알려주세요 <span className="req">*</span></label>
+            <input type="text" id="f-how-etc" placeholder="예: 사내 공유 자료, 협력사 소개" value={fields.howFoundEtc} onChange={(e) => set("howFoundEtc", e.target.value)} />
+            <div className="err">유입 경로를 입력해 주세요.</div>
+          </div>
+        )}
 
         <div className="field">
           <label htmlFor="f-memo">문의 내용</label>

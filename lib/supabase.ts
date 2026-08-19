@@ -82,6 +82,8 @@ export type Signup = {
   phone?: string | null;
   size?: string | null;
   memo?: string | null;
+  how_found?: string | null;
+  how_found_detail?: string | null;
   status?: string | null;
   admin_note?: string | null;
   utm_source?: string | null;
@@ -118,6 +120,8 @@ export type BrochureRequest = {
   role?: string | null;
   phone?: string | null;
   size?: string | null;
+  how_found?: string | null;
+  how_found_detail?: string | null;
   utm_source?: string | null;
   utm_medium?: string | null;
   utm_campaign?: string | null;
