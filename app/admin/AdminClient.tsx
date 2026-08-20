@@ -2107,17 +2107,23 @@ function RetentionNotice({ n, busy, onPurge }: { n: number; busy: boolean; onPur
   );
 }
 
-function PurgeRowButton({ source, id, busy, onDone }: { source: LeadSource; id: string; busy: boolean; onDone: () => void | Promise<void> }) {
+// 파기 버튼은 항상 보이되 보유기간이 지나기 전에는 비활성 — 기능이 어디 있는지 찾을 수 있게.
+// (서버 함수도 만료 여부를 재검사하므로 비활성 상태를 우회해도 삭제되지 않는다.)
+function PurgeRowButton({ source, row, busy, onDone }: { source: LeadSource; row: Signup | BrochureRequest; busy: boolean; onDone: () => void | Promise<void> }) {
   const [working, setWorking] = useState(false);
+  const expired = isExpired(row);
   async function run() {
     if (!confirm("보유기간이 지난 이 건을 영구 파기합니다. 되돌릴 수 없습니다. 진행할까요?")) return;
     setWorking(true);
-    try { await purgeExpired(source, id); await onDone(); }
+    try { await purgeExpired(source, row.id); await onDone(); }
     catch (err) { console.error("purge failed:", err); alert(PURGE_FAIL); }
     finally { setWorking(false); }
   }
+  const tip = expired
+    ? "보유기간 경과 — 지금 파기"
+    : `${fmtDate(retentionInfo(row).expiresAt.toISOString())}(보유기간 만료) 이후 파기할 수 있습니다`;
   return (
-    <button className="icon-btn del-out" title="보유기간 경과 — 파기" onClick={run} disabled={busy || working}>
+    <button className="icon-btn del-out" title={tip} onClick={run} disabled={!expired || busy || working}>
       <i className={`fa-solid ${working ? "fa-spinner fa-spin" : "fa-trash"}`}></i>
     </button>
   );
@@ -2302,7 +2308,7 @@ function SignupsManager({ onPurged }: { onPurged: () => void }) {
                         <td className="nowrap">
                           <div className="row-actions">
                             <button className="icon-btn" title="상세" onClick={() => setDetail(r)}><i className="fa-solid fa-eye"></i></button>
-                            {isExpired(r) && <PurgeRowButton source="signups" id={r.id} busy={purging} onDone={afterPurge} />}
+                            <PurgeRowButton source="signups" row={r} busy={purging} onDone={afterPurge} />
                           </div>
                         </td>
                       </tr>
@@ -2328,7 +2334,7 @@ function SignupsManager({ onPurged }: { onPurged: () => void }) {
                       <select className="status-sel" value={r.status || "신규"} onChange={(e) => updateRow(r.id, { status: e.target.value })}>
                         {SIGNUP_STATUSES.map((s) => <option key={s} value={s}>{s}</option>)}
                       </select>
-                      {isExpired(r) && <PurgeRowButton source="signups" id={r.id} busy={purging} onDone={afterPurge} />}
+                      <PurgeRowButton source="signups" row={r} busy={purging} onDone={afterPurge} />
                     </div>
                   </div>
                 ))}
@@ -2515,7 +2521,7 @@ function LeadTable({ table, title, empty, filename, onPurged }: { table: LeadSou
                     <td className="nowrap">{r.phone ? fmtPhone(r.phone) : "—"}</td>
                     <td className="nowrap">{r.size ? (SIZE_LABEL[r.size] || r.size) : "—"}</td>
                     <td className="nowrap"><RetentionCell row={r} /></td>
-                    <td className="nowrap">{isExpired(r) ? <PurgeRowButton source={table} id={r.id} busy={purging} onDone={afterPurge} /> : "—"}</td>
+                    <td className="nowrap"><PurgeRowButton source={table} row={r} busy={purging} onDone={afterPurge} /></td>
                   </tr>
                 ))}
               </tbody>

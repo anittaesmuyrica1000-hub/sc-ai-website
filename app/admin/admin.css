@@ -529,3 +529,6 @@
 .pill-red{background:#FDECEA;color:#C0392B}
 .adm-nav button .adm-badge{margin-left:auto;min-width:20px;height:20px;padding:0 6px;border-radius:999px;background:#C0392B;color:#fff;font-size:11px;font-weight:800;display:inline-grid;place-items:center}
 .adm.collapsed .adm-nav button .adm-badge{display:none}
+/* 파기 버튼 — 보유기간 만료 전에는 비활성(기능 위치는 보이도록) */
+.icon-btn:disabled{opacity:.32;cursor:default}
+.icon-btn:disabled:hover{color:var(--slate)}
