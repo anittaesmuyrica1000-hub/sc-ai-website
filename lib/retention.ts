@@ -25,13 +25,6 @@ export function addRetention(iso: string): Date {
   return d;
 }
 
-// 만료 판정 기준일 — 이 시각 이전이 기산일이면 보유기간 경과(파기 대상)
-export function retentionCutoffIso(): string {
-  const d = new Date();
-  d.setFullYear(d.getFullYear() - RETENTION_YEARS);
-  return d.toISOString();
-}
-
 export type RetentionInfo = { basis: string; expiresAt: Date; daysLeft: number; expired: boolean; soon: boolean };
 
 export function retentionInfo(r: RetentionRow): RetentionInfo {

@@ -6,7 +6,7 @@ import { supabase, type Post, type Update, type Faq, type Signup, type BrochureR
 import { UPDATE_CATEGORIES } from "@/app/update/badge";
 import { howFoundText } from "@/lib/leadForm";
 import { fmtDate } from "@/lib/format";
-import { retentionInfo, retentionCutoffIso, isExpired, RETENTION_LABEL, type RetentionRow } from "@/lib/retention";
+import { retentionInfo, isExpired, RETENTION_LABEL, type RetentionRow } from "@/lib/retention";
 import MarkdownEditor from "@/components/MarkdownEditor";
 import RichEditor, { type EditorTemplate } from "@/components/RichEditor";
 import { renderBody } from "@/lib/postRender";
@@ -2131,16 +2131,12 @@ function useExpiredCounts(): { counts: Record<LeadSource, number>; refresh: () =
   useEffect(() => {
     let active = true;
     (async () => {
-      const cut = retentionCutoffIso();
-      const ask = async (table: LeadSource, doneCol: string) => {
-        const r = await supabase.from(table).select("id", { count: "exact", head: true })
-          .or(`and(${doneCol}.is.null,created_at.lt.${cut}),${doneCol}.lt.${cut}`);
-        return r.error ? 0 : r.count ?? 0;
+      const count = async (table: LeadSource) => {
+        const r = await supabase.from(table).select("*");
+        return r.error ? 0 : ((r.data as RetentionRow[]) || []).filter(isExpired).length;
       };
-      try {
-        const [s, b] = await Promise.all([ask("signups", "completed_at"), ask("brochure_requests", "downloaded_at")]);
-        if (active) setCounts({ signups: s, brochure_requests: b });
-      } catch { /* 마이그레이션 전이면 조용히 0 */ }
+      const [s, b] = await Promise.all([count("signups"), count("brochure_requests")]);
+      if (active) setCounts({ signups: s, brochure_requests: b });
     })();
     return () => { active = false; };
   }, [tick]);
@@ -2158,12 +2154,6 @@ function StatusBadge({ value }: { value?: string | null }) {
 
 const PERIODS = [{ k: "all", l: "전체" }, { k: "today", l: "오늘" }, { k: "7", l: "7일" }, { k: "30", l: "30일" }] as const;
 const SIZE_LABEL: Record<string, string> = { "1-10": "1~10명", "11-50": "11~50명", "51-200": "51~200명", "200+": "200명 이상" };
-
-// 상태를 '완료'로 바꾸면 보유기간 1년의 기산점(상담 완료일)을 기록하고, 되돌리면 지운다.
-function statusPatch(row: Signup, status: string): Partial<Signup> {
-  if (status === "완료") return { status, completed_at: row.completed_at || new Date().toISOString() };
-  return row.completed_at ? { status, completed_at: null } : { status };
-}
 
 function SignupsManager({ onPurged }: { onPurged: () => void }) {
   const [rows, setRows] = useState<Signup[]>([]);
@@ -2188,11 +2178,16 @@ function SignupsManager({ onPurged }: { onPurged: () => void }) {
   }, []);
   useEffect(() => { load(); }, [load]);
 
+  // 저장 후 서버가 돌려준 행으로 덮어쓴다 — 상담 완료일(completed_at)은 DB 트리거가 채우므로
+  // 응답을 반영해야 보유기간 표시가 맞는다.
   async function updateRow(id: string, patch: Partial<Signup>) {
     setRows((rs) => rs.map((r) => (r.id === id ? { ...r, ...patch } : r)));
     setDetail((d) => (d && d.id === id ? { ...d, ...patch } : d));
-    const res = await supabase.from("signups").update(patch).eq("id", id);
-    if (res.error) { console.error("update failed:", res.error); alert("저장에 실패했습니다. 관리자 권한을 확인해 주세요."); await load(); }
+    const res = await supabase.from("signups").update(patch).eq("id", id).select().single();
+    if (res.error) { console.error("update failed:", res.error); alert("저장에 실패했습니다. 관리자 권한을 확인해 주세요."); await load(); return; }
+    const saved = res.data as Signup;
+    setRows((rs) => rs.map((r) => (r.id === id ? saved : r)));
+    setDetail((d) => (d && d.id === id ? saved : d));
   }
 
   const expired = useMemo(() => rows.filter(isExpired), [rows]);
@@ -2299,7 +2294,7 @@ function SignupsManager({ onPurged }: { onPurged: () => void }) {
                         <td className="nowrap">{r.size ? (SIZE_LABEL[r.size] || r.size) : "—"}</td>
                         <td className="nowrap"><UtmChip r={r} /></td>
                         <td className="nowrap">
-                          <select className="status-sel" value={r.status || "신규"} onChange={(e) => updateRow(r.id, statusPatch(r, e.target.value))}>
+                          <select className="status-sel" value={r.status || "신규"} onChange={(e) => updateRow(r.id, { status: e.target.value })}>
                             {SIGNUP_STATUSES.map((s) => <option key={s} value={s}>{s}</option>)}
                           </select>
                         </td>
@@ -2330,7 +2325,7 @@ function SignupsManager({ onPurged }: { onPurged: () => void }) {
                     <div className="sig-card-acts" onClick={(e) => e.stopPropagation()}>
                       {r.phone && <a className="sig-act" href={`tel:${r.phone}`}><i className="fa-solid fa-phone"></i> 전화</a>}
                       <a className="sig-act" href={`mailto:${r.email}`}><i className="fa-solid fa-envelope"></i> 메일</a>
-                      <select className="status-sel" value={r.status || "신규"} onChange={(e) => updateRow(r.id, statusPatch(r, e.target.value))}>
+                      <select className="status-sel" value={r.status || "신규"} onChange={(e) => updateRow(r.id, { status: e.target.value })}>
                         {SIGNUP_STATUSES.map((s) => <option key={s} value={s}>{s}</option>)}
                       </select>
                       {isExpired(r) && <PurgeRowButton source="signups" id={r.id} busy={purging} onDone={afterPurge} />}
@@ -2354,7 +2349,7 @@ function SignupDetail({ row, onClose, onSave }: { row: Signup; onClose: () => vo
 
   async function save() {
     setSaving(true);
-    await onSave(row.id, { ...statusPatch(row, status), admin_note: note.trim() || null });
+    await onSave(row.id, { status, admin_note: note.trim() || null });
     setSaving(false);
     onClose();
   }

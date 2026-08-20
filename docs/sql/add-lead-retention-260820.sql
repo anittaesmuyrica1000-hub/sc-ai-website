@@ -10,6 +10,27 @@
 alter table public.signups add column if not exists completed_at timestamptz;
 comment on column public.signups.completed_at is '상담(문의 처리) 완료일 — 보유기간 1년의 기산점';
 
+-- 기산일은 DB가 직접 관리한다. 상태를 '완료'로 바꾸면 기록되고, 되돌리면 지워진다.
+-- (어드민·SQL 등 어느 경로로 상태를 바꿔도 동일하게 적용된다.)
+create or replace function public.signups_sync_completed_at()
+returns trigger
+language plpgsql
+as $$
+begin
+  if new.status = '완료' then
+    new.completed_at := coalesce(new.completed_at, now());
+  else
+    new.completed_at := null;
+  end if;
+  return new;
+end;
+$$;
+
+drop trigger if exists signups_completed_at on public.signups;
+create trigger signups_completed_at
+  before insert or update of status on public.signups
+  for each row execute function public.signups_sync_completed_at();
+
 -- 2) 파기 기록(증적) -----------------------------------------
 create table if not exists public.retention_purges (
   id         uuid primary key default gen_random_uuid(),
