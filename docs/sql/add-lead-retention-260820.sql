@@ -1,5 +1,5 @@
 -- ============================================================
--- 고객문의 개인정보 보유기간(1년) 관리 · 자동 파기
+-- 고객문의 개인정보 보유기간(1년) 관리 · 파기
 -- 근거: 개인정보처리방침 제2조 — "문의, 고충처리 또는 자료 제공 완료일부터 1년"
 -- 대상: signups(도입문의), brochure_requests(소개서 신청 리드)
 -- Supabase 대시보드 → SQL Editor 에 붙여넣고 1회 실행하세요.
@@ -81,13 +81,17 @@ $$;
 revoke all on function public.purge_expired_leads(text, uuid) from public, anon;
 grant execute on function public.purge_expired_leads(text, uuid) to authenticated;
 
--- 4) 매일 자동 파기 (KST 04:00 = UTC 19:00) --------------------
--- Supabase 대시보드 → Database → Extensions 에서 pg_cron 이 켜져 있어야 한다.
-create extension if not exists pg_cron;
-select cron.unschedule('purge-expired-leads')
-where exists (select 1 from cron.job where jobname = 'purge-expired-leads');
-select cron.schedule('purge-expired-leads', '0 19 * * *', $$select public.purge_expired_leads();$$);
+-- 4) (선택) 매일 자동 파기 — 지금은 켜지 않음 ------------------
+-- 현재 운영 방식: 어드민이 만료 알림을 보고 직접 파기(수동). 무인 삭제는 되돌릴 수 없으므로
+-- 운영이 안정된 뒤 아래 블록의 주석을 풀어 실행하면 매일 새벽 4시(KST)에 자동 파기된다.
+-- (Supabase 대시보드 → Database → Extensions 에서 pg_cron 활성화 필요.)
+--
+-- create extension if not exists pg_cron;
+-- select cron.unschedule('purge-expired-leads')
+-- where exists (select 1 from cron.job where jobname = 'purge-expired-leads');
+-- select cron.schedule('purge-expired-leads', '0 19 * * *', $$select public.purge_expired_leads();$$);
 
 -- 확인용
--- select * from cron.job where jobname = 'purge-expired-leads';
+-- select count(*) from public.signups   where coalesce(completed_at, created_at) < now() - interval '1 year';
+-- select count(*) from public.brochure_requests where coalesce(downloaded_at, created_at) < now() - interval '1 year';
 -- select * from public.retention_purges order by purged_at desc limit 20;
