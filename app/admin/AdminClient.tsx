@@ -6,6 +6,7 @@ import { supabase, type Post, type Update, type Faq, type Signup, type BrochureR
 import { UPDATE_CATEGORIES } from "@/app/update/badge";
 import { howFoundText } from "@/lib/leadForm";
 import { fmtDate } from "@/lib/format";
+import { retentionInfo, isExpired, RETENTION_LABEL, type RetentionRow } from "@/lib/retention";
 import MarkdownEditor from "@/components/MarkdownEditor";
 import RichEditor, { type EditorTemplate } from "@/components/RichEditor";
 import { renderBody } from "@/lib/postRender";
@@ -167,6 +168,7 @@ const TITLE: Record<Section, { h: string; d: string }> = {
 
 function Console({ email }: { email: string }) {
   const [section, setSection] = useState<Section>("dash");
+  const { counts: expired, refresh: refreshExpired } = useExpiredCounts();
   const [navOpen, setNavOpen] = useState(false);
   const [acctOpen, setAcctOpen] = useState(false);
   const [collapsed, setCollapsed] = useState(false);
@@ -229,12 +231,16 @@ function Console({ email }: { email: string }) {
           </button>
         </div>
         <nav className="adm-nav">
-          {NAV.map((n) => (
-            <button key={n.key} className={section === n.key ? "active" : ""} onClick={() => { setSection(n.key); setNavOpen(false); }}>
-              <i className={`fa-solid ${n.icon}`}></i>
-              <span className="adm-label">{n.label}</span>
-            </button>
-          ))}
+          {NAV.map((n) => {
+            const badge = n.key === "signups" ? expired.signups : n.key === "brochure" ? expired.brochure_requests : 0;
+            return (
+              <button key={n.key} className={section === n.key ? "active" : ""} onClick={() => { setSection(n.key); setNavOpen(false); }}>
+                <i className={`fa-solid ${n.icon}`}></i>
+                <span className="adm-label">{n.label}</span>
+                {badge > 0 && <span className="adm-badge" title={`보유기간 경과 ${badge}건 — 파기 필요`}>{badge}</span>}
+              </button>
+            );
+          })}
           <a className="adm-nav-link" href="/" target="_blank" rel="noopener noreferrer">
             <i className="fa-solid fa-arrow-up-right-from-square"></i>
             <span className="adm-label">웹사이트로 가기</span>
@@ -271,14 +277,14 @@ function Console({ email }: { email: string }) {
           </div>
         </div>
         <div className="adm-body">
-          {section === "dash" && <Dashboard onGo={setSection} />}
+          {section === "dash" && <Dashboard onGo={setSection} expired={expired} />}
           {section === "blog" && <BlogManager />}
           {section === "updates" && <UpdatesManager />}
           {section === "faq" && <FaqManager />}
-          {section === "brochure" && <BrochureSection />}
+          {section === "brochure" && <BrochureSection onPurged={refreshExpired} />}
           {section === "legal" && <LegalManager />}
           {section === "seo" && <SeoManager />}
-          {section === "signups" && <SignupsManager />}
+          {section === "signups" && <SignupsManager onPurged={refreshExpired} />}
           {section === "settings" && <Settings email={email} />}
         </div>
       </div>
@@ -303,7 +309,7 @@ type DashData = {
   brochure: string | null; brochureAt: string | null; recent: Signup[]; updates: UpdateItem[];
 };
 
-function Dashboard({ onGo }: { onGo: (s: Section) => void }) {
+function Dashboard({ onGo, expired }: { onGo: (s: Section) => void; expired: Record<"signups" | "brochure_requests", number> }) {
   const [d, setD] = useState<DashData>({ today: null, todayDelta: null, week: null, weekDelta: null, pubBlog: null, totBlog: null, pubFaq: null, totFaq: null, brochure: null, brochureAt: null, recent: [], updates: [] });
 
   useEffect(() => {
@@ -371,6 +377,18 @@ function Dashboard({ onGo }: { onGo: (s: Section) => void }) {
 
   return (
     <>
+      {(expired.signups > 0 || expired.brochure_requests > 0) && (
+        <div className="ret-alert">
+          <i className="fa-solid fa-triangle-exclamation"></i>
+          <div className="ret-alert-txt">
+            <b>보유기간(1년)이 지난 개인정보가 있습니다.</b>
+            <span>
+              {[expired.signups && `도입문의 ${expired.signups}건`, expired.brochure_requests && `소개서 리드 ${expired.brochure_requests}건`].filter(Boolean).join(" · ")} — 개인정보처리방침 제2조에 따라 파기가 필요합니다.
+            </span>
+          </div>
+          <button className="btn btn-danger" onClick={() => onGo(expired.signups > 0 ? "signups" : "brochure")}>확인하러 가기</button>
+        </div>
+      )}
       <div className="dash-stats">
         {stats.map((s, i) => (
           <button key={i} className="stat-card" onClick={() => onGo(s.go)}>
@@ -1957,11 +1975,11 @@ function SeoManager() {
 
 /* ===================== AI 면접 서비스 소개서 ===================== */
 
-function BrochureSection() {
+function BrochureSection({ onPurged }: { onPurged: () => void }) {
   return (
     <>
       <BrochureManager />
-      <LeadTable table="brochure_requests" title="소개서 신청 리드" empty="아직 소개서를 신청한 리드가 없습니다." filename="brochure-requests" />
+      <LeadTable table="brochure_requests" title="소개서 신청 리드" empty="아직 소개서를 신청한 리드가 없습니다." filename="brochure-requests" onPurged={onPurged} />
     </>
   );
 }
@@ -2051,6 +2069,87 @@ function BrochureManager() {
   );
 }
 
+/* ===================== 보유기간 · 파기 (개인정보처리방침 제2조) ===================== */
+
+type LeadSource = "signups" | "brochure_requests";
+
+// 삭제 권한은 서버 함수만 갖는다. p_id를 주면 그 1건, 없으면 만료 건 전체.
+// 함수가 보유기간 경과 여부를 다시 검사하므로 만료되지 않은 행은 지워지지 않는다.
+async function purgeExpired(source: LeadSource, id?: string): Promise<number> {
+  const { data, error } = await supabase.rpc("purge_expired_leads", { p_source: source, p_id: id ?? null });
+  if (error) throw error;
+  return (data as number) ?? 0;
+}
+
+const PURGE_FAIL = "파기에 실패했습니다. 보유기간 마이그레이션(docs/sql/add-lead-retention-260820.sql)이 적용됐는지, 관리자 권한이 있는지 확인해 주세요.";
+
+function RetentionCell({ row }: { row: RetentionRow }) {
+  const i = retentionInfo(row);
+  const cls = i.expired ? "pill-red" : i.soon ? "pill-amber" : "pill-gray";
+  return (
+    <span className={`pill ${cls}`} title={`기산일 ${fmtDate(i.basis)} · 파기 예정일 ${fmtDate(i.expiresAt.toISOString())} (${RETENTION_LABEL})`}>
+      {i.expired ? "만료 · 파기 필요" : `D-${i.daysLeft}`}
+    </span>
+  );
+}
+
+function RetentionNotice({ n, busy, onPurge }: { n: number; busy: boolean; onPurge: () => void }) {
+  if (n === 0) return null;
+  return (
+    <div className="ret-alert">
+      <i className="fa-solid fa-triangle-exclamation"></i>
+      <div className="ret-alert-txt">
+        <b>보유기간이 지난 {n}건이 있습니다.</b>
+        <span>개인정보처리방침 제2조에 따라 {RETENTION_LABEL} 경과 시 지체 없이 파기합니다.</span>
+      </div>
+      <button className="btn btn-danger" onClick={onPurge} disabled={busy}>{busy ? "파기 중…" : `만료 ${n}건 파기`}</button>
+    </div>
+  );
+}
+
+// 파기 버튼은 항상 보이되 보유기간이 지나기 전에는 비활성 — 기능이 어디 있는지 찾을 수 있게.
+// (서버 함수도 만료 여부를 재검사하므로 비활성 상태를 우회해도 삭제되지 않는다.)
+function PurgeRowButton({ source, row, busy, onDone }: { source: LeadSource; row: Signup | BrochureRequest; busy: boolean; onDone: () => void | Promise<void> }) {
+  const [working, setWorking] = useState(false);
+  const expired = isExpired(row);
+  async function run() {
+    if (!confirm("보유기간이 지난 이 건을 영구 파기합니다. 되돌릴 수 없습니다. 진행할까요?")) return;
+    setWorking(true);
+    try { await purgeExpired(source, row.id); await onDone(); }
+    catch (err) { console.error("purge failed:", err); alert(PURGE_FAIL); }
+    finally { setWorking(false); }
+  }
+  const tip = expired
+    ? "보유기간 경과 — 지금 파기"
+    : `${fmtDate(retentionInfo(row).expiresAt.toISOString())}(보유기간 만료) 이후 파기할 수 있습니다`;
+  return (
+    <button className="icon-btn del-out" title={tip} onClick={run} disabled={!expired || busy || working}>
+      <i className={`fa-solid ${working ? "fa-spinner fa-spin" : "fa-trash"}`}></i>
+    </button>
+  );
+}
+
+// 만료 건 수 — 사이드바 배지·대시보드 알림용(목록을 열지 않아도 보이는 "알림")
+function useExpiredCounts(): { counts: Record<LeadSource, number>; refresh: () => void } {
+  const [counts, setCounts] = useState<Record<LeadSource, number>>({ signups: 0, brochure_requests: 0 });
+  const [tick, setTick] = useState(0);
+
+  useEffect(() => {
+    let active = true;
+    (async () => {
+      const count = async (table: LeadSource) => {
+        const r = await supabase.from(table).select("*");
+        return r.error ? 0 : ((r.data as RetentionRow[]) || []).filter(isExpired).length;
+      };
+      const [s, b] = await Promise.all([count("signups"), count("brochure_requests")]);
+      if (active) setCounts({ signups: s, brochure_requests: b });
+    })();
+    return () => { active = false; };
+  }, [tick]);
+
+  return { counts, refresh: () => setTick((t) => t + 1) };
+}
+
 /* ===================== 도입문의 관리 ===================== */
 
 function StatusBadge({ value }: { value?: string | null }) {
@@ -2062,15 +2161,17 @@ function StatusBadge({ value }: { value?: string | null }) {
 const PERIODS = [{ k: "all", l: "전체" }, { k: "today", l: "오늘" }, { k: "7", l: "7일" }, { k: "30", l: "30일" }] as const;
 const SIZE_LABEL: Record<string, string> = { "1-10": "1~10명", "11-50": "11~50명", "51-200": "51~200명", "200+": "200명 이상" };
 
-function SignupsManager() {
+function SignupsManager({ onPurged }: { onPurged: () => void }) {
   const [rows, setRows] = useState<Signup[]>([]);
   const [loadErr, setLoadErr] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [fStatus, setFStatus] = useState("all");
   const [fPeriod, setFPeriod] = useState<string>("all");
   const [fSize, setFSize] = useState("all");
+  const [fRet, setFRet] = useState("all");
   const [q, setQ] = useState("");
   const [detail, setDetail] = useState<Signup | null>(null);
+  const [purging, setPurging] = useState(false);
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -2083,18 +2184,40 @@ function SignupsManager() {
   }, []);
   useEffect(() => { load(); }, [load]);
 
+  // 저장 후 서버가 돌려준 행으로 덮어쓴다 — 상담 완료일(completed_at)은 DB 트리거가 채우므로
+  // 응답을 반영해야 보유기간 표시가 맞는다.
   async function updateRow(id: string, patch: Partial<Signup>) {
     setRows((rs) => rs.map((r) => (r.id === id ? { ...r, ...patch } : r)));
     setDetail((d) => (d && d.id === id ? { ...d, ...patch } : d));
-    const res = await supabase.from("signups").update(patch).eq("id", id);
-    if (res.error) { console.error("update failed:", res.error); alert("저장에 실패했습니다. 관리자 권한을 확인해 주세요."); await load(); }
+    const res = await supabase.from("signups").update(patch).eq("id", id).select().single();
+    if (res.error) { console.error("update failed:", res.error); alert("저장에 실패했습니다. 관리자 권한을 확인해 주세요."); await load(); return; }
+    const saved = res.data as Signup;
+    setRows((rs) => rs.map((r) => (r.id === id ? saved : r)));
+    setDetail((d) => (d && d.id === id ? saved : d));
   }
+
+  const expired = useMemo(() => rows.filter(isExpired), [rows]);
+
+  async function purgeAll() {
+    if (!confirm(`보유기간 1년이 지난 도입문의 ${expired.length}건을 영구 파기합니다. 되돌릴 수 없습니다. 진행할까요?`)) return;
+    setPurging(true);
+    try { const n = await purgeExpired("signups"); await load(); onPurged(); alert(`${n}건을 파기했습니다.`); }
+    catch (err) { console.error("purge failed:", err); alert(PURGE_FAIL); }
+    finally { setPurging(false); }
+  }
+
+  const afterPurge = useCallback(async () => { await load(); onPurged(); }, [load, onPurged]);
 
   const filtered = useMemo(() => {
     const now = Date.now();
     return rows.filter((r) => {
       if (fStatus !== "all" && (r.status || "신규") !== fStatus) return false;
       if (fSize !== "all" && (r.size || "") !== fSize) return false;
+      if (fRet !== "all") {
+        const i = retentionInfo(r);
+        if (fRet === "expired" && !i.expired) return false;
+        if (fRet === "soon" && !i.soon) return false;
+      }
       if (fPeriod !== "all") {
         const days = fPeriod === "today" ? 1 : Number(fPeriod);
         const cutoff = fPeriod === "today" ? new Date(new Date().setHours(0, 0, 0, 0)).getTime() : now - days * 86400000;
@@ -2106,12 +2229,12 @@ function SignupsManager() {
       }
       return true;
     });
-  }, [rows, fStatus, fSize, fPeriod, q]);
+  }, [rows, fStatus, fSize, fPeriod, fRet, q]);
 
   function exportCsv() {
-    const head = ["접수일시", "이름", "회사", "이메일", "직무/직책", "연락처", "채용규모", "알게된경로", "알게된경로(기타)", "상태", "문의내용", "내부메모", ...TRACKING_KEYS];
+    const head = ["접수일시", "이름", "회사", "이메일", "직무/직책", "연락처", "채용규모", "알게된경로", "알게된경로(기타)", "상태", "상담완료일", "파기예정일", "문의내용", "내부메모", ...TRACKING_KEYS];
     const esc = (v: unknown) => `"${String(v ?? "").replace(/"/g, '""')}"`;
-    const lines = filtered.map((r) => [fmtDateTime(r.created_at), r.name, r.company, r.email, r.role ?? "", r.phone ?? "", r.size ?? "", howFoundText(r.how_found, r.how_found_detail) ?? "", r.how_found_detail ?? "", r.status ?? "신규", r.memo ?? "", r.admin_note ?? "", ...TRACKING_KEYS.map((k) => r[k] ?? "")].map(esc).join(","));
+    const lines = filtered.map((r) => [fmtDateTime(r.created_at), r.name, r.company, r.email, r.role ?? "", r.phone ?? "", r.size ?? "", howFoundText(r.how_found, r.how_found_detail) ?? "", r.how_found_detail ?? "", r.status ?? "신규", r.completed_at ? fmtDateTime(r.completed_at) : "", fmtDate(retentionInfo(r).expiresAt.toISOString()), r.memo ?? "", r.admin_note ?? "", ...TRACKING_KEYS.map((k) => r[k] ?? "")].map(esc).join(","));
     const csv = "﻿" + [head.map(esc).join(","), ...lines].join("\n");
     const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
     const url = URL.createObjectURL(blob); const a = document.createElement("a"); a.href = url; a.download = `signups-${new Date().toISOString().slice(0, 10)}.csv`; a.click(); URL.revokeObjectURL(url);
@@ -2119,12 +2242,21 @@ function SignupsManager() {
 
   return (
     <>
+      <RetentionNotice n={expired.length} busy={purging} onPurge={purgeAll} />
       <div className="adm-filters">
         <div className="filt">
           <label>상태</label>
           <select value={fStatus} onChange={(e) => setFStatus(e.target.value)}>
             <option value="all">전체</option>
             {SIGNUP_STATUSES.map((s) => <option key={s} value={s}>{s}</option>)}
+          </select>
+        </div>
+        <div className="filt">
+          <label>보유기간</label>
+          <select value={fRet} onChange={(e) => setFRet(e.target.value)}>
+            <option value="all">전체</option>
+            <option value="expired">만료(파기 대상)</option>
+            <option value="soon">만료 임박(30일 이내)</option>
           </select>
         </div>
         <div className="filt">
@@ -2156,7 +2288,7 @@ function SignupsManager() {
               {/* 데스크톱: 표 */}
               <div className="adm-table-wrap sig-table">
                 <table className="adm-table">
-                  <thead><tr><th>접수일</th><th>이름</th><th>회사명</th><th>업무 이메일</th><th>연락처</th><th>채용 규모</th><th>유입</th><th>상태</th><th>관리</th></tr></thead>
+                  <thead><tr><th>접수일</th><th>이름</th><th>회사명</th><th>업무 이메일</th><th>연락처</th><th>채용 규모</th><th>유입</th><th>상태</th><th>보유기간</th><th>관리</th></tr></thead>
                   <tbody>
                     {filtered.map((r) => (
                       <tr key={r.id}>
@@ -2172,7 +2304,13 @@ function SignupsManager() {
                             {SIGNUP_STATUSES.map((s) => <option key={s} value={s}>{s}</option>)}
                           </select>
                         </td>
-                        <td className="nowrap"><button className="icon-btn" title="상세" onClick={() => setDetail(r)}><i className="fa-solid fa-eye"></i></button></td>
+                        <td className="nowrap"><RetentionCell row={r} /></td>
+                        <td className="nowrap">
+                          <div className="row-actions">
+                            <button className="icon-btn" title="상세" onClick={() => setDetail(r)}><i className="fa-solid fa-eye"></i></button>
+                            <PurgeRowButton source="signups" row={r} busy={purging} onDone={afterPurge} />
+                          </div>
+                        </td>
                       </tr>
                     ))}
                   </tbody>
@@ -2189,12 +2327,14 @@ function SignupsManager() {
                     <div className="sig-card-sub">{r.name}{r.role ? ` · ${r.role}` : ""}{r.size ? ` · ${SIZE_LABEL[r.size] || r.size}` : ""}</div>
                     {r.phone && <div className="sig-card-phone"><i className="fa-solid fa-phone"></i> {fmtPhone(r.phone)}</div>}
                     <div className="sig-card-date"><DateTimeCell iso={r.created_at} /> 접수{trafficLabel(r) ? ` · 유입 ${trafficLabel(r)}` : ""}</div>
+                    <div className="sig-card-date">보유기간 <RetentionCell row={r} /></div>
                     <div className="sig-card-acts" onClick={(e) => e.stopPropagation()}>
                       {r.phone && <a className="sig-act" href={`tel:${r.phone}`}><i className="fa-solid fa-phone"></i> 전화</a>}
                       <a className="sig-act" href={`mailto:${r.email}`}><i className="fa-solid fa-envelope"></i> 메일</a>
                       <select className="status-sel" value={r.status || "신규"} onChange={(e) => updateRow(r.id, { status: e.target.value })}>
                         {SIGNUP_STATUSES.map((s) => <option key={s} value={s}>{s}</option>)}
                       </select>
+                      <PurgeRowButton source="signups" row={r} busy={purging} onDone={afterPurge} />
                     </div>
                   </div>
                 ))}
@@ -2220,12 +2360,15 @@ function SignupDetail({ row, onClose, onSave }: { row: Signup; onClose: () => vo
     onClose();
   }
 
+  const ret = retentionInfo(row);
   const fields: [string, string][] = [
     ["이름", row.name], ["회사명", row.company], ["업무 이메일", row.email],
     ["연락처", row.phone ? fmtPhone(row.phone) : "—"], ["직무/직책", row.role || "—"],
     ["연간 채용 규모", row.size ? (SIZE_LABEL[row.size] || row.size) : "—"],
     ["알게 된 경로", howFoundText(row.how_found, row.how_found_detail) || "—"],
     ["개인정보 동의", "동의 (필수 동의 후 접수)"], ["접수일시", fmtDateTime(row.created_at)],
+    ["상담 완료일", row.completed_at ? fmtDateTime(row.completed_at) : "— (상태를 '완료'로 바꾸면 기록)"],
+    ["보유기간", `${fmtDate(ret.expiresAt.toISOString())}까지 (${RETENTION_LABEL}${ret.expired ? " · 경과, 파기 대상" : `, D-${ret.daysLeft}`})`],
   ];
 
   return (
@@ -2309,10 +2452,11 @@ function UtmChip({ r }: { r: Signup | BrochureRequest }) {
   return <span className="utm-chip" title={tip}>{label}</span>;
 }
 
-function LeadTable({ table, title, empty, filename }: { table: string; title: string; empty: string; filename: string }) {
+function LeadTable({ table, title, empty, filename, onPurged }: { table: LeadSource; title: string; empty: string; filename: string; onPurged: () => void }) {
   const [rows, setRows] = useState<BrochureRequest[]>([]);
   const [loadErr, setLoadErr] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+  const [purging, setPurging] = useState(false);
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -2325,16 +2469,30 @@ function LeadTable({ table, title, empty, filename }: { table: string; title: st
   }, [table]);
   useEffect(() => { load(); }, [load]);
 
+  const expired = useMemo(() => rows.filter(isExpired), [rows]);
+
+  async function purgeAll() {
+    if (!confirm(`보유기간 1년이 지난 리드 ${expired.length}건을 영구 파기합니다. 되돌릴 수 없습니다. 진행할까요?`)) return;
+    setPurging(true);
+    try { const n = await purgeExpired(table); await load(); onPurged(); alert(`${n}건을 파기했습니다.`); }
+    catch (err) { console.error("purge failed:", err); alert(PURGE_FAIL); }
+    finally { setPurging(false); }
+  }
+
+  const afterPurge = useCallback(async () => { await load(); onPurged(); }, [load, onPurged]);
+
   function exportCsv() {
-    const head = ["접수일시", "다운로드일시", "다운로드횟수", "이름", "회사", "이메일", "직무/직책", "연락처", "채용규모", "알게된경로", "알게된경로(기타)", ...TRACKING_KEYS];
+    const head = ["접수일시", "다운로드일시", "다운로드횟수", "이름", "회사", "이메일", "직무/직책", "연락처", "채용규모", "알게된경로", "알게된경로(기타)", "파기예정일", ...TRACKING_KEYS];
     const esc = (v: unknown) => `"${String(v ?? "").replace(/"/g, '""')}"`;
-    const lines = rows.map((r) => [fmtDateTime(r.created_at), r.downloaded_at ? fmtDateTime(r.downloaded_at) : "", r.download_count ?? 0, r.name, r.company, r.email, r.role ?? "", r.phone ?? "", r.size ?? "", howFoundText(r.how_found, r.how_found_detail) ?? "", r.how_found_detail ?? "", ...TRACKING_KEYS.map((k) => r[k] ?? "")].map(esc).join(","));
+    const lines = rows.map((r) => [fmtDateTime(r.created_at), r.downloaded_at ? fmtDateTime(r.downloaded_at) : "", r.download_count ?? 0, r.name, r.company, r.email, r.role ?? "", r.phone ?? "", r.size ?? "", howFoundText(r.how_found, r.how_found_detail) ?? "", r.how_found_detail ?? "", fmtDate(retentionInfo(r).expiresAt.toISOString()), ...TRACKING_KEYS.map((k) => r[k] ?? "")].map(esc).join(","));
     const csv = "﻿" + [head.map(esc).join(","), ...lines].join("\n");
     const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
     const url = URL.createObjectURL(blob); const a = document.createElement("a"); a.href = url; a.download = `${filename}-${new Date().toISOString().slice(0, 10)}.csv`; a.click(); URL.revokeObjectURL(url);
   }
 
   return (
+    <>
+    <RetentionNotice n={expired.length} busy={purging} onPurge={purgeAll} />
     <div className="card list-card">
       <div className="list-head">
         <h2>{title}</h2>
@@ -2349,7 +2507,7 @@ function LeadTable({ table, title, empty, filename }: { table: string; title: st
         : (
           <div className="adm-table-wrap">
             <table className="adm-table">
-              <thead><tr><th>접수일</th><th>다운로드</th><th>이름</th><th>회사</th><th>유입</th><th>이메일</th><th>직무/직책</th><th>연락처</th><th>채용규모</th></tr></thead>
+              <thead><tr><th>접수일</th><th>다운로드</th><th>이름</th><th>회사</th><th>유입</th><th>이메일</th><th>직무/직책</th><th>연락처</th><th>채용규모</th><th>보유기간</th><th>관리</th></tr></thead>
               <tbody>
                 {rows.map((r) => (
                   <tr key={r.id}>
@@ -2362,6 +2520,8 @@ function LeadTable({ table, title, empty, filename }: { table: string; title: st
                     <td>{r.role || "—"}</td>
                     <td className="nowrap">{r.phone ? fmtPhone(r.phone) : "—"}</td>
                     <td className="nowrap">{r.size ? (SIZE_LABEL[r.size] || r.size) : "—"}</td>
+                    <td className="nowrap"><RetentionCell row={r} /></td>
+                    <td className="nowrap"><PurgeRowButton source={table} row={r} busy={purging} onDone={afterPurge} /></td>
                   </tr>
                 ))}
               </tbody>
@@ -2369,5 +2529,6 @@ function LeadTable({ table, title, empty, filename }: { table: string; title: st
           </div>
         )}
     </div>
+    </>
   );
 }

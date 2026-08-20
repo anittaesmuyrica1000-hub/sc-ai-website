@@ -516,3 +516,19 @@
 .excerpt-suggest .es-label .fa-wand-magic-sparkles{margin-right:5px}
 .excerpt-suggest .es-chips{display:flex;flex-wrap:wrap;gap:8px}
 .excerpt-suggest .es-chip{font-size:12.5px;font-weight:600;white-space:normal;text-align:left;line-height:1.35;padding:6px 12px;height:auto}
+
+/* 보유기간 만료 알림 배너 + 사이드바 배지 (개인정보처리방침 제2조 파기) */
+.ret-alert{display:flex;align-items:center;gap:14px;flex-wrap:wrap;background:#FDECEA;border:1px solid #F5C4BE;border-radius:12px;padding:14px 18px;margin:0 0 20px}
+.ret-alert > .fa-triangle-exclamation{color:#C0392B;font-size:18px}
+.ret-alert-txt{flex:1;min-width:220px;display:flex;flex-direction:column;gap:2px}
+.ret-alert-txt b{font-size:14.5px;color:#8E2A20}
+.ret-alert-txt span{font-size:13px;color:#9A4136}
+.btn.btn-danger{background:#C0392B;border:1px solid #C0392B;color:#fff}
+.btn.btn-danger:hover{background:#A93226;border-color:#A93226}
+.btn.btn-danger:disabled{opacity:.6;cursor:default}
+.pill-red{background:#FDECEA;color:#C0392B}
+.adm-nav button .adm-badge{margin-left:auto;min-width:20px;height:20px;padding:0 6px;border-radius:999px;background:#C0392B;color:#fff;font-size:11px;font-weight:800;display:inline-grid;place-items:center}
+.adm.collapsed .adm-nav button .adm-badge{display:none}
+/* 파기 버튼 — 보유기간 만료 전에는 비활성(기능 위치는 보이도록) */
+.icon-btn:disabled{opacity:.32;cursor:default}
+.icon-btn:disabled:hover{color:var(--slate)}
