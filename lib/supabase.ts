@@ -86,6 +86,7 @@ export type Signup = {
   how_found_detail?: string | null;
   status?: string | null;
   admin_note?: string | null;
+  completed_at?: string | null;
   utm_source?: string | null;
   utm_medium?: string | null;
   utm_campaign?: string | null;
