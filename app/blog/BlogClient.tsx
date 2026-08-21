@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { type Post } from "@/lib/supabase";
 
 const stripHtml = (s?: string | null) => String(s || "").replace(/<[^>]+>/g, " ");
@@ -87,7 +88,15 @@ export default function BlogClient({ posts, error }: { posts: Post[]; error: boo
                 {filtered.map((p) => (
                   <Link key={p.id} href={`/blog/${encodeURIComponent(p.slug || p.id)}`} className="post-card">
                     {p.cover_url ? (
-                      <img className="post-cover" src={p.cover_url} alt={p.cover_alt || p.title} loading="lazy" />
+                      <Image
+                        className="post-cover"
+                        src={p.cover_url}
+                        alt={p.cover_alt || p.title}
+                        width={1600}
+                        height={900}
+                        sizes="(max-width: 760px) 100vw, 560px"
+                        loading="lazy"
+                      />
                     ) : (
                       <div className="post-cover ph"><i className="fa-solid fa-feather"></i></div>
                     )}
