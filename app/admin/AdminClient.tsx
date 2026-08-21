@@ -321,7 +321,8 @@ function Dashboard({ onGo, expired }: { onGo: (s: Section) => void; expired: Rec
       try {
         const r = await supabase.from("signups").select("*").order("created_at", { ascending: false });
         if (!r.error && r.data) {
-          const rows = r.data as Signup[];
+          // 테스트 표시분은 리드 수에서 뺀다(일일 리포트 집계와 같은 기준).
+          const rows = (r.data as Signup[]).filter((x) => !x.is_test);
           const at = (s: Signup) => new Date(s.created_at).getTime();
           out.today = rows.filter((s) => at(s) >= dayStart).length;
           out.todayDelta = out.today - rows.filter((s) => at(s) >= dayStart - 86400000 && at(s) < dayStart).length;
@@ -1158,6 +1159,82 @@ function summarizeContent(html: string): string {
   return base.slice(0, 60).replace(/\s+\S*$/, "").trim() + "…";
 }
 
+// 업데이트 글 템플릿 — /update 글의 표준 골격(스타일 유지용).
+// 규칙: 대제목은 h2(💡 Overview / ⭐ 주요 업데이트 / 🔧 운영 경험 개선 / ⚠️ 이용 안내 / ⏳ 계속 업데이트 중인 AI Interview),
+// 기능 항목은 h3(이모지 + 번호), 섹션 사이는 hr, 항목 나열은 표(항목|내용) 또는 ul,
+// 보충 안내는 '💡 …' 문단. 표는 post-table-wrap/post-table 클래스로 넣어야 기존 표 색이 적용된다.
+const UPD_TABLE = (h1: string, h2: string, rows: [string, string][]) =>
+  '<div class="post-table-wrap"><table class="post-table"><thead><tr><th>' + h1 + "</th><th>" + h2 + "</th></tr></thead><tbody>" +
+  rows.map(([a, b]) => "<tr><td>" + a + "</td><td>" + b + "</td></tr>").join("") +
+  "</tbody></table></div>";
+
+const UPDATE_TEMPLATES: EditorTemplate[] = [
+  {
+    label: "제품 업데이트 (표준)",
+    html:
+      "<h2>💡 Overview</h2>" +
+      "<p>이번 업데이트에서 가장 비중을 둔 것이 무엇인지 한 문장으로 적어주세요.</p>" +
+      "<p>배경과 이번 배포에 담긴 변화를 2~3문장으로 요약합니다.</p>" +
+      "<hr>" +
+      "<h2>⭐ 주요 업데이트</h2>" +
+      "<h3>📱 1. 기능 이름</h3>" +
+      "<p>이 기능이 무엇을 해결하는지 적어주세요.</p>" +
+      "<ul><li>세부 내용 1</li><li>세부 내용 2</li></ul>" +
+      "<p>💡 함께 알아두어야 할 변경 사항을 적어주세요.</p>" +
+      "<h3>🛠️ 2. 기능 이름</h3>" +
+      "<p>여러 항목을 나열할 때는 표를 사용합니다.</p>" +
+      UPD_TABLE("항목", "내용", [["항목 1", "내용"], ["항목 2", "내용"]]) +
+      "<h3>🔑 3. 기능 이름 (옵션 · 별도 설정 필요)</h3>" +
+      "<p>옵션 기능은 제목에 (옵션 · 별도 설정 필요)를 붙입니다.</p>" +
+      "<p>💡 기본값은 비활성입니다. 사용을 원하시면 담당 매니저에게 문의해 주세요.</p>" +
+      "<hr>" +
+      "<h2>🔧 운영 경험 개선</h2>" +
+      "<ul><li><strong>항목 이름</strong> — 설명</li><li><strong>항목 이름</strong> — 설명</li></ul>" +
+      "<h3>🐞 버그 수정</h3>" +
+      UPD_TABLE("영역", "설명", [["영역 1", "무엇이 어떻게 수정되었는지"], ["영역 2", "무엇이 어떻게 수정되었는지"]]) +
+      "<h3>🔐 보안 및 안정성</h3>" +
+      "<ul><li><strong>항목 이름</strong> — 설명</li><li><strong>항목 이름</strong> — 설명</li></ul>" +
+      "<hr>" +
+      "<h2>⚠️ 이용 안내</h2>" +
+      UPD_TABLE("항목", "내용", [["옵션 기능", "회사별 설정이 필요한 기능을 적어주세요."], ["적용 범위", "언제부터, 어디에 적용되는지 적어주세요."]]) +
+      "<hr>" +
+      "<h2>⏳ 계속 업데이트 중인 AI Interview</h2>" +
+      "<p>이번 업데이트가 집중한 방향과, 앞으로의 개선 방향을 적어주세요.</p>",
+  },
+  {
+    label: "정책 변경 안내",
+    html:
+      "<h2>💡 Overview</h2>" +
+      "<p>무엇이, 왜 바뀌었는지 한 문단으로 적어주세요.</p>" +
+      "<hr>" +
+      "<h2>⭐ 주요 변경 내용</h2>" +
+      UPD_TABLE("항목", "내용", [["항목 1", "변경 내용"], ["항목 2", "변경 내용"]]) +
+      "<p>변경의 목적과, 이용에 미치는 영향을 덧붙여 주세요.</p>" +
+      "<hr>" +
+      "<h2>⚠️ 이용 안내</h2>" +
+      UPD_TABLE("항목", "내용", [["적용 범위", "어디에 적용되는지"], ["시행일", "YYYY년 M월 D일"], ["전문 확인", '<a href="/privacy">개인정보처리방침</a> 페이지에서 전체 조항을 확인하실 수 있습니다']]) +
+      "<hr>" +
+      "<p>앞으로도 변경이 있을 때마다 이곳에서 안내드리겠습니다.</p>",
+  },
+  {
+    label: "시스템 점검 공지",
+    html:
+      "<h2>💡 시스템 점검</h2>" +
+      "<p>보다 안정적이고 확장 가능한 서비스 제공을 위해, 아래 일정에 따라 시스템 개선 작업이 진행될 예정입니다.</p>" +
+      "<hr>" +
+      "<h2>🗓️ 작업 개요</h2>" +
+      UPD_TABLE("항목", "내용", [["작업 일정", "YYYY년 M월 D일 (요일) 00:00 - 01:30 (약 1시간 30분)"], ["작업 내용", "서비스 인프라 고도화"], ["작업 목적", "서비스 확장성 및 성능 개선"]]) +
+      "<hr>" +
+      "<h2>⚠️ 점검 중 이용이 중지되는 기능</h2>" +
+      "<p>작업이 진행되는 동안 관리자 시스템 접속, 응시자의 AI 면접 응시 및 리포트 조회 등 슈퍼코더에서 제공 중인 모든 기능의 이용이 중지됩니다.</p>" +
+      "<ul><li>점검 시작 전 응시 화면에 점검 예정을 알리는 안내가 표시됩니다.</li><li>알림 메일 발송, 리포트 생성 등은 작업 완료 시점까지 보류되며, 작업 완료 후 순차적으로 처리됩니다.</li><li>API 요청 및 웹훅 전송이 정상 동작하지 않습니다.</li></ul>" +
+      "<h3>✅ 작업 영향 최소화를 위한 권장 사항</h3>" +
+      "<ul><li>응시 마감일 설정 시 점검 일정을 고려해 주시기 바랍니다.</li><li>응시자 안내 및 면접 일정은 점검 시간을 피해 안내해 주시기 바랍니다.</li><li>(필요 시) API 요청이 유실되지 않도록 실패 응답에 대한 처리를 미리 준비해 주시기 바랍니다.</li></ul>" +
+      "<hr>" +
+      "<p>이용에 불편을 드려 죄송합니다. 더 안정적인 서비스로 보답하겠습니다.</p>",
+  },
+];
+
 function UpdatesManager() {
   const [items, setItems] = useState<Update[]>([]);
   const [form, setForm] = useState<UpdForm | null>(null);
@@ -1295,8 +1372,13 @@ function UpdatesManager() {
                 key={form.id || "new"}
                 value={renderBody(form.content)}
                 onChange={onContentChange}
+                templates={UPDATE_TEMPLATES}
                 placeholder="업데이트 내용을 입력하세요. 제목·목록·표·이미지 등을 넣을 수 있습니다."
               />
+              <p className="hint">
+                📄 템플릿에서 <strong>제품 업데이트 (표준)</strong>을 고르면 기존 업데이트 글과 같은 구조(대제목 h2 · 기능 h3 · 항목 표 · 💡 안내)로 시작합니다.
+                외부 문서에서 붙여넣은 뒤에는 문단 스타일을 <strong>제목/소제목</strong>으로 지정하고, 나열 항목은 표나 목록으로 바꿔 주세요.
+              </p>
             </div>
             <label className="check"><input type="checkbox" checked={form.published} onChange={(e) => set("published", e.target.checked)} /> 공개(게시) — 해제 시 비공개(임시저장, /update에 안 보임)</label>
             <div className="form-actions">
@@ -2083,6 +2165,47 @@ async function purgeExpired(source: LeadSource, id?: string): Promise<number> {
 
 const PURGE_FAIL = "파기에 실패했습니다. 보유기간 마이그레이션(docs/sql/add-lead-retention-260820.sql)이 적용됐는지, 관리자 권한이 있는지 확인해 주세요.";
 
+// 테스트·스팸 표시분은 보유기간과 무관하게 지운다. 서버 함수가 is_test = true 인 행만 지우므로
+// 표시하지 않은 실제 리드는 이 경로로도 삭제되지 않는다.
+async function deleteTestLeads(source: LeadSource, id?: string): Promise<number> {
+  const { data, error } = await supabase.rpc("delete_test_leads", { p_source: source, p_id: id ?? null });
+  if (error) throw error;
+  return (data as number) ?? 0;
+}
+
+async function markTest(source: LeadSource, id: string, value: boolean): Promise<void> {
+  const { error } = await supabase.from(source).update({ is_test: value }).eq("id", id);
+  if (error) throw error;
+}
+
+const TEST_FAIL = "테스트 표시·삭제에 실패했습니다. 마이그레이션(docs/sql/add-lead-test-flag-260821.sql)이 적용됐는지, 관리자 권한이 있는지 확인해 주세요.";
+
+type LeadRow = Signup | BrochureRequest;
+const isTest = (r: LeadRow) => !!r.is_test;
+
+function TestChip({ row }: { row: LeadRow }) {
+  if (!isTest(row)) return null;
+  return <span className="pill pill-gray" title="내부 테스트·스팸으로 표시됨 — 리드 집계에서 제외">테스트</span>;
+}
+
+// 테스트 표시 토글. 표시하면 집계에서 빠지고 즉시 삭제할 수 있게 된다(되돌릴 수 있는 조작).
+function TestToggleButton({ source, row, busy, onDone }: { source: LeadSource; row: LeadRow; busy: boolean; onDone: () => void | Promise<void> }) {
+  const [working, setWorking] = useState(false);
+  const on = isTest(row);
+  async function run() {
+    if (!on && !confirm("이 건을 내부 테스트·스팸으로 표시합니다. 리드 집계에서 빠지고 즉시 삭제할 수 있게 됩니다. 진행할까요?")) return;
+    setWorking(true);
+    try { await markTest(source, row.id, !on); await onDone(); }
+    catch (err) { console.error("mark test failed:", err); alert(TEST_FAIL); }
+    finally { setWorking(false); }
+  }
+  return (
+    <button className={`icon-btn${on ? " test-on" : ""}`} title={on ? "테스트 표시 해제" : "내부 테스트·스팸으로 표시 (집계 제외)"} onClick={run} disabled={busy || working}>
+      <i className={`fa-solid ${working ? "fa-spinner fa-spin" : "fa-flask"}`}></i>
+    </button>
+  );
+}
+
 function RetentionCell({ row }: { row: RetentionRow }) {
   const i = retentionInfo(row);
   const cls = i.expired ? "pill-red" : i.soon ? "pill-amber" : "pill-gray";
@@ -2107,23 +2230,36 @@ function RetentionNotice({ n, busy, onPurge }: { n: number; busy: boolean; onPur
   );
 }
 
-// 파기 버튼은 항상 보이되 보유기간이 지나기 전에는 비활성 — 기능이 어디 있는지 찾을 수 있게.
-// (서버 함수도 만료 여부를 재검사하므로 비활성 상태를 우회해도 삭제되지 않는다.)
-function PurgeRowButton({ source, row, busy, onDone }: { source: LeadSource; row: Signup | BrochureRequest; busy: boolean; onDone: () => void | Promise<void> }) {
+// 삭제 버튼은 항상 보이되 지울 수 있는 상태에서만 활성 — 기능이 어디 있는지 찾을 수 있게.
+// 경로는 두 가지: 보유기간 경과 건은 '파기', 테스트 표시 건은 '즉시 삭제'.
+// (서버 함수가 각각 만료 여부·테스트 표시를 재검사하므로 비활성 상태를 우회해도 삭제되지 않는다.)
+function PurgeRowButton({ source, row, busy, onDone }: { source: LeadSource; row: LeadRow; busy: boolean; onDone: () => void | Promise<void> }) {
   const [working, setWorking] = useState(false);
+  const test = isTest(row);
   const expired = isExpired(row);
+  const mode: "test" | "retention" | null = test ? "test" : expired ? "retention" : null;
   async function run() {
-    if (!confirm("보유기간이 지난 이 건을 영구 파기합니다. 되돌릴 수 없습니다. 진행할까요?")) return;
+    if (!mode) return;
+    const msg = mode === "test"
+      ? "테스트로 표시된 이 건을 영구 삭제합니다. 되돌릴 수 없습니다. 진행할까요?"
+      : "보유기간이 지난 이 건을 영구 파기합니다. 되돌릴 수 없습니다. 진행할까요?";
+    if (!confirm(msg)) return;
     setWorking(true);
-    try { await purgeExpired(source, row.id); await onDone(); }
-    catch (err) { console.error("purge failed:", err); alert(PURGE_FAIL); }
+    try {
+      if (mode === "test") await deleteTestLeads(source, row.id);
+      else await purgeExpired(source, row.id);
+      await onDone();
+    }
+    catch (err) { console.error("delete failed:", err); alert(mode === "test" ? TEST_FAIL : PURGE_FAIL); }
     finally { setWorking(false); }
   }
-  const tip = expired
-    ? "보유기간 경과 — 지금 파기"
-    : `${fmtDate(retentionInfo(row).expiresAt.toISOString())}(보유기간 만료) 이후 파기할 수 있습니다`;
+  const tip = test
+    ? "테스트 표시 — 지금 삭제"
+    : expired
+      ? "보유기간 경과 — 지금 파기"
+      : `${fmtDate(retentionInfo(row).expiresAt.toISOString())}(보유기간 만료) 이후 파기할 수 있습니다. 테스트 제출이면 플라스크 버튼으로 표시하면 바로 삭제됩니다`;
   return (
-    <button className="icon-btn del-out" title={tip} onClick={run} disabled={!expired || busy || working}>
+    <button className="icon-btn del-out" title={tip} onClick={run} disabled={!mode || busy || working}>
       <i className={`fa-solid ${working ? "fa-spinner fa-spin" : "fa-trash"}`}></i>
     </button>
   );
@@ -2139,7 +2275,11 @@ function useExpiredCounts(): { counts: Record<LeadSource, number>; refresh: () =
     (async () => {
       const count = async (table: LeadSource) => {
         const r = await supabase.from(table).select("*");
-        return r.error ? 0 : ((r.data as RetentionRow[]) || []).filter(isExpired).length;
+        if (r.error) return 0;
+        // 테스트 표시분은 파기 알림 대상이 아니다(별도 경로로 즉시 삭제).
+        return ((r.data as (RetentionRow & { is_test?: boolean | null })[]) || [])
+          .filter((x) => !x.is_test)
+          .filter(isExpired).length;
       };
       const [s, b] = await Promise.all([count("signups"), count("brochure_requests")]);
       if (active) setCounts({ signups: s, brochure_requests: b });
@@ -2169,6 +2309,7 @@ function SignupsManager({ onPurged }: { onPurged: () => void }) {
   const [fPeriod, setFPeriod] = useState<string>("all");
   const [fSize, setFSize] = useState("all");
   const [fRet, setFRet] = useState("all");
+  const [fTest, setFTest] = useState("all");
   const [q, setQ] = useState("");
   const [detail, setDetail] = useState<Signup | null>(null);
   const [purging, setPurging] = useState(false);
@@ -2196,7 +2337,8 @@ function SignupsManager({ onPurged }: { onPurged: () => void }) {
     setDetail((d) => (d && d.id === id ? saved : d));
   }
 
-  const expired = useMemo(() => rows.filter(isExpired), [rows]);
+  const expired = useMemo(() => rows.filter((r) => !r.is_test && isExpired(r)), [rows]);
+  const testCount = useMemo(() => rows.filter(isTest).length, [rows]);
 
   async function purgeAll() {
     if (!confirm(`보유기간 1년이 지난 도입문의 ${expired.length}건을 영구 파기합니다. 되돌릴 수 없습니다. 진행할까요?`)) return;
@@ -2211,6 +2353,8 @@ function SignupsManager({ onPurged }: { onPurged: () => void }) {
   const filtered = useMemo(() => {
     const now = Date.now();
     return rows.filter((r) => {
+      if (fTest === "real" && r.is_test) return false;
+      if (fTest === "test" && !r.is_test) return false;
       if (fStatus !== "all" && (r.status || "신규") !== fStatus) return false;
       if (fSize !== "all" && (r.size || "") !== fSize) return false;
       if (fRet !== "all") {
@@ -2229,12 +2373,12 @@ function SignupsManager({ onPurged }: { onPurged: () => void }) {
       }
       return true;
     });
-  }, [rows, fStatus, fSize, fPeriod, fRet, q]);
+  }, [rows, fStatus, fSize, fPeriod, fRet, fTest, q]);
 
   function exportCsv() {
-    const head = ["접수일시", "이름", "회사", "이메일", "직무/직책", "연락처", "채용규모", "알게된경로", "알게된경로(기타)", "상태", "상담완료일", "파기예정일", "문의내용", "내부메모", ...TRACKING_KEYS];
+    const head = ["접수일시", "이름", "회사", "이메일", "직무/직책", "연락처", "채용규모", "알게된경로", "알게된경로(기타)", "상태", "상담완료일", "파기예정일", "테스트여부", "문의내용", "내부메모", ...TRACKING_KEYS];
     const esc = (v: unknown) => `"${String(v ?? "").replace(/"/g, '""')}"`;
-    const lines = filtered.map((r) => [fmtDateTime(r.created_at), r.name, r.company, r.email, r.role ?? "", r.phone ?? "", r.size ?? "", howFoundText(r.how_found, r.how_found_detail) ?? "", r.how_found_detail ?? "", r.status ?? "신규", r.completed_at ? fmtDateTime(r.completed_at) : "", fmtDate(retentionInfo(r).expiresAt.toISOString()), r.memo ?? "", r.admin_note ?? "", ...TRACKING_KEYS.map((k) => r[k] ?? "")].map(esc).join(","));
+    const lines = filtered.map((r) => [fmtDateTime(r.created_at), r.name, r.company, r.email, r.role ?? "", r.phone ?? "", r.size ?? "", howFoundText(r.how_found, r.how_found_detail) ?? "", r.how_found_detail ?? "", r.status ?? "신규", r.completed_at ? fmtDateTime(r.completed_at) : "", fmtDate(retentionInfo(r).expiresAt.toISOString()), r.is_test ? "테스트" : "", r.memo ?? "", r.admin_note ?? "", ...TRACKING_KEYS.map((k) => r[k] ?? "")].map(esc).join(","));
     const csv = "﻿" + [head.map(esc).join(","), ...lines].join("\n");
     const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
     const url = URL.createObjectURL(blob); const a = document.createElement("a"); a.href = url; a.download = `signups-${new Date().toISOString().slice(0, 10)}.csv`; a.click(); URL.revokeObjectURL(url);
@@ -2260,6 +2404,14 @@ function SignupsManager({ onPurged }: { onPurged: () => void }) {
           </select>
         </div>
         <div className="filt">
+          <label>구분</label>
+          <select value={fTest} onChange={(e) => setFTest(e.target.value)}>
+            <option value="all">전체</option>
+            <option value="real">실제 리드</option>
+            <option value="test">테스트·스팸</option>
+          </select>
+        </div>
+        <div className="filt">
           <label>기간</label>
           <select value={fPeriod} onChange={(e) => setFPeriod(e.target.value)}>{PERIODS.map((p) => <option key={p.k} value={p.k}>{p.l}</option>)}</select>
         </div>
@@ -2278,7 +2430,13 @@ function SignupsManager({ onPurged }: { onPurged: () => void }) {
       </div>
 
       <div className="card list-card">
-        <div className="list-head"><h2>도입문의 접수 내역</h2><span className="count">{filtered.length} / {rows.length}건</span></div>
+        <div className="list-head">
+          <h2>도입문의 접수 내역</h2>
+          <span className="count">
+            {filtered.length} / {rows.length}건
+            {testCount > 0 && <> · 테스트 {testCount}건 제외 시 실제 {rows.length - testCount}건</>}
+          </span>
+        </div>
         {loading ? <div className="list-state"><i className="fa-solid fa-spinner fa-spin"></i> 불러오는 중…</div>
           : loadErr ? <div className="list-state">{loadErr}</div>
           : rows.length === 0 ? <div className="list-state">아직 접수된 도입문의가 없습니다.</div>
@@ -2294,7 +2452,7 @@ function SignupsManager({ onPurged }: { onPurged: () => void }) {
                       <tr key={r.id}>
                         <td className="nowrap"><DateTimeCell iso={r.created_at} /></td>
                         <td className="nowrap">{r.name}</td>
-                        <td>{r.company}</td>
+                        <td>{r.company} <TestChip row={r} /></td>
                         <td><a href={`mailto:${r.email}`}>{r.email}</a></td>
                         <td className="nowrap">{r.phone ? <a href={`tel:${r.phone}`} style={{color:"var(--blue)"}}>{fmtPhone(r.phone)}</a> : "—"}</td>
                         <td className="nowrap">{r.size ? (SIZE_LABEL[r.size] || r.size) : "—"}</td>
@@ -2308,6 +2466,7 @@ function SignupsManager({ onPurged }: { onPurged: () => void }) {
                         <td className="nowrap">
                           <div className="row-actions">
                             <button className="icon-btn" title="상세" onClick={() => setDetail(r)}><i className="fa-solid fa-eye"></i></button>
+                            <TestToggleButton source="signups" row={r} busy={purging} onDone={afterPurge} />
                             <PurgeRowButton source="signups" row={r} busy={purging} onDone={afterPurge} />
                           </div>
                         </td>
@@ -2321,7 +2480,7 @@ function SignupsManager({ onPurged }: { onPurged: () => void }) {
                 {filtered.map((r) => (
                   <div key={r.id} className="sig-card" onClick={() => setDetail(r)}>
                     <div className="sig-card-head">
-                      <span className="sig-card-co">{r.company}</span>
+                      <span className="sig-card-co">{r.company} <TestChip row={r} /></span>
                       <StatusBadge value={r.status} />
                     </div>
                     <div className="sig-card-sub">{r.name}{r.role ? ` · ${r.role}` : ""}{r.size ? ` · ${SIZE_LABEL[r.size] || r.size}` : ""}</div>
@@ -2334,6 +2493,7 @@ function SignupsManager({ onPurged }: { onPurged: () => void }) {
                       <select className="status-sel" value={r.status || "신규"} onChange={(e) => updateRow(r.id, { status: e.target.value })}>
                         {SIGNUP_STATUSES.map((s) => <option key={s} value={s}>{s}</option>)}
                       </select>
+                      <TestToggleButton source="signups" row={r} busy={purging} onDone={afterPurge} />
                       <PurgeRowButton source="signups" row={r} busy={purging} onDone={afterPurge} />
                     </div>
                   </div>
@@ -2469,7 +2629,8 @@ function LeadTable({ table, title, empty, filename, onPurged }: { table: LeadSou
   }, [table]);
   useEffect(() => { load(); }, [load]);
 
-  const expired = useMemo(() => rows.filter(isExpired), [rows]);
+  const expired = useMemo(() => rows.filter((r) => !r.is_test && isExpired(r)), [rows]);
+  const testCount = useMemo(() => rows.filter(isTest).length, [rows]);
 
   async function purgeAll() {
     if (!confirm(`보유기간 1년이 지난 리드 ${expired.length}건을 영구 파기합니다. 되돌릴 수 없습니다. 진행할까요?`)) return;
@@ -2482,9 +2643,9 @@ function LeadTable({ table, title, empty, filename, onPurged }: { table: LeadSou
   const afterPurge = useCallback(async () => { await load(); onPurged(); }, [load, onPurged]);
 
   function exportCsv() {
-    const head = ["접수일시", "다운로드일시", "다운로드횟수", "이름", "회사", "이메일", "직무/직책", "연락처", "채용규모", "알게된경로", "알게된경로(기타)", "파기예정일", ...TRACKING_KEYS];
+    const head = ["접수일시", "다운로드일시", "다운로드횟수", "이름", "회사", "이메일", "직무/직책", "연락처", "채용규모", "알게된경로", "알게된경로(기타)", "파기예정일", "테스트여부", ...TRACKING_KEYS];
     const esc = (v: unknown) => `"${String(v ?? "").replace(/"/g, '""')}"`;
-    const lines = rows.map((r) => [fmtDateTime(r.created_at), r.downloaded_at ? fmtDateTime(r.downloaded_at) : "", r.download_count ?? 0, r.name, r.company, r.email, r.role ?? "", r.phone ?? "", r.size ?? "", howFoundText(r.how_found, r.how_found_detail) ?? "", r.how_found_detail ?? "", fmtDate(retentionInfo(r).expiresAt.toISOString()), ...TRACKING_KEYS.map((k) => r[k] ?? "")].map(esc).join(","));
+    const lines = rows.map((r) => [fmtDateTime(r.created_at), r.downloaded_at ? fmtDateTime(r.downloaded_at) : "", r.download_count ?? 0, r.name, r.company, r.email, r.role ?? "", r.phone ?? "", r.size ?? "", howFoundText(r.how_found, r.how_found_detail) ?? "", r.how_found_detail ?? "", fmtDate(retentionInfo(r).expiresAt.toISOString()), r.is_test ? "테스트" : "", ...TRACKING_KEYS.map((k) => r[k] ?? "")].map(esc).join(","));
     const csv = "﻿" + [head.map(esc).join(","), ...lines].join("\n");
     const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
     const url = URL.createObjectURL(blob); const a = document.createElement("a"); a.href = url; a.download = `${filename}-${new Date().toISOString().slice(0, 10)}.csv`; a.click(); URL.revokeObjectURL(url);
@@ -2497,7 +2658,10 @@ function LeadTable({ table, title, empty, filename, onPurged }: { table: LeadSou
       <div className="list-head">
         <h2>{title}</h2>
         <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
-          <span className="count">{rows.length}건</span>
+          <span className="count">
+            {rows.length}건
+            {testCount > 0 && <> · 테스트 {testCount}건 제외 시 실제 {rows.length - testCount}건</>}
+          </span>
           {rows.length > 0 && <button className="btn btn-out" onClick={exportCsv}><i className="fa-solid fa-file-csv"></i> CSV</button>}
         </div>
       </div>
@@ -2514,14 +2678,19 @@ function LeadTable({ table, title, empty, filename, onPurged }: { table: LeadSou
                     <td className="nowrap"><DateTimeCell iso={r.created_at} /></td>
                     <td className="nowrap"><DateTimeCell iso={r.downloaded_at} title={r.download_count ? `${r.download_count}회 다운로드` : undefined} /></td>
                     <td className="nowrap">{r.name}</td>
-                    <td>{r.company}</td>
+                    <td>{r.company} <TestChip row={r} /></td>
                     <td className="nowrap"><UtmChip r={r} /></td>
                     <td><a href={`mailto:${r.email}`}>{r.email}</a></td>
                     <td>{r.role || "—"}</td>
                     <td className="nowrap">{r.phone ? fmtPhone(r.phone) : "—"}</td>
                     <td className="nowrap">{r.size ? (SIZE_LABEL[r.size] || r.size) : "—"}</td>
                     <td className="nowrap"><RetentionCell row={r} /></td>
-                    <td className="nowrap"><PurgeRowButton source={table} row={r} busy={purging} onDone={afterPurge} /></td>
+                    <td className="nowrap">
+                      <div className="row-actions">
+                        <TestToggleButton source={table} row={r} busy={purging} onDone={afterPurge} />
+                        <PurgeRowButton source={table} row={r} busy={purging} onDone={afterPurge} />
+                      </div>
+                    </td>
                   </tr>
                 ))}
               </tbody>

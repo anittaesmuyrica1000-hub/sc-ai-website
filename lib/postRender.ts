@@ -134,7 +134,7 @@ export function renderContent(text: string | null | undefined): string {
 export function renderBody(s: string | null | undefined): string {
   const body = String(s || "");
   // <br> 단독으로는 마크다운 내 인라인 줄바꿈이므로 HTML 판별에서 제외
-  const looksHtml = /<(p|h[1-6]|ul|ol|li|div|table|tr|td|strong|em|b|i|u|a|img|blockquote|hr|figure)\b/i.test(body);
+  const looksHtml = /<(p|h[1-6]|ul|ol|li|div|table|tr|td|strong|em|b|i|u|a|img|blockquote|hr|figure|pre|code)\b/i.test(body);
   if (!looksHtml) return renderContent(body);
   // RichEditor가 class 없이 저장한 bare <table>을 post-table-wrap으로 감싸 스타일 통일
   const normalized = body.replace(

@@ -43,6 +43,29 @@ const PASTE_ALLOWED = new Set([
   "UL", "OL", "LI", "A", "BLOCKQUOTE", "HR", "PRE", "CODE",
   "TABLE", "THEAD", "TBODY", "TR", "TH", "TD", "FIGURE", "IMG", "FIGCAPTION",
 ]);
+// 통짜 <pre> 붙여넣기 방어 — 문서 전체가 <pre> 하나면 서식 없이 텍스트만 복사해 온 것이므로
+// 코드블록이 아니라 문단(<p>)으로 푼다. 그대로 두면 본문 전체가 monospace 한 덩어리가 되고,
+// 제목·표 서식을 다시 잡을 수 없다(2026-08 업데이트 글 사례).
+function unwrapWholePre(body: HTMLElement) {
+  const kids = Array.from(body.childNodes).filter((n) => n.nodeType !== Node.TEXT_NODE || (n.textContent || "").trim());
+  if (kids.length !== 1) return;
+  const el = kids[0] as HTMLElement;
+  if (el.nodeType !== Node.ELEMENT_NODE || el.tagName !== "PRE") return;
+  const paras = el.innerHTML
+    .replace(/<br\s*\/?>/gi, "\n")
+    .split(/\n{2,}/)
+    .map((s) => s.trim())
+    .filter(Boolean);
+  if (!paras.length) return;
+  el.replaceWith(
+    ...paras.map((t) => {
+      const p = body.ownerDocument.createElement("p");
+      p.innerHTML = t.replace(/\n/g, "<br>");
+      return p;
+    })
+  );
+}
+
 function sanitizePastedHtml(html: string): string {
   const doc = new DOMParser().parseFromString(html, "text/html");
   const body = doc.body;
@@ -68,6 +91,7 @@ function sanitizePastedHtml(html: string): string {
     });
   };
   walk(body);
+  unwrapWholePre(body);
   return body.innerHTML.trim();
 }
 

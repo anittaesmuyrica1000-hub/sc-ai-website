@@ -71,6 +71,17 @@ commit/push 전에 **항상** `npm run build`로 타입·린트·빌드를 통�
 ### 새 기능 추가 시 push (MUST)
 기능 완료 시 `git add -A` → 의미 있는 commit → `git push`( = `dev`에 push). secret(`.env*`)은 절대 commit하지 않는다(.gitignore 확인).
 
+### 업데이트 글(/update) 본문 스타일 (MUST)
+제품 업데이트 글은 **아래 골격을 그대로 유지**한다. 어드민 본문 편집기의 `📄 템플릿 → 제품 업데이트 (표준)`이 이 구조를 그대로 채워 넣는다(`UPDATE_TEMPLATES` in `app/admin/AdminClient.tsx`). 본문은 WYSIWYG(HTML)로 저장되며 `renderBody`(`lib/postRender.ts`)가 그대로 출력한다.
+
+- **대제목은 `<h2>` + 이모지** — `💡 Overview` → `⭐ 주요 업데이트` → `🔧 운영 경험 개선`(하위 `🐞 버그 수정` · `🔐 보안 및 안정성`) → `⚠️ 이용 안내` → `⏳ 계속 업데이트 중인 AI Interview`. 섹션 사이는 `<hr>`.
+- **개별 기능은 `<h3>` + 이모지 + 번호** (`📱 1. 지원자 화면 개편`). 회사별 설정이 필요하면 제목 끝에 `(옵션 · 별도 설정 필요)`.
+- **항목 나열은 표** — 2열(`항목|내용`, 버그 수정은 `영역|설명`). 표는 반드시 `<div class="post-table-wrap"><table class="post-table">` 로 넣는다. 이 클래스가 있어야 헤더 연한 블루(`--soft-2`)·라운드 테두리가 적용된다(bare `<table>`은 `renderBody`가 자동으로 감싸주지만, 작성 시엔 클래스를 붙인다).
+- **짧은 나열은 `<ul>`**, 보안·운영 항목은 `<strong>제목</strong> — 설명` 형식.
+- **보충 안내는 `💡 …` 문단**(`<p>`). 인라인 색상·글자 크기(`style="..."`)는 쓰지 않는다 — 색은 전부 CSS 토큰(`app/update/update.css`)이 담당한다.
+- **외부 문서(Word·Notion·메일)에서 붙여넣지 말 것** — 통짜 `<pre>`/인라인 스타일이 딸려 와 표·제목 서식이 전부 죽는다. 붙여넣었다면 템플릿을 다시 적용하고 내용만 옮긴다. (편집기가 통짜 `<pre>` 붙여넣기는 문단으로 풀어주지만, 표·제목은 직접 다시 잡아야 한다.)
+- 저장 전 어드민 **미리보기**로 확인한다. DB는 dev·운영 공유이므로 공개(published) 전환은 **명시적 지시가 있을 때만** 한다.
+
 ## MCP 연결 (Connected Integrations)
 - **Vercel** — 배포/프로젝트 관리
 - **Supabase** — DB/백엔드
