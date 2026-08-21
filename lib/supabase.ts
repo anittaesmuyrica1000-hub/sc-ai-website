@@ -87,6 +87,8 @@ export type Signup = {
   status?: string | null;
   admin_note?: string | null;
   completed_at?: string | null;
+  // 내부 테스트·스팸 제출 표시 — 리드 집계에서 제외되고 즉시 삭제할 수 있다.
+  is_test?: boolean | null;
   utm_source?: string | null;
   utm_medium?: string | null;
   utm_campaign?: string | null;
@@ -115,6 +117,7 @@ export const UTM_LABEL: Record<string, string> = {
 export type BrochureRequest = {
   id: string;
   created_at: string;
+  is_test?: boolean | null;
   name: string;
   company: string;
   email: string;
