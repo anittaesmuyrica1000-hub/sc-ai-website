@@ -48,13 +48,15 @@ function buildGtmSnippet(raw: string): string {
   return "";
 }
 
-// Consent Mode v2: gtag는 항상 로드하되, 배너에서 '허용'을 누른 방문자만
-// analytics_storage를 granted로 둔다. 거부/미선택 상태에서는 쿠키 없는 익명 핑만
-// 전송되고 GA4가 이를 모델링해 전체 트래픽을 추정한다.
-function analyticsConsent(): "granted" | "denied" {
-  return typeof localStorage !== "undefined" && localStorage.getItem("cookie_consent") === "all"
-    ? "granted"
-    : "denied";
+// Consent Mode v2: 분석 쿠키는 개인정보처리방침 제10조에 따라 전 방문자에게 사용한다
+// (2026-08-21 개정 — 「개인정보 보호법」상 분석 쿠키의 사전 동의는 의무가 아니며,
+//  거부 수단은 브라우저 설정·GA 차단 부가기능으로 제공). 광고 관련 항목은 계속 denied.
+// 쿠키 동의 배너는 2026-08-21 제거됨 — 방문의 78%가 미클릭·거부로 집계에서 빠지고 있었다.
+const ANALYTICS_CONSENT = "granted";
+
+// 배너 시절 저장된 값이 남아 있으면 지운다(더 이상 아무 동작도 좌우하지 않는 잔여 키).
+function clearLegacyConsent() {
+  try { localStorage.removeItem("cookie_consent"); } catch { /* 접근 불가 환경은 무시 */ }
 }
 
 export default function Analytics() {
@@ -76,16 +78,10 @@ export default function Analytics() {
     }
 
     load();
+    clearLegacyConsent();
 
-    function onConsent() {
-      const gtag = (window as { gtag?: (...args: unknown[]) => void }).gtag;
-      if (gtag) gtag("consent", "update", { analytics_storage: analyticsConsent() });
-      // gtag가 아직 없으면(스니펫 로드 전) 주입 시점에 현재 동의 상태가 반영된다.
-    }
-    window.addEventListener("cookie_consent_updated", onConsent);
     return () => {
       active = false;
-      window.removeEventListener("cookie_consent_updated", onConsent);
     };
   }, []);
 
@@ -99,7 +95,7 @@ export default function Analytics() {
     consent.textContent =
       "window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}" +
       "gtag('consent','default',{ad_storage:'denied',ad_user_data:'denied'," +
-      `ad_personalization:'denied',analytics_storage:'${analyticsConsent()}'});`;
+      `ad_personalization:'denied',analytics_storage:'${ANALYTICS_CONSENT}'});`;
     document.head.appendChild(consent);
     added.push(consent);
     const tmp = document.createElement("div");
