@@ -141,11 +141,14 @@ export async function POST(req: Request) {
       </p>
     </div>`;
 
+  // 신청자에게 소개서 메일 발송. 실패해도 여기서 끊지 않는다 —
+  // 관리자 알림(5)까지 보낸 뒤에 에러를 응답한다(아래). 실패한 리드일수록 알림이 더 필요하다.
+  let mailError: string | null = null;
   try {
     await sendMail({ to: email, subject, html });
   } catch (err) {
     console.error("send-brochure: 메일 발송 실패", err);
-    return bad("이메일 발송에 실패했습니다. 잠시 후 다시 시도해 주세요.", 500);
+    mailError = err instanceof Error ? err.message : String(err);
   }
 
   // 5) 관리자에게 소개서 신청 알림
@@ -155,16 +158,28 @@ export async function POST(req: Request) {
   const NOTIFY_TO = process.env.SALES_NOTIFY_TO || process.env.GMAIL_FROM;
   if (NOTIFY_TO) {
     const esc = (s: string) => String(s || "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    // 신청자 메일이 실패했으면 제목에 표시하고, 수동 대응용으로 사유와 다운로드 링크를 함께 넣는다.
+    const failNotice = mailError
+      ? `<p style="margin:0 0 14px;padding:12px 14px;border-radius:8px;background:#fdecec;color:#9b1c1c;font-weight:700">
+          ⚠️ 소개서 메일이 신청자에게 발송되지 못했습니다 — 신청자는 자료를 받지 못한 상태입니다.<br/>
+          <span style="font-weight:400">사유: ${esc(mailError)}</span><br/>
+          <span style="font-weight:400">수동 전달용 링크: <a href="${esc(link)}">${esc(link)}</a></span>
+        </p>`
+      : "";
     await sendMail({
       to: NOTIFY_TO,
       replyTo: email,
-      subject: `[소개서 신청] ${company} · ${name}`,
+      subject: `${mailError ? "[소개서 신청·발송실패]" : "[소개서 신청]"} ${company} · ${name}`,
       html: `<div style="font-family:Pretendard,Arial,sans-serif;font-size:14px;color:#1f2a44;word-break:keep-all">
         <h2 style="font-size:16px">서비스소개서 신청</h2>
+        ${failNotice}
         <p>회사: <b>${esc(company)}</b><br/>이름: ${esc(name)}<br/>이메일: ${esc(email)}<br/>연락처: ${esc(phone || "-")}<br/>직책: ${esc(role || "-")}<br/>규모: ${esc(size)}<br/>알게 된 경로: ${esc(howFoundText(howFound, howFoundDetail) || "-")}${Object.keys(utm).length ? `<br/>유입: ${esc(TRACKING_KEYS.filter((k) => utm[k]).map((k) => `${k}=${utm[k]}`).join(", "))}` : ""}</p>
       </div>`,
     }).catch((e) => console.error("send-brochure: 관리자 알림 실패(무시)", e));
   }
+
+  // 신청자 메일이 실패했다면 알림을 보낸 뒤에 에러로 응답한다(폼에 재시도 안내가 뜬다).
+  if (mailError) return bad("이메일 발송에 실패했습니다. 잠시 후 다시 시도해 주세요.", 500);
 
   return NextResponse.json({ ok: true });
 }
