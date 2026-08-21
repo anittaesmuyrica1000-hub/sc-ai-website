@@ -300,27 +300,32 @@ export async function getDailyReport(): Promise<DailyReport> {
     (vs7 !== null ? ` (7일 평균 대비 ${arrow(vs7)}, 평균 ${avg7.sessions}건/일 → ${trafficLevel})` : "") + "."
   );
 
-  // 1-a. 서버측 전 페이지 조회(쿠키 동의 무관) — 실제 방문 규모. GA4 조회수와 배수 비교.
+  // 1-a. 서버측 전 페이지 조회(쿠키 동의 무관) — 실제 방문 규모. GA4 포착률의 분모가 된다.
   if (serverViews.available && serverViews.total > 0) {
-    const gap = pageViews > 0 ? (serverViews.total / pageViews).toFixed(1) : null;
     const dPrev = serverViews.prevTotal ? pct(serverViews.total, serverViews.prevTotal) : null;
     insights.push(
       `서버측 전체 조회 ${serverViews.total.toLocaleString()}회 (경로 ${serverViews.paths}개, 쿠키 동의 무관 집계` +
-      (dPrev !== null ? `, 전일 대비 ${arrow(dPrev)}` : "") + ")" +
-      (gap ? ` — GA4 조회수 ${pageViews.toLocaleString()}회의 ${gap}배.` : ".")
+      (dPrev !== null ? `, 전일 대비 ${arrow(dPrev)}` : "") + ")."
     );
 
-    // 배너 반응 분해 — 미클릭과 거부는 GA4에서 똑같이 사라지므로 여기서만 구분된다.
+    // GA4 포착률 — 쿠키 배너 제거(2026-08-21) 효과를 매일 검증하는 지표.
+    // 서버측 집계는 동의와 무관한 실제 방문 규모라, 둘의 비가 곧 GA4가 놓치는 몫이다.
+    // 광고 차단 확장·스크립트 차단으로 100%에는 이르지 못하므로 70% 이상이면 정상으로 본다.
+    const rate = Math.round((pageViews / serverViews.total) * 100);
+    const verdict = rate >= 70 ? "정상" : rate >= 40 ? "낮음 — 태그 동작 점검 권장" : "⚠️ 대부분 누락 — 즉시 점검 필요";
+    insights.push(
+      `GA4 포착률: 서버측 ${serverViews.total.toLocaleString()}회 대비 ` +
+      `GA4 ${pageViews.toLocaleString()}회 (${rate}%) — ${verdict}.`
+    );
+
+    // 배너 제거 전 기록이 남아 있는 동안에만 동의 분해를 함께 보여준다(전환 구간 확인용).
     const c = serverViews.consent;
-    const named = c.none + c.denied + c.granted;
-    if (serverViews.hasConsentDim && named > 0) {
-      const share = (v: number) => `${Math.round((v / named) * 100)}%`;
+    const legacy = c.none + c.denied;
+    if (serverViews.hasConsentDim && legacy > 0) {
       insights.push(
-        `쿠키 배너 반응: 미클릭 ${c.none.toLocaleString()}회(${share(c.none)}) · ` +
-        `거부 ${c.denied.toLocaleString()}회(${share(c.denied)}) · ` +
-        `허용 ${c.granted.toLocaleString()}회(${share(c.granted)})` +
-        (c.unknown > 0 ? ` · 미분류 ${c.unknown.toLocaleString()}회` : "") +
-        ` — 배너 클릭률 ${share(c.denied + c.granted)}.`
+        `배너 제거 전 기록 포함: 미클릭 ${c.none.toLocaleString()}회 · 거부 ${c.denied.toLocaleString()}회 · ` +
+        `허용 ${c.granted.toLocaleString()}회` +
+        (c.unknown > 0 ? ` · 미분류 ${c.unknown.toLocaleString()}회` : "") + "."
       );
     }
   }

@@ -27,7 +27,7 @@ Supercoder AI 웹사이트 — **AIVIEW** 제품 랜딩 + 블로그/도입문의
 - **공유 컴포넌트(`components/`):** `SiteHeader`(섹션 인지형 GNB·메뉴), `SiteFooter`, `BrochureModal`(서비스소개서 리드 — `#navBrochure` 클릭 위임), `Chatbot`(FAQ 챗봇), `HeroParticles`(canvas 입자 모션, 히어로·CTA 공용). 모두 `layout.tsx`에 마운트되거나 page에서 사용. `"use client"`.
 - **섹션 = 랜딩 구조 (정의된 이름·번호·id).** `app/page.tsx`는 번호 매겨진 섹션 스택이다. 정식 목록: 01 DECLARATION(`#hero`), 02 CLIENTS(`#clients`), 03 VALUE(`#value`), 04 FLOOD(`#flood`), 05 ROLE REVERSAL(`#role`, 깔때기 SVG), 06 HOW IT WORKS(`#how`), 07 PROOF(`#proof`), 08 VOICES(`#voices`), 08.5 FAQ(`#faq`), 09 FINAL CTA(`#final`). GNB 메뉴 앵커는 `#value`·`#how`·`#proof`·`#voices`.
 - **섹션 인지형 GNB:** `[data-nav="dark"]` 섹션(히어로·FINAL) 위에선 헤더 반전(흰 로고). 색 전환 클래스(`header.nav-invert`/`.nav-solid`)는 `globals.css`(SSOT), 감지 로직은 `SiteHeader.tsx`의 `syncHeader`.
-- **외부 의존성은 CDN(`layout.tsx`의 `<head>`):** Pretendard 폰트(jsdelivr), Font Awesome 6.5.2(cdnjs). 아이콘은 `<i className="fa-...">`. Supabase는 `@supabase/supabase-js`(npm).
+- **폰트·아이콘은 자체 호스팅 서브셋(2026-08-10 성능 최적화):** `layout.tsx`가 `pretendard.css`(woff2 청크만 jsdelivr)와 `fontawesome.css`를 import한다. 아이콘은 `<i className="fa-...">`로 쓰되, **`app/fontawesome.css`에 정의된 아이콘만 쓸 수 있다** — `public/fonts/`의 woff2도 pyftsubset으로 잘라낸 상태라 목록에 없는 이름을 쓰면 버튼은 동작해도 글리프가 렌더되지 않는다(2026-08-21 `fa-flask` 사례). 새 아이콘이 꼭 필요하면 CSS 룰 추가 + 폰트 재서브셋이 함께 필요하다. Supabase는 `@supabase/supabase-js`(npm).
 - **정적 에셋은 `public/`** (로고 SVG, 리포트 PNG/webp, 파비콘, `brochure-aiview.pdf`, `logos/`, `charts/`, `robots.txt`, `sitemap.xml`). 절대경로(`/supercoder-nav.svg`)로 참조.
 - **구 `.html` URL은 `next.config.mjs` redirects로 클린 URL에 308 매핑**(`/apply.html`→`/apply` 등). 기존 인바운드 링크·SEO 보존.
 
