@@ -101,7 +101,7 @@
   .upd-content .post-figure{margin:8px 0 28px}
   .upd-content .post-figure img,.upd-content img{width:100%;border-radius:var(--r);display:block}
   .upd-content .post-figure figcaption{margin-top:10px;font-size:13.5px;color:var(--slate-2);text-align:center}
-  .upd-content .post-code{background:#FAFBFC;border:1px solid #EEF1F5;border-radius:12px;padding:18px 20px;margin:0 0 22px;overflow-x:auto}
+  .upd-content .post-code,.upd-content pre{background:#FAFBFC;border:1px solid #EEF1F5;border-radius:12px;padding:18px 20px;margin:0 0 22px;overflow-x:auto;white-space:pre-wrap;word-break:break-word;font-family:inherit;font-size:15px;line-height:1.75;color:#3D4557}
   .upd-content .post-code code{display:block;font-family:'SFMono-Regular',Consolas,'D2Coding','Noto Sans KR',monospace;font-size:14px;line-height:1.75;color:#3D4557;white-space:pre-wrap;word-break:break-word}
   .upd-content .post-table-wrap{margin:8px 0 28px;overflow-x:auto;border:1px solid var(--line);border-radius:12px}
   .upd-content .post-table{width:100%;border-collapse:collapse;font-size:15px;line-height:1.55}
