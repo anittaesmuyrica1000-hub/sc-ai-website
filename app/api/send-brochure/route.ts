@@ -148,11 +148,14 @@ export async function POST(req: Request) {
     return bad("이메일 발송에 실패했습니다. 잠시 후 다시 시도해 주세요.", 500);
   }
 
-  // 5) 관리자에게 소개서 신청 알림(베스트 에포트)
+  // 5) 관리자에게 소개서 신청 알림
+  // 반드시 await — Vercel 서버리스는 응답을 반환하는 순간 함수를 정지시킬 수 있어서,
+  // fire-and-forget으로 두면 발송이 끝나기 전에 잘려 알림이 유실된다(2026-07~08 리드 19건 중 4건만 도착).
+  // 발송 실패는 삼켜서 신청자 응답에는 영향을 주지 않는다(리드 저장·소개서 메일은 이미 완료된 상태).
   const NOTIFY_TO = process.env.SALES_NOTIFY_TO || process.env.GMAIL_FROM;
   if (NOTIFY_TO) {
     const esc = (s: string) => String(s || "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-    sendMail({
+    await sendMail({
       to: NOTIFY_TO,
       replyTo: email,
       subject: `[소개서 신청] ${company} · ${name}`,
