@@ -2189,6 +2189,7 @@ function TestChip({ row }: { row: LeadRow }) {
 }
 
 // 테스트 표시 토글. 표시하면 집계에서 빠지고 즉시 삭제할 수 있게 된다(되돌릴 수 있는 조작).
+// 아이콘은 app/fontawesome.css 서브셋에 있는 것만 쓴다 — 폰트(woff2)도 잘라낸 상태라 목록에 없는 이름은 렌더되지 않는다.
 function TestToggleButton({ source, row, busy, onDone }: { source: LeadSource; row: LeadRow; busy: boolean; onDone: () => void | Promise<void> }) {
   const [working, setWorking] = useState(false);
   const on = isTest(row);
@@ -2201,7 +2202,7 @@ function TestToggleButton({ source, row, busy, onDone }: { source: LeadSource; r
   }
   return (
     <button className={`icon-btn${on ? " test-on" : ""}`} title={on ? "테스트 표시 해제" : "내부 테스트·스팸으로 표시 (집계 제외)"} onClick={run} disabled={busy || working}>
-      <i className={`fa-solid ${working ? "fa-spinner fa-spin" : "fa-flask"}`}></i>
+      <i className={`fa-solid ${working ? "fa-spinner fa-spin" : "fa-robot"}`}></i>
     </button>
   );
 }

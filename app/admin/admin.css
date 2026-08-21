@@ -532,3 +532,7 @@
 /* 파기 버튼 — 보유기간 만료 전에는 비활성(기능 위치는 보이도록) */
 .icon-btn:disabled{opacity:.32;cursor:default}
 .icon-btn:disabled:hover{color:var(--slate)}
+
+/* 테스트·스팸 표시 토글 — 표시된 상태를 색으로 구분 */
+.icon-btn.test-on{color:var(--red)}
+.icon-btn.test-on:hover{color:var(--red)}
