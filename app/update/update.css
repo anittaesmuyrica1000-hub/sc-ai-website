@@ -12,11 +12,11 @@
 
   /* 좌측: 스크롤 시 따라오도록 sticky (별도 스크롤바 없음) */
   .upd-nav{position:sticky;top:88px}
-  .upd-eyebrow{display:inline-flex;align-items:center;gap:7px;font-size:12px;font-weight:800;letter-spacing:.03em;color:var(--blue-d);background:var(--soft-2);padding:6px 12px;border-radius:999px}
+  .upd-eyebrow{display:inline-flex;align-items:center;gap:7px;font-size:12px;font-weight:700;letter-spacing:.03em;color:var(--blue-d);background:var(--soft-2);padding:6px 12px;border-radius:999px}
   .upd-sections{margin-top:18px}
   /* 토글(아코디언) 섹션 — 네이티브 <details> */
   .upd-sec{border-bottom:1px solid var(--line)}
-  .upd-sec-head{display:flex;align-items:center;gap:9px;padding:13px 6px;cursor:pointer;font-size:14.5px;font-weight:800;color:var(--ink);list-style:none;user-select:none}
+  .upd-sec-head{display:flex;align-items:center;gap:9px;padding:13px 6px;cursor:pointer;font-size:14.5px;font-weight:700;color:var(--ink);list-style:none;user-select:none}
   .upd-sec-head::-webkit-details-marker{display:none}
   .upd-sec-head:hover{color:var(--blue-d)}
   .upd-sec-arrow{display:inline-flex;justify-content:center;width:14px;font-size:11px;color:var(--slate-2);transition:transform .18s}
@@ -40,12 +40,12 @@
   .upd-back:hover{color:var(--blue-d)}
   .upd-foot{margin-top:44px;padding-top:30px;border-top:1px solid var(--line)}
   .upd-article-head{padding-bottom:26px;border-bottom:1px solid var(--line)}
-  .upd-article-head h1{font-size:clamp(26px,3.4vw,38px);font-weight:800;letter-spacing:-.03em;line-height:1.24;margin:14px 0 0;color:var(--ink)}
+  .upd-article-head h1{font-size:clamp(26px,3.4vw,38px);font-weight:700;letter-spacing:-.02em;line-height:1.24;margin:14px 0 0;color:var(--ink)}
   .upd-date{font-size:14px;font-weight:600;color:var(--slate-2)}
   .upd-article-head .upd-date{display:block;margin-top:16px}
 
   /* 카테고리 배지 */
-  .upd-badge{display:inline-block;font-size:12px;font-weight:800;letter-spacing:.02em;padding:5px 11px;border-radius:999px}
+  .upd-badge{display:inline-block;font-size:12px;font-weight:700;letter-spacing:.02em;padding:5px 11px;border-radius:999px}
   .upd-badge.b-blue{color:var(--blue-d);background:var(--soft-2)}
   .upd-badge.b-green{color:#0f7a45;background:#e6f6ec}
   .upd-badge.b-amber{color:#9a6400;background:#fef2d9}
@@ -57,7 +57,7 @@
   /* ── 대문(index): 블로그식 카드 리스트 — 일반 페이지(헤더·푸터 정상, 모든 기기 열람) ── */
   .upd-index{max-width:820px;margin:0 auto;padding:100px 24px 90px}
   .upd-index-head{text-align:center;padding-bottom:34px;border-bottom:1px solid var(--line);margin-bottom:6px}
-  .upd-index-head h1{font-size:clamp(30px,4.6vw,44px);font-weight:800;letter-spacing:-.035em;line-height:1.18;margin:18px 0 0;color:var(--ink)}
+  .upd-index-head h1{font-size:clamp(30px,4.6vw,44px);font-weight:700;letter-spacing:-.02em;line-height:1.18;margin:18px 0 0;color:var(--ink)}
   .upd-index-head p{margin:14px 0 0;font-size:16px;color:var(--slate);line-height:1.6}
   /* 찾기(검색) */
   .upd-search{position:relative;max-width:480px;margin:24px auto 0}
@@ -76,7 +76,7 @@
   .upd-index-card:hover{background:var(--soft)}
   .upd-index-date{font-size:14px;font-weight:700;color:var(--slate-2);padding-top:3px}
   .upd-index-body{min-width:0}
-  .upd-index-body h2{font-size:20px;font-weight:800;letter-spacing:-.02em;line-height:1.35;color:var(--ink);margin:11px 0 0}
+  .upd-index-body h2{font-size:20px;font-weight:700;letter-spacing:-.02em;line-height:1.35;color:var(--ink);margin:11px 0 0}
   .upd-index-excerpt{margin:8px 0 0;font-size:15px;color:var(--slate);line-height:1.55}
   .upd-index-more{display:inline-flex;align-items:center;gap:6px;margin-top:12px;font-size:13.5px;font-weight:700;color:var(--blue-d)}
   .upd-index-card:hover .upd-index-more i{transform:translateX(3px)}
@@ -106,7 +106,7 @@
   .upd-content .post-table-wrap{margin:8px 0 28px;overflow-x:auto;border:1px solid var(--line);border-radius:12px}
   .upd-content .post-table{width:100%;border-collapse:collapse;font-size:15px;line-height:1.55}
   .upd-content .post-table th,.upd-content .post-table td{padding:13px 16px;text-align:left;border-bottom:1px solid var(--line)}
-  .upd-content .post-table thead th{background:var(--soft-2);color:var(--ink);font-weight:800;font-size:13.5px;white-space:nowrap}
+  .upd-content .post-table thead th{background:var(--soft-2);color:var(--ink);font-weight:700;font-size:13.5px;white-space:nowrap}
   .upd-content .post-table tbody tr:last-child td{border-bottom:none}
 
   /* 반응형 — 좁은 폭(모바일)에선 좌측 목록을 숨기고 가운데 본문만. 앱 셸 해제(일반 흐름·푸터 복원). */

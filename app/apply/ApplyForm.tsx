@@ -155,19 +155,19 @@ export default function ApplyForm() {
         <div className="field-row">
           <div className={`field${invalid.name ? " invalid" : ""}`}>
             <label htmlFor="f-name">이름 <span className="req">*</span></label>
-            <input type="text" id="f-name" placeholder="홍길동" value={fields.name} onChange={(e) => set("name", e.target.value)} />
+            <input type="text" id="f-name" placeholder="성함을 입력해 주세요" value={fields.name} onChange={(e) => set("name", e.target.value)} />
             <div className="err">이름을 입력해 주세요.</div>
           </div>
           <div className={`field${invalid.company ? " invalid" : ""}`}>
             <label htmlFor="f-company">회사명 <span className="req">*</span></label>
-            <input type="text" id="f-company" placeholder="회사명" value={fields.company} onChange={(e) => set("company", e.target.value)} />
+            <input type="text" id="f-company" placeholder="회사명을 입력해 주세요" value={fields.company} onChange={(e) => set("company", e.target.value)} />
             <div className="err">회사를 입력해 주세요.</div>
           </div>
         </div>
 
         <div className={`field${invalid.email ? " invalid" : ""}`}>
           <label htmlFor="f-email">회사 이메일 <span className="req">*</span></label>
-          <input type="email" id="f-email" placeholder="you@company.com" value={fields.email} onChange={(e) => set("email", e.target.value)} onBlur={checkEmail} />
+          <input type="email" id="f-email" placeholder="회사 이메일을 입력해 주세요" value={fields.email} onChange={(e) => set("email", e.target.value)} onBlur={checkEmail} />
           <div className="hint">naver, gmail 등 개인 메일은 사용할 수 없습니다.</div>
           <div className="err">{emailMsg}</div>
         </div>
@@ -175,11 +175,11 @@ export default function ApplyForm() {
         <div className="field-row">
           <div className="field">
             <label htmlFor="f-role">직무/직책</label>
-            <input type="text" id="f-role" placeholder="예: 인사팀장" value={fields.role} onChange={(e) => set("role", e.target.value)} />
+            <input type="text" id="f-role" placeholder="직무·직책 입력" value={fields.role} onChange={(e) => set("role", e.target.value)} />
           </div>
           <div className={`field${invalid.phone ? " invalid" : ""}`}>
             <label htmlFor="f-phone">연락처 <span className="req">*</span></label>
-            <input type="tel" id="f-phone" placeholder="010-0000-0000" value={fields.phone} onChange={(e) => set("phone", e.target.value)} />
+            <input type="tel" id="f-phone" placeholder="휴대전화번호 입력" value={fields.phone} onChange={(e) => set("phone", e.target.value)} />
             <div className="err">연락 가능한 번호를 입력해 주세요.</div>
           </div>
         </div>

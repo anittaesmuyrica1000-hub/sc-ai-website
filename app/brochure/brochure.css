@@ -2,14 +2,14 @@
    상단 제목/서브 + 좌(소개서를 감싼 박스 안 미리보기 캐러셀) / 우(신청 폼).
    좌우 등높이(align-items:stretch)로 왼쪽 박스가 오른쪽 폼 높이에 맞춰짐. */
 .brochure {
-  background: linear-gradient(180deg, #EAF1FE 0%, #F4F8FF 48%, #fff 100%);
-  padding: 56px 0 80px;
+  background: #fff;
+  padding: 84px 0 96px;
   min-height: calc(100vh - 64px);
 }
 
 .brochure-top { text-align: center; max-width: 760px; margin: 0 auto 40px; }
-.brochure-top h1 { font-size: clamp(26px, 3.4vw, 38px); font-weight: 800; letter-spacing: -.02em; color: var(--ink); line-height: 1.25; }
-.brochure-sub { font-size: 16px; color: var(--slate); line-height: 1.7; margin-top: 16px; }
+.brochure-top h1 { font-size: clamp(30px, 3.7vw, 46px); font-weight: 700; letter-spacing: -.02em; color: var(--ink); line-height: 1.32; }
+.brochure-sub { font-size: 18px; font-weight: 400; color: var(--slate); line-height: 1.65; letter-spacing: -.01em; margin-top: 18px; }
 
 .brochure-grid {
   display: grid;

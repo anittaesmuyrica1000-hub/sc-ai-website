@@ -138,29 +138,29 @@ export default function BrochureForm() {
         <div className="b-row">
           <div className={`b-field${invalid.name ? " invalid" : ""}`}>
             <label htmlFor="bro-name">이름 <span className="req">*</span></label>
-            <input type="text" id="bro-name" placeholder="홍길동" value={fields.name} onChange={(e) => set("name", e.target.value)} />
+            <input type="text" id="bro-name" placeholder="성함을 입력해 주세요" value={fields.name} onChange={(e) => set("name", e.target.value)} />
             <div className="b-err">이름을 입력해 주세요.</div>
           </div>
           <div className={`b-field${invalid.company ? " invalid" : ""}`}>
             <label htmlFor="bro-company">회사명 <span className="req">*</span></label>
-            <input type="text" id="bro-company" placeholder="회사명" value={fields.company} onChange={(e) => set("company", e.target.value)} />
+            <input type="text" id="bro-company" placeholder="회사명을 입력해 주세요" value={fields.company} onChange={(e) => set("company", e.target.value)} />
             <div className="b-err">회사를 입력해 주세요.</div>
           </div>
         </div>
         <div className={`b-field${invalid.email ? " invalid" : ""}`}>
           <label htmlFor="bro-email">회사 이메일 <span className="req">*</span></label>
-          <input type="email" id="bro-email" placeholder="you@company.com" value={fields.email} onChange={(e) => set("email", e.target.value)} onBlur={checkEmail} />
+          <input type="email" id="bro-email" placeholder="회사 이메일을 입력해 주세요" value={fields.email} onChange={(e) => set("email", e.target.value)} onBlur={checkEmail} />
           <div className="b-hint">naver, gmail 등 개인 메일은 사용할 수 없습니다.</div>
           <div className="b-err">{emailMsg}</div>
         </div>
         <div className="b-row">
           <div className="b-field">
             <label htmlFor="bro-role">직무/직책</label>
-            <input type="text" id="bro-role" placeholder="예: 인사팀장" value={fields.role} onChange={(e) => set("role", e.target.value)} />
+            <input type="text" id="bro-role" placeholder="직무·직책 입력" value={fields.role} onChange={(e) => set("role", e.target.value)} />
           </div>
           <div className={`b-field${invalid.phone ? " invalid" : ""}`}>
             <label htmlFor="bro-phone">연락처 <span className="req">*</span></label>
-            <input type="tel" id="bro-phone" placeholder="010-0000-0000" value={fields.phone} onChange={(e) => set("phone", e.target.value)} />
+            <input type="tel" id="bro-phone" placeholder="휴대전화번호 입력" value={fields.phone} onChange={(e) => set("phone", e.target.value)} />
             <div className="b-err">연락 가능한 번호를 입력해 주세요.</div>
           </div>
         </div>
