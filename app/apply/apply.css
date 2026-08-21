@@ -1,25 +1,25 @@
   /* 이 페이지 고유(신청 폼) 스타일만 둔다. 공유 토큰·버튼·GNB·푸터는 theme.css 참고. */
 
   /* APPLY */
-  .apply{background:linear-gradient(180deg,#EAF1FE 0%,#F4F8FF 48%,#fff 100%);padding:60px 0 92px;min-height:calc(100vh - 64px)}
+  .apply{background:#fff;padding:84px 0 96px;min-height:calc(100vh - 64px)}
   /* 2단: 좌-인트로(메시지·가치) / 우-폼 카드. 좌측을 폼 높이만큼 채우고 세로 중앙정렬. 모바일은 세로 스택 */
-  .apply-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(32px,5vw,72px);max-width:1080px;margin:0 auto;align-items:center}
+  .apply-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(32px,5vw,72px);max-width:1080px;margin:0 auto;align-items:start}
   .apply-formcol{display:flex;flex-direction:column}
 
   /* 좌측 인트로 — 좌측정렬, 그리드로 수직 가운데 */
   .apply-intro{text-align:left}
-  .apply-intro h1{font-size:clamp(25px,2.7vw,34px);font-weight:800;line-height:1.34;letter-spacing:-.02em;color:var(--ink)}
-  .apply-intro p{font-size:16px;color:var(--slate);line-height:1.72;margin-top:20px}
+  .apply-intro h1{font-size:clamp(31px,3.7vw,48px);font-weight:600;line-height:1.32;letter-spacing:-.02em;color:var(--ink)}
+  .apply-intro p{font-size:18px;font-weight:400;color:var(--slate);line-height:1.6;letter-spacing:-.01em;margin-top:22px}
   /* 체크포인트 6개 — 2단 그리드 */
-  .apply-points{list-style:none;margin-top:30px;display:grid;grid-template-columns:1fr 1fr;gap:15px 24px}
-  .apply-points li{display:flex;align-items:center;gap:10px;font-size:15px;font-weight:600;color:var(--ink)}
+  .apply-points{list-style:none;margin-top:38px;display:grid;grid-template-columns:1fr 1fr;gap:18px 28px}
+  .apply-points li{display:flex;align-items:center;gap:10px;font-size:15.5px;font-weight:400;color:var(--slate);letter-spacing:-.01em}
   .apply-points li>i{color:var(--blue);font-size:18px;flex-shrink:0}
   /* 제목 반응형(모바일 짧게)·로고 위치(모바일 폼 아래) 토글 — 데스크톱 기본값 */
   .apply-h1-m{display:none}
   .apply-partners--mobile{display:none}
 
   /* 파트너사 로고 — 인트로 하단. 한 줄 무한 루핑. 투명 PNG(*-t.png) 사용 → 배경 무관하게 깔끔 */
-  .apply-partners{margin-top:40px;padding-top:30px;border-top:1px solid var(--line)}
+  .apply-partners{margin-top:52px;padding-top:36px;border-top:1px solid var(--line)}
   .apply-partners-label{font-size:13px;font-weight:700;color:var(--slate);letter-spacing:.01em;margin-bottom:18px}
   .apply-marquee{position:relative;overflow:hidden;width:100%;
     -webkit-mask-image:linear-gradient(90deg,transparent 0,#000 8%,#000 92%,transparent 100%);
@@ -31,7 +31,7 @@
   @media(max-width:860px){
     .apply-grid{grid-template-columns:minmax(0,1fr);max-width:540px;gap:30px}
     .apply-intro{text-align:center;padding-top:0}
-    .apply-intro h1{font-size:22px;line-height:1.4;word-break:keep-all}
+    .apply-intro h1{font-size:29px;line-height:1.38;word-break:keep-all}
     .apply-intro h1 br{display:none}
     .apply-intro p{margin-top:14px}
     .apply-points{width:fit-content;margin-left:auto;margin-right:auto}
@@ -42,25 +42,25 @@
     .apply-partners--desktop{display:none}
     .apply-partners--mobile{display:block;text-align:center;margin-top:30px;padding-top:28px}
   }
-  @media(max-width:420px){.apply-intro h1{font-size:20px}}
+  @media(max-width:420px){.apply-intro h1{font-size:25px}}
 
-  .apply-card{background:#fff;border:1px solid var(--line);border-radius:20px;box-shadow:var(--shadow);padding:34px}
-  .apply-card .ct{font-size:22px;font-weight:800;letter-spacing:-.02em;color:var(--ink);margin-bottom:4px}
-  .apply-card .cs{font-size:14px;color:var(--slate);margin-bottom:24px}
-  .field{margin-bottom:16px}
-  .field label{display:block;font-size:13px;font-weight:700;color:var(--ink);margin-bottom:7px}
+  .apply-card{background:#FBFCFD;border:1px solid var(--line);border-radius:20px;box-shadow:0 1px 2px rgba(16,24,40,.04);padding:40px}
+  .apply-card .ct{font-size:24px;font-weight:700;line-height:1.4;letter-spacing:-.02em;color:var(--ink);margin-bottom:8px}
+  .apply-card .cs{font-size:15px;font-weight:400;color:var(--slate);line-height:1.6;margin-bottom:30px}
+  .field{margin-bottom:20px}
+  .field label{display:block;font-size:13.5px;font-weight:500;color:var(--ink);margin-bottom:9px}
   .field label .req{color:var(--blue);margin-left:2px}
-  .field input,.field select,.field textarea{width:100%;padding:13px 14px;border:1px solid var(--line);border-radius:11px;font-size:15px;font-family:inherit;color:var(--ink);background:#fff;transition:.15s}
+  .field input,.field select,.field textarea{width:100%;padding:15px 16px;border:1px solid var(--line);border-radius:11px;font-size:15px;font-family:inherit;color:var(--ink);background:#fff;transition:.15s}
   .field input::placeholder,.field textarea::placeholder{color:var(--slate-2)}
   .field input:focus,.field select:focus,.field textarea:focus{outline:none;border-color:var(--blue-2);box-shadow:0 0 0 3px rgba(91,141,247,.16)}
   .field textarea{resize:vertical;min-height:86px}
-  .field-row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  .field-row{display:grid;grid-template-columns:1fr 1fr;gap:16px}
   .field.invalid input,.field.invalid select{border-color:var(--red);box-shadow:0 0 0 3px rgba(224,88,74,.13)}
   .field .hint{color:var(--slate-2);font-size:12.5px;line-height:1.5;margin-top:6px}
   .field.invalid .hint{display:none}
   .field .err{display:none;color:var(--red);font-size:12.5px;margin-top:6px}
   .field.invalid .err{display:block}
-  .agree{display:flex;align-items:center;justify-content:space-between;gap:12px;font-size:13.5px;color:var(--slate);margin:8px 0 22px;line-height:1.5}
+  .agree{display:flex;align-items:center;justify-content:space-between;gap:12px;font-size:13.5px;color:var(--slate);margin:14px 0 26px;line-height:1.5}
   .agree-main{display:flex;align-items:center;gap:9px;min-width:0;cursor:pointer}
   .agree-main span{color:var(--ink)}
   .agree-main b{font-weight:700}
@@ -82,5 +82,5 @@
   .apply-card.apply-done .btn{width:auto;display:inline-flex;font-size:15px;padding:13px 30px}
 
   @media(max-width:560px){
-    .field-row{grid-template-columns:1fr}.apply-card{padding:24px}.apply{padding:40px 0 64px}
+    .field-row{grid-template-columns:1fr}.apply-card{padding:26px}.apply{padding:56px 0 72px}
   }
