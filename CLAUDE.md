@@ -27,7 +27,7 @@ Supercoder AI 웹사이트 — **AIVIEW** 제품 랜딩 + 블로그/도입문의
 - **공유 컴포넌트(`components/`):** `SiteHeader`(섹션 인지형 GNB·메뉴), `SiteFooter`, `BrochureModal`(서비스소개서 리드 — `#navBrochure` 클릭 위임), `Chatbot`(FAQ 챗봇), `HeroParticles`(canvas 입자 모션, 히어로·CTA 공용). 모두 `layout.tsx`에 마운트되거나 page에서 사용. `"use client"`.
 - **섹션 = 랜딩 구조 (정의된 이름·번호·id).** `app/page.tsx`는 번호 매겨진 섹션 스택이다. 정식 목록: 01 DECLARATION(`#hero`), 02 CLIENTS(`#clients`), 03 VALUE(`#value`), 04 FLOOD(`#flood`), 05 ROLE REVERSAL(`#role`, 깔때기 SVG), 06 HOW IT WORKS(`#how`), 07 PROOF(`#proof`), 08 VOICES(`#voices`), 08.5 FAQ(`#faq`), 09 FINAL CTA(`#final`). GNB 메뉴 앵커는 `#value`·`#how`·`#proof`·`#voices`.
 - **섹션 인지형 GNB:** `[data-nav="dark"]` 섹션(히어로·FINAL) 위에선 헤더 반전(흰 로고). 색 전환 클래스(`header.nav-invert`/`.nav-solid`)는 `globals.css`(SSOT), 감지 로직은 `SiteHeader.tsx`의 `syncHeader`.
-- **외부 의존성은 CDN(`layout.tsx`의 `<head>`):** Pretendard 폰트(jsdelivr), Font Awesome 6.5.2(cdnjs). 아이콘은 `<i className="fa-...">`. Supabase는 `@supabase/supabase-js`(npm).
+- **폰트·아이콘은 자체 호스팅 서브셋(2026-08-10 성능 최적화):** `layout.tsx`가 `pretendard.css`(woff2 청크만 jsdelivr)와 `fontawesome.css`를 import한다. 아이콘은 `<i className="fa-...">`로 쓰되, **`app/fontawesome.css`에 정의된 아이콘만 쓸 수 있다** — `public/fonts/`의 woff2도 pyftsubset으로 잘라낸 상태라 목록에 없는 이름을 쓰면 버튼은 동작해도 글리프가 렌더되지 않는다(2026-08-21 `fa-flask` 사례). 새 아이콘이 꼭 필요하면 CSS 룰 추가 + 폰트 재서브셋이 함께 필요하다. Supabase는 `@supabase/supabase-js`(npm).
 - **정적 에셋은 `public/`** (로고 SVG, 리포트 PNG/webp, 파비콘, `brochure-aiview.pdf`, `logos/`, `charts/`, `robots.txt`, `sitemap.xml`). 절대경로(`/supercoder-nav.svg`)로 참조.
 - **구 `.html` URL은 `next.config.mjs` redirects로 클린 URL에 308 매핑**(`/apply.html`→`/apply` 등). 기존 인바운드 링크·SEO 보존.
 
@@ -70,17 +70,6 @@ commit/push 전에 **항상** `npm run build`로 타입·린트·빌드를 통�
 
 ### 새 기능 추가 시 push (MUST)
 기능 완료 시 `git add -A` → 의미 있는 commit → `git push`( = `dev`에 push). secret(`.env*`)은 절대 commit하지 않는다(.gitignore 확인).
-
-### 업데이트 글(/update) 본문 스타일 (MUST)
-제품 업데이트 글은 **아래 골격을 그대로 유지**한다. 어드민 본문 편집기의 `📄 템플릿 → 제품 업데이트 (표준)`이 이 구조를 그대로 채워 넣는다(`UPDATE_TEMPLATES` in `app/admin/AdminClient.tsx`). 본문은 WYSIWYG(HTML)로 저장되며 `renderBody`(`lib/postRender.ts`)가 그대로 출력한다.
-
-- **대제목은 `<h2>` + 이모지** — `💡 Overview` → `⭐ 주요 업데이트` → `🔧 운영 경험 개선`(하위 `🐞 버그 수정` · `🔐 보안 및 안정성`) → `⚠️ 이용 안내` → `⏳ 계속 업데이트 중인 AI Interview`. 섹션 사이는 `<hr>`.
-- **개별 기능은 `<h3>` + 이모지 + 번호** (`📱 1. 지원자 화면 개편`). 회사별 설정이 필요하면 제목 끝에 `(옵션 · 별도 설정 필요)`.
-- **항목 나열은 표** — 2열(`항목|내용`, 버그 수정은 `영역|설명`). 표는 반드시 `<div class="post-table-wrap"><table class="post-table">` 로 넣는다. 이 클래스가 있어야 헤더 연한 블루(`--soft-2`)·라운드 테두리가 적용된다(bare `<table>`은 `renderBody`가 자동으로 감싸주지만, 작성 시엔 클래스를 붙인다).
-- **짧은 나열은 `<ul>`**, 보안·운영 항목은 `<strong>제목</strong> — 설명` 형식.
-- **보충 안내는 `💡 …` 문단**(`<p>`). 인라인 색상·글자 크기(`style="..."`)는 쓰지 않는다 — 색은 전부 CSS 토큰(`app/update/update.css`)이 담당한다.
-- **외부 문서(Word·Notion·메일)에서 붙여넣지 말 것** — 통짜 `<pre>`/인라인 스타일이 딸려 와 표·제목 서식이 전부 죽는다. 붙여넣었다면 템플릿을 다시 적용하고 내용만 옮긴다. (편집기가 통짜 `<pre>` 붙여넣기는 문단으로 풀어주지만, 표·제목은 직접 다시 잡아야 한다.)
-- 저장 전 어드민 **미리보기**로 확인한다. DB는 dev·운영 공유이므로 공개(published) 전환은 **명시적 지시가 있을 때만** 한다.
 
 ## MCP 연결 (Connected Integrations)
 - **Vercel** — 배포/프로젝트 관리
