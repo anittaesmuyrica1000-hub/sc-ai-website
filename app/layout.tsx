@@ -6,7 +6,6 @@ import SiteHeader from "@/components/SiteHeader";
 import SiteFooter from "@/components/SiteFooter";
 import Chatbot from "@/components/Chatbot";
 import Analytics from "@/components/Analytics";
-import CookieBanner from "@/components/CookieBanner";
 import UtmCapture from "@/components/UtmCapture";
 import PageViewCounter from "@/components/PageViewCounter";
 import { Analytics as VercelAnalytics } from "@vercel/analytics/next";
@@ -68,7 +67,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <Chatbot />
         <Analytics />
         <VercelAnalytics />
-        <CookieBanner />
         <UtmCapture />
         <PageViewCounter />
       </body>
