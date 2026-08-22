@@ -9,6 +9,8 @@ import Analytics from "@/components/Analytics";
 import UtmCapture from "@/components/UtmCapture";
 import PageViewCounter from "@/components/PageViewCounter";
 import { Analytics as VercelAnalytics } from "@vercel/analytics/next";
+import { getSiteTags, gtmBootstrapJs, gtagConfigJs } from "@/lib/siteTags";
+import { CONSENT_DEFAULT_JS } from "@/lib/consent";
 
 const SITE_URL = "https://www.supercoder.co";
 
@@ -51,7 +53,12 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  // Google 태그는 서버에서 <head>에 직접 심는다 — 하이드레이션·Supabase 왕복을 기다리면
+  // GA4 첫 히트가 4초 뒤에나 나가 조기 이탈 방문자가 통째로 누락된다(lib/siteTags.ts 주석 참고).
+  const tags = await getSiteTags();
+  const useGoogleTags = !!(tags.gaId || tags.gtmId);
+
   return (
     <html lang="ko" translate="no">
       <head>
@@ -59,13 +66,31 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <meta name="google" content="notranslate" />
         {/* Pretendard woff2 청크(pretendard.css 참조)용 — CSS 자체는 번들에 포함되어 렌더 차단 외부 요청 없음 */}
         <link rel="preconnect" href="https://cdn.jsdelivr.net" crossOrigin="" />
+        {useGoogleTags && (
+          <>
+            {/* 태그 호스트에 미리 붙어 gtag.js 다운로드 지연을 줄인다 */}
+            <link rel="preconnect" href="https://www.googletagmanager.com" />
+            {/* 동의 기본값은 gtm.js·gtag('config')보다 반드시 먼저 dataLayer에 들어가야 한다 */}
+            <script dangerouslySetInnerHTML={{ __html: CONSENT_DEFAULT_JS }} />
+          </>
+        )}
+        {tags.gtmId && (
+          <script dangerouslySetInnerHTML={{ __html: gtmBootstrapJs(tags.gtmId) }} />
+        )}
+        {tags.gaId && (
+          <>
+            <script async src={`https://www.googletagmanager.com/gtag/js?id=${tags.gaId}`} />
+            <script dangerouslySetInnerHTML={{ __html: gtagConfigJs(tags.gaId) }} />
+          </>
+        )}
       </head>
       <body>
         <SiteHeader />
         {children}
         <SiteFooter />
         <Chatbot />
-        <Analytics />
+        {/* 어드민이 ID 대신 전체 스니펫을 붙여넣은 경우에만 클라이언트에서 주입한다 */}
+        <Analytics gaRaw={tags.gaRaw} gtmRaw={tags.gtmRaw} consentInjected={useGoogleTags} />
         <VercelAnalytics />
         <UtmCapture />
         <PageViewCounter />

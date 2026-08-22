@@ -311,16 +311,23 @@ export async function getDailyReport(): Promise<DailyReport> {
     // GA4 포착률 — 쿠키 배너 제거(2026-08-21) 효과를 매일 검증하는 지표.
     // 서버측 집계는 동의와 무관한 실제 방문 규모라, 둘의 비가 곧 GA4가 놓치는 몫이다.
     // 광고 차단 확장·스크립트 차단으로 100%에는 이르지 못하므로 70% 이상이면 정상으로 본다.
-    const rate = Math.round((pageViews / serverViews.total) * 100);
+    const c = serverViews.consent;
+    // 배너 시절(미클릭·거부) 조회는 analytics_storage가 denied라 GA4에 애초에 잡힐 수 없었다.
+    // 분모에 섞으면 배너를 제거한 그 날 포착률이 실제보다 낮게 나와 오탐이 된다(2026-08-21 사례).
+    // → 태그가 실제로 켜져 있던 조회(granted)만 분모로 쓴다.
+    const legacy = c.none + c.denied;
+    const usable = serverViews.hasConsentDim && legacy > 0 ? serverViews.total - legacy : serverViews.total;
+    const rate = usable > 0 ? Math.round((pageViews / usable) * 100) : 0;
     const verdict = rate >= 70 ? "정상" : rate >= 40 ? "낮음 — 태그 동작 점검 권장" : "⚠️ 대부분 누락 — 즉시 점검 필요";
     insights.push(
-      `GA4 포착률: 서버측 ${serverViews.total.toLocaleString()}회 대비 ` +
-      `GA4 ${pageViews.toLocaleString()}회 (${rate}%) — ${verdict}.`
+      `GA4 포착률: 서버측 ${usable.toLocaleString()}회 대비 ` +
+      `GA4 ${pageViews.toLocaleString()}회 (${rate}%) — ${verdict}` +
+      (usable !== serverViews.total
+        ? ` (분모는 전체 ${serverViews.total.toLocaleString()}회 중 배너 제거 후 ${usable.toLocaleString()}회).`
+        : ".")
     );
 
     // 배너 제거 전 기록이 남아 있는 동안에만 동의 분해를 함께 보여준다(전환 구간 확인용).
-    const c = serverViews.consent;
-    const legacy = c.none + c.denied;
     if (serverViews.hasConsentDim && legacy > 0) {
       insights.push(
         `배너 제거 전 기록 포함: 미클릭 ${c.none.toLocaleString()}회 · 거부 ${c.denied.toLocaleString()}회 · ` +
