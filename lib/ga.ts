@@ -277,7 +277,7 @@ export async function getDailyReport(): Promise<DailyReport> {
   const dateLabel = `${seoulNow.getFullYear()}-${String(seoulNow.getMonth() + 1).padStart(2, "0")}-${String(seoulNow.getDate()).padStart(2, "0")}`;
 
   // 실제 리드(Supabase, 사내 제외) — GA 이벤트는 사내 테스트도 세므로 리드 지표는 DB 기준.
-  // 서버측 블로그 조회수 — 쿠키 동의와 무관하게 집계되므로 GA4 누락 규모를 감시할 수 있다.
+  // 서버측 블로그 조회수 — 차단·조기 이탈과 무관하게 집계되므로 GA4 누락 규모를 감시할 수 있다.
   const [realLeads, blogViews, serverViews] = await Promise.all([
     getRealLeadsYesterday(),
     collectBlogViews(),
@@ -300,11 +300,11 @@ export async function getDailyReport(): Promise<DailyReport> {
     (vs7 !== null ? ` (7일 평균 대비 ${arrow(vs7)}, 평균 ${avg7.sessions}건/일 → ${trafficLevel})` : "") + "."
   );
 
-  // 1-a. 서버측 전 페이지 조회(쿠키 동의 무관) — 실제 방문 규모. GA4 포착률의 분모가 된다.
+  // 1-a. 서버측 전 페이지 조회(차단 무관) — 실제 방문 규모. GA4 포착률의 분모가 된다.
   if (serverViews.available && serverViews.total > 0) {
     const dPrev = serverViews.prevTotal ? pct(serverViews.total, serverViews.prevTotal) : null;
     insights.push(
-      `서버측 전체 조회 ${serverViews.total.toLocaleString()}회 (경로 ${serverViews.paths}개, 쿠키 동의 무관 집계` +
+      `서버측 전체 조회 ${serverViews.total.toLocaleString()}회 (경로 ${serverViews.paths}개, 차단 무관 집계` +
       (dPrev !== null ? `, 전일 대비 ${arrow(dPrev)}` : "") + ")."
     );
 
@@ -337,11 +337,11 @@ export async function getDailyReport(): Promise<DailyReport> {
     }
   }
 
-  // 1-b. 서버측 실측(쿠키 동의 무관) — GA4 세션은 '허용을 누른 방문자' 표본이라 이 값과 함께 읽어야 한다.
+  // 1-b. 서버측 실측(차단 무관) — GA4 세션은 '태그가 뜰 때까지 머문 방문자' 표본이라 이 값과 함께 읽어야 한다.
   if (blogViews.available && blogViews.delta !== null && blogViews.hours) {
     const gap = pageViews > 0 ? (blogViews.delta / pageViews).toFixed(1) : null;
     insights.push(
-      `서버측 블로그 조회 +${blogViews.delta.toLocaleString()}회 (최근 ${blogViews.hours}시간, 쿠키 동의 무관 집계` +
+      `서버측 블로그 조회 +${blogViews.delta.toLocaleString()}회 (최근 ${blogViews.hours}시간, 차단 무관 집계` +
       (blogViews.perDay !== null ? ` · 최근 평균 ${blogViews.perDay}회/일` : "") + ")" +
       (gap ? ` — GA4 조회수 ${pageViews.toLocaleString()}회의 ${gap}배.` : ".")
     );

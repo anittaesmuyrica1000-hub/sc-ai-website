@@ -613,7 +613,7 @@ function Settings({ email }: { email: string }) {
             <label>측정 ID 또는 gtag 스니펫</label>
             <textarea value={ga} onChange={(e) => setGa(e.target.value)} placeholder={"G-XXXXXXXXXX\n\n또는 Google 태그 전체 스니펫(<script>…</script>)을 그대로 붙여넣기"} disabled={!gaLoaded} autoComplete="off" rows={6} style={{ fontFamily: "monospace", fontSize: 13 }} />
           </div>
-          <div className="hint"><b>G-</b>로 시작하는 측정 ID만 넣으면 표준 gtag가 자동 생성됩니다. analytics.google.com에서 받은 <b>전체 gtag 스니펫</b>을 그대로 붙여넣어도 됩니다(커스텀 설정·추가 태그 포함). 비워서 저장하면 GA가 꺼집니다.</div>
+          <div className="hint"><b>G-</b>로 시작하는 측정 ID <b>한 줄만</b> 넣는 걸 권장합니다 — 이 경우 태그가 페이지 HTML에 바로 심겨 가장 빨리 실행됩니다. analytics.google.com에서 받은 <b>전체 gtag 스니펫</b>을 붙여넣어도 동작하지만(커스텀 설정·추가 태그 포함), 이때는 화면이 그려진 뒤에야 태그가 뜨므로 <b>일찍 이탈한 방문자가 집계에서 빠집니다</b>. 특별한 이유가 없으면 ID만 넣으세요. 비워서 저장하면 GA가 꺼집니다.</div>
           <div className="form-actions"><button className="btn btn-blue" disabled={gaBusy || !gaLoaded}>{gaBusy ? "저장 중…" : "저장"}</button></div>
         </form>
       </div>
@@ -625,7 +625,7 @@ function Settings({ email }: { email: string }) {
             <label>컨테이너 ID 또는 GTM 스니펫</label>
             <textarea value={gtm} onChange={(e) => setGtm(e.target.value)} placeholder={"GTM-XXXXXXX\n\n또는 GTM 컨테이너 스니펫(<script>…</script>)을 그대로 붙여넣기"} disabled={!gtmLoaded} autoComplete="off" rows={6} style={{ fontFamily: "monospace", fontSize: 13 }} />
           </div>
-          <div className="hint"><b>GTM-</b>으로 시작하는 컨테이너 ID만 넣으면 표준 GTM 스니펫이 자동 생성됩니다. 쿠키 배너의 동의 상태(Consent Mode v2)가 컨테이너 안의 태그에도 그대로 적용됩니다. <b>GTM 컨테이너 안에서 GA4 태그를 발행할 계획이면 위 GA 측정 ID는 비워 두세요</b> — 둘 다 켜면 조회수가 이중 집계됩니다. 비워서 저장하면 GTM이 꺼집니다.</div>
+          <div className="hint"><b>GTM-</b>으로 시작하는 컨테이너 ID만 넣으면 표준 GTM 스니펫이 자동 생성됩니다. 분석 동의(Consent Mode v2)는 개인정보처리방침 제10조에 따라 <b>전 방문자 허용</b>으로 고정되며(2026-08-21 쿠키 배너 제거), 광고 관련 항목은 계속 차단입니다 — 컨테이너 안의 태그도 이 상태를 따릅니다. <b>GTM 컨테이너 안에 GA4 태그를 직접 만들 거라면 위 GA 측정 ID를 비워 두세요</b> — GA4 태그가 양쪽에 하나씩 생겨 조회수가 이중 집계됩니다. (위 칸에 ID를 넣고 이 칸도 채워 두는 것 자체는 문제없습니다. 2026-08-22 실측 기준 이중 집계 없음.) 비워서 저장하면 GTM이 꺼집니다.</div>
           <div className="form-actions"><button className="btn btn-blue" disabled={gtmBusy || !gtmLoaded}>{gtmBusy ? "저장 중…" : "저장"}</button></div>
         </form>
       </div>
