@@ -109,7 +109,7 @@ export async function GET(req: NextRequest) {
             ${metricCard("블로그 누적 조회", s.blogViews.total.toLocaleString())}
           </tr></table>
           <div style="font-size:11.5px;color:#5b6577;text-align:center;margin-top:8px">
-            서버측 조회수는 쿠키 동의와 무관하게 집계됩니다 — 배너에서 '허용'을 누르지 않아 GA4에서 빠진 방문자가 포함됩니다.
+            서버측 조회수는 광고·스크립트 차단과 무관하게 집계됩니다 — 태그가 뜨기 전에 떠나거나 차단기를 쓴, GA4에서 빠진 방문자가 포함됩니다.
           </div>`
               : ""
           }
