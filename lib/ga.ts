@@ -145,7 +145,8 @@ export type DailyReport = {
   newUsers: number;
   returningUsers: number;
   sessions: number;
-  pageViews: number;
+  pageViews: number;            // GA4 원본(사내 /admin 포함)
+  pageViewsExAdmin: number;     // 사내 /admin 제외 — 포착률 분자(서버측 분모와 기준을 맞춤)
   engagementRate: number;       // 0~1
   engagedSessions: number;
   engagementPending: boolean;   // GA4가 어제 세션 지표를 아직 확정하지 않음 → 참여율 0%는 오탐
@@ -229,6 +230,28 @@ export async function getDailyReport(): Promise<DailyReport> {
   // 참여 세션이 0이면 미확정으로 판정하고, 0%를 "낮음" 경보로 쓰지 않는다.
   const engagementPending = engagedSessions === 0 && userEngagementDuration > 0;
   const returningUsers = Math.max(activeUsers - newUsers, 0);
+
+  // 포착률 전용 조회수 — 분자와 분모가 같은 것을 세게 맞춘다.
+  // 서버측(분모)은 /admin을 두 겹으로 제외하는데(PageViewCounter + increment_page_view),
+  // GA4(분자)는 사내 관리자 화면까지 세고 있었다. 그대로 나누면 관리 작업이 많은 날
+  // 포착률이 100%를 넘는 불가능한 값이 나온다(2026-08-22: 85/83 = 102%, /admin 5회 제외 시 96%).
+  // GA4 내부 트래픽 필터는 사무실 IP만 걸러 재택·모바일 접속은 잡지 못하므로 여기서 직접 뺀다.
+  // 조회 실패 시 전체 조회수로 폴백 — 포착률이 다소 높게 나올 뿐 리포트는 계속 발송된다.
+  let pageViewsExAdmin = pageViews;
+  try {
+    const exAdmin = await runReport({
+      dateRanges: [yday],
+      metrics: [{ name: "screenPageViews" }],
+      dimensionFilter: {
+        notExpression: {
+          filter: { fieldName: "pagePath", stringFilter: { matchType: "BEGINS_WITH", value: "/admin" } },
+        },
+      },
+    });
+    pageViewsExAdmin = n(exAdmin.rows?.[0]?.metricValues?.[0]?.value);
+  } catch (e) {
+    console.warn("pageViews(ex-admin) fetch failed:", e instanceof Error ? e.message : e);
+  }
 
   // 브레이크다운 + 이벤트 + 7일 이동 평균 (병렬)
   // 7일 평균: 그제(2daysAgo)부터 8일 전까지 7일간 — yesterday 제외
@@ -317,11 +340,13 @@ export async function getDailyReport(): Promise<DailyReport> {
     // → 태그가 실제로 켜져 있던 조회(granted)만 분모로 쓴다.
     const legacy = c.none + c.denied;
     const usable = serverViews.hasConsentDim && legacy > 0 ? serverViews.total - legacy : serverViews.total;
-    const rate = usable > 0 ? Math.round((pageViews / usable) * 100) : 0;
+    const rate = usable > 0 ? Math.round((pageViewsExAdmin / usable) * 100) : 0;
     const verdict = rate >= 70 ? "정상" : rate >= 40 ? "낮음 — 태그 동작 점검 권장" : "⚠️ 대부분 누락 — 즉시 점검 필요";
     insights.push(
       `GA4 포착률: 서버측 ${usable.toLocaleString()}회 대비 ` +
-      `GA4 ${pageViews.toLocaleString()}회 (${rate}%) — ${verdict}` +
+      `GA4 ${pageViewsExAdmin.toLocaleString()}회` +
+      (pageViewsExAdmin !== pageViews ? `(사내 /admin ${(pageViews - pageViewsExAdmin).toLocaleString()}회 제외)` : "") +
+      ` (${rate}%) — ${verdict}` +
       (usable !== serverViews.total
         ? ` (분모는 전체 ${serverViews.total.toLocaleString()}회 중 배너 제거 후 ${usable.toLocaleString()}회).`
         : ".")
@@ -392,7 +417,7 @@ export async function getDailyReport(): Promise<DailyReport> {
   return {
     dateLabel,
     realtimeActiveUsers,
-    activeUsers, newUsers, returningUsers, sessions, pageViews,
+    activeUsers, newUsers, returningUsers, sessions, pageViews, pageViewsExAdmin,
     engagementRate, engagedSessions, engagementPending, avgEngagementPerSession,
     keyEvents: keyEventsYday,
     realLeads,
