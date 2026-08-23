@@ -225,10 +225,20 @@ export async function getDailyReport(): Promise<DailyReport> {
   const engagedSessions = n(yr[5]?.value);
   const userEngagementDuration = n(yr[6]?.value); // 초 합계
   const avgEngagementPerSession = sessions ? userEngagementDuration / sessions : 0;
-  // 크론은 KST 08:00에 도는데, GA4는 세션 스코프 지표(engagementRate·engagedSessions)를 그때까지
-  // 확정하지 못해 0을 반환한다(이벤트 수는 이미 채워져 있어 모순처럼 보임). 참여시간이 있는데
-  // 참여 세션이 0이면 미확정으로 판정하고, 0%를 "낮음" 경보로 쓰지 않는다.
-  const engagementPending = engagedSessions === 0 && userEngagementDuration > 0;
+  // 크론은 KST 08:00에 도는데(어제가 끝난 지 8시간), GA4는 세션 스코프 지표
+  // (engagementRate·engagedSessions)를 그때까지 확정하지 못한다. 이벤트 수는 이미 채워져 있어
+  // 값끼리 서로 모순된다. 미확정 값을 "낮음" 경보로 내보내면 매일 오탐이 된다.
+  //
+  // 판정 두 가지:
+  //  (1) 참여시간이 있는데 참여 세션이 0 — 명백한 미확정(2026-08-17 확인).
+  //  (2) 참여 세션 1건당 참여시간이 10분을 넘고 참여율도 20% 미만 — 참여시간은 참여 세션에만
+  //      쌓이므로, 이 조합은 engagedSessions가 아직 덜 집계됐다는 뜻이다.
+  //      (2026-08-23 실측: 8/21 메일은 4.7%·31초를 보고했으나 확정치는 51.11%·35초였다.
+  //       발송 시점엔 참여 세션 23건 중 2건만 처리돼 1건당 11분이라는 값이 나왔다.)
+  const engagementPerEngagedSession = engagedSessions ? userEngagementDuration / engagedSessions : 0;
+  const engagementPending =
+    (engagedSessions === 0 && userEngagementDuration > 0) ||
+    (engagementPerEngagedSession > 600 && engagementRate < 0.2);
   const returningUsers = Math.max(activeUsers - newUsers, 0);
 
   // 포착률 전용 조회수 — 분자와 분모가 같은 것을 세게 맞춘다.
