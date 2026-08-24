@@ -6,6 +6,10 @@ const nextConfig = {
   // 정적 호스팅 기반(이미지 외부 도메인 cover_url 허용)
   images: {
     remotePatterns: [{ protocol: "https", hostname: "**" }],
+    // 블로그 커버는 발행 후 거의 안 바뀌고(재업로드 시 새 파일명 발급) 원본 캐시도 1시간뿐이라,
+    // Vercel 엣지 캐시를 24시간으로 늘려 Supabase Storage 재요청(Cached Egress)을 줄인다.
+    // (2026-08-24: Supabase Cached Egress 무료 한도 초과 대응 — next/image 전환 후속 조치)
+    minimumCacheTTL: 86400,
   },
   // 보안 헤더 (SEO 진단 2026-08-07: 클릭재킹·MIME 스니핑·리퍼러 노출 방지)
   async headers() {
