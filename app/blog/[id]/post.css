@@ -5,7 +5,7 @@
   .post-head .cat{display:inline-block;font-size:12px;font-weight:700;letter-spacing:.04em;color:var(--blue-d);background:var(--soft-2);padding:5px 12px;border-radius:999px}
   .post-head h1{font-size:clamp(28px,4.4vw,42px);font-weight:700;letter-spacing:-.02em;line-height:1.24;margin:16px 0 0}
   .post-meta{margin-top:18px;display:flex;flex-wrap:wrap;gap:14px;font-size:14px;color:var(--slate-2);font-weight:600;padding-bottom:26px;border-bottom:1px solid var(--line)}
-  .post-hero{width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:var(--r);margin:32px 0 8px;display:block}
+  .post-hero{width:100%;height:auto;aspect-ratio:16/9;object-fit:cover;border-radius:var(--r);margin:32px 0 8px;display:block}
   /* 본문 = 읽기용 본문 폰트(차분한 색·넉넉한 행간) */
   .post-content{margin-top:34px;font-size:17px;line-height:1.85;color:#26324a}
   .post-content p{margin:0 0 22px}

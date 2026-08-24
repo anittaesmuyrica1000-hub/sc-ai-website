@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import Image from "next/image";
 import { notFound } from "next/navigation";
 import "./post.css";
 import { supabase, publishAtVisibleOr, isScheduledFuture, type Post } from "@/lib/supabase";
@@ -153,7 +154,17 @@ export default async function PostPage({ params }: { params: Promise<{ id: strin
             <span>{fmtDate(p.created_at)}</span>
           </div>
         </div>
-        {p.cover_url && <img className="post-hero" src={p.cover_url} alt={p.cover_alt || p.title} />}
+        {p.cover_url && (
+          <Image
+            className="post-hero"
+            src={p.cover_url}
+            alt={p.cover_alt || p.title}
+            width={1600}
+            height={900}
+            sizes="(max-width: 760px) 100vw, 712px"
+            priority
+          />
+        )}
         <div className="post-content" data-slug={p.slug || undefined} dangerouslySetInnerHTML={{ __html: bodyHtml }} />
         {Array.isArray(p.tags) && p.tags.length > 0 && (
           <ul className="post-tags" aria-label="주제 키워드">
@@ -185,7 +196,7 @@ export default async function PostPage({ params }: { params: Promise<{ id: strin
               {related.map((item) => (
                 <Link key={item.id} href={`/blog/${item.slug || item.id}`} className="post-more-card">
                   {item.cover_url
-                    ? <img src={item.cover_url} alt="" className="post-more-thumb" />
+                    ? <Image src={item.cover_url} alt="" className="post-more-thumb" width={64} height={64} sizes="64px" />
                     : <span className="post-more-thumb post-more-thumb--empty" />}
                   <span className="post-more-info">
                     <span className="post-more-title">{item.title}</span>
