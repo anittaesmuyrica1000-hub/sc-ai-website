@@ -2,6 +2,7 @@ import { JWT } from "google-auth-library";
 import { getRealLeadsYesterday, type RealLeads } from "./leads";
 import { collectBlogViews, type BlogViews } from "./blogViews";
 import { getServerPageViewsYesterday, type ServerPageViews } from "./pageViews";
+import { getVercelViewsYesterday, type VercelViews } from "./vercelViews";
 
 // GA4 Data API 조회 — Gmail용과 동일한 Google 서비스계정을 재사용한다(스코프만 analytics.readonly).
 // 서비스계정 이메일(GMAIL_SA_CLIENT_EMAIL)에 GA4 속성 "뷰어" 권한 + 프로젝트에 GA Data API 활성화 필요.
@@ -142,11 +143,12 @@ export type DailyReport = {
   realtimeActiveUsers: number;  // 지금(최근 30분) 활성 사용자
   // 어제 핵심 지표
   activeUsers: number;
+  activeUsersExAdmin: number;   // 사내 /admin 제외 — 포착률 분자(Vercel 분모와 기준을 맞춤)
   newUsers: number;
   returningUsers: number;
   sessions: number;
   pageViews: number;            // GA4 원본(사내 /admin 포함)
-  pageViewsExAdmin: number;     // 사내 /admin 제외 — 포착률 분자(서버측 분모와 기준을 맞춤)
+  pageViewsExAdmin: number;     // 사내 /admin 제외 — 조회수 교차검증용(판정에는 쓰지 않는다)
   engagementRate: number;       // 0~1
   engagedSessions: number;
   engagementPending: boolean;   // GA4가 어제 세션 지표를 아직 확정하지 않음 → 참여율 0%는 오탐
@@ -155,6 +157,7 @@ export type DailyReport = {
   realLeads: RealLeads;         // 실제 리드(Supabase, 사내 @supercoder.co 제외)
   blogViews: BlogViews;         // 서버측 블로그 조회수(동의 무관) — GA4 누락분 감시용
   serverViews: ServerPageViews; // 서버측 전 페이지 조회수(동의 무관) — 실제 방문 규모
+  vercelViews: VercelViews;     // Vercel 실측 방문자(쿠키리스) — 포착률 분모
   // 전일 대비(그제) 비교용
   prev: { activeUsers: number; sessions: number; engagementRate: number; keyEvents: number };
   // 7일 이동 평균(그제 기준 7일, yesterday 미포함)
@@ -241,17 +244,17 @@ export async function getDailyReport(): Promise<DailyReport> {
     (engagementPerEngagedSession > 600 && engagementRate < 0.2);
   const returningUsers = Math.max(activeUsers - newUsers, 0);
 
-  // 포착률 전용 조회수 — 분자와 분모가 같은 것을 세게 맞춘다.
-  // 서버측(분모)은 /admin을 두 겹으로 제외하는데(PageViewCounter + increment_page_view),
-  // GA4(분자)는 사내 관리자 화면까지 세고 있었다. 그대로 나누면 관리 작업이 많은 날
-  // 포착률이 100%를 넘는 불가능한 값이 나온다(2026-08-22: 85/83 = 102%, /admin 5회 제외 시 96%).
+  // 포착률 전용 지표 — 분자와 분모가 같은 것을 세게 맞춘다.
+  // 분모(Vercel·서버측)는 사내 /admin을 제외하는데 GA4는 관리자 화면까지 센다. 그대로 나누면
+  // 관리 작업이 많은 날 포착률이 100%를 넘는 불가능한 값이 나온다(2026-08-22: 85/83 = 102%).
   // GA4 내부 트래픽 필터는 사무실 IP만 걸러 재택·모바일 접속은 잡지 못하므로 여기서 직접 뺀다.
-  // 조회 실패 시 전체 조회수로 폴백 — 포착률이 다소 높게 나올 뿐 리포트는 계속 발송된다.
+  // 조회 실패 시 전체 값으로 폴백 — 포착률이 다소 높게 나올 뿐 리포트는 계속 발송된다.
   let pageViewsExAdmin = pageViews;
+  let activeUsersExAdmin = activeUsers;
   try {
     const exAdmin = await runReport({
       dateRanges: [yday],
-      metrics: [{ name: "screenPageViews" }],
+      metrics: [{ name: "screenPageViews" }, { name: "activeUsers" }],
       dimensionFilter: {
         notExpression: {
           filter: { fieldName: "pagePath", stringFilter: { matchType: "BEGINS_WITH", value: "/admin" } },
@@ -259,6 +262,7 @@ export async function getDailyReport(): Promise<DailyReport> {
       },
     });
     pageViewsExAdmin = n(exAdmin.rows?.[0]?.metricValues?.[0]?.value);
+    activeUsersExAdmin = n(exAdmin.rows?.[0]?.metricValues?.[1]?.value);
   } catch (e) {
     console.warn("pageViews(ex-admin) fetch failed:", e instanceof Error ? e.message : e);
   }
@@ -311,10 +315,11 @@ export async function getDailyReport(): Promise<DailyReport> {
 
   // 실제 리드(Supabase, 사내 제외) — GA 이벤트는 사내 테스트도 세므로 리드 지표는 DB 기준.
   // 서버측 블로그 조회수 — 차단·조기 이탈과 무관하게 집계되므로 GA4 누락 규모를 감시할 수 있다.
-  const [realLeads, blogViews, serverViews] = await Promise.all([
+  const [realLeads, blogViews, serverViews, vercelViews] = await Promise.all([
     getRealLeadsYesterday(),
     collectBlogViews(),
     getServerPageViewsYesterday(),
+    getVercelViewsYesterday(),
   ]);
 
   // ── 자동 인사이트 ─────────────────────────────
@@ -333,7 +338,8 @@ export async function getDailyReport(): Promise<DailyReport> {
     (vs7 !== null ? ` (7일 평균 대비 ${arrow(vs7)}, 평균 ${avg7.sessions}건/일 → ${trafficLevel})` : "") + "."
   );
 
-  // 1-a. 서버측 전 페이지 조회(차단 무관) — 실제 방문 규모. GA4 포착률의 분모가 된다.
+  // 1-a. 서버측 전 페이지 조회(차단 무관) — 실제 방문 규모.
+  const legacyConsent = serverViews.consent.none + serverViews.consent.denied;
   if (serverViews.available && serverViews.total > 0) {
     const dPrev = serverViews.prevTotal ? pct(serverViews.total, serverViews.prevTotal) : null;
     insights.push(
@@ -341,29 +347,9 @@ export async function getDailyReport(): Promise<DailyReport> {
       (dPrev !== null ? `, 전일 대비 ${arrow(dPrev)}` : "") + ")."
     );
 
-    // GA4 포착률 — 쿠키 배너 제거(2026-08-21) 효과를 매일 검증하는 지표.
-    // 서버측 집계는 동의와 무관한 실제 방문 규모라, 둘의 비가 곧 GA4가 놓치는 몫이다.
-    // 광고 차단 확장·스크립트 차단으로 100%에는 이르지 못하므로 70% 이상이면 정상으로 본다.
-    const c = serverViews.consent;
-    // 배너 시절(미클릭·거부) 조회는 analytics_storage가 denied라 GA4에 애초에 잡힐 수 없었다.
-    // 분모에 섞으면 배너를 제거한 그 날 포착률이 실제보다 낮게 나와 오탐이 된다(2026-08-21 사례).
-    // → 태그가 실제로 켜져 있던 조회(granted)만 분모로 쓴다.
-    const legacy = c.none + c.denied;
-    const usable = serverViews.hasConsentDim && legacy > 0 ? serverViews.total - legacy : serverViews.total;
-    const rate = usable > 0 ? Math.round((pageViewsExAdmin / usable) * 100) : 0;
-    const verdict = rate >= 70 ? "정상" : rate >= 40 ? "낮음 — 태그 동작 점검 권장" : "⚠️ 대부분 누락 — 즉시 점검 필요";
-    insights.push(
-      `GA4 포착률: 서버측 ${usable.toLocaleString()}회 대비 ` +
-      `GA4 ${pageViewsExAdmin.toLocaleString()}회` +
-      (pageViewsExAdmin !== pageViews ? `(사내 /admin ${(pageViews - pageViewsExAdmin).toLocaleString()}회 제외)` : "") +
-      ` (${rate}%) — ${verdict}` +
-      (usable !== serverViews.total
-        ? ` (분모는 전체 ${serverViews.total.toLocaleString()}회 중 배너 제거 후 ${usable.toLocaleString()}회).`
-        : ".")
-    );
-
     // 배너 제거 전 기록이 남아 있는 동안에만 동의 분해를 함께 보여준다(전환 구간 확인용).
-    if (serverViews.hasConsentDim && legacy > 0) {
+    const c = serverViews.consent;
+    if (serverViews.hasConsentDim && legacyConsent > 0) {
       insights.push(
         `배너 제거 전 기록 포함: 미클릭 ${c.none.toLocaleString()}회 · 거부 ${c.denied.toLocaleString()}회 · ` +
         `허용 ${c.granted.toLocaleString()}회` +
@@ -372,7 +358,40 @@ export async function getDailyReport(): Promise<DailyReport> {
     }
   }
 
-  // 1-b. 서버측 실측(차단 무관) — GA4 세션은 '태그가 뜰 때까지 머문 방문자' 표본이라 이 값과 함께 읽어야 한다.
+  // 1-b. GA4 포착률 — 반드시 '사람 수'로 판정한다(2026-08-25 점검 결과 반영).
+  //
+  // 예전엔 조회수끼리(GA4 screenPageViews ÷ 서버측 page_views) 나눴는데, 두 집계가 서로 다른
+  // 규칙으로 세기 때문에 그날의 탐색 패턴에 따라 값이 널뛰었다 — 8/22 96%, 이틀 뒤 8/24 39%로
+  // 떨어져 "대부분 누락 — 즉시 점검"이 나갔지만 실제로는 태그가 정상이었다.
+  //   · 서버측 page_views: 탭세션×경로당 1회 → 방문자가 페이지를 넘길수록 늘어난다
+  //   · GA4 screenPageViews: SPA 이동 후 히트가 약 1.8초 늦게 나가 빠른 이동은 누락된다
+  //   → 방문자 1명이 서버측 3회 / GA4 1회가 되어 "67% 누락"으로 보인다(실제 놓친 사람 0명).
+  // 사람 수(GA4 활성 사용자 ÷ Vercel 실측 방문자)는 이 차이에 영향을 받지 않는다.
+  // 실측 밴드(배너 제거 후 8/21~8/24): 54~105% → 55% 이상 정상, 30% 미만만 실제 경보.
+  if (vercelViews.available && vercelViews.visitors > 0) {
+    const rate = Math.round((activeUsersExAdmin / vercelViews.visitors) * 100);
+    const verdict = rate >= 55 ? "정상" : rate >= 30 ? "낮음 — 태그 동작 점검 권장" : "⚠️ 대부분 누락 — 즉시 점검 필요";
+    insights.push(
+      `GA4 포착률(사람 수 기준): Vercel 실측 방문자 ${vercelViews.visitors.toLocaleString()}명 대비 ` +
+      `GA4 ${activeUsersExAdmin.toLocaleString()}명 (${rate}%) — ${verdict}.` +
+      // GA4는 쿠키, Vercel은 IP+브라우저로 사람을 식별해 100%를 넘길 수 있다(오류 아님).
+      (rate > 110 ? " 100% 초과는 GA4(쿠키)와 Vercel(IP·브라우저)의 식별 방식 차이입니다." : "") +
+      (serverViews.available && serverViews.total > 0
+        ? ` 조회수로는 서버측 ${serverViews.total.toLocaleString()}회 · Vercel ${vercelViews.pageviews.toLocaleString()}회 대비 GA4 ${pageViewsExAdmin.toLocaleString()}회지만, 세 집계의 세는 규칙이 달라 판정에는 쓰지 않습니다.`
+        : "")
+    );
+  } else if (serverViews.available && serverViews.total > 0) {
+    // Vercel 미설정(VERCEL_ANALYTICS_TOKEN 없음) 폴백 — 조회수 비율은 참고값으로만 남기고
+    // 경보 문구는 붙이지 않는다. 이 비율로 판정하면 매일 오탐이 나가기 때문이다.
+    const usable = serverViews.hasConsentDim && legacyConsent > 0 ? serverViews.total - legacyConsent : serverViews.total;
+    const rate = usable > 0 ? Math.round((pageViewsExAdmin / usable) * 100) : 0;
+    insights.push(
+      `GA4 포착률(참고·조회수 기준): 서버측 ${usable.toLocaleString()}회 대비 GA4 ${pageViewsExAdmin.toLocaleString()}회 (${rate}%) — ` +
+      `조회수끼리의 비교라 그날 탐색 패턴에 따라 크게 흔들립니다. 사람 수 기준 판정은 VERCEL_ANALYTICS_TOKEN을 설정하면 표시됩니다.`
+    );
+  }
+
+  // 1-c. 서버측 실측(차단 무관) — GA4 세션은 '태그가 뜰 때까지 머문 방문자' 표본이라 이 값과 함께 읽어야 한다.
   if (blogViews.available && blogViews.delta !== null && blogViews.hours) {
     const gap = pageViews > 0 ? (blogViews.delta / pageViews).toFixed(1) : null;
     insights.push(
@@ -427,12 +446,13 @@ export async function getDailyReport(): Promise<DailyReport> {
   return {
     dateLabel,
     realtimeActiveUsers,
-    activeUsers, newUsers, returningUsers, sessions, pageViews, pageViewsExAdmin,
+    activeUsers, activeUsersExAdmin, newUsers, returningUsers, sessions, pageViews, pageViewsExAdmin,
     engagementRate, engagedSessions, engagementPending, avgEngagementPerSession,
     keyEvents: keyEventsYday,
     realLeads,
     blogViews,
     serverViews,
+    vercelViews,
     prev,
     avg7,
     topPages: listOf(pages),

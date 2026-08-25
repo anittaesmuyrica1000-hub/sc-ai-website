@@ -102,14 +102,16 @@ export async function GET(req: NextRequest) {
             리드 = 도입문의 ${s.realLeads.apply} · 소개서 ${s.realLeads.brochure} (사내 @supercoder.co 제출 제외 · Supabase 기준)
           </div>
           ${
-            s.blogViews.available || s.serverViews.available
+            s.blogViews.available || s.serverViews.available || s.vercelViews.available
               ? `<table width="100%" cellspacing="6" cellpadding="0" style="border-collapse:separate;margin-top:6px"><tr>
+            ${s.vercelViews.available ? metricCard("실측 방문자(어제·Vercel)", s.vercelViews.visitors.toLocaleString()) : ""}
             ${s.serverViews.available ? metricCard("서버측 전체 조회(어제)", s.serverViews.total.toLocaleString()) : ""}
             ${metricCard("블로그 조회 증가(서버측)", s.blogViews.delta !== null ? `+${s.blogViews.delta.toLocaleString()}` : "집계 시작")}
             ${metricCard("블로그 누적 조회", s.blogViews.total.toLocaleString())}
           </tr></table>
           <div style="font-size:11.5px;color:#5b6577;text-align:center;margin-top:8px">
-            서버측 조회수는 광고·스크립트 차단과 무관하게 집계됩니다 — 태그가 뜨기 전에 떠나거나 차단기를 쓴, GA4에서 빠진 방문자가 포함됩니다.
+            실측 방문자·서버측 조회수는 광고·스크립트 차단과 무관하게 집계됩니다 — 태그가 뜨기 전에 떠나거나 차단기를 쓴, GA4에서 빠진 방문자가 포함됩니다.
+            ${s.vercelViews.available ? "GA4 포착률은 조회수가 아니라 <b>사람 수</b>(GA4 활성 사용자 ÷ 실측 방문자)로 판정합니다." : ""}
           </div>`
               : ""
           }

@@ -1,0 +1,455 @@
+<title>GA4 포착률 점검</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+
+<style>
+  /* ─── 토큰 ───────────────────────────────────────────────
+     app/globals.css 의 :root 값을 그대로 가져와 사이트와 같은 색을 쓴다.
+     라이트가 기본, 다크는 토큰만 재정의한다. */
+  :root{
+    --blue:#2E6CF0; --blue-d:#1F54CC;
+    --ink:#142036; --slate:#566179; --slate-2:#6D7689; --line:#E5EBF5;
+    --bg:#FFFFFF; --panel:#F7FAFF; --panel-2:#EAF1FE;
+    --green:#16A34A; --amber:#B8710A; --red:#C6483C;
+    --green-bg:#E8F6EC; --amber-bg:#FBF1DF; --red-bg:#FBEBE9; --blue-bg:#E8F0FE;
+    --rule:1px solid var(--line);
+    --r:14px;
+    --measure:34rem;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --blue:#7BA4FA; --blue-d:#A6C2FC;
+      --ink:#E7ECF6; --slate:#A3AFC4; --slate-2:#8D9AB2; --line:#243149;
+      --bg:#0D1420; --panel:#141D2D; --panel-2:#1B2740;
+      --green:#57C97E; --amber:#E5A63F; --red:#F08376;
+      --green-bg:#14281C; --amber-bg:#2C2213; --red-bg:#2E1A18; --blue-bg:#152140;
+    }
+  }
+  :root[data-theme="dark"]{
+    --blue:#7BA4FA; --blue-d:#A6C2FC;
+    --ink:#E7ECF6; --slate:#A3AFC4; --slate-2:#8D9AB2; --line:#243149;
+    --bg:#0D1420; --panel:#141D2D; --panel-2:#1B2740;
+    --green:#57C97E; --amber:#E5A63F; --red:#F08376;
+    --green-bg:#14281C; --amber-bg:#2C2213; --red-bg:#2E1A18; --blue-bg:#152140;
+  }
+
+  *{box-sizing:border-box}
+  body{
+    margin:0; background:var(--bg); color:var(--ink);
+    font-family:"IBM Plex Sans KR", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    font-size:16px; line-height:1.72; font-weight:400;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:52rem; margin:0 auto; padding:0 1.5rem 6rem}
+  p{margin:0}
+  h1,h2,h3{margin:0; text-wrap:balance; line-height:1.3; font-weight:600}
+
+  .mono{font-family:"IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace; font-variant-numeric:tabular-nums}
+  .eyebrow{
+    font-family:"IBM Plex Mono", monospace; font-size:.7rem; font-weight:500;
+    letter-spacing:.14em; text-transform:uppercase; color:var(--slate-2);
+  }
+
+  /* ─── 머리말 ─── */
+  header.top{padding:4.5rem 0 2.5rem; border-bottom:var(--rule)}
+  header.top h1{font-size:clamp(1.9rem,4.6vw,2.7rem); font-weight:700; letter-spacing:-.02em; margin:.85rem 0 0}
+  .lede{margin-top:1.1rem; font-size:1.06rem; color:var(--slate); max-width:var(--measure)}
+  .meta{display:flex; flex-wrap:wrap; gap:.5rem 1.4rem; margin-top:1.6rem}
+  .meta div{display:flex; gap:.5rem; align-items:baseline}
+  .meta dt{font-size:.75rem; color:var(--slate-2); letter-spacing:.04em}
+  .meta dd{margin:0; font-size:.82rem; font-weight:500}
+
+  /* ─── 결론 박스 ─── */
+  .verdict{
+    margin:2.5rem 0 0; padding:1.5rem 1.6rem;
+    background:var(--panel); border:var(--rule); border-radius:var(--r);
+    display:flex; flex-direction:column; gap:.7rem;
+  }
+  .verdict p{max-width:var(--measure)}
+  .verdict strong{font-weight:600; color:var(--ink)}
+
+  section{padding-top:3.4rem}
+  section h2{
+    font-size:1.22rem; font-weight:600; letter-spacing:-.01em;
+    padding-bottom:.7rem; border-bottom:var(--rule); margin-bottom:1.5rem;
+  }
+  section > p{max-width:var(--measure); margin-bottom:1rem; color:var(--slate)}
+  section > p.tight{margin-bottom:.4rem}
+  section > p strong{color:var(--ink); font-weight:600}
+
+  /* ─── 가설 카드 ─── */
+  .hyps{display:flex; flex-direction:column; gap:.75rem}
+  .hyp{
+    display:grid; grid-template-columns:5.4rem 1fr; gap:0 1.2rem;
+    padding:1.1rem 1.3rem; border:var(--rule); border-radius:var(--r); background:var(--bg);
+  }
+  .chip{
+    align-self:start; justify-self:start;
+    font-family:"IBM Plex Mono", monospace; font-size:.7rem; font-weight:600;
+    letter-spacing:.08em; padding:.28rem .55rem; border-radius:6px; white-space:nowrap;
+  }
+  .chip.reject{background:var(--red-bg); color:var(--red)}
+  .chip.confirm{background:var(--green-bg); color:var(--green)}
+  .hyp h3{font-size:.98rem; font-weight:600; margin-bottom:.3rem}
+  .hyp p{font-size:.9rem; color:var(--slate); max-width:var(--measure)}
+  .hyp .ev{
+    margin-top:.55rem; font-size:.82rem; color:var(--slate-2);
+    padding-left:.85rem; border-left:2px solid var(--line);
+  }
+  @media (max-width:34rem){
+    .hyp{grid-template-columns:1fr; gap:.6rem}
+  }
+
+  /* ─── 측정 전후 ─── */
+  .deltas{display:grid; gap:.6rem; grid-template-columns:1fr}
+  .delta{
+    display:flex; flex-wrap:wrap; align-items:baseline; gap:.5rem 1rem;
+    padding:.95rem 1.2rem; border:var(--rule); border-radius:10px; background:var(--panel);
+  }
+  .delta .k{flex:1 1 12rem; font-size:.88rem; font-weight:500}
+  .delta .v{display:flex; align-items:baseline; gap:.55rem}
+  .delta .before{font-size:.95rem; color:var(--slate-2); text-decoration:line-through; text-decoration-thickness:1px}
+  .delta .arrow{color:var(--slate-2); font-size:.85rem}
+  .delta .after{font-size:1.1rem; font-weight:600; color:var(--blue)}
+
+  /* ─── 표 ─── */
+  .scroll{overflow-x:auto; border:var(--rule); border-radius:var(--r)}
+  table{border-collapse:collapse; width:100%; font-size:.86rem; min-width:30rem}
+  th,td{padding:.72rem .95rem; text-align:left; border-bottom:1px solid var(--line); vertical-align:top}
+  thead th{
+    font-family:"IBM Plex Mono", monospace; font-size:.68rem; font-weight:600;
+    letter-spacing:.1em; text-transform:uppercase; color:var(--slate-2);
+    background:var(--panel); border-bottom:var(--rule); white-space:nowrap;
+  }
+  tbody tr:last-child td{border-bottom:none}
+  td.num{font-family:"IBM Plex Mono", monospace; font-variant-numeric:tabular-nums; white-space:nowrap}
+  td .hash{font-family:"IBM Plex Mono", monospace; font-size:.8rem; color:var(--slate-2)}
+  .ok{color:var(--green); font-weight:600; white-space:nowrap}
+  .hi{background:var(--blue-bg)}
+
+  /* ─── 남은 것 ─── */
+  .todos{display:flex; flex-direction:column; gap:.7rem; list-style:none; padding:0; margin:0}
+  .todos li{
+    display:grid; grid-template-columns:auto 1fr; gap:.9rem;
+    padding:1rem 1.2rem; border:var(--rule); border-radius:10px;
+  }
+  .todos .mark{
+    font-family:"IBM Plex Mono", monospace; font-size:.68rem; font-weight:600; letter-spacing:.07em;
+    padding:.24rem .5rem; border-radius:5px; height:fit-content; white-space:nowrap;
+  }
+  .todos .next{background:var(--blue-bg); color:var(--blue-d)}
+  .todos .later{background:var(--amber-bg); color:var(--amber)}
+  .todos h3{font-size:.94rem; font-weight:600; margin-bottom:.25rem}
+  .todos p{font-size:.87rem; color:var(--slate); max-width:var(--measure)}
+
+  .note{
+    margin-top:1.1rem; padding:.95rem 1.2rem; border-radius:10px;
+    background:var(--amber-bg); font-size:.87rem; color:var(--ink); max-width:var(--measure);
+  }
+  .note b{font-weight:600}
+
+  footer{
+    margin-top:4rem; padding-top:1.5rem; border-top:var(--rule);
+    font-size:.78rem; color:var(--slate-2); display:flex; flex-wrap:wrap; gap:.4rem 1.2rem;
+  }
+  code{
+    font-family:"IBM Plex Mono", monospace; font-size:.87em;
+    background:var(--panel-2); padding:.1em .35em; border-radius:4px;
+  }
+</style>
+
+<div class="wrap">
+
+  <header class="top">
+    <p class="eyebrow">작업 보고 · 2026-08-23</p>
+    <h1>GA4 포착률 28% 경보 점검</h1>
+    <p class="lede">
+      일일 애널리틱스 메일이 “대부분 누락 — 즉시 점검 필요”를 띄운 건에 대한 원인 규명과 조치 기록.
+      가설 6개 중 4개가 데이터로 기각됐고, 실제 원인 2개를 고쳐 전부 운영에 반영했다.
+    </p>
+    <dl class="meta">
+      <div><dt>대상</dt><dd>www.supercoder.co</dd></div>
+      <div><dt>커밋</dt><dd class="mono">5건</dd></div>
+      <div><dt>PR</dt><dd class="mono">#29 – #32</dd></div>
+      <div><dt>운영 반영</dt><dd class="ok">완료</dd></div>
+    </dl>
+  </header>
+
+  <div class="verdict">
+    <p class="eyebrow">한 줄 결론</p>
+    <p>
+      <strong>측정이 고장난 게 아니라, 측정을 보고하는 방식이 고장나 있었다.</strong>
+      28%라는 숫자는 분자와 분모가 서로 다른 것을 세면서 나온 값이었다.
+      실제 포착률은 그보다 높았고, 여기에 태그가 4.2초 늦게 뜨는 별개의 손실이 겹쳐 있었다.
+    </p>
+    <p>
+      부수적으로 <strong>매일 나가던 “참여율 낮음” 경보도 전부 오탐</strong>이라는 게 드러났다.
+      보고값 4.7%의 실제 확정치는 51.11%였다.
+    </p>
+  </div>
+
+  <section>
+    <h2>발단</h2>
+    <p>8월 21일자 일일 애널리틱스 메일에 다음 줄이 실렸다.</p>
+    <div class="scroll" style="border-radius:10px">
+      <table>
+        <tbody>
+          <tr><td class="mono" style="color:var(--red)">GA4 포착률: 서버측 200회 대비 GA4 57회 (28%) — ⚠️ 대부분 누락 — 즉시 점검 필요</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p style="margin-top:1rem">
+      이 지표는 8월 21일 쿠키 배너를 제거한 효과를 매일 검증하려고 만든 것이다.
+      서버측 조회수는 동의·차단과 무관하게 집계되므로, GA4와의 비가 곧 GA4가 놓치는 몫이 된다.
+    </p>
+  </section>
+
+  <section>
+    <h2>가설 검증</h2>
+    <p>
+      의심 가는 것부터 순서대로 확인했다. <strong>네 개가 기각되고 두 개가 남았다.</strong>
+      기각된 것 중 셋은 내가 먼저 원인으로 지목했다가 데이터에 부딪혀 철회한 것이다.
+    </p>
+
+    <div class="hyps">
+
+      <div class="hyp">
+        <span class="chip reject">기각</span>
+        <div>
+          <h3>쿠키 동의가 막고 있다</h3>
+          <p>배너 제거가 운영에 제대로 반영되지 않아 여전히 동의가 거부 상태일 것이다.</p>
+          <p class="ev">
+            운영 페이지에서 <code>analytics_storage:'granted'</code> 확인, <code>_ga</code> 쿠키 생성됨,
+            배너 DOM 없음, 수집 요청의 동의 신호 <code>gcs=G101</code> 정상. 동의는 처음부터 문제가 아니었다.
+          </p>
+        </div>
+      </div>
+
+      <div class="hyp">
+        <span class="chip reject">기각</span>
+        <div>
+          <h3>8/21에 크롤러가 훑고 갔다</h3>
+          <p>서버측 200회가 봇 때문에 부풀어 분모가 커진 것이다.</p>
+          <p class="ev">
+            경로당 조회수 <span class="mono">7.41</span> — 6일 평균 <span class="mono">4.99</span>보다 높고
+            정상일(8/19)의 <span class="mono">7.74</span>와 동급. 크롤러라면 1에 수렴해야 한다.
+            최다 경로 쏠림 32%도 유지돼 사람 트래픽 모양 그대로였다.
+          </p>
+        </div>
+      </div>
+
+      <div class="hyp">
+        <span class="chip reject">기각</span>
+        <div>
+          <h3>GTM 컨테이너의 중복 GA4 태그가 첫 히트를 늦춘다</h3>
+          <p><code>gtag/js</code>가 두 번 로드되는 것을 보고 GTM 안의 중복 태그를 의심했다.</p>
+          <p class="ev">
+            컨테이너는 태그가 0개인 빈 상태였다. 로컬에서 GTM만 끄고 A/B 측정한 결과 요청 수는 2→1로 줄었지만
+            첫 히트 시점은 <span class="mono">1,507ms → 1,599ms</span>로 개선이 없었다. GTM은 손댈 것이 없다.
+          </p>
+        </div>
+      </div>
+
+      <div class="hyp">
+        <span class="chip reject">기각</span>
+        <div>
+          <h3>GA4 처리 지연으로 8/21 수치가 낮게 잡혔다</h3>
+          <p>메일 발송 시점(익일 08:00)엔 GA4가 아직 데이터를 확정하지 못했을 것이다.</p>
+          <p class="ev">
+            이틀 지난 시점에 다시 조회해도 8/21 조회수는 <span class="mono">59회</span>로,
+            메일이 보고한 57회와 사실상 같았다. 조회수에는 처리 지연이 없었다.
+            <em>(단, 참여율에는 있었다 — 아래 참조.)</em>
+          </p>
+        </div>
+      </div>
+
+      <div class="hyp">
+        <span class="chip confirm">확정</span>
+        <div>
+          <h3>지표가 분자와 분모로 다른 것을 세고 있다</h3>
+          <p>포착률 계산식 자체에 두 군데 오염이 있었다.</p>
+          <p class="ev">
+            <b>분모</b> — 배너 시절(미클릭) 55회가 섞여 있었다. 이 조회들은 동의 거부 상태라 GA4에 애초에 잡힐 수 없다.
+            빼면 28%가 아니라 <span class="mono">39%</span>다.<br>
+            <b>분자</b> — 사내 <code>/admin</code>이 GA4 쪽에만 포함돼 있었다. 서버측은 이중으로 제외하는데 GA4는 세고 있어,
+            8/22엔 <span class="mono">85÷83 = 102%</span>라는 불가능한 값이 나왔다.
+          </p>
+        </div>
+      </div>
+
+      <div class="hyp">
+        <span class="chip confirm">확정</span>
+        <div>
+          <h3>태그가 너무 늦게 뜬다</h3>
+          <p>
+            GA 태그가 하이드레이션 → Supabase 설정 조회 → 스크립트 주입 순서로 실행돼,
+            첫 히트가 페이지 시작 후 4.2초에야 나갔다.
+          </p>
+          <p class="ev">
+            같은 페이지의 서버측 카운터는 그보다 먼저 기록된다. 그 사이에 떠난 방문자는
+            “서버측엔 있고 GA4엔 없는” 상태로 남는다. 참여율 4%대·세션당 31초인 사이트라 이 층이 두껍다.
+            8/21이 유독 낮았던 것도 콜드 검색 유입(Organic 23세션)이 8/22의 3배였던 것과 맞물린다.
+          </p>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <section>
+    <h2>측정 결과</h2>
+    <p>운영 사이트에서 <code>performance</code> API로 직접 측정했다. 캐시가 살아 있는 재방문(warm) 기준.</p>
+    <div class="deltas">
+      <div class="delta">
+        <span class="k">gtag.js 요청 시작</span>
+        <span class="v mono"><span class="before">2,646ms</span><span class="arrow">→</span><span class="after">154ms</span></span>
+      </div>
+      <div class="delta">
+        <span class="k">gtag.js 요청 시작 <span style="color:var(--slate-2)">(첫 방문)</span></span>
+        <span class="v mono"><span class="before">3,455ms</span><span class="arrow">→</span><span class="after">323ms</span></span>
+      </div>
+      <div class="delta">
+        <span class="k">GA4 첫 히트</span>
+        <span class="v mono"><span class="before">3,298ms</span><span class="arrow">→</span><span class="after">1,758ms</span></span>
+      </div>
+      <div class="delta">
+        <span class="k">GA4 첫 히트 <span style="color:var(--slate-2)">(첫 방문)</span></span>
+        <span class="v mono"><span class="before">4,213ms</span><span class="arrow">→</span><span class="after">3,359ms</span></span>
+      </div>
+    </div>
+    <div class="note">
+      <b>첫 방문의 개선폭이 작은 이유</b> — 태그가 일찍 뜨는 만큼 페이지의 다른 리소스와 대역폭을 나눠 쓰게 된다.
+      누락을 줄이는 데 결정적인 것은 “요청 시작” 시점이므로 개선은 유효하다.
+    </div>
+  </section>
+
+  <section>
+    <h2>조치</h2>
+    <p>커밋 5건, 전부 <code>main</code> 머지 완료.</p>
+    <div class="scroll">
+      <table>
+        <thead>
+          <tr><th>커밋</th><th>내용</th><th>PR</th><th>상태</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="hash">2508a3a</td>
+            <td>GA 태그를 서버 <code>&lt;head&gt;</code>로 이동. 설정은 5분 캐시로 서버 조회 —
+                어드민에서 값을 바꾸면 재배포 없이 반영되는 성질과 정적 렌더링을 둘 다 유지.
+                포착률 분모에서 배너 시절 조회 제외.</td>
+            <td class="num">#29</td><td class="ok">반영</td>
+          </tr>
+          <tr>
+            <td class="hash">6c0b51c</td>
+            <td>어드민 설정과 일일 메일에 남아 있던 쿠키 배너 전제 문구 정리.
+                측정 ID를 한 줄로 넣는 것이 권장 경로임을 명시.</td>
+            <td class="num">#30</td><td class="ok">반영</td>
+          </tr>
+          <tr>
+            <td class="hash">8fa43d0</td>
+            <td>트래픽 급증의 봇/사람 판별 SQL 추가 <span class="hash">docs/sql/diagnose-traffic-spike-260823.sql</span></td>
+            <td class="num">#31</td><td class="ok">반영</td>
+          </tr>
+          <tr class="hi">
+            <td class="hash">040d503</td>
+            <td>포착률 분자에서 사내 <code>/admin</code> 제외 — 분모와 기준 통일.</td>
+            <td class="num">#31</td><td class="ok">반영</td>
+          </tr>
+          <tr class="hi">
+            <td class="hash">328194f</td>
+            <td>참여율 미확정 판정 보강 — 부분값을 놓쳐 매일 나가던 오경보 차단.</td>
+            <td class="num">#32</td><td class="ok">반영</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <h2>점검 중 드러난 것</h2>
+
+    <p class="tight"><strong>참여율 경보는 전부 오탐이었다.</strong></p>
+    <p>
+      크론이 오전 8시에 도는데, 어제가 끝난 지 8시간밖에 안 돼 GA4가 세션 단위 지표를 확정하지 못한 상태다.
+      기존 가드는 참여 세션이 정확히 0일 때만 억제했는데, GA4는 0이 아니라 부분값을 돌려주므로 그대로 통과했다.
+    </p>
+    <div class="scroll" style="margin-bottom:1.6rem">
+      <table>
+        <thead><tr><th>날짜</th><th>메일 보고값</th><th>실제 확정치</th><th>참여 세션</th></tr></thead>
+        <tbody>
+          <tr><td class="num">8/21</td><td class="num" style="color:var(--red)">4.7%</td><td class="num" style="color:var(--green)">51.11%</td><td class="num">45세션 중 23</td></tr>
+          <tr><td class="num">8/22</td><td class="num" style="color:var(--red)">3.3%</td><td class="num" style="color:var(--green)">43.33%</td><td class="num">30세션 중 13</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p class="tight"><strong>“회복”의 성격은 트래픽 증가가 아니라 계측 정상화다.</strong></p>
+    <p>
+      서버측 실측으로 보면 방문 규모는 8월 내내 하루 70~200회로 큰 변화가 없었다.
+      8/19에는 서버측 147회가 찍혔는데 GA4는 7세션만 봤다 — 미클릭 100회가 통째로 사라지고 있었다.
+      배너를 없애자 그게 보이기 시작한 것이다. 대외 보고 시 <strong>“트래픽 3배 성장”이 아니라 “계측 정상화”</strong>로
+      표현해야 한다.
+    </p>
+    <div class="scroll" style="margin-bottom:1.6rem">
+      <table>
+        <thead><tr><th>날짜</th><th>서버측 조회</th><th>경로</th><th>경로당</th><th>GA4 세션</th></tr></thead>
+        <tbody>
+          <tr><td class="num">8/18</td><td class="num">73</td><td class="num">16</td><td class="num">4.56</td><td class="num">4</td></tr>
+          <tr><td class="num">8/19</td><td class="num">147</td><td class="num">19</td><td class="num">7.74</td><td class="num">7</td></tr>
+          <tr><td class="num">8/20</td><td class="num">129</td><td class="num">28</td><td class="num">4.61</td><td class="num">3</td></tr>
+          <tr class="hi"><td class="num">8/21</td><td class="num">200</td><td class="num">27</td><td class="num">7.41</td><td class="num">43</td></tr>
+          <tr class="hi"><td class="num">8/22</td><td class="num">83</td><td class="num">24</td><td class="num">3.46</td><td class="num">30</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p class="tight"><strong>GA4 내부 트래픽 필터는 정상이다.</strong></p>
+    <p>
+      데이터 필터가 활성이고 규칙도 사무실 IP로 정확히 잡혀 있다. 다만 <code>/32</code> 단일 주소라
+      재택·모바일 접속은 원래 잡지 못한다. IP를 더 등록하는 대신 리포트 계산에서 <code>/admin</code>을
+      빼는 쪽으로 처리했다 — 사이트 코드와 GA4 수집은 건드리지 않았다.
+    </p>
+  </section>
+
+  <section>
+    <h2>남은 것</h2>
+    <ul class="todos">
+      <li>
+        <span class="mark next">다음</span>
+        <div>
+          <h3>Organic Search 20세션 넘는 첫 평일의 포착률</h3>
+          <p>
+            태그 수정 효과를 검증하는 지점. 콜드 검색 유입이 많은 날이 최악 조건이므로 여기서 70% 이상이면 확정이다.
+            그때까지 GA4 회복 점검 루틴은 켜두는 것을 권한다.
+          </p>
+        </div>
+      </li>
+      <li>
+        <span class="mark later">이후</span>
+        <div>
+          <h3>direct / (none) 저참여 세션의 정체</h3>
+          <p>
+            8/21 기준 16세션에 세션당 참여시간 11초. 검색 유입이 54.55%·55초로 건강한 것과 대조된다.
+            봇이거나 UTM 없는 링크일 가능성이 있어 서버측 기록과 대조가 필요하다.
+          </p>
+        </div>
+      </li>
+      <li>
+        <span class="mark later">이후</span>
+        <div>
+          <h3>GA4 기본 보고서의 <code>/admin</code> 부풀림</h3>
+          <p>
+            리포트 포착률만 기준을 맞췄고 GA4 기본 보고서의 참여율·참여시간은 그대로다.
+            깨끗한 수치가 필요하면 “정상 트래픽 모니터” 보고서를 쓰면 된다. 급하지 않다.
+          </p>
+        </div>
+      </li>
+    </ul>
+  </section>
+
+  <footer>
+    <span>Supercoder AI · AIVIEW</span>
+    <span class="mono">2026-08-23</span>
+    <span>측정: 운영 사이트 performance API · GA4 Data API · Supabase page_views</span>
+  </footer>
+
+</div>
