@@ -149,6 +149,7 @@ export type DailyReport = {
   sessions: number;
   pageViews: number;            // GA4 원본(사내 /admin 포함)
   pageViewsExAdmin: number;     // 사내 /admin 제외 — 조회수 교차검증용(판정에는 쓰지 않는다)
+  blogPageViews: number;        // GA4 블로그 상세(/blog/*) 조회수 — 서버측 blogViews와 범위를 맞춘 비교용
   engagementRate: number;       // 0~1
   engagedSessions: number;
   engagementPending: boolean;   // GA4가 어제 세션 지표를 아직 확정하지 않음 → 참여율 0%는 오탐
@@ -269,14 +270,24 @@ export async function getDailyReport(): Promise<DailyReport> {
 
   // 브레이크다운 + 이벤트 + 7일 이동 평균 (병렬)
   // 7일 평균: 그제(2daysAgo)부터 8일 전까지 7일간 — yesterday 제외
-  const [pages, channels, devices, countries, events, sevenDay] = await Promise.all([
+  const [pages, channels, devices, countries, events, sevenDay, blogPv] = await Promise.all([
     runReport({ dateRanges: [yday], dimensions: [{ name: "pageTitle" }], metrics: [{ name: "screenPageViews" }], orderBys: [{ metric: { metricName: "screenPageViews" }, desc: true }], limit: 5 }),
     runReport({ dateRanges: [yday], dimensions: [{ name: "sessionDefaultChannelGroup" }], metrics: [{ name: "sessions" }], orderBys: [{ metric: { metricName: "sessions" }, desc: true }], limit: 5 }),
     runReport({ dateRanges: [yday], dimensions: [{ name: "deviceCategory" }], metrics: [{ name: "activeUsers" }], orderBys: [{ metric: { metricName: "activeUsers" }, desc: true }], limit: 5 }),
     runReport({ dateRanges: [yday], dimensions: [{ name: "country" }], metrics: [{ name: "activeUsers" }], orderBys: [{ metric: { metricName: "activeUsers" }, desc: true }], limit: 5 }),
     runReport({ dateRanges: [yday], dimensions: [{ name: "eventName" }], metrics: [{ name: "eventCount" }], orderBys: [{ metric: { metricName: "eventCount" }, desc: true }], limit: 8 }),
     runReport({ dateRanges: [{ startDate: "8daysAgo", endDate: "2daysAgo" }], metrics: [{ name: "activeUsers" }, { name: "sessions" }, { name: "engagementRate" }] }),
+    // 블로그 '상세'만 — 서버측 blogViews(increment_post_views)가 세는 것과 범위를 맞춘다.
+    // "/blog/" 로 시작하는 경로만 잡히므로 목록 페이지(/blog)는 자동으로 빠진다.
+    runReport({
+      dateRanges: [yday],
+      metrics: [{ name: "screenPageViews" }],
+      dimensionFilter: { filter: { fieldName: "pagePath", stringFilter: { matchType: "BEGINS_WITH", value: "/blog/" } } },
+    }),
   ]);
+
+  // 어제 GA4 블로그 상세 조회수 — 서버측 blogViews와 같은 범위(블로그 상세만)
+  const blogPageViews = n(blogPv.rows?.[0]?.metricValues?.[0]?.value);
 
   const s7r = sevenDay.rows?.[0]?.metricValues ?? [];
   const avg7 = {
@@ -391,13 +402,20 @@ export async function getDailyReport(): Promise<DailyReport> {
     );
   }
 
-  // 1-c. 서버측 실측(차단 무관) — GA4 세션은 '태그가 뜰 때까지 머문 방문자' 표본이라 이 값과 함께 읽어야 한다.
+  // 1-c. 서버측 블로그 실측(차단 무관) — 블로그만 따로 보는 지표.
+  //
+  // 예전엔 이 값을 GA4 '전 페이지' 조회수로 나눠 "N배"를 보여줬는데, 분자는 블로그 상세만,
+  // 분모는 랜딩·폼까지 포함한 전 페이지라 범위가 어긋난 비교였다(2026-08-26 정리).
+  // → 같은 범위인 GA4 블로그 상세 조회수(blogPageViews)와 비교한다.
+  // 집계 창이 완전히 같지는 않다(서버측은 직전 스냅샷 이후 ~24시간, GA4는 어제 하루) — 근사 비교다.
   if (blogViews.available && blogViews.delta !== null && blogViews.hours) {
-    const gap = pageViews > 0 ? (blogViews.delta / pageViews).toFixed(1) : null;
+    const gap = blogPageViews > 0 ? (blogViews.delta / blogPageViews).toFixed(1) : null;
     insights.push(
       `서버측 블로그 조회 +${blogViews.delta.toLocaleString()}회 (최근 ${blogViews.hours}시간, 차단 무관 집계` +
       (blogViews.perDay !== null ? ` · 최근 평균 ${blogViews.perDay}회/일` : "") + ")" +
-      (gap ? ` — GA4 조회수 ${pageViews.toLocaleString()}회의 ${gap}배.` : ".")
+      (gap
+        ? ` — 어제 GA4 블로그 상세 조회 ${blogPageViews.toLocaleString()}회의 ${gap}배.`
+        : ` — 어제 GA4 블로그 상세 조회는 ${blogPageViews.toLocaleString()}회.`)
     );
   } else if (blogViews.available) {
     insights.push(
@@ -446,7 +464,7 @@ export async function getDailyReport(): Promise<DailyReport> {
   return {
     dateLabel,
     realtimeActiveUsers,
-    activeUsers, activeUsersExAdmin, newUsers, returningUsers, sessions, pageViews, pageViewsExAdmin,
+    activeUsers, activeUsersExAdmin, newUsers, returningUsers, sessions, pageViews, pageViewsExAdmin, blogPageViews,
     engagementRate, engagedSessions, engagementPending, avgEngagementPerSession,
     keyEvents: keyEventsYday,
     realLeads,
