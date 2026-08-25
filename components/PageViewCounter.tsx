@@ -6,7 +6,8 @@ import { supabase } from "@/lib/supabase";
 
 // 전 페이지 서버측 조회수 +1 — 경로가 바뀔 때마다 1회 호출(클라이언트 라우팅 포함).
 // 쿠키·개인식별자를 쓰지 않고 경로별 카운터만 올리므로 쿠키 동의와 무관하게 집계된다.
-// GA4는 배너 미클릭 방문자를 denied 처리해 약 19%만 잡히므로, 실제 방문 규모는 이 값으로 본다.
+// 광고 차단·조기 이탈로 GA4가 놓치는 조회도 남으므로, 실제 방문 규모는 이 값으로 본다.
+// (단 GA4 조회수와 직접 나눠 포착률로 쓰면 안 된다 — lib/pageViews.ts 주석 참고.)
 // increment_page_view RPC(SECURITY DEFINER)가 경로 형식 검증과 /admin·/api 제외를 담당한다.
 // 마이그레이션(add-page-views.sql) 전이거나 실패해도 조용히 무시 → 화면엔 영향 없음.
 export default function PageViewCounter() {

@@ -2,7 +2,9 @@ import { createClient } from "@supabase/supabase-js";
 
 // 서버 전용: 전 페이지 서버측 조회수(page_views) 집계.
 // 쿠키 동의와 무관하게 경로별 카운터만 올린 값이라, GA4가 놓치는 방문자도 포함된다.
-// (2026-08-18 점검: GA4는 배너 미클릭 방문자를 denied 처리해 실제의 약 19%만 집계)
+// ⚠️ 이 값을 GA4 조회수로 나눠 "포착률"로 쓰지 말 것 — 세는 규칙이 달라 그날 탐색 패턴에 따라
+// 널뛴다(2026-08-25 점검: 8/22 96% ↔ 8/24 39%인데 둘 다 태그는 정상이었다).
+// 포착률 판정은 사람 수 기준(lib/vercelViews.ts)으로 한다. 이 값은 '실제 방문 규모'로만 읽는다.
 // 테이블(add-page-views.sql)이 없으면 조용히 비활성 처리한다 — 리포트는 계속 발송된다.
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
