@@ -149,6 +149,7 @@ export type DailyReport = {
   sessions: number;
   pageViews: number;            // GA4 원본(사내 /admin 포함)
   pageViewsExAdmin: number;     // 사내 /admin 제외 — 조회수 교차검증용(판정에는 쓰지 않는다)
+  blogPageViews: number;        // GA4 블로그 상세(/blog/*) 조회수 — 서버측 blogViews와 범위를 맞춘 비교용
   engagementRate: number;       // 0~1
   engagedSessions: number;
   engagementPending: boolean;   // GA4가 어제 세션 지표를 아직 확정하지 않음 → 참여율 0%는 오탐
@@ -158,8 +159,9 @@ export type DailyReport = {
   blogViews: BlogViews;         // 서버측 블로그 조회수(동의 무관) — GA4 누락분 감시용
   serverViews: ServerPageViews; // 서버측 전 페이지 조회수(동의 무관) — 실제 방문 규모
   vercelViews: VercelViews;     // Vercel 실측 방문자(쿠키리스) — 포착률 분모
-  // 전일 대비(그제) 비교용
-  prev: { activeUsers: number; sessions: number; engagementRate: number; keyEvents: number };
+  // 전일 대비(그제) 비교용. 그제는 GA4 확정이 끝난 값이라, 어제가 아직 미확정일 때
+  // 참여 지표를 대신 보여주는 용도로도 쓴다(engagementPending 참고).
+  prev: { activeUsers: number; sessions: number; engagementRate: number; keyEvents: number; avgEngagementPerSession: number };
   // 7일 이동 평균(그제 기준 7일, yesterday 미포함)
   avg7: { activeUsers: number; sessions: number; engagementRate: number };
   // 브레이크다운
@@ -170,6 +172,36 @@ export type DailyReport = {
   topEvents: NameCount[];       // eventName × eventCount
   insights: string[];           // 자동 생성 인사이트 문장들
 };
+
+// GA4 포착률 — 반드시 '사람 수'로 판정한다(2026-08-25 점검 결과).
+//
+// 조회수끼리(GA4 screenPageViews ÷ 서버측 page_views) 나누면 두 집계가 서로 다른 규칙으로 세기
+// 때문에 그날의 탐색 패턴에 따라 값이 널뛴다 — 8/22 96%, 이틀 뒤 8/24 39%로 떨어져
+// "대부분 누락 — 즉시 점검"이 나갔지만 실제로는 태그가 정상이었다.
+//   · 서버측 page_views: 탭세션×경로당 1회 → 방문자가 페이지를 넘길수록 늘어난다
+//   · GA4 screenPageViews: SPA 이동 후 히트가 약 1.8초 늦게 나가 빠른 이동은 누락된다
+//   → 방문자 1명이 서버측 3회 / GA4 1회가 되어 "67% 누락"으로 보인다(실제 놓친 사람 0명).
+// 사람 수는 이 차이에 영향을 받지 않는다.
+//
+// 실측 밴드(배너 제거 후 8/21~8/25): 54~105% → 55% 이상 정상, 30% 미만만 실제 경보.
+// 100%를 넘을 수 있는 것은 오류가 아니다 — GA4는 쿠키, Vercel은 IP·브라우저로 사람을 식별한다.
+//
+// 인사이트 문장과 메일 카드가 서로 다른 기준을 쓰지 않도록 판정은 여기 한 곳에서만 한다.
+export type CaptureRate = { rate: number; verdict: string; short: string; level: "ok" | "warn" | "bad" };
+
+export function captureRate(
+  r: Pick<DailyReport, "activeUsersExAdmin" | "vercelViews">
+): CaptureRate | null {
+  if (!r.vercelViews.available || r.vercelViews.visitors <= 0) return null;
+  const rate = Math.round((r.activeUsersExAdmin / r.vercelViews.visitors) * 100);
+  const level = rate >= 55 ? "ok" : rate >= 30 ? "warn" : "bad";
+  const verdict =
+    level === "ok" ? "정상" :
+    level === "warn" ? "낮음 — 태그 동작 점검 권장" :
+    "⚠️ 대부분 누락 — 즉시 점검 필요";
+  const short = level === "ok" ? "정상" : level === "warn" ? "낮음" : "점검 필요";
+  return { rate, verdict, short, level };
+}
 
 // 초 → "m분 s초" / "s초"
 export function fmtDuration(sec: number): string {
@@ -269,14 +301,24 @@ export async function getDailyReport(): Promise<DailyReport> {
 
   // 브레이크다운 + 이벤트 + 7일 이동 평균 (병렬)
   // 7일 평균: 그제(2daysAgo)부터 8일 전까지 7일간 — yesterday 제외
-  const [pages, channels, devices, countries, events, sevenDay] = await Promise.all([
+  const [pages, channels, devices, countries, events, sevenDay, blogPv] = await Promise.all([
     runReport({ dateRanges: [yday], dimensions: [{ name: "pageTitle" }], metrics: [{ name: "screenPageViews" }], orderBys: [{ metric: { metricName: "screenPageViews" }, desc: true }], limit: 5 }),
     runReport({ dateRanges: [yday], dimensions: [{ name: "sessionDefaultChannelGroup" }], metrics: [{ name: "sessions" }], orderBys: [{ metric: { metricName: "sessions" }, desc: true }], limit: 5 }),
     runReport({ dateRanges: [yday], dimensions: [{ name: "deviceCategory" }], metrics: [{ name: "activeUsers" }], orderBys: [{ metric: { metricName: "activeUsers" }, desc: true }], limit: 5 }),
     runReport({ dateRanges: [yday], dimensions: [{ name: "country" }], metrics: [{ name: "activeUsers" }], orderBys: [{ metric: { metricName: "activeUsers" }, desc: true }], limit: 5 }),
     runReport({ dateRanges: [yday], dimensions: [{ name: "eventName" }], metrics: [{ name: "eventCount" }], orderBys: [{ metric: { metricName: "eventCount" }, desc: true }], limit: 8 }),
     runReport({ dateRanges: [{ startDate: "8daysAgo", endDate: "2daysAgo" }], metrics: [{ name: "activeUsers" }, { name: "sessions" }, { name: "engagementRate" }] }),
+    // 블로그 '상세'만 — 서버측 blogViews(increment_post_views)가 세는 것과 범위를 맞춘다.
+    // "/blog/" 로 시작하는 경로만 잡히므로 목록 페이지(/blog)는 자동으로 빠진다.
+    runReport({
+      dateRanges: [yday],
+      metrics: [{ name: "screenPageViews" }],
+      dimensionFilter: { filter: { fieldName: "pagePath", stringFilter: { matchType: "BEGINS_WITH", value: "/blog/" } } },
+    }),
   ]);
+
+  // 어제 GA4 블로그 상세 조회수 — 서버측 blogViews와 같은 범위(블로그 상세만)
+  const blogPageViews = n(blogPv.rows?.[0]?.metricValues?.[0]?.value);
 
   const s7r = sevenDay.rows?.[0]?.metricValues ?? [];
   const avg7 = {
@@ -301,11 +343,14 @@ export async function getDailyReport(): Promise<DailyReport> {
     prevKeyEvents = listOf(dbyEvents).reduce((a, b) => a + b.count, 0);
   } catch { /* 무시 */ }
 
+  const prevSessions = n(dr[2]?.value);
   const prev = {
     activeUsers: n(dr[0]?.value),
-    sessions: n(dr[2]?.value),
+    sessions: prevSessions,
     engagementRate: dr[4]?.value ? Number(dr[4].value) : 0,
     keyEvents: prevKeyEvents,
+    // 그제 세션당 참여시간 — 어제가 미확정일 때 카드에 대신 띄운다.
+    avgEngagementPerSession: prevSessions ? n(dr[6]?.value) / prevSessions : 0,
   };
 
   // 어제 날짜(KST) 라벨
@@ -358,19 +403,10 @@ export async function getDailyReport(): Promise<DailyReport> {
     }
   }
 
-  // 1-b. GA4 포착률 — 반드시 '사람 수'로 판정한다(2026-08-25 점검 결과 반영).
-  //
-  // 예전엔 조회수끼리(GA4 screenPageViews ÷ 서버측 page_views) 나눴는데, 두 집계가 서로 다른
-  // 규칙으로 세기 때문에 그날의 탐색 패턴에 따라 값이 널뛰었다 — 8/22 96%, 이틀 뒤 8/24 39%로
-  // 떨어져 "대부분 누락 — 즉시 점검"이 나갔지만 실제로는 태그가 정상이었다.
-  //   · 서버측 page_views: 탭세션×경로당 1회 → 방문자가 페이지를 넘길수록 늘어난다
-  //   · GA4 screenPageViews: SPA 이동 후 히트가 약 1.8초 늦게 나가 빠른 이동은 누락된다
-  //   → 방문자 1명이 서버측 3회 / GA4 1회가 되어 "67% 누락"으로 보인다(실제 놓친 사람 0명).
-  // 사람 수(GA4 활성 사용자 ÷ Vercel 실측 방문자)는 이 차이에 영향을 받지 않는다.
-  // 실측 밴드(배너 제거 후 8/21~8/24): 54~105% → 55% 이상 정상, 30% 미만만 실제 경보.
-  if (vercelViews.available && vercelViews.visitors > 0) {
-    const rate = Math.round((activeUsersExAdmin / vercelViews.visitors) * 100);
-    const verdict = rate >= 55 ? "정상" : rate >= 30 ? "낮음 — 태그 동작 점검 권장" : "⚠️ 대부분 누락 — 즉시 점검 필요";
+  // 1-b. GA4 포착률 — 판정 기준은 captureRate()에 모아 뒀다(메일 카드와 같은 값을 쓰기 위해).
+  const cap = captureRate({ activeUsersExAdmin, vercelViews });
+  if (cap) {
+    const { rate, verdict } = cap;
     insights.push(
       `GA4 포착률(사람 수 기준): Vercel 실측 방문자 ${vercelViews.visitors.toLocaleString()}명 대비 ` +
       `GA4 ${activeUsersExAdmin.toLocaleString()}명 (${rate}%) — ${verdict}.` +
@@ -391,13 +427,20 @@ export async function getDailyReport(): Promise<DailyReport> {
     );
   }
 
-  // 1-c. 서버측 실측(차단 무관) — GA4 세션은 '태그가 뜰 때까지 머문 방문자' 표본이라 이 값과 함께 읽어야 한다.
+  // 1-c. 서버측 블로그 실측(차단 무관) — 블로그만 따로 보는 지표.
+  //
+  // 예전엔 이 값을 GA4 '전 페이지' 조회수로 나눠 "N배"를 보여줬는데, 분자는 블로그 상세만,
+  // 분모는 랜딩·폼까지 포함한 전 페이지라 범위가 어긋난 비교였다(2026-08-26 정리).
+  // → 같은 범위인 GA4 블로그 상세 조회수(blogPageViews)와 비교한다.
+  // 집계 창이 완전히 같지는 않다(서버측은 직전 스냅샷 이후 ~24시간, GA4는 어제 하루) — 근사 비교다.
   if (blogViews.available && blogViews.delta !== null && blogViews.hours) {
-    const gap = pageViews > 0 ? (blogViews.delta / pageViews).toFixed(1) : null;
+    const gap = blogPageViews > 0 ? (blogViews.delta / blogPageViews).toFixed(1) : null;
     insights.push(
       `서버측 블로그 조회 +${blogViews.delta.toLocaleString()}회 (최근 ${blogViews.hours}시간, 차단 무관 집계` +
       (blogViews.perDay !== null ? ` · 최근 평균 ${blogViews.perDay}회/일` : "") + ")" +
-      (gap ? ` — GA4 조회수 ${pageViews.toLocaleString()}회의 ${gap}배.` : ".")
+      (gap
+        ? ` — 어제 GA4 블로그 상세 조회 ${blogPageViews.toLocaleString()}회의 ${gap}배.`
+        : ` — 어제 GA4 블로그 상세 조회는 ${blogPageViews.toLocaleString()}회.`)
     );
   } else if (blogViews.available) {
     insights.push(
@@ -409,9 +452,10 @@ export async function getDailyReport(): Promise<DailyReport> {
   const er7 = Math.round(avg7.engagementRate * 1000) / 10;
   if (engagementPending) {
     // 미확정 상태의 0%를 "낮음" 경보로 내보내면 매일 오탐이 된다(2026-08-17 점검에서 확인).
+    // 어제 참여시간도 같이 부분 집계라 과소로 나온다 → 참여율과 함께 그제 확정값으로 맞춘다.
     insights.push(
       `참여율 집계 중 (GA4가 어제 세션 지표를 아직 확정하지 않음) — 확정치는 그제 ${erPrev}%, 7일 평균 ${er7}%. ` +
-      `세션당 평균 참여 ${fmtDuration(avgEngagementPerSession)}.`
+      `그제 세션당 평균 참여 ${fmtDuration(prev.avgEngagementPerSession)}.`
     );
   } else {
     const erLabel = erNow >= 60 ? "양호" : erNow >= 40 ? "보통" : "낮음 — 랜딩/콘텐츠 점검 권장";
@@ -446,7 +490,7 @@ export async function getDailyReport(): Promise<DailyReport> {
   return {
     dateLabel,
     realtimeActiveUsers,
-    activeUsers, activeUsersExAdmin, newUsers, returningUsers, sessions, pageViews, pageViewsExAdmin,
+    activeUsers, activeUsersExAdmin, newUsers, returningUsers, sessions, pageViews, pageViewsExAdmin, blogPageViews,
     engagementRate, engagedSessions, engagementPending, avgEngagementPerSession,
     keyEvents: keyEventsYday,
     realLeads,
