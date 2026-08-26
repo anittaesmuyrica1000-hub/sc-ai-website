@@ -84,6 +84,18 @@ export async function GET(req: NextRequest) {
     const er = Math.round(s.engagementRate * 1000) / 10;
     const cap = captureRate(s);
 
+    // 참여 지표 카드 — 크론이 KST 08:00에 도는데 GA4는 그때까지 어제의 세션 스코프 지표를
+    // 확정하지 못한다(2026-08-26 실측: 어제 세션 40건 중 참여 세션 1건만 처리 → 참여율 2.5%).
+    // 그래서 이 카드는 사실상 매일 "집계 중"이었다 — 숫자가 뜨지 않는 카드는 자리만 차지한다.
+    // → 미확정일 땐 이미 확정된 그제 값을 라벨에 날짜를 밝혀 표시한다.
+    //   그제마저 세션이 없으면(주말 등) 표시할 값이 없으므로 그때만 "집계 중"으로 남긴다.
+    const engFallback = s.engagementPending && s.prev.sessions > 0;
+    const engLabel = (base: string) => (engFallback ? `${base} (그제 확정)` : base);
+    const engRate = engFallback
+      ? Math.round(s.prev.engagementRate * 1000) / 10 + "%"
+      : s.engagementPending ? "집계 중" : er + "%";
+    const engTime = fmtDuration(engFallback ? s.prev.avgEngagementPerSession : s.avgEngagementPerSession);
+
     const insightsHtml = s.insights
       .map((t) => `<li style="margin:0 0 7px;font-size:13px;color:#26324a;line-height:1.55">${escapeHtml(t)}</li>`)
       .join("");
@@ -137,12 +149,13 @@ export async function GET(req: NextRequest) {
           <table width="100%" cellspacing="6" cellpadding="0" style="border-collapse:separate"><tr>
             ${metricCard("활성 사용자 (사람)", s.activeUsers.toLocaleString())}
             ${metricCard("세션 (방문 횟수)", s.sessions.toLocaleString())}
-            ${metricCard("참여율", s.engagementPending ? "집계 중" : er + "%")}
-            ${metricCard("세션당 참여시간", fmtDuration(s.avgEngagementPerSession))}
+            ${metricCard(engLabel("참여율"), engRate)}
+            ${metricCard(engLabel("세션당 참여시간"), engTime)}
           </tr></table>
           <div style="font-size:11.5px;color:#8a94a6;text-align:center;margin-top:8px;line-height:1.6">
             신규 ${s.newUsers.toLocaleString()}명 · 재방문 ${s.returningUsers.toLocaleString()}명 · GA4 조회수 ${s.pageViews.toLocaleString()}회<br>
             ※ 조회수(횟수)는 ①의 조회수와 세는 규칙이 달라 서로 나누면 안 됩니다. 포착률은 <b>사람 수</b>로만 판정합니다.
+            ${engFallback ? "<br>※ 참여 지표는 GA4가 어제치를 아침까지 확정하지 못해 <b>그제 확정값</b>을 표시합니다." : ""}
           </div>
 
           <!-- ③ 성과 — 유일하게 GA4와 무관하게 정확한 숫자라 따로 떼어 크게 보여준다 -->

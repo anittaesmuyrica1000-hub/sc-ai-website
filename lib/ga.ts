@@ -159,8 +159,9 @@ export type DailyReport = {
   blogViews: BlogViews;         // 서버측 블로그 조회수(동의 무관) — GA4 누락분 감시용
   serverViews: ServerPageViews; // 서버측 전 페이지 조회수(동의 무관) — 실제 방문 규모
   vercelViews: VercelViews;     // Vercel 실측 방문자(쿠키리스) — 포착률 분모
-  // 전일 대비(그제) 비교용
-  prev: { activeUsers: number; sessions: number; engagementRate: number; keyEvents: number };
+  // 전일 대비(그제) 비교용. 그제는 GA4 확정이 끝난 값이라, 어제가 아직 미확정일 때
+  // 참여 지표를 대신 보여주는 용도로도 쓴다(engagementPending 참고).
+  prev: { activeUsers: number; sessions: number; engagementRate: number; keyEvents: number; avgEngagementPerSession: number };
   // 7일 이동 평균(그제 기준 7일, yesterday 미포함)
   avg7: { activeUsers: number; sessions: number; engagementRate: number };
   // 브레이크다운
@@ -342,11 +343,14 @@ export async function getDailyReport(): Promise<DailyReport> {
     prevKeyEvents = listOf(dbyEvents).reduce((a, b) => a + b.count, 0);
   } catch { /* 무시 */ }
 
+  const prevSessions = n(dr[2]?.value);
   const prev = {
     activeUsers: n(dr[0]?.value),
-    sessions: n(dr[2]?.value),
+    sessions: prevSessions,
     engagementRate: dr[4]?.value ? Number(dr[4].value) : 0,
     keyEvents: prevKeyEvents,
+    // 그제 세션당 참여시간 — 어제가 미확정일 때 카드에 대신 띄운다.
+    avgEngagementPerSession: prevSessions ? n(dr[6]?.value) / prevSessions : 0,
   };
 
   // 어제 날짜(KST) 라벨
@@ -448,9 +452,10 @@ export async function getDailyReport(): Promise<DailyReport> {
   const er7 = Math.round(avg7.engagementRate * 1000) / 10;
   if (engagementPending) {
     // 미확정 상태의 0%를 "낮음" 경보로 내보내면 매일 오탐이 된다(2026-08-17 점검에서 확인).
+    // 어제 참여시간도 같이 부분 집계라 과소로 나온다 → 참여율과 함께 그제 확정값으로 맞춘다.
     insights.push(
       `참여율 집계 중 (GA4가 어제 세션 지표를 아직 확정하지 않음) — 확정치는 그제 ${erPrev}%, 7일 평균 ${er7}%. ` +
-      `세션당 평균 참여 ${fmtDuration(avgEngagementPerSession)}.`
+      `그제 세션당 평균 참여 ${fmtDuration(prev.avgEngagementPerSession)}.`
     );
   } else {
     const erLabel = erNow >= 60 ? "양호" : erNow >= 40 ? "보통" : "낮음 — 랜딩/콘텐츠 점검 권장";
