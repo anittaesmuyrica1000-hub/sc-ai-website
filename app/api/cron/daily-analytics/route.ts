@@ -36,10 +36,14 @@ function rows(list: NameCount[], emptyText: string, fmt: (n: number) => string =
     .join("");
 }
 
-function metricCard(label: string, value: string) {
+// note는 단위·기준일 같은 부가 표기. 라벨 뒤에 이어 붙이면 "세션 (방문 / 횟수)"처럼
+// 괄호 안에서 줄이 잘리므로, 항상 둘째 줄로 내리고 한 단계 연한 색으로 둔다.
+function metricCard(label: string, value: string, note = "") {
   return `<td style="padding:14px 8px;text-align:center;background:#f6f8fc;border-radius:12px">
     <div style="font-size:22px;font-weight:800;color:#2e6cf0;line-height:1.1">${value}</div>
-    <div style="font-size:11.5px;color:#5b6577;margin-top:4px">${label}</div>
+    <div style="font-size:11.5px;color:#5b6577;margin-top:4px;line-height:1.45">${label}${
+      note ? `<br><span style="color:#9aa4b5">${note}</span>` : ""
+    }</div>
   </td>`;
 }
 
@@ -90,7 +94,7 @@ export async function GET(req: NextRequest) {
     // → 미확정일 땐 이미 확정된 그제 값을 라벨에 날짜를 밝혀 표시한다.
     //   그제마저 세션이 없으면(주말 등) 표시할 값이 없으므로 그때만 "집계 중"으로 남긴다.
     const engFallback = s.engagementPending && s.prev.sessions > 0;
-    const engLabel = (base: string) => (engFallback ? `${base} (그제 확정)` : base);
+    const engNote = engFallback ? "(그제 확정)" : "";
     const engRate = engFallback
       ? Math.round(s.prev.engagementRate * 1000) / 10 + "%"
       : s.engagementPending ? "집계 중" : er + "%";
@@ -130,10 +134,10 @@ export async function GET(req: NextRequest) {
                   "광고·스크립트 차단이나 동의 여부와 상관없이 집계됩니다. 가장 실제에 가까운 규모이고, 아래 ②의 기준이 되는 숫자입니다."
                 ) +
                 `<table width="100%" cellspacing="6" cellpadding="0" style="border-collapse:separate"><tr>
-            ${s.vercelViews.available ? metricCard("실측 방문자 (사람)", s.vercelViews.visitors.toLocaleString()) : ""}
-            ${s.serverViews.available ? metricCard("서버측 조회 (횟수)", s.serverViews.total.toLocaleString()) : ""}
-            ${metricCard("블로그 조회 증가 (횟수)", s.blogViews.delta !== null ? `+${s.blogViews.delta.toLocaleString()}` : "집계 시작")}
-            ${metricCard("블로그 누적 조회 (횟수)", s.blogViews.total.toLocaleString())}
+            ${s.vercelViews.available ? metricCard("실측 방문자", s.vercelViews.visitors.toLocaleString(), "(사람)") : ""}
+            ${s.serverViews.available ? metricCard("서버측 조회", s.serverViews.total.toLocaleString(), "(횟수)") : ""}
+            ${metricCard("블로그 조회 증가", s.blogViews.delta !== null ? `+${s.blogViews.delta.toLocaleString()}` : "집계 시작", "(횟수)")}
+            ${metricCard("블로그 누적 조회", s.blogViews.total.toLocaleString(), "(횟수)")}
           </tr></table>`
               : ""
           }
@@ -147,10 +151,10 @@ export async function GET(req: NextRequest) {
             captureBadge(cap)
           )}
           <table width="100%" cellspacing="6" cellpadding="0" style="border-collapse:separate"><tr>
-            ${metricCard("활성 사용자 (사람)", s.activeUsers.toLocaleString())}
-            ${metricCard("세션 (방문 횟수)", s.sessions.toLocaleString())}
-            ${metricCard(engLabel("참여율"), engRate)}
-            ${metricCard(engLabel("세션당 참여시간"), engTime)}
+            ${metricCard("활성 사용자", s.activeUsers.toLocaleString(), "(사람)")}
+            ${metricCard("세션", s.sessions.toLocaleString(), "(방문 횟수)")}
+            ${metricCard("참여율", engRate, engNote)}
+            ${metricCard("세션당 참여시간", engTime, engNote)}
           </tr></table>
           <div style="font-size:11.5px;color:#8a94a6;text-align:center;margin-top:8px;line-height:1.6">
             신규 ${s.newUsers.toLocaleString()}명 · 재방문 ${s.returningUsers.toLocaleString()}명 · GA4 조회수 ${s.pageViews.toLocaleString()}회<br>
