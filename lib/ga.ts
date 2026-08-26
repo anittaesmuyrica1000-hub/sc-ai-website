@@ -172,6 +172,36 @@ export type DailyReport = {
   insights: string[];           // 자동 생성 인사이트 문장들
 };
 
+// GA4 포착률 — 반드시 '사람 수'로 판정한다(2026-08-25 점검 결과).
+//
+// 조회수끼리(GA4 screenPageViews ÷ 서버측 page_views) 나누면 두 집계가 서로 다른 규칙으로 세기
+// 때문에 그날의 탐색 패턴에 따라 값이 널뛴다 — 8/22 96%, 이틀 뒤 8/24 39%로 떨어져
+// "대부분 누락 — 즉시 점검"이 나갔지만 실제로는 태그가 정상이었다.
+//   · 서버측 page_views: 탭세션×경로당 1회 → 방문자가 페이지를 넘길수록 늘어난다
+//   · GA4 screenPageViews: SPA 이동 후 히트가 약 1.8초 늦게 나가 빠른 이동은 누락된다
+//   → 방문자 1명이 서버측 3회 / GA4 1회가 되어 "67% 누락"으로 보인다(실제 놓친 사람 0명).
+// 사람 수는 이 차이에 영향을 받지 않는다.
+//
+// 실측 밴드(배너 제거 후 8/21~8/25): 54~105% → 55% 이상 정상, 30% 미만만 실제 경보.
+// 100%를 넘을 수 있는 것은 오류가 아니다 — GA4는 쿠키, Vercel은 IP·브라우저로 사람을 식별한다.
+//
+// 인사이트 문장과 메일 카드가 서로 다른 기준을 쓰지 않도록 판정은 여기 한 곳에서만 한다.
+export type CaptureRate = { rate: number; verdict: string; short: string; level: "ok" | "warn" | "bad" };
+
+export function captureRate(
+  r: Pick<DailyReport, "activeUsersExAdmin" | "vercelViews">
+): CaptureRate | null {
+  if (!r.vercelViews.available || r.vercelViews.visitors <= 0) return null;
+  const rate = Math.round((r.activeUsersExAdmin / r.vercelViews.visitors) * 100);
+  const level = rate >= 55 ? "ok" : rate >= 30 ? "warn" : "bad";
+  const verdict =
+    level === "ok" ? "정상" :
+    level === "warn" ? "낮음 — 태그 동작 점검 권장" :
+    "⚠️ 대부분 누락 — 즉시 점검 필요";
+  const short = level === "ok" ? "정상" : level === "warn" ? "낮음" : "점검 필요";
+  return { rate, verdict, short, level };
+}
+
 // 초 → "m분 s초" / "s초"
 export function fmtDuration(sec: number): string {
   const s = Math.round(sec);
@@ -369,19 +399,10 @@ export async function getDailyReport(): Promise<DailyReport> {
     }
   }
 
-  // 1-b. GA4 포착률 — 반드시 '사람 수'로 판정한다(2026-08-25 점검 결과 반영).
-  //
-  // 예전엔 조회수끼리(GA4 screenPageViews ÷ 서버측 page_views) 나눴는데, 두 집계가 서로 다른
-  // 규칙으로 세기 때문에 그날의 탐색 패턴에 따라 값이 널뛰었다 — 8/22 96%, 이틀 뒤 8/24 39%로
-  // 떨어져 "대부분 누락 — 즉시 점검"이 나갔지만 실제로는 태그가 정상이었다.
-  //   · 서버측 page_views: 탭세션×경로당 1회 → 방문자가 페이지를 넘길수록 늘어난다
-  //   · GA4 screenPageViews: SPA 이동 후 히트가 약 1.8초 늦게 나가 빠른 이동은 누락된다
-  //   → 방문자 1명이 서버측 3회 / GA4 1회가 되어 "67% 누락"으로 보인다(실제 놓친 사람 0명).
-  // 사람 수(GA4 활성 사용자 ÷ Vercel 실측 방문자)는 이 차이에 영향을 받지 않는다.
-  // 실측 밴드(배너 제거 후 8/21~8/24): 54~105% → 55% 이상 정상, 30% 미만만 실제 경보.
-  if (vercelViews.available && vercelViews.visitors > 0) {
-    const rate = Math.round((activeUsersExAdmin / vercelViews.visitors) * 100);
-    const verdict = rate >= 55 ? "정상" : rate >= 30 ? "낮음 — 태그 동작 점검 권장" : "⚠️ 대부분 누락 — 즉시 점검 필요";
+  // 1-b. GA4 포착률 — 판정 기준은 captureRate()에 모아 뒀다(메일 카드와 같은 값을 쓰기 위해).
+  const cap = captureRate({ activeUsersExAdmin, vercelViews });
+  if (cap) {
+    const { rate, verdict } = cap;
     insights.push(
       `GA4 포착률(사람 수 기준): Vercel 실측 방문자 ${vercelViews.visitors.toLocaleString()}명 대비 ` +
       `GA4 ${activeUsersExAdmin.toLocaleString()}명 (${rate}%) — ${verdict}.` +
