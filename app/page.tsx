@@ -288,8 +288,7 @@ export default async function HomePage() {
           {/* 저관여 오퍼 — 상담(고관여) 전에 소개서로 먼저 검토할 길을 본문 안에 둔다.
               기존에는 /brochure 링크가 GNB·푸터에만 있어 스크롤 흐름에서 노출되지 않았다. */}
           <div className="soft-cta">
-            <h3>아직 상담까지는 이르다면</h3>
-            <p className="lead">도입 사례와 검증 리포트 예시를 담은 서비스소개서를 회사 메일로 보내드립니다.</p>
+            <h3>실제 검증 리포트가 어떻게 나오는지 먼저 확인해보세요</h3>
             <Link href="/brochure" className="btn btn-blue soft-cta-btn">서비스소개서 받기 <i className="fa-solid fa-arrow-right"></i></Link>
           </div>
         </div>

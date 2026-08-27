@@ -251,11 +251,12 @@
      PROOF 카드 바로 아래에 붙어 '검증 효과는 봤지만 아직 확신은 없는' 구간을 받는다. */
   /* 섹션 헤드(.head)와 같은 중앙정렬 리듬 — h2보다 한 단계 작게 잡아
      바로 위 PROOF 헤드와 크기가 맞붙지 않도록 한다(.lead는 globals SSOT 재사용). */
-  .soft-cta{text-align:center;max-width:760px;margin:64px auto 0}
-  .soft-cta h3{font-size:clamp(23px,2.7vw,33px);font-weight:700;letter-spacing:-.02em;line-height:1.32;color:var(--ink)}
-  .soft-cta .lead{margin-top:14px}
-  .soft-cta-btn{margin-top:26px}
-  @media(max-width:680px){.soft-cta{margin-top:44px}.soft-cta .lead{font-size:15px;margin-top:10px}.soft-cta-btn{margin-top:20px;width:100%;justify-content:center}}
+  /* 부제 없이 한 줄 볼드 + 버튼. max-width는 이 카피가 데스크톱에서
+     한 줄로 떨어지도록 잡은 값이다(줄이면 두 줄로 깨진다). */
+  .soft-cta{text-align:center;max-width:900px;margin:64px auto 0}
+  .soft-cta h3{font-size:clamp(21px,2.5vw,31px);font-weight:700;letter-spacing:-.02em;line-height:1.35;color:var(--ink);text-wrap:balance}
+  .soft-cta-btn{margin-top:28px}
+  @media(max-width:680px){.soft-cta{margin-top:44px}.soft-cta-btn{margin-top:22px;width:100%;justify-content:center}}
 
   .logo-wall{display:flex;flex-wrap:wrap;justify-content:center;gap:16px 40px;align-items:center;margin-top:52px;padding-top:40px;border-top:1px solid var(--line)}
   .logo-wall span{font-weight:700;font-size:20px;color:#A2ACC2}
