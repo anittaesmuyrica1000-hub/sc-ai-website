@@ -292,7 +292,7 @@ export default async function HomePage() {
               <strong>아직 상담까지는 이르다면</strong>
               <span>도입 사례와 검증 리포트 예시를 담은 서비스소개서를 회사 메일로 보내드립니다.</span>
             </div>
-            <Link href="/brochure" className="btn btn-out soft-cta-btn">서비스소개서 받기 <i className="fa-solid fa-arrow-right"></i></Link>
+            <Link href="/brochure" className="btn btn-blue soft-cta-btn">서비스소개서 받기 <i className="fa-solid fa-arrow-right"></i></Link>
           </div>
         </div>
       </section>
