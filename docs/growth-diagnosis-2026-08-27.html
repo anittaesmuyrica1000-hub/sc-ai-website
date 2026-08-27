@@ -35,7 +35,7 @@
   body{
     margin:0; background:var(--paper); color:var(--ink);
     font-family:'Pretendard Variable',Pretendard,-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo','Malgun Gothic',sans-serif;
-    font-size:15px; line-height:1.62; letter-spacing:-.003em;
+    font-size:15px; line-height:1.75; letter-spacing:-.003em;
     -webkit-font-smoothing:antialiased;
   }
   .page{max-width:940px;margin:0 auto;padding:40px 28px 64px;}
@@ -51,20 +51,20 @@
 
   /* ── thesis ── */
   .thesis{background:var(--blue-soft);border-left:4px solid var(--blue);border-radius:0 10px 10px 0;
-    padding:16px 20px;margin:22px 0 0;}
+    padding:19px 22px;margin:24px 0 0;}
   /* 제목만 블록으로. `.thesis b` 로 잡으면 본문 안의 강조 <b> 까지 블록이 돼 문장이 쪼개진다. */
   .thesis .t-head{display:block;font-size:19px;font-weight:800;color:var(--ink);margin-bottom:5px;
     letter-spacing:-.03em;}
-  .thesis p{margin:0;font-size:14.5px;color:var(--ink);}
+  .thesis p{margin:0;font-size:14.5px;color:var(--ink);line-height:1.75;}
 
   /* ── sections ── */
-  section{margin-top:38px;}
+  section{margin-top:34px;}
   h2{font-size:21px;font-weight:800;padding-bottom:8px;border-bottom:1.5px solid var(--ink);}
-  .lead-p{font-size:14.5px;color:var(--ink-soft);margin:11px 0 16px;max-width:72ch;}
-  p{margin:0 0 8px;}
+  .lead-p{font-size:14.5px;color:var(--ink-soft);margin:13px 0 20px;max-width:72ch;line-height:1.72;}
+  p{margin:0 0 14px;}
 
   /* ── 층 다이어그램 ── */
-  .layer{border:1px solid var(--line);border-radius:11px;padding:17px 19px;margin-bottom:13px;}
+  .layer{border:1px solid var(--line);border-radius:11px;padding:19px 21px;margin-bottom:16px;}
   .layer-top{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:6px;
     padding-bottom:10px;margin-bottom:12px;border-bottom:1px solid var(--line-soft);}
   .layer-name{font-size:15.5px;font-weight:700;}
@@ -76,7 +76,7 @@
   .arrow{flex:0 0 auto;text-align:center;font-size:11px;color:var(--ink-faint);}
   .arrow b{display:block;font-size:14px;font-weight:700;color:var(--blue);font-variant-numeric:tabular-nums;}
   .leak{margin-top:11px;font-size:13.5px;color:var(--ink-soft);background:var(--red-soft);
-    border-left:3px solid var(--red);border-radius:0 7px 7px 0;padding:9px 13px;}
+    border-left:3px solid var(--red);border-radius:0 7px 7px 0;padding:12px 15px;line-height:1.72;}
   .leak b{color:var(--ink);}
   .leak.blue{background:var(--blue-soft);border-left-color:var(--blue);}
 
@@ -92,11 +92,11 @@
 
   /* ── 카드 ── */
   .card{border:1px solid var(--line);border-left:3px solid var(--blue);border-radius:0 10px 10px 0;
-    padding:14px 18px;margin-top:11px;}
+    padding:17px 20px;margin-top:15px;}
   .card.bad{border-left-color:var(--red);}
   .card h3{font-size:15.5px;font-weight:700;margin:0 0 6px;display:flex;flex-wrap:wrap;
     align-items:center;gap:7px;line-height:1.4;}
-  .card p{font-size:14px;margin:0 0 6px;} .card p:last-child{margin-bottom:0;}
+  .card p{font-size:14px;margin:0 0 12px;line-height:1.72;} .card p:last-child{margin-bottom:0;}
   .card .foot{font-size:13px;color:var(--ink-soft);}
   .chip{font-size:11px;font-weight:700;padding:2px 8px;border-radius:4px;flex:none;letter-spacing:.01em;}
   .chip.b{background:var(--blue-soft);color:var(--blue);}
@@ -115,7 +115,7 @@
   .hi{color:var(--red);font-weight:700;}
 
   .note{background:var(--red-soft);border-left:3px solid var(--red);border-radius:0 7px 7px 0;
-    padding:10px 14px;font-size:13.5px;margin:12px 0 0;}
+    padding:13px 16px;font-size:13.5px;margin:15px 0 0;line-height:1.72;}
   .note.blue{background:var(--blue-soft);border-left-color:var(--blue);}
   footer{margin-top:40px;padding-top:16px;border-top:1px solid var(--line);
     font-size:12.5px;color:var(--ink-faint);}
@@ -226,6 +226,15 @@
       <p>저관여 오퍼인 <code>/brochure</code>조차 필수 6개(이름·회사명·회사이메일·연락처·연간채용규모·유입경로)를 요구하고 <b>전화번호가 필수</b>다. 개인 메일(gmail·naver)은 경고가 아니라 <b>제출 자체를 차단</b>한다.</p>
       <p class="foot">전화번호 필수는 <b>영업 팔로업에 필요해 유지하기로 결정</b>했다(2026-08-27). 개인 메일 차단의 실제 이탈 규모는 측정 수단이 없어 확인 불가.</p>
     </div>
+
+    <div class="card">
+      <h3><span class="chip b">조치</span>방문자 2,235명이 누구인지 몰랐다 — 오늘 측정을 시작했다</h3>
+      <p>GNB의 <b>“로그인”</b> 버튼은 <b>이미 계약한 고객이 제품으로 들어가는 문</b>이다(<code>ai.supercoder.co</code>). 그런데 이 클릭이 얼마나 일어나는지 지금까지 알 수 없었다. 즉 방문자 2,235명 중 <b>몇 %가 신규 잠재고객이고 몇 %가 기존 고객인지</b> 구분이 안 됐다.</p>
+      <p>트래픽이 없어서가 아니라 <b>측정이 구조적으로 불가능했다.</b> GA4의 이탈 클릭 판정은 호스트명이 아니라 등록 도메인 기준인데, <code>ai.supercoder.co</code>와 <code>www.supercoder.co</code>는 둘 다 <code>supercoder.co</code>라 GA4가 이 이동을 <b>외부 클릭으로 분류하지 않는다.</b> 실제로 6/30~8/26 전 기간 해당 클릭이 0건으로 잡혔다.</p>
+      <p>2026-08-27, 버튼에 <b>클릭 추적을 직접 심고</b> GA4에 위치 구분(데스크톱 상단 메뉴 / 모바일 메뉴)까지 등록했다.</p>
+      <div class="note blue" style="margin-top:9px;"><b>왜 중요한가</b> — 방문자 중 기존 고객 비중이 확인되면, 전환율의 분모에서 그만큼을 덜어낼 수 있다. 즉 <b>0.54%는 과소평가일 가능성</b>이 있다. 실제 잠재고객만 놓고 보면 전환율이 더 높을 수 있다는 뜻이다.</div>
+      <p class="foot" style="margin-top:8px;">⚠️ <b>과거 데이터는 소급되지 않는다.</b> 8/27부터 쌓이며, 로그인은 기존 고객만 누르는 버튼이라 빈도가 낮아 의미 있는 판단에는 2~4주가 필요하다.</p>
+    </div>
   </section>
 
   <section>
@@ -262,7 +271,7 @@
         <tr><td><b>내부 링크 19개 → 40개</b> — 노출 상위 글이 순위 아쉬운 관련 글로 링크. 링크 못 받던 글 25편 → 13편</td><td><span class="chip g">측정 대기</span></td></tr>
         <tr><td rowspan="2"><b>방문에서<br>리드 회수</b></td>
             <td><b>홈 본문에 저관여 CTA</b> — PROOF 섹션 끝에 <code>/brochure</code> 진입점 신설</td><td><span class="chip g">측정 대기</span></td></tr>
-        <tr><td><b><code>login_click</code> 측정</b> — GNB 로그인 클릭 + GA4 맞춤 측정기준 등록</td><td><span class="chip g">축적 중</span></td></tr>
+        <tr><td><b>로그인 버튼 클릭 추적</b> — 방문자 중 기존 고객 비중을 처음으로 측정 가능하게 함. 전환율 분모를 정확히 하는 근거가 된다</td><td><span class="chip b">측정 시작</span></td></tr>
         <tr><td rowspan="2"><b>속도</b></td>
             <td><b>GTM 컨테이너 제거</b></td><td><span class="chip b">−1.56초</span></td></tr>
         <tr><td><b>Pretendard 자체 호스팅</b> — 성능 이득은 없었으나, 방침에 없던 외부 CDN으로 방문자 IP가 나가던 경로가 사라짐</td><td><span class="chip b">완료</span></td></tr>
@@ -283,7 +292,7 @@
       <tbody>
         <tr><td><b>“500개 이상의 기업” 문구의 근거</b> — <code>/apply</code>에 노출되는데 코드·DB 어디서도 근거를 찾지 못했다. 웹사이트 밖 영업 채널 숫자일 수 있으나, 가장 중요한 전환 시점에 뜨는 수치라 확인이 필요하다</td><td><span class="hi">확인 요청</span></td></tr>
         <tr><td><b>개인정보 동의 3줄 고지</b> — 폼에 수집 항목·목적·보유기간 요약이 없다. 문안은 준비했으나 법적 고지라 확정 전 배포하지 않았다</td><td><span class="hi">확인 요청</span></td></tr>
-        <tr><td><b>기존 고객 트래픽 규모</b> — <code>login_click</code>으로 지금부터 측정 가능. 8/27 이전 데이터는 존재하지 않는다</td><td>축적 중</td></tr>
+        <tr><td><b>방문자 중 기존 고객 비중</b> — 8/27부터 로그인 클릭이 집계된다. 확인되면 전환율 0.54%의 분모가 정확해진다. 이전 데이터는 존재하지 않아 2~4주 축적이 필요하다</td><td>축적 중</td></tr>
         <tr><td><b>개인 메일 차단의 이탈 규모</b> — 차단 시점에 이탈한 사람은 기록이 남지 않아 측정 수단이 없다</td><td>측정 불가</td></tr>
       </tbody>
     </table></div>
