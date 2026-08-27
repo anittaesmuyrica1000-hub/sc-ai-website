@@ -396,8 +396,10 @@
           <tr><td><code>gtm.js</code>만 차단</td><td class="num">1,156 ms</td><td class="num">5,506 ms</td><td class="num">−1.35 s</td></tr>
           <tr><td>폰트 CDN(jsdelivr)만 차단</td><td class="num">1,428 ms</td><td class="num">4,804 ms</td><td class="num">−2.05 s</td></tr>
           <tr><td>둘 다 차단</td><td class="num">1,216 ms</td><td class="num">2,216 ms</td><td class="num">−4.64 s</td></tr>
+          <tr><td><b>GTM 실제 제거 후 (2026-08-27 적용·실측)</b></td><td class="num"><b>1,312 ms</b></td><td class="num"><b>5,295 ms</b></td><td class="num"><b>−1.56 s</b></td></tr>
         </table>
       </div>
+      <p><b>적용 결과 —</b> 같은 날 <code>/admin</code>에서 GTM 컨테이너 ID를 비워 운영에 반영했고, 재측정에서 로드 완료가 <b>6,853 ms → 5,295 ms</b>로 떨어졌다. 차단 A/B의 예측(5,506 ms)보다 오히려 조금 더 좋다. GA4(<code>gtag/js</code>)와 동의 기본값 스크립트는 그대로 살아 있음을 운영 HTML에서 확인했다 — <code>useGoogleTags</code>가 <code>gaId || gtmId</code> 조건이라 GA 측정 ID가 남아 있으면 동의 설정은 깨지지 않는다.</p>
       <p>내역은 두 가지다. ① <b>googletagmanager 이중 로드</b> — GA4 직접 태그(<code>gtag/js</code>)와 GTM 컨테이너(<code>gtm.js</code>)가 각각 붙어 네트워크 점유 5.2초·4.2초를 쓴다. ② <b>Pretendard 청크 9개</b> — 동적 서브셋(전체 92개 중 이 페이지가 쓰는 9개)이라 한글 유니코드 범위가 넓어 매 방문 약 250KB를 외부 CDN에서 받는다.</p>
       <p class="caveat"><b>차단 A/B 해석 주의</b> — 위 표의 −2.05초는 <i>웹폰트를 아예 안 받았을 때</i>의 값이지, 자체 호스팅으로 얻는 값이 아니다. 자체 호스팅은 바이트를 그대로 받되 외부 연결(DNS·TLS) 설정만 없애므로 회수분은 그중 일부(느린 4G 기준 수백 ms대)다. 바이트 자체를 줄이려면 청크 수를 줄이는 별도 서브셋 작업이 필요하고, 블로그 본문은 등장 글자가 열려 있어 함부로 자를 수 없다. 반면 GTM의 −1.35초는 <i>제거하면 그대로 회수되는</i> 값이다 — 우선순위는 GTM이 먼저다.</p>
       <p>현재 세션의 86%가 데스크톱(8/21~8/24 기준)이라 당장의 리드 손실은 제한적이다. 다만 이 비용은 LCP가 아니라 <b>상호작용 지연(TBT)</b>과 실제 모바일 회선에서의 체감으로 나타나므로, 모바일 비중이 높은 채널(유료광고·SNS)로 확장하기 전에 정리해 두는 것이 맞다.</p>
@@ -444,7 +446,7 @@
         <tbody>
           <tr><td class="num">1</td><td>"500개 이상의 기업" 문구 근거 확인 → 유지·수정 결정 <b>(보류 — 나중에 확인하기로)</b></td><td><span class="pill copy">b2b-hr-copywriter</span></td></tr>
           <tr><td class="num">2</td><td>홈 PROOF 섹션 끝에 저관여 CTA 밴드 추가 — "아직 상담까지는 이르다면"으로 /brochure 노출</td><td><b>dev 반영 완료</b> (a787632)</td></tr>
-          <tr><td class="num">3</td><td>동의 체크박스 위에 수집 항목·목적·보유기간 3줄 요약 고지 추가 — 두 폼 공용 <code>ConsentNotice</code></td><td><b>dev 반영 완료</b> (a787632)</td></tr>
+          <tr><td class="num">3</td><td>동의 체크박스 위에 수집 항목·목적·보유기간 3줄 요약 고지 추가 — 두 폼 공용 <code>ConsentNotice</code></td><td><b>보류</b> — 만들었다가 이번 배포에서 제외(되돌림). 코드는 커밋 <code>a787632</code>에 남아 있어 복구 가능</td></tr>
           <tr><td class="num">4</td><td>GNB·모바일 메뉴 "로그인"에 <code>login_click</code> 이벤트 추가 — 기존 고객 트래픽 규모를 앞으로 실제 측정 가능하게 함</td><td><b>dev 반영 완료</b> (a787632)</td></tr>
         </tbody>
       </table>
@@ -456,8 +458,8 @@
         <thead><tr><th style="width:32px;">#</th><th>항목</th><th>비고</th></tr></thead>
         <tbody>
           <tr><td class="num">5</td><td><s>/brochure 전화번호를 선택값으로 낮추거나, 저관여·고관여 폼의 필수 항목 수를 차등화</s> <b>— 진행하지 않음</b></td><td>영업 팔로업에 연락처가 필요해 필수 유지로 결정(2026-08-27). 리드 품질 우선</td></tr>
-          <tr><td class="num">6</td><td><b>GTM 컨테이너를 지금은 내린다(−1.35s)</b> — 광고 집행 시작할 때 다시 붙인다. 코드 변경 없이 <code>/admin</code> 설정에서 GTM ID를 비우면 된다</td><td>현재 컨테이너는 비어 있음(광고용으로 미리 달아둔 상태) — 지금은 순수 비용</td></tr>
-          <tr><td class="num">6-b</td><td>Pretendard 92개 청크 자체 호스팅 — 외부 연결 제거(수백 ms) + 서드파티 의존 해소</td><td>바이트는 그대로. LCP는 변하지 않는다</td></tr>
+          <tr><td class="num">6</td><td><s>GTM 컨테이너를 지금은 내린다</s> <b>— 완료</b>. 광고 집행 시작할 때 <code>GTM-5MJDJ2GW</code>를 다시 넣으면 된다(컨테이너는 Google 계정에 그대로 보존)</td><td><b>2026-08-27 운영 적용 · 실측 −1.56s</b></td></tr>
+          <tr><td class="num">6-b</td><td>Pretendard 92개 청크 자체 호스팅 — 외부 연결 제거 + 서드파티 의존 해소</td><td>dev 반영 완료(c119048), <b>운영 PR 대기</b>. 바이트는 그대로라 LCP는 변하지 않는다</td></tr>
           <tr><td class="num">7</td><td>GSC API 활성화 — ① GCP 프로젝트 <code>aiview-mail</code>에서 <b>Search Console API</b> 사용 설정 ② Search Console 속성 <code>www.supercoder.co</code>의 사용자·권한에 서비스계정 <code>aiview-mailer@aiview-mail.iam.gserviceaccount.com</code>을 <b>전체 보기</b>로 추가</td><td>둘 다 해야 열린다(현재 403). 이후 브랜드/비브랜드 키워드 비중 실측 가능</td></tr>
         </tbody>
       </table>
