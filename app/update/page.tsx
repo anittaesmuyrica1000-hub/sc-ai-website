@@ -7,7 +7,8 @@ export const dynamic = "force-dynamic";
 
 // 비공개(링크 전용) — 검색 색인 금지.
 export const metadata: Metadata = {
-  title: "제품 업데이트 · 슈퍼코더AI면접",
+  // 사이트명은 layout.tsx template("%s · AI면접")이 붙인다 — 여기 넣으면 두 번 붙는다
+  title: "제품 업데이트",
   description: "슈퍼코더AI면접 제품의 새로운 기능과 개선 사항 안내.",
   robots: { index: false, follow: false },
   alternates: { canonical: "/update" },
