@@ -1,0 +1,617 @@
+<title>포착률 39% 오탐</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+
+<style>
+  /* ─── 토큰 ───────────────────────────────────────────────
+     2026-08-23 점검 보고서(docs/ga4-capture-report-2026-08-23.html)와 같은 토큰·서체를 쓴다.
+     같은 시리즈의 후속 보고서라 형태가 이어지는 편이 읽는 쪽에 낫다.
+     라이트가 기본, 다크는 토큰만 재정의한다. */
+  :root{
+    --blue:#2E6CF0; --blue-d:#1F54CC;
+    --ink:#142036; --slate:#566179; --slate-2:#6D7689; --line:#E5EBF5;
+    --bg:#FFFFFF; --panel:#F7FAFF; --panel-2:#EAF1FE;
+    --green:#16A34A; --amber:#B8710A; --red:#C6483C;
+    --green-bg:#E8F6EC; --amber-bg:#FBF1DF; --red-bg:#FBEBE9; --blue-bg:#E8F0FE;
+    /* 차트 계열색 — validate_palette.js 통과(light, 표면 #FFFFFF):
+       명도대역·채도·CVD 분리(ΔE 31.4 protan)·정상시각 분리(34.1)·대비 모두 PASS */
+    --s-views:#B8710A;   /* 조회수 기준 — 옛 지표 */
+    --s-people:#2E6CF0;  /* 사람 수 기준 — 새 지표 */
+    --rule:1px solid var(--line);
+    --r:14px;
+    --measure:34rem;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --blue:#7BA4FA; --blue-d:#A6C2FC;
+      --ink:#E7ECF6; --slate:#A3AFC4; --slate-2:#8D9AB2; --line:#243149;
+      --bg:#0D1420; --panel:#141D2D; --panel-2:#1B2740;
+      --green:#57C97E; --amber:#E5A63F; --red:#F08376;
+      --green-bg:#14281C; --amber-bg:#2C2213; --red-bg:#2E1A18; --blue-bg:#152140;
+      /* 다크 표면 기준 재검증 통과(dark): 명도대역 0.48–0.67 안, CVD ΔE 28.3 */
+      --s-views:#C4831F; --s-people:#5E8DF2;
+    }
+  }
+  :root[data-theme="dark"]{
+    --blue:#7BA4FA; --blue-d:#A6C2FC;
+    --ink:#E7ECF6; --slate:#A3AFC4; --slate-2:#8D9AB2; --line:#243149;
+    --bg:#0D1420; --panel:#141D2D; --panel-2:#1B2740;
+    --green:#57C97E; --amber:#E5A63F; --red:#F08376;
+    --green-bg:#14281C; --amber-bg:#2C2213; --red-bg:#2E1A18; --blue-bg:#152140;
+    --s-views:#C4831F; --s-people:#5E8DF2;
+  }
+
+  *{box-sizing:border-box}
+  body{
+    margin:0; background:var(--bg); color:var(--ink);
+    font-family:"IBM Plex Sans KR", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    font-size:16px; line-height:1.72; font-weight:400;
+    -webkit-font-smoothing:antialiased;
+    word-break:keep-all; overflow-wrap:break-word;
+  }
+  .wrap{max-width:52rem; margin:0 auto; padding:0 1.5rem 6rem}
+  p{margin:0}
+  h1,h2,h3{margin:0; text-wrap:balance; line-height:1.3; font-weight:600}
+  :focus-visible{outline:2px solid var(--blue); outline-offset:3px; border-radius:4px}
+
+  .mono{font-family:"IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace; font-variant-numeric:tabular-nums}
+  .eyebrow{
+    font-family:"IBM Plex Mono", monospace; font-size:.7rem; font-weight:500;
+    letter-spacing:.14em; text-transform:uppercase; color:var(--slate-2);
+  }
+
+  /* ─── 머리말 ─── */
+  header.top{padding:4.5rem 0 2.5rem; border-bottom:var(--rule)}
+  header.top h1{font-size:clamp(1.9rem,4.6vw,2.7rem); font-weight:700; letter-spacing:-.02em; margin:.85rem 0 0}
+  .lede{margin-top:1.1rem; font-size:1.06rem; color:var(--slate); max-width:var(--measure)}
+  .meta{display:flex; flex-wrap:wrap; gap:.5rem 1.4rem; margin-top:1.6rem; padding:0}
+  .meta div{display:flex; gap:.5rem; align-items:baseline}
+  .meta dt{font-size:.75rem; color:var(--slate-2); letter-spacing:.04em}
+  .meta dd{margin:0; font-size:.82rem; font-weight:500}
+
+  /* ─── 결론 박스 ─── */
+  .verdict{
+    margin:2.5rem 0 0; padding:1.5rem 1.6rem;
+    background:var(--panel); border:var(--rule); border-radius:var(--r);
+    display:flex; flex-direction:column; gap:.7rem;
+  }
+  .verdict p{max-width:var(--measure)}
+  .verdict strong{font-weight:600; color:var(--ink)}
+  .verdict .head{display:flex; align-items:center; gap:.6rem; flex-wrap:wrap}
+
+  section{padding-top:3.4rem}
+  section h2{
+    font-size:1.22rem; font-weight:600; letter-spacing:-.01em;
+    padding-bottom:.7rem; border-bottom:var(--rule); margin-bottom:1.5rem;
+  }
+  section > p{max-width:var(--measure); margin-bottom:1rem; color:var(--slate)}
+  section > p.tight{margin-bottom:.4rem}
+  section > p strong{color:var(--ink); font-weight:600}
+
+  .chip{
+    font-family:"IBM Plex Mono", monospace; font-size:.7rem; font-weight:600;
+    letter-spacing:.08em; padding:.28rem .55rem; border-radius:6px; white-space:nowrap;
+  }
+  .chip.reject{background:var(--red-bg); color:var(--red)}
+  .chip.confirm{background:var(--green-bg); color:var(--green)}
+  .chip.info{background:var(--blue-bg); color:var(--blue-d)}
+
+  /* ─── 메일 인용 ─── */
+  .quote{
+    margin:0 0 1.4rem; padding:1.1rem 1.3rem;
+    border:var(--rule); border-left:3px solid var(--red); border-radius:0 10px 10px 0;
+    background:var(--panel); font-size:.92rem;
+  }
+  .quote .src{
+    display:block; font-family:"IBM Plex Mono", monospace; font-size:.68rem;
+    letter-spacing:.1em; text-transform:uppercase; color:var(--slate-2); margin-bottom:.5rem;
+  }
+
+  /* ─── 원인 카드 ─── */
+  .causes{display:flex; flex-direction:column; gap:.75rem}
+  .cause{
+    display:grid; grid-template-columns:5.4rem 1fr; gap:0 1.2rem;
+    padding:1.1rem 1.3rem; border:var(--rule); border-radius:var(--r); background:var(--bg);
+  }
+  .cause .chip{align-self:start; justify-self:start}
+  .cause h3{font-size:.98rem; font-weight:600; margin-bottom:.3rem}
+  .cause p{font-size:.9rem; color:var(--slate); max-width:var(--measure)}
+  .cause .ev{
+    margin-top:.55rem; font-size:.82rem; color:var(--slate-2);
+    padding-left:.85rem; border-left:2px solid var(--line);
+  }
+  @media (max-width:34rem){ .cause{grid-template-columns:1fr; gap:.6rem} }
+
+  /* ─── 분해 계단 ─── */
+  .steps{display:flex; flex-direction:column; gap:.5rem; margin:0; padding:0; list-style:none}
+  .steps li{
+    display:grid; grid-template-columns:4.6rem 1fr; align-items:baseline; gap:0 1.1rem;
+    padding:.85rem 1.2rem; border:var(--rule); border-radius:10px; background:var(--panel);
+  }
+  .steps .pct{font-family:"IBM Plex Mono", monospace; font-size:1.15rem; font-weight:600; font-variant-numeric:tabular-nums}
+  .steps li:last-child{background:var(--blue-bg); border-color:transparent}
+  .steps li:last-child .pct{color:var(--blue-d)}
+  .steps .what{font-size:.9rem; color:var(--slate)}
+  .steps .what b{color:var(--ink); font-weight:600}
+  @media (max-width:34rem){ .steps li{grid-template-columns:1fr; gap:.2rem} }
+
+  /* ─── 차트 ─── */
+  figure{margin:0}
+  .chart-card{border:var(--rule); border-radius:var(--r); padding:1.4rem 1.3rem 1.1rem; background:var(--bg)}
+  .chart-head{display:flex; flex-wrap:wrap; align-items:baseline; justify-content:space-between; gap:.6rem 1rem; margin-bottom:1.1rem}
+  .chart-head h3{font-size:.98rem; font-weight:600}
+  .legend{display:flex; gap:1rem; flex-wrap:wrap}
+  .legend span{display:flex; align-items:center; gap:.4rem; font-size:.78rem; color:var(--slate)}
+  .legend i{width:14px; height:3px; border-radius:2px; display:block}
+  .chart-scroll{overflow-x:auto; position:relative}
+  .chart-scroll svg{display:block; width:100%; min-width:30rem; height:auto}
+  figcaption{margin-top:.9rem; font-size:.8rem; color:var(--slate-2); max-width:var(--measure)}
+  .tip{
+    position:absolute; pointer-events:none; opacity:0; transition:opacity .12s;
+    background:var(--bg); border:var(--rule); border-radius:9px; padding:.55rem .7rem;
+    font-size:.78rem; line-height:1.5; box-shadow:0 8px 24px -12px rgba(20,40,90,.35);
+    white-space:nowrap; z-index:2;
+  }
+  .tip .d{font-family:"IBM Plex Mono", monospace; font-size:.68rem; letter-spacing:.06em; color:var(--slate-2); display:block; margin-bottom:.25rem}
+  .tip .row{display:flex; align-items:center; gap:.4rem}
+  .tip .row i{width:9px; height:9px; border-radius:50%; display:block; flex:none}
+  .tip .row b{font-family:"IBM Plex Mono", monospace; font-variant-numeric:tabular-nums; font-weight:600; margin-left:auto; padding-left:.9rem}
+
+  /* ─── 표 ─── */
+  .scroll{overflow-x:auto; border:var(--rule); border-radius:var(--r)}
+  table{border-collapse:collapse; width:100%; font-size:.86rem; min-width:34rem}
+  th,td{padding:.72rem .95rem; text-align:left; border-bottom:1px solid var(--line); vertical-align:top}
+  thead th{
+    font-family:"IBM Plex Mono", monospace; font-size:.68rem; font-weight:600;
+    letter-spacing:.1em; text-transform:uppercase; color:var(--slate-2);
+    background:var(--panel); border-bottom:var(--rule); white-space:nowrap;
+  }
+  tbody tr:last-child td{border-bottom:none}
+  td.num,th.num{font-family:"IBM Plex Mono", monospace; font-variant-numeric:tabular-nums; white-space:nowrap; text-align:right}
+  .hi{background:var(--blue-bg)}
+  .ok{color:var(--green); font-weight:600; white-space:nowrap}
+  .bad{color:var(--red); font-weight:600; white-space:nowrap}
+
+  /* ─── 조치 ─── */
+  .deltas{display:grid; gap:.6rem; grid-template-columns:1fr}
+  .delta{
+    display:flex; flex-wrap:wrap; align-items:baseline; gap:.5rem 1rem;
+    padding:.95rem 1.2rem; border:var(--rule); border-radius:10px; background:var(--panel);
+  }
+  .delta .k{flex:1 1 12rem; font-size:.88rem; font-weight:500}
+  .delta .v{display:flex; align-items:baseline; gap:.55rem}
+  .delta .before{font-size:.95rem; color:var(--slate-2); text-decoration:line-through; text-decoration-thickness:1px}
+  .delta .arrow{color:var(--slate-2); font-size:.85rem}
+  .delta .after{font-size:1.05rem; font-weight:600; color:var(--blue)}
+
+  .todos{display:flex; flex-direction:column; gap:.7rem; list-style:none; padding:0; margin:0}
+  .todos li{display:grid; grid-template-columns:auto 1fr; gap:.9rem; padding:1rem 1.2rem; border:var(--rule); border-radius:10px}
+  .todos .mark{
+    font-family:"IBM Plex Mono", monospace; font-size:.68rem; font-weight:600; letter-spacing:.07em;
+    padding:.24rem .5rem; border-radius:5px; height:fit-content; white-space:nowrap;
+  }
+  .todos .done{background:var(--green-bg); color:var(--green)}
+  .todos .next{background:var(--blue-bg); color:var(--blue-d)}
+  .todos h3{font-size:.94rem; font-weight:600; margin-bottom:.25rem}
+  .todos p{font-size:.87rem; color:var(--slate); max-width:var(--measure)}
+
+  .note{
+    margin-top:1.1rem; padding:.95rem 1.2rem; border-radius:10px;
+    background:var(--amber-bg); font-size:.87rem; color:var(--ink); max-width:var(--measure);
+  }
+  .note b{font-weight:600}
+
+  footer{
+    margin-top:4rem; padding-top:1.5rem; border-top:var(--rule);
+    font-size:.78rem; color:var(--slate-2); display:flex; flex-wrap:wrap; gap:.4rem 1.2rem;
+  }
+  code{
+    font-family:"IBM Plex Mono", monospace; font-size:.87em;
+    background:var(--panel-2); padding:.1em .35em; border-radius:4px;
+  }
+  @media (prefers-reduced-motion:reduce){ *{transition:none !important} }
+</style>
+
+<div class="wrap">
+
+  <header class="top">
+    <p class="eyebrow">작업 보고 · 2026-08-25</p>
+    <h1>포착률 39% 오탐</h1>
+    <p class="lede">
+      8월 24일자 일일 애널리틱스 메일이 “GA4가 트래픽 대부분을 놓치고 있다”는 경보를 보냈다.
+      확인한 결과 GA4 태그는 정상이었고, 경보는 지표를 잘못 만든 탓이었다. 원인을 찾아 지표를 교체하고 운영에 반영했다.
+    </p>
+    <dl class="meta">
+      <div><dt>대상</dt><dd>www.supercoder.co · 일일 애널리틱스 리포트</dd></div>
+      <div><dt>점검일</dt><dd class="mono">2026-08-25</dd></div>
+      <div><dt>결과</dt><dd>오탐 확인 · 지표 교체 완료</dd></div>
+      <div><dt>배포</dt><dd class="mono">PR #33 · 731baef</dd></div>
+    </dl>
+
+    <div class="verdict">
+      <p class="head"><span class="chip confirm">결론</span> <strong>GA4는 고장나지 않았다.</strong></p>
+      <p>
+        어제 실제 포착률은 <strong>방문자의 71%</strong>였다. 메일이 띄운 39%는 GA4 조회수를 서버측 조회수로 나눈 값인데,
+        두 집계가 서로 다른 규칙으로 세기 때문에 성립하지 않는 비교였다. 여기에 그날 새 블로그 글을 쓰면서 생긴
+        사내 반복조회가 분모에 얹혀 값을 더 끌어내렸다.
+      </p>
+      <p>
+        지표를 <strong>사람 수 기준</strong>(GA4 활성 사용자 ÷ Vercel 실측 방문자)으로 바꿔 운영에 반영했다.
+        내일 아침 메일부터 새 기준으로 나간다.
+      </p>
+    </div>
+  </header>
+
+  <section>
+    <h2>1. 무슨 일이 있었나</h2>
+    <div class="quote">
+      <span class="src">2026-08-24자 일일 애널리틱스 · 오전 8시 발송</span>
+      <p>서버측 전체 조회 114회 (경로 18개, 차단 무관 집계, 전일 대비 ▲68%).</p>
+      <p><strong>GA4 포착률: 서버측 114회 대비 GA4 45회 (39%) — ⚠️ 대부분 누락 — 즉시 점검 필요.</strong></p>
+    </div>
+    <p>
+      문구만 보면 방문자 열 명 중 여섯 명을 놓치고 있다는 뜻이다. 측정이 그 정도로 깨졌다면
+      그동안의 트래픽 보고와 IR 자료의 근거가 모두 흔들린다. 그래서 태그부터 데이터까지 되짚었다.
+    </p>
+  </section>
+
+  <section>
+    <h2>2. 어떻게 확인했나</h2>
+    <p>
+      GA4 하나만 보면 “적게 잡혔다”는 사실 외에는 알 수 없다. 그래서 같은 날 트래픽을 <strong>서로 독립된 세 가지 방법</strong>으로
+      재서 맞춰봤다. 셋 중 둘은 쿠키·동의와 무관하게 세므로, GA4가 정말 놓치는지 아니면 셋의 세는 방식이 다른지를 가릴 수 있다.
+    </p>
+
+    <div class="scroll">
+      <table>
+        <caption class="eyebrow" style="padding:.9rem .95rem;text-align:left;caption-side:top">2026-08-24 (KST) · 사내 /admin 제외</caption>
+        <thead>
+          <tr><th>측정 방법</th><th>성격</th><th class="num">조회수</th><th class="num">사람 수</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>서버측 <code>page_views</code></td><td>DB 카운터 · 동의 무관</td><td class="num">114</td><td class="num">—</td></tr>
+          <tr><td>Vercel Web Analytics</td><td>쿠키리스 실측</td><td class="num">105</td><td class="num">48</td></tr>
+          <tr class="hi"><td>GA4</td><td>태그 기반</td><td class="num">45</td><td class="num">34</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p style="margin-top:1.4rem">
+      조회수로는 GA4가 확연히 적다(45 대 105~114). 그런데 <strong>사람 수로는 34 대 48, 즉 71%</strong>다.
+      같은 날 같은 트래픽인데 어느 단위로 재느냐에 따라 39%와 71%로 갈린다. 이 차이가 이번 건의 전부다.
+    </p>
+
+    <p class="tight">운영 사이트에서 태그 동작도 직접 확인했다.</p>
+    <ul style="margin:.2rem 0 0;padding-left:1.1rem;color:var(--slate);font-size:.9rem;max-width:var(--measure)">
+      <li><code>/g/collect</code> 로 <code>page_view</code> 히트 정상 발송 · 측정 ID <code>G-Y5LT1VFLV2</code></li>
+      <li><code>gcs=G101</code> — 분석 동의 granted 상태 정상</li>
+      <li>페이지 내부 이동(SPA)에서도 히트 발생 — 다만 <strong>약 1.8초 지연</strong></li>
+    </ul>
+    <p style="margin-top:1rem">
+      즉 태그는 뜨고, 동의도 걸려 있고, 히트도 나간다. 고장난 곳이 없다.
+    </p>
+  </section>
+
+  <section>
+    <h2>3. 왜 39%가 나왔나</h2>
+    <p>
+      원인은 둘이다. 하나는 그날만의 사정이고, 하나는 지표 자체의 결함이라 매일 반복된다.
+    </p>
+
+    <div class="causes">
+      <div class="cause">
+        <span class="chip info">그날 한정</span>
+        <div>
+          <h3>새 글을 쓰면서 생긴 사내 반복조회가 분모에 들어갔다</h3>
+          <p>
+            격차가 가장 큰 경로는 <code>/blog/korean-ai-interview-services-deep-dive</code>로, 서버측 23회인데 GA4는 2회였다.
+            이 글은 <strong>바로 그날 작성해서 발행한 글</strong>이다.
+          </p>
+          <p class="ev">
+            DB 기록: 생성 8/24 16:22 KST · 수정 17:07 KST · 누적 조회 25회(= 그날 조회가 전부).
+            Vercel로 뜯어보면 25회를 <b>6명</b>이 냈고 한 명이 11회, 한 명이 6회 — 전부 15~20시 KST, 유입 경로 없이 직접 진입.
+            같은 시간대에 <code>/admin</code>도 1명이 28회. 작성·검수 과정의 자기 조회다.
+          </p>
+        </div>
+      </div>
+
+      <div class="cause">
+        <span class="chip reject">구조적</span>
+        <div>
+          <h3>분자와 분모가 서로 다른 것을 센다</h3>
+          <p>
+            방문자 한 명이 랜딩 → 블로그 목록 → 글 하나를 봤다고 하자. 두 집계는 이 사람을 다르게 센다.
+          </p>
+          <p class="ev">
+            <b>서버측 카운터</b>는 경로마다 +1 하므로 <b>3회</b>. <b>GA4</b>는 페이지 이동 후 히트가 1.8초 늦게 나가
+            빠르게 넘기면 첫 페이지만 남아 <b>1회</b>. 놓친 사람은 0명인데 “67% 누락”으로 보인다.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <p style="margin-top:1.6rem">
+      두 번째가 왜 치명적인지는 이 숫자가 보여준다. 8월 22일은 세션당 페이지수가 2.93이었고 포착률이 96%로 찍혔다.
+      8월 24일은 세션당 1.05였고 39%가 찍혔다. <strong>지표가 계측 건강도가 아니라 그날의 탐색 패턴을 재고 있었다.</strong>
+    </p>
+
+    <p class="tight" style="margin-top:1.6rem"><strong>8월 24일 39%를 뜯어보면</strong></p>
+    <ol class="steps">
+      <li><span class="pct">39%</span><span class="what">메일이 띄운 값 — GA4 조회 45 ÷ 서버측 조회 114</span></li>
+      <li><span class="pct">47%</span><span class="what">사내 반복조회 23회를 분모에서 뺀 값 — <b>8/23의 49%와 같은 수준</b></span></li>
+      <li><span class="pct">71%</span><span class="what">사람 수로 다시 잰 값 — GA4 사용자 34 ÷ 실측 방문자 48</span></li>
+    </ol>
+    <p style="margin-top:1rem">
+      전날 대비 급락이라는 사건 자체가 없었다.
+    </p>
+  </section>
+
+  <section>
+    <h2>4. 두 지표를 나란히 놓으면</h2>
+
+    <figure class="chart-card">
+      <div class="chart-head">
+        <h3>같은 트래픽, 두 가지 포착률</h3>
+        <div class="legend">
+          <span><i style="background:var(--s-views)"></i>조회수 기준 (옛 지표)</span>
+          <span><i style="background:var(--s-people)"></i>사람 수 기준 (새 지표)</span>
+        </div>
+      </div>
+
+      <div class="chart-scroll" id="chartBox">
+        <svg viewBox="0 0 720 300" role="img" aria-label="8월 20일부터 24일까지 조회수 기준 포착률과 사람 수 기준 포착률 비교. 조회수 기준은 6, 30, 96, 49, 39%로 크게 널뛰고, 사람 수 기준은 6, 54, 105, 66, 71%로 움직인다.">
+          <!-- 그리드 -->
+          <g stroke="var(--line)" stroke-width="1">
+            <line x1="44" y1="264.0" x2="630" y2="264.0"></line>
+            <line x1="44" y1="209.5" x2="630" y2="209.5"></line>
+            <line x1="44" y1="155.0" x2="630" y2="155.0"></line>
+            <line x1="44" y1="100.4" x2="630" y2="100.4"></line>
+            <line x1="44" y1="45.8"  x2="630" y2="45.8"></line>
+          </g>
+          <!-- y축 라벨 -->
+          <g font-family="IBM Plex Mono, monospace" font-size="11" fill="var(--slate-2)" text-anchor="end">
+            <text x="34" y="268">0</text>
+            <text x="34" y="213.5">25</text>
+            <text x="34" y="159">50</text>
+            <text x="34" y="104.4">75</text>
+            <text x="34" y="49.8">100%</text>
+          </g>
+          <!-- 옛 경보선 -->
+          <line x1="44" y1="176.7" x2="630" y2="176.7" stroke="var(--red)" stroke-width="1.5" stroke-dasharray="5 4" opacity=".75"></line>
+          <text x="48" y="171" font-family="IBM Plex Mono, monospace" font-size="10.5" fill="var(--red)" letter-spacing=".05em">옛 경보선 40%</text>
+
+          <!-- 조회수 기준 -->
+          <polyline fill="none" stroke="var(--s-views)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"
+            points="44,250.9 190.5,198.5 337,54.5 483.5,157.1 630,178.9"></polyline>
+          <!-- 사람 수 기준 -->
+          <polyline fill="none" stroke="var(--s-people)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"
+            points="44,250.9 190.5,146.2 337,34.9 483.5,120.0 630,109.1"></polyline>
+
+          <!-- 마커 (표면 링 2px로 겹침 분리) -->
+          <g fill="var(--s-views)" stroke="var(--bg)" stroke-width="2">
+            <circle cx="44" cy="250.9" r="4.5"></circle>
+            <circle cx="190.5" cy="198.5" r="4.5"></circle>
+            <circle cx="337" cy="54.5" r="4.5"></circle>
+            <circle cx="483.5" cy="157.1" r="4.5"></circle>
+            <circle cx="630" cy="178.9" r="5.5"></circle>
+          </g>
+          <g fill="var(--s-people)" stroke="var(--bg)" stroke-width="2">
+            <circle cx="44" cy="250.9" r="4.5"></circle>
+            <circle cx="190.5" cy="146.2" r="4.5"></circle>
+            <circle cx="337" cy="34.9" r="4.5"></circle>
+            <circle cx="483.5" cy="120.0" r="4.5"></circle>
+            <circle cx="630" cy="109.1" r="5.5"></circle>
+          </g>
+
+          <!-- 끝점 직접 라벨 -->
+          <text x="644" y="183" font-family="IBM Plex Mono, monospace" font-size="13" font-weight="600" fill="var(--s-views)">39%</text>
+          <text x="644" y="113" font-family="IBM Plex Mono, monospace" font-size="13" font-weight="600" fill="var(--s-people)">71%</text>
+
+          <!-- x축 -->
+          <g font-family="IBM Plex Mono, monospace" font-size="11" fill="var(--slate-2)" text-anchor="middle">
+            <text x="44" y="286">8/20</text>
+            <text x="190.5" y="286">8/21</text>
+            <text x="337" y="286">8/22</text>
+            <text x="483.5" y="286">8/23</text>
+            <text x="630" y="286">8/24</text>
+          </g>
+
+          <!-- 호버 히트영역 -->
+          <g id="hits" fill="transparent">
+            <rect x="0"     y="20" width="117" height="250" data-i="0"></rect>
+            <rect x="117"   y="20" width="146.5" height="250" data-i="1"></rect>
+            <rect x="263.5" y="20" width="146.5" height="250" data-i="2"></rect>
+            <rect x="410"   y="20" width="146.5" height="250" data-i="3"></rect>
+            <rect x="556.5" y="20" width="163.5" height="250" data-i="4"></rect>
+          </g>
+          <line id="cross" x1="0" y1="24" x2="0" y2="264" stroke="var(--slate-2)" stroke-width="1" opacity="0"></line>
+        </svg>
+        <div class="tip" id="tip" role="status" aria-live="polite"></div>
+      </div>
+
+      <figcaption>
+        8/21 쿠키 배너 제거 이후 구간. 8/20의 6%는 배너가 살아 있던 날로, 이때는 두 지표 모두 실제 이상을 정확히 잡아냈다.
+        새 지표가 100%를 넘는 날이 있는 것은 오류가 아니다 — GA4는 쿠키로, Vercel은 IP·브라우저로 사람을 식별한다.
+      </figcaption>
+    </figure>
+
+    <p style="margin-top:1.6rem">
+      옛 경보선 40%가 어디에 놓여 있었는지 보면 문제가 분명하다. 8/23은 49%로 아슬아슬하게 통과했고,
+      8/24는 39%로 걸렸다. <strong>9%p 차이로 “점검 권장”이 “즉시 점검 필요”가 됐다.</strong>
+      같은 날 사람 수 기준은 66% → 71%로 오히려 올라갔다.
+    </p>
+
+    <div class="note">
+      <b>덧붙일 것 하나.</b> 하루 방문자가 20~50명 규모라 새 지표도 잡음이 있다. 8/23은 서버측 68회, Vercel 45회로
+      두 실측 카운터끼리도 어긋난다. 이번 교체로 없앤 것은 <b>탐색 패턴에 따라 값이 끌려가는 계통 오차</b>이지 잡음 전체가 아니다.
+      하루치 숫자 하나에 반응하지 말고 며칠 흐름으로 읽어야 한다.
+    </div>
+  </section>
+
+  <section>
+    <h2>5. 조치</h2>
+
+    <div class="deltas">
+      <div class="delta">
+        <span class="k">포착률 분모</span>
+        <span class="v"><span class="before">서버측 조회수</span><span class="arrow">→</span><span class="after">Vercel 실측 방문자</span></span>
+      </div>
+      <div class="delta">
+        <span class="k">포착률 분자</span>
+        <span class="v"><span class="before">GA4 조회수</span><span class="arrow">→</span><span class="after">GA4 활성 사용자</span></span>
+      </div>
+      <div class="delta">
+        <span class="k">경보 기준</span>
+        <span class="v"><span class="before">70% / 40%</span><span class="arrow">→</span><span class="after">55% / 30%</span></span>
+      </div>
+    </div>
+
+    <p style="margin-top:1.4rem" class="tight"><strong>바뀐 코드</strong></p>
+    <ul style="margin:.2rem 0 0;padding-left:1.1rem;color:var(--slate);font-size:.9rem;max-width:var(--measure)">
+      <li><code>lib/vercelViews.ts</code> 신설 — Vercel Web Analytics에서 어제(KST) 방문자 조회</li>
+      <li><code>lib/ga.ts</code> — 포착률 판정을 사람 수 기준으로 교체. 조회수 3원 비교는 참고 정보로만 문장에 남김</li>
+      <li>메일에 <strong>실측 방문자(어제·Vercel)</strong> 카드 추가</li>
+      <li>토큰 미설정 시엔 조회수 비율을 ‘참고값’으로만 표시하고 <strong>경보 문구는 붙이지 않음</strong></li>
+    </ul>
+
+    <div class="note" style="background:var(--panel);border:var(--rule)">
+      <b>API 함정 하나.</b> Vercel의 <code>visits/count</code>는 조회 범위를 UTC 하루 단위로 내림해서 KST 하루와 9시간이 어긋난다
+      (8/24를 요청하면 8/23 수치가 온다). 임의 시각을 그대로 받는 <code>visits/aggregate</code>를 쓰되,
+      <code>until</code>이 다음 정시로 올림되는 성질에 맞춰 <code>시작+23시간</code>으로 정확히 24시간 창을 만들었다.
+    </div>
+
+    <div class="scroll" style="margin-top:1.4rem">
+      <table>
+        <thead><tr><th>단계</th><th>내용</th><th>상태</th></tr></thead>
+        <tbody>
+          <tr><td class="mono">3ae9db0</td><td>포착률 사람 수 기준 전환</td><td class="ok">dev 푸시</td></tr>
+          <tr><td class="mono">6b25add</td><td>토큰 발급 안내 정정</td><td class="ok">dev 푸시</td></tr>
+          <tr><td class="mono">PR #33</td><td>dev → main 머지</td><td class="ok">머지 완료</td></tr>
+          <tr><td class="mono">731baef</td><td>운영 배포</td><td class="ok">READY</td></tr>
+          <tr><td>환경변수</td><td><code>VERCEL_ANALYTICS_TOKEN</code> (Secret · Production)</td><td class="ok">등록 완료</td></tr>
+          <tr><td>빌드</td><td><code>npm run build</code></td><td class="ok">통과</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <h2>6. 남은 것</h2>
+    <ul class="todos">
+      <li>
+        <span class="mark next">내일 08:00</span>
+        <div>
+          <h3>메일에서 새 문장 확인</h3>
+          <p>
+            “GA4 포착률(사람 수 기준): Vercel 실측 방문자 N명 대비 GA4 M명 (xx%) — 정상.” 이 형태로 나오면 정상 작동이다.
+            지표 카드에 ‘실측 방문자(어제·Vercel)’도 새로 생긴다.
+          </p>
+        </div>
+      </li>
+      <li>
+        <span class="mark next">조건부</span>
+        <div>
+          <h3>‘참고·조회수 기준’으로 나오면 토큰 문제</h3>
+          <p>
+            원인은 둘 중 하나 — 토큰 스코프를 개인 계정으로 잡았거나(팀이어야 한다), Environments에 Production이 빠졌거나.
+            어느 쪽이든 <strong>경보는 나가지 않으므로</strong> 급하지 않다.
+          </p>
+        </div>
+      </li>
+      <li>
+        <span class="mark done">해소됨</span>
+        <div>
+          <h3>“GA4가 대부분 놓치고 있다”는 우려</h3>
+          <p>
+            배너 제거 이후 실제 포착률은 방문자 기준 54~105%다. 대외 수치를 낼 때 배너 구간(7/30~8/20)만 분리하면 되고,
+            그 원칙은 이미 IR 기준선 산출에 반영돼 있다.
+          </p>
+        </div>
+      </li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>부록 · 일별 원본</h2>
+    <p>KST 기준, 사내 <code>/admin</code> 제외. 위 차트의 원자료다.</p>
+    <div class="scroll">
+      <table>
+        <thead>
+          <tr>
+            <th>날짜</th>
+            <th class="num">서버측 조회</th>
+            <th class="num">Vercel 조회</th>
+            <th class="num">Vercel 방문자</th>
+            <th class="num">GA4 조회</th>
+            <th class="num">GA4 사용자</th>
+            <th class="num">조회수 기준</th>
+            <th class="num">사람 수 기준</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td class="mono">8/20</td><td class="num">129</td><td class="num">136</td><td class="num">35</td><td class="num">8</td><td class="num">2</td><td class="num bad">6%</td><td class="num bad">6%</td></tr>
+          <tr><td class="mono">8/21</td><td class="num">200</td><td class="num">156</td><td class="num">52</td><td class="num">59</td><td class="num">28</td><td class="num">30%</td><td class="num">54%</td></tr>
+          <tr><td class="mono">8/22</td><td class="num">83</td><td class="num">85</td><td class="num">21</td><td class="num">80</td><td class="num">22</td><td class="num">96%</td><td class="num">105%</td></tr>
+          <tr><td class="mono">8/23</td><td class="num">68</td><td class="num">45</td><td class="num">29</td><td class="num">33</td><td class="num">19</td><td class="num">49%</td><td class="num">66%</td></tr>
+          <tr class="hi"><td class="mono">8/24</td><td class="num">114</td><td class="num">105</td><td class="num">48</td><td class="num">45</td><td class="num">34</td><td class="num bad">39%</td><td class="num ok">71%</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p style="margin-top:1rem;font-size:.82rem;color:var(--slate-2)">
+      8/20은 쿠키 배너가 살아 있던 날이라 두 지표 모두 낮다 — 실제 이상이 맞다.
+      GA4 사용자 수는 리포트 발송 시점(33명)보다 확정 후(34명) 소폭 늘었다. GA4는 최대 48시간까지 값을 조정한다.
+    </p>
+  </section>
+
+  <footer>
+    <span>Supercoder · AIVIEW</span>
+    <span class="mono">2026-08-25</span>
+    <span>출처: GA4 Data API · Vercel Web Analytics API · Supabase <code>page_views</code>·<code>posts</code> · 운영 사이트 직접 측정</span>
+  </footer>
+</div>
+
+<script>
+(function(){
+  var DATA = [
+    { d:"2026-08-20", views:6,  people:6,   x:44 },
+    { d:"2026-08-21", views:30, people:54,  x:190.5 },
+    { d:"2026-08-22", views:96, people:105, x:337 },
+    { d:"2026-08-23", views:49, people:66,  x:483.5 },
+    { d:"2026-08-24", views:39, people:71,  x:630 }
+  ];
+  var box = document.getElementById("chartBox");
+  var tip = document.getElementById("tip");
+  var cross = document.getElementById("cross");
+  var svg = box.querySelector("svg");
+  if (!box || !tip || !cross || !svg) return;
+
+  function show(i, evt){
+    var p = DATA[i];
+    tip.innerHTML =
+      '<span class="d">' + p.d + '</span>' +
+      '<div class="row"><i style="background:var(--s-views)"></i>조회수 기준<b>' + p.views + '%</b></div>' +
+      '<div class="row"><i style="background:var(--s-people)"></i>사람 수 기준<b>' + p.people + '%</b></div>';
+    tip.style.opacity = "1";
+
+    cross.setAttribute("x1", p.x);
+    cross.setAttribute("x2", p.x);
+    cross.setAttribute("opacity", ".35");
+
+    // SVG 좌표 → 박스 픽셀 좌표
+    var r = svg.getBoundingClientRect();
+    var scale = r.width / 720;
+    var left = p.x * scale;
+    var w = tip.offsetWidth;
+    if (left + w + 14 > r.width) left = left - w - 14; else left = left + 14;
+    tip.style.left = Math.max(4, left) + "px";
+    tip.style.top = Math.max(4, (evt ? evt.offsetY - 10 : 40)) + "px";
+  }
+  function hide(){ tip.style.opacity = "0"; cross.setAttribute("opacity", "0"); }
+
+  Array.prototype.forEach.call(document.querySelectorAll("#hits rect"), function(rect){
+    var i = Number(rect.getAttribute("data-i"));
+    rect.addEventListener("mousemove", function(e){ show(i, e); });
+    rect.addEventListener("mouseenter", function(e){ show(i, e); });
+  });
+  box.addEventListener("mouseleave", hide);
+})();
+</script>

@@ -22,6 +22,15 @@ const nextConfig = {
           { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
         ],
       },
+      // 자체 호스팅 폰트(2026-08-27 jsdelivr에서 이전) — public/ 기본값은
+      // max-age=0·must-revalidate라 그대로 두면 재방문마다 재검증 요청이 붙어
+      // CDN에 있을 때보다 오히려 느려진다. 파일명에 버전이 박혀 있어 immutable이 안전하다.
+      {
+        source: "/fonts/:path*",
+        headers: [
+          { key: "Cache-Control", value: "public, max-age=31536000, immutable" },
+        ],
+      },
     ];
   },
   // 구 정적 사이트의 .html URL을 새 라우트로 영구 리다이렉트 (SEO·기존 인바운드 링크 보존)

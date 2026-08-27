@@ -1,0 +1,493 @@
+<title>전환 병목 진단</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;600&family=IBM+Plex+Sans+KR:wght@400;500;600;700&family=Noto+Serif+KR:wght@600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#F2F5F6;
+    --paper-raised:#FFFFFF;
+    --ink:#1B2430;
+    --ink-soft:#55626D;
+    --ink-faint:#8996A1;
+    --accent:#2A5F8F;
+    --accent-soft:#DCE8F1;
+    --fact:#2F7D5A;
+    --fact-soft:#E1F0E7;
+    --hypo:#A6721A;
+    --hypo-soft:#F5E9D4;
+    --gate:#9C4A2E;
+    --gate-soft:#F5E1D8;
+    --border:#D9E0E5;
+    --shadow: 0 1px 2px rgba(27,36,48,0.06), 0 8px 24px -16px rgba(27,36,48,0.18);
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --paper:#101720;
+      --paper-raised:#19222C;
+      --ink:#E7ECF0;
+      --ink-soft:#A6B2BD;
+      --ink-faint:#71808C;
+      --accent:#7EB0DC;
+      --accent-soft:#1E3245;
+      --fact:#74C29A;
+      --fact-soft:#1B3128;
+      --hypo:#E3B15C;
+      --hypo-soft:#382C17;
+      --gate:#E08A6C;
+      --gate-soft:#3A241C;
+      --border:#2A3641;
+      --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 8px 24px -16px rgba(0,0,0,0.5);
+    }
+  }
+  :root[data-theme="dark"]{
+    --paper:#101720;
+    --paper-raised:#19222C;
+    --ink:#E7ECF0;
+    --ink-soft:#A6B2BD;
+    --ink-faint:#71808C;
+    --accent:#7EB0DC;
+    --accent-soft:#1E3245;
+    --fact:#74C29A;
+    --fact-soft:#1B3128;
+    --hypo:#E3B15C;
+    --hypo-soft:#382C17;
+    --gate:#E08A6C;
+    --gate-soft:#3A241C;
+    --border:#2A3641;
+    --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 8px 24px -16px rgba(0,0,0,0.5);
+  }
+
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'IBM Plex Sans KR','Apple SD Gothic Neo','Malgun Gothic',sans-serif;
+    line-height:1.65;
+    -webkit-font-smoothing:antialiased;
+  }
+  .page{
+    max-width:820px;
+    margin:0 auto;
+    padding:56px 24px 96px;
+  }
+  h1,h2,h3{
+    font-family:'Noto Serif KR',serif;
+    color:var(--ink);
+    text-wrap:balance;
+    margin:0;
+  }
+  .num{
+    font-family:'IBM Plex Mono',monospace;
+    font-variant-numeric:tabular-nums;
+  }
+
+  /* ---- header ---- */
+  .report-head{
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+    padding-bottom:32px;
+    border-bottom:1px solid var(--border);
+  }
+  .eyebrow{
+    font-size:12.5px;
+    font-weight:600;
+    letter-spacing:.08em;
+    color:var(--accent);
+    text-transform:uppercase;
+  }
+  h1{ font-size:clamp(28px,4vw,38px); font-weight:700; }
+  .meta{
+    display:flex;
+    flex-wrap:wrap;
+    gap:6px 18px;
+    font-size:14px;
+    color:var(--ink-soft);
+    margin-top:4px;
+  }
+  .meta span{ white-space:nowrap; }
+
+  /* ---- stat strip ---- */
+  .stat-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(140px,1fr));
+    gap:1px;
+    background:var(--border);
+    border:1px solid var(--border);
+    border-radius:12px;
+    overflow:hidden;
+    margin:32px 0 8px;
+  }
+  .stat-tile{
+    background:var(--paper-raised);
+    padding:18px 16px;
+    display:flex;
+    flex-direction:column;
+    gap:6px;
+  }
+  .stat-tile .figure{
+    font-size:26px;
+    font-weight:600;
+    color:var(--ink);
+  }
+  .stat-tile .figure small{
+    font-size:13px;
+    font-weight:500;
+    color:var(--ink-faint);
+    margin-left:2px;
+  }
+  .stat-tile .label{
+    font-size:12.5px;
+    color:var(--ink-soft);
+  }
+  .stat-note{
+    font-size:13px;
+    color:var(--ink-faint);
+    margin:0 0 8px;
+  }
+
+  section{ margin-top:52px; }
+  section > h2{
+    font-size:21px;
+    font-weight:700;
+    margin-bottom:6px;
+  }
+  .section-sub{
+    font-size:14.5px;
+    color:var(--ink-soft);
+    margin-bottom:20px;
+  }
+
+  /* ---- tables ---- */
+  .table-wrap{
+    overflow-x:auto;
+    border:1px solid var(--border);
+    border-radius:10px;
+    background:var(--paper-raised);
+  }
+  table{ border-collapse:collapse; width:100%; font-size:14.5px; min-width:480px; }
+  th,td{ text-align:left; padding:11px 14px; border-bottom:1px solid var(--border); vertical-align:top; }
+  thead th{
+    font-size:12.5px;
+    letter-spacing:.03em;
+    color:var(--ink-soft);
+    background:var(--paper);
+    font-weight:600;
+  }
+  tbody tr:last-child td{ border-bottom:none; }
+  td .num, th .num{ font-family:'IBM Plex Mono',monospace; font-variant-numeric:tabular-nums; }
+  tr.muted td{ color:var(--ink-faint); font-style:italic; }
+  tr.highlight td{ background:var(--fact-soft); font-weight:600; }
+
+  /* ---- fact / hypo cards ---- */
+  .card{
+    background:var(--paper-raised);
+    border:1px solid var(--border);
+    border-left:4px solid var(--fact);
+    border-radius:8px;
+    padding:16px 18px;
+    margin-bottom:14px;
+    box-shadow:var(--shadow);
+  }
+  .card.hypo{ border-left-color:var(--hypo); border-left-style:dashed; }
+  .card h3{
+    font-family:'IBM Plex Sans KR',sans-serif;
+    font-size:16px;
+    font-weight:700;
+    margin-bottom:8px;
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+  .tag{
+    display:inline-block;
+    font-size:11px;
+    font-weight:600;
+    letter-spacing:.02em;
+    padding:2px 8px;
+    border-radius:99px;
+    white-space:nowrap;
+  }
+  .tag.fact{ background:var(--fact-soft); color:var(--fact); }
+  .tag.hypo{ background:var(--hypo-soft); color:var(--hypo); }
+  .card p{ margin:0 0 8px; font-size:14.5px; color:var(--ink); }
+  .card p:last-child{ margin-bottom:0; }
+  .card .foot{ font-size:13px; color:var(--ink-soft); }
+  /* 수치를 잘못 읽기 쉬운 자리에 다는 단서 — 측정값의 적용 범위를 좁혀 준다 */
+  .card p.caveat{
+    background:var(--hypo-soft);
+    border-left:3px solid var(--hypo);
+    border-radius:0 8px 8px 0;
+    padding:11px 14px;
+    font-size:13.5px;
+    color:var(--ink);
+  }
+
+  /* ---- callout ---- */
+  .callout{
+    background:var(--accent-soft);
+    border:1px solid var(--accent);
+    border-radius:10px;
+    padding:16px 18px;
+    font-size:14.5px;
+    color:var(--ink);
+  }
+  .callout strong{ color:var(--accent); }
+
+  /* ---- priority pills ---- */
+  .pill{
+    display:inline-flex;
+    align-items:center;
+    font-size:12px;
+    font-weight:600;
+    padding:3px 9px;
+    border-radius:99px;
+    white-space:nowrap;
+  }
+  .pill.copy{ background:var(--accent-soft); color:var(--accent); }
+  .pill.design{ background:var(--fact-soft); color:var(--fact); }
+  .pill.gate{ background:var(--gate-soft); color:var(--gate); }
+
+  footer{
+    margin-top:64px;
+    padding-top:20px;
+    border-top:1px solid var(--border);
+    font-size:13px;
+    color:var(--ink-faint);
+  }
+
+  @media (max-width:520px){
+    .page{ padding:36px 16px 72px; }
+    .stat-tile .figure{ font-size:22px; }
+  }
+</style>
+
+<div class="page">
+
+  <header class="report-head">
+    <span class="eyebrow">Growth Diagnostic Memo</span>
+    <h1>왜 방문자는 리드로 이어지지 않는가</h1>
+    <div class="meta">
+      <span>Supercoder AIVIEW · www.supercoder.co</span>
+      <span>작성일 2026-08-27</span>
+      <span>대상 기간 2026-06-30 ~ 2026-08-23 (55일)</span>
+    </div>
+  </header>
+
+  <div class="stat-grid">
+    <div class="stat-tile">
+      <div class="figure num">12<small>건</small></div>
+      <div class="label">55일 리드 합계<br>(도입문의 3 · 소개서 9)</div>
+    </div>
+    <div class="stat-tile">
+      <div class="figure num">783<small>명</small></div>
+      <div class="label">GA4 원자료 방문자<br>(세션 1,212 · 신규 779)</div>
+    </div>
+    <div class="stat-tile">
+      <div class="figure num">2,235<small>명</small></div>
+      <div class="label">구간별 실측 보정<br>방문자 추정치</div>
+    </div>
+    <div class="stat-tile">
+      <div class="figure num">0.54<small>%</small></div>
+      <div class="label">신뢰 가능한<br>최종 전환율</div>
+    </div>
+    <div class="stat-tile">
+      <div class="figure num">3<small>명 · 7회</small></div>
+      <div class="label">소개서 다운로드 클릭<br>(8/11부터 추적)</div>
+    </div>
+  </div>
+  <p class="stat-note">전환율 0.54%는 GA4 raw 그대로 계산한 1.53%보다 낮다 — 이유는 아래 「GA4 70% 보정」 항목 참고.</p>
+
+  <section>
+    <h2>확인한 데이터와 출처</h2>
+    <p class="section-sub">코드 직접 열람 + GA4 Data API 조회 + Supabase SQL Editor 재실행 결과를 근거로 판단했다.</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>데이터</th><th>출처</th><th>시점</th></tr></thead>
+        <tbody>
+          <tr><td>랜딩·CTA·폼 구조</td><td>코드 직접 열람 (app/page.tsx, app/apply, app/brochure, SiteHeader.tsx, lib/leadForm.ts, lib/track.ts)</td><td>2026-08-27, dev 현재 상태</td></tr>
+          <tr><td>리드 실측치 (일별)</td><td>Supabase SQL Editor 직접 실행 (ir-leads-daily-260824.sql)</td><td>2026-08-27 확정</td></tr>
+          <tr><td>GA4 원자료 (동일 55일 창 정밀 재조회)</td><td>GA4 Data API 직접 조회 (서비스계정, 속성 543685790)</td><td>2026-08-27</td></tr>
+          <tr><td>기술 SEO·성능·GA4 채널</td><td>Lighthouse 로컬 실행 + GA4 API + Supabase REST</td><td>2026-08-25 진단 문서</td></tr>
+          <tr class="muted"><td>GSC 키워드·순위·CTR</td><td>조회 실패 — 서비스계정 GSC API가 GCP 프로젝트에서 비활성(403)</td><td>확인 필요</td></tr>
+          <tr><td>Vercel Web Analytics (실측 방문자, 서버사이드)</td><td>Vercel MCP 직접 조회(project sc-ai-website)</td><td>2026-08-27 — GA4와 교차검증 완료</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <h2>확인된 사실</h2>
+    <p class="section-sub">실제로 조회·재현한 근거가 있는 항목.</p>
+
+    <div class="card">
+      <h3><span class="tag fact">사실</span>트래픽 절대량이 작다 — 병목은 전환율 이전에 유입 규모</h3>
+      <p>같은 55일 구간 GA4 정밀 재조회: 방문자 <span class="num">783</span>명 · 세션 <span class="num">1,212</span>건 · 신규사용자 <span class="num">779</span>명. 최근 30일 채널: Organic Search 172세션/96명 · Direct 156/120 · Referral 25/17 · Unassigned 20/15 · Organic Social 16/5 · AI Assistant 11/10 · Email 1/1. 리드가 적은 1차 원인은 전환율이 아니라 애초에 방문자 모수가 작다는 데 있다.</p>
+    </div>
+
+    <div class="card">
+      <h3><span class="tag fact">사실</span>리드 실측치 — SQL 재실행으로 재확인 완료 (변동 없음)</h3>
+      <div class="table-wrap" style="margin:10px 0 8px;">
+        <table>
+          <thead><tr><th>항목</th><th>값</th><th>비고</th></tr></thead>
+          <tbody>
+            <tr><td>도입문의</td><td class="num">3건</td><td>7/30 · 8/13 · 8/19 각 1건</td></tr>
+            <tr><td>소개서 신청</td><td class="num">9건</td><td>7/23·8/7·8/11·8/19·8/22 각 1건, 7/29·8/21 각 2건</td></tr>
+            <tr class="highlight"><td>리드 합계</td><td class="num">12건</td><td>55일 누적</td></tr>
+            <tr><td>다운로드 클릭</td><td class="num">3명 · 7회</td><td>8/11부터 추적, 8/19 한 명이 4회</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="foot">리드는 6/30~7/22(23일) 전부 0건이었고, 7/23부터 산발적으로 시작해 8/19~8/22에 몰려 있다.</p>
+    </div>
+
+    <div class="card">
+      <h3><span class="tag fact">사실</span>홈 본문에 저관여 오퍼(소개서) CTA가 0개</h3>
+      <p><code>app/page.tsx</code>의 9개 섹션 전체를 확인한 결과, <code>/apply</code>(고관여 상담 신청) 링크는 히어로·파이널 2곳에 있지만 <code>/brochure</code>(저관여 소개서) 링크는 GNB·푸터에만 있고 본문 스크롤 흐름 안에는 전혀 없다. 그런데 실측은 <strong>소개서 신청이 도입문의보다 3배 많다</strong> — 더 잘 팔리는 오퍼가 오히려 덜 노출되고 있다.</p>
+    </div>
+
+    <div class="card">
+      <h3><span class="tag fact">사실</span>두 폼이 동일한 마찰 수준을 요구한다</h3>
+      <p>ApplyForm·BrochureForm 모두 동일하게 <strong>6개 필수 항목</strong>(이름·회사명·회사이메일·연락처·연간채용규모·유입경로)과 동의 체크박스를 요구한다. 저관여 오퍼인 <code>/brochure</code>조차 전화번호가 필수다. 개인 메일(gmail·naver 등) 도메인은 경고가 아니라 <strong>제출 자체를 차단</strong>한다. 이메일만 blur 시점에 검증하고 나머지는 제출 시 일괄 검증돼, 첫 제출에서 여러 필드가 한꺼번에 invalid로 표시될 수 있다. 로딩·성공·실패 피드백 자체는 준수한 수준.</p>
+    </div>
+
+    <div class="card">
+      <h3><span class="tag fact">사실</span>개인정보 동의가 "체크박스 + 전체 약관 링크"뿐</h3>
+      <p>두 폼 모두 [필수] 개인정보 수집·이용 동의 체크박스 옆에 <code>/privacy</code> 전체 처리방침 링크만 있고, 이 폼에 한정된 수집 항목·목적·보유기간 요약 고지가 없다.</p>
+    </div>
+
+    <div class="card">
+      <h3><span class="tag fact">사실</span>GNB "로그인" 클릭은 GA4로 측정 자체가 불가능하다</h3>
+      <p>"로그인"(<code>ai.supercoder.co/recruiter</code>)이 기존 고객 트래픽일 것이라는 가설을 아웃바운드 클릭으로 검증하려 했으나, 전체 기간(6/30~8/26) 동안 해당 도메인으로 가는 클릭은 <span class="num">0</span>건이었다 — 잡힌 아웃바운드는 전부 블로그 인용 링크(sedaily.com 7 · axios.com 6 · exam.toeic.co.kr 3 등)뿐. 원인은 GA4 Enhanced Measurement의 아웃바운드 판정이 호스트명이 아니라 <strong>등록 도메인(eTLD+1)</strong> 기준이기 때문 — <code>ai.supercoder.co</code>와 <code>www.supercoder.co</code>는 등록 도메인이 <code>supercoder.co</code>로 같아 GA4가 이 이동을 아예 아웃바운드로 분류하지 않는다. 트래픽이 적어서가 아니라 <strong>측정 설계상 원천적으로 안 보이는 것</strong>이다.</p>
+    </div>
+
+    <div class="card">
+      <h3><span class="tag fact">사실</span>GA4 70% 보정 — 이중보정 방지 확인</h3>
+      <p>기존 IR 기준선(2,235명)은 이미 구간별 실측 보정을 거친 값이다(쿠키배너 구간 7/30~8/20은 실측 포착률 8.7%, 배너 제거 후 8/21~8/23은 66.1%로 각각 보정, 8/13 이후는 Vercel 실측 교차검증 완료). 여기에 flat 70%를 추가로 적용하면 이중보정이 된다.</p>
+      <div class="table-wrap" style="margin:10px 0 8px;">
+        <table>
+          <thead><tr><th>방법</th><th>방문자(분모)</th><th>전환율</th><th>비고</th></tr></thead>
+          <tbody>
+            <tr><td>GA4 raw 그대로</td><td class="num">783명</td><td class="num">1.53%</td><td>방문자를 가장 적게 잡아 전환율이 가장 부풀려짐</td></tr>
+            <tr><td>flat 70% 보정</td><td class="num">1,119명</td><td class="num">1.07%</td><td>이 구간엔 부적합 — 정답의 절반 수준</td></tr>
+            <tr class="highlight"><td>구간별 실측 보정 (권장)</td><td class="num">2,235명</td><td class="num">0.54%</td><td>가장 신뢰할 수 있는 값</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="foot">flat 70%가 틀리는 이유: 55일 중 3주(7/30~8/20)는 실제 포착률이 8.7%까지 떨어졌던 배너 구간이라, 70%를 일괄 적용하면 이 구간 방문자를 여전히 절반 가까이 과소 추정한다. <strong>flat ~70%는 배너 없는 최근 구간(8/21 이후)에만, 배너가 섞인 과거 누적치는 구간별 보정을 써야 한다.</strong></p>
+    </div>
+
+    <div class="card">
+      <h3><span class="tag fact">사실</span>Vercel 교차검증 + 시간 단위 분석으로 "배너 제거가 원인" 확정</h3>
+      <p>Vercel MCP로 직접 조회한 방문자 수(8/13~8/23 <span class="num">467</span>명)를 GA4와 대조한 결과 <span class="num">1%</span> 미만 오차로 일치 — 2,235명·0.54% 수치는 그대로 유지. 여기에 더해 8/21 반등의 원인을 시간 단위까지 파고들었다.</p>
+      <p>배너를 삭제하는 커밋(<code>7a67ce0</code>)이 <strong>2026-08-21 11:52:29 KST</strong>에 운영(main)에 배포됐다는 걸 Vercel 배포 메타데이터의 커밋 SHA로 직접 확인했고, 같은 날을 배포 시각 기준으로 쪼개 GA4·Vercel을 시간대별로 대조하니 <strong>배포 전(00~11시) 포착률 0% → 배포 후(12~24시) 102%</strong>로 정확히 그 순간에 갈렸다. 트래픽 구성 변화·설정값 무배포 변경·재방문자 급증 등 다른 설명은 전부 실측으로 기각됐다. <strong>결론: "배너를 없애서 8/21부터 포착률이 좋아졌다"는 설명이 맞다.</strong></p>
+    </div>
+
+    <div class="card">
+      <h3><span class="tag fact">사실</span>병목은 LCP가 아니라 서드파티 — 로드 6.9초 중 4.6초</h3>
+      <p><b>앞선 "모바일 LCP 8.4초" 판단은 정정한다.</b> 운영 도메인을 느린 4G·CPU 4배 감속(Lighthouse 모바일과 같은 조건)으로 직접 계측하니 <b>관측 LCP는 1.37초</b>였고, LCP 요소는 히어로 <code>H1</code> 텍스트였다. 8.4초는 Lighthouse가 <i>시뮬레이션</i>으로 추정한 값이고, 실제로 관측되는 LCP와는 다른 지표다.</p>
+      <p>LCP가 빠른 이유는 <code>font-display:swap</code> 때문이다 — H1이 대체 폰트로 즉시 그려지면서 그 시점에 LCP가 확정되고, 뒤늦게 도착하는 웹폰트는 LCP를 밀지 않는다. 즉 <b>폰트를 자체 호스팅해도 LCP는 거의 안 변한다.</b></p>
+      <p>대신 진짜 비용은 <b>로드 완료까지의 6.9초</b>이고, 그중 4.6초가 서드파티다. 차단 A/B로 각 항목의 몫을 분리했다.</p>
+      <div class="table-wrap">
+        <table>
+          <tr><th>조건</th><th>LCP</th><th>로드 완료</th><th>절감</th></tr>
+          <tr><td>현재 운영 (기준)</td><td class="num">1,372 ms</td><td class="num">6,853 ms</td><td>—</td></tr>
+          <tr><td><code>gtm.js</code>만 차단</td><td class="num">1,156 ms</td><td class="num">5,506 ms</td><td class="num">−1.35 s</td></tr>
+          <tr><td>폰트 CDN(jsdelivr)만 차단</td><td class="num">1,428 ms</td><td class="num">4,804 ms</td><td class="num">−2.05 s</td></tr>
+          <tr><td>둘 다 차단</td><td class="num">1,216 ms</td><td class="num">2,216 ms</td><td class="num">−4.64 s</td></tr>
+          <tr><td><b>GTM 실제 제거 후 (2026-08-27 적용·실측)</b></td><td class="num"><b>1,312 ms</b></td><td class="num"><b>5,295 ms</b></td><td class="num"><b>−1.56 s</b></td></tr>
+        </table>
+      </div>
+      <p><b>적용 결과 —</b> 같은 날 <code>/admin</code>에서 GTM 컨테이너 ID를 비워 운영에 반영했고, 재측정에서 로드 완료가 <b>6,853 ms → 5,295 ms</b>로 떨어졌다. 차단 A/B의 예측(5,506 ms)보다 오히려 조금 더 좋다. GA4(<code>gtag/js</code>)와 동의 기본값 스크립트는 그대로 살아 있음을 운영 HTML에서 확인했다 — <code>useGoogleTags</code>가 <code>gaId || gtmId</code> 조건이라 GA 측정 ID가 남아 있으면 동의 설정은 깨지지 않는다.</p>
+      <p>내역은 두 가지다. ① <b>googletagmanager 이중 로드</b> — GA4 직접 태그(<code>gtag/js</code>)와 GTM 컨테이너(<code>gtm.js</code>)가 각각 붙어 네트워크 점유 5.2초·4.2초를 쓴다. ② <b>Pretendard 청크 9개</b> — 동적 서브셋(전체 92개 중 이 페이지가 쓰는 9개)이라 한글 유니코드 범위가 넓어 매 방문 약 250KB를 외부 CDN에서 받는다.</p>
+      <p class="caveat"><b>차단 A/B 해석 주의</b> — 위 표의 −2.05초는 <i>웹폰트를 아예 안 받았을 때</i>의 값이지, 자체 호스팅으로 얻는 값이 아니다. 자체 호스팅은 바이트를 그대로 받되 외부 연결(DNS·TLS) 설정만 없애므로 회수분은 그중 일부(느린 4G 기준 수백 ms대)다. 바이트 자체를 줄이려면 청크 수를 줄이는 별도 서브셋 작업이 필요하고, 블로그 본문은 등장 글자가 열려 있어 함부로 자를 수 없다. 반면 GTM의 −1.35초는 <i>제거하면 그대로 회수되는</i> 값이다 — 우선순위는 GTM이 먼저다.</p>
+      <p>현재 세션의 86%가 데스크톱(8/21~8/24 기준)이라 당장의 리드 손실은 제한적이다. 다만 이 비용은 LCP가 아니라 <b>상호작용 지연(TBT)</b>과 실제 모바일 회선에서의 체감으로 나타나므로, 모바일 비중이 높은 채널(유료광고·SNS)로 확장하기 전에 정리해 두는 것이 맞다.</p>
+    </div>
+
+    <div class="card">
+      <h3><span class="tag fact">사실</span>문서화된 리드 접점 중 일부는 실제로 존재하지 않는다</h3>
+      <p><code>subscribers</code>(뉴스레터) 테이블과 <code>CostCalculator.tsx</code>(ROI 계산기)는 코드베이스 어디에도 마운트돼 있지 않다. 현재 실제로 작동하는 리드 접점은 <strong>/apply와 /brochure 두 곳뿐</strong>이다.</p>
+    </div>
+  </section>
+
+  <section>
+    <h2>가설</h2>
+    <p class="section-sub">수치로 확정하지 못했지만 코드 구조·정황상 의심되는 것.</p>
+
+    <div class="card hypo">
+      <h3><span class="tag hypo">가설</span>"500개 이상의 기업" 문구의 신뢰 리스크</h3>
+      <p><code>app/apply/page.tsx:35</code>에 "이미 500개 이상의 기업이 Supercoder와 함께하고 있습니다"라는 문구가 있다. 홈페이지는 같은 자리에 숫자 없이 로고 3개만 보여준다. 실측 리드(55일 12건)와 격차가 크고, 코드·DB 어디서도 근거를 찾지 못했다. 거짓이라 단정하지는 않는다 — 웹사이트 밖 영업 채널의 숫자일 수 있다. 다만 가장 중요한 전환 시점(상담 신청 직전)에 노출되는 수치라 근거 확인이 필요하다.</p>
+    </div>
+
+    <div class="card hypo">
+      <h3><span class="tag hypo">가설</span>로그인 클릭 = 기존 고객 트래픽</h3>
+      <p>가설 자체는 여전히 유효하지만, 위 확인된 사실에서 보듯 현재 데이터로는 규모를 확인도 반박도 할 수 없다 — 측정 수단이 없다는 것만 확인됐다.</p>
+    </div>
+
+    <div class="card hypo">
+      <h3><span class="tag hypo">가설</span>검색 유입의 브랜드/비브랜드 구성비</h3>
+      <p>GSC API가 막혀 키워드 단위 확인이 안 된다. GA4 랜딩페이지 데이터(8/21~8/24)로는 오가닉 세션의 절반이 홈으로 착지 — 브랜드 검색 비중이 높다는 방향은 맞지만 정확한 비율은 가설로 남는다.</p>
+    </div>
+
+    <div class="card hypo">
+      <h3><span class="tag hypo">가설</span>개인 메일 차단 정책의 이탈 영향</h3>
+      <p>합리적인 리드 품질 정책이지만, 아직 회사 메일이 없는 초기 스타트업 채용 담당자를 이 시점에 배제할 수 있다. 실제 이탈 규모는 측정 수단이 없어 확인 불가.</p>
+    </div>
+  </section>
+
+  <section>
+    <h2>우선순위별 개선 제안</h2>
+
+    <p class="section-sub" style="margin-bottom:10px;"><strong>빠르게 처리 가능</strong> — 카피·설정 위주, 개발 최소</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th style="width:32px;">#</th><th>항목</th><th>담당</th></tr></thead>
+        <tbody>
+          <tr><td class="num">1</td><td>"500개 이상의 기업" 문구 근거 확인 → 유지·수정 결정 <b>(보류 — 나중에 확인하기로)</b></td><td><span class="pill copy">b2b-hr-copywriter</span></td></tr>
+          <tr><td class="num">2</td><td>홈 PROOF 섹션 끝에 저관여 CTA 밴드 추가 — "아직 상담까지는 이르다면"으로 /brochure 노출</td><td><b>dev 반영 완료</b> (a787632)</td></tr>
+          <tr><td class="num">3</td><td>동의 체크박스 위에 수집 항목·목적·보유기간 3줄 요약 고지 추가 — 두 폼 공용 <code>ConsentNotice</code></td><td><b>보류</b> — 만들었다가 이번 배포에서 제외(되돌림). 코드는 커밋 <code>a787632</code>에 남아 있어 복구 가능</td></tr>
+          <tr><td class="num">4</td><td>GNB·모바일 메뉴 "로그인"에 <code>login_click</code> 이벤트 추가 — 기존 고객 트래픽 규모를 앞으로 실제 측정 가능하게 함</td><td><b>dev 반영 완료</b> (a787632)</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p class="section-sub" style="margin:24px 0 10px;"><strong>구조적 개선 필요</strong> — 개발 작업 + 사용자 승인 대상</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th style="width:32px;">#</th><th>항목</th><th>비고</th></tr></thead>
+        <tbody>
+          <tr><td class="num">5</td><td><s>/brochure 전화번호를 선택값으로 낮추거나, 저관여·고관여 폼의 필수 항목 수를 차등화</s> <b>— 진행하지 않음</b></td><td>영업 팔로업에 연락처가 필요해 필수 유지로 결정(2026-08-27). 리드 품질 우선</td></tr>
+          <tr><td class="num">6</td><td><s>GTM 컨테이너를 지금은 내린다</s> <b>— 완료</b>. 광고 집행 시작할 때 <code>GTM-5MJDJ2GW</code>를 다시 넣으면 된다(컨테이너는 Google 계정에 그대로 보존)</td><td><b>2026-08-27 운영 적용 · 실측 −1.56s</b></td></tr>
+          <tr><td class="num">6-b</td><td>Pretendard 92개 청크 자체 호스팅 — 외부 연결 제거 + 서드파티 의존 해소</td><td>dev 반영 완료(c119048), <b>운영 PR 대기</b>. 바이트는 그대로라 LCP는 변하지 않는다</td></tr>
+          <tr><td class="num">7</td><td>GSC API 활성화 — ① GCP 프로젝트 <code>aiview-mail</code>에서 <b>Search Console API</b> 사용 설정 ② Search Console 속성 <code>www.supercoder.co</code>의 사용자·권한에 서비스계정 <code>aiview-mailer@aiview-mail.iam.gserviceaccount.com</code>을 <b>전체 보기</b>로 추가</td><td>둘 다 해야 열린다(현재 403). 이후 브랜드/비브랜드 키워드 비중 실측 가능</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <h2>리드 재조회 방법</h2>
+    <p class="section-sub">이번 요청은 SQL Editor에서 직접 재실행해 해결됐다. 앞으로 다시 확인할 때를 위한 정리:</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>방법</th><th>소요</th><th>확실성</th><th>비고</th></tr></thead>
+        <tbody>
+          <tr class="highlight"><td>SQL Editor 직접 실행 (이번에 쓴 방법)</td><td>1~2분</td><td class="num">100%</td><td>날짜 범위만 최신으로 바꿔 실행 → 결과 공유 시 바로 분석 갱신</td></tr>
+          <tr><td>Supabase MCP 인증</td><td>브라우저 인증 1회</td><td>미확인</td><td>read-only 연결이라 SQL 실행 권한까지 열리는지는 인증 후 확인 필요</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <div class="callout" style="margin-top:44px;">
+    <strong>교차검증 완료 —</strong> Vercel Web Analytics(8/13~8/23 실측 467명)와 GA4를 대조해 기존 2,235명·0.54% 수치가 유지됨을 확인했고, 8/21 포착률 반등의 원인도 배포 시각(11:52 KST) 기준 시간대별 대조로 "배너 제거가 맞다"고 확정했습니다.
+    <br><br>
+    <strong>정정 1건 —</strong> "모바일 LCP 8.4초" 항목은 운영 도메인 직접 계측으로 뒤집혔습니다. 관측 LCP는 1.37초이고, 8.4초는 Lighthouse 시뮬레이션 추정치였습니다. 실제 개선 대상은 LCP가 아니라 로드 6.9초 중 서드파티가 차지하는 4.6초입니다. 자세한 근거는 위 관련 항목 참고.
+  </div>
+
+  <footer>
+    b2b-growth-marketer 진단 · 코드 열람 + GA4 Data API + Supabase 실측 기반 · 운영 반영 전 항목은 전부 승인 대기
+  </footer>
+
+</div>

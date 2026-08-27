@@ -3,6 +3,15 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { trackEvent } from "@/lib/track";
+
+/**
+ * '로그인'(ai.supercoder.co)은 GA4 자동 아웃바운드 클릭으로 잡히지 않는다 —
+ * Enhanced Measurement의 아웃바운드 판정이 호스트명이 아니라 등록 도메인(eTLD+1) 기준이라,
+ * ai.supercoder.co와 www.supercoder.co는 둘 다 supercoder.co라 '외부 이동'으로 분류되지 않는다.
+ * 기존 고객 트래픽 규모를 보려면 이 커스텀 이벤트가 유일한 수단이다.
+ */
+const LOGIN_URL = "https://ai.supercoder.co/recruiter";
 
 /**
  * 공유 GNB(헤더) — 페이지 네비 중심(블로그·서비스소개서·로그인) + 도입문의 CTA.
@@ -112,7 +121,13 @@ export default function SiteHeader() {
             <Link href="/blog">블로그</Link>
             <Link href="/brochure">서비스소개서</Link>
           </div>
-          <a href="https://ai.supercoder.co/recruiter" target="_blank" rel="noopener noreferrer" className="btn btn-out nav-login">로그인</a>
+          <a
+            href={LOGIN_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="btn btn-out nav-login"
+            onClick={() => trackEvent("login_click", { location: "gnb" })}
+          >로그인</a>
           <Link href="/apply" className="btn btn-blue nav-btn">도입 문의</Link>
 
           {/* 모바일: 햄버거 메뉴 */}
@@ -133,7 +148,12 @@ export default function SiteHeader() {
                 <Link href="/blog" onClick={close}>블로그</Link>
                 <Link href="/brochure" onClick={close}>서비스소개서</Link>
                 <Link href="/apply" className="nav-menu-item-cta" onClick={close}>도입 문의</Link>
-                <a href="https://ai.supercoder.co/recruiter" target="_blank" rel="noopener noreferrer" onClick={close}>로그인</a>
+                <a
+                  href={LOGIN_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={() => { trackEvent("login_click", { location: "mobile_menu" }); close(); }}
+                >로그인</a>
               </div>
             </div>
           </div>
