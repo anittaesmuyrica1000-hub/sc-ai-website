@@ -388,8 +388,9 @@
     <div class="act">
       <div class="act-n">5</div>
       <div class="act-b">
-        <div class="act-t">앞으로 GSC는 국가=한국 필터로 볼 것</div>
-        <div class="act-d">해외 노출 36%가 지표를 왜곡한다. 전체 CTR 7.27% vs 한국만 9.41%.</div>
+        <div class="act-t">평소 성과를 볼 때는 국가=한국 필터로</div>
+        <div class="act-d">해외 노출 36%가 지표를 끌어내린다. 전체 CTR 7.27% vs 한국만 9.41% — 필터 없이 보면 실제보다 나빠 보인다.
+        <b>단, 기준선과 비교할 CSV에는 걸지 말 것</b> — 이 보고서의 수치가 전체 국가 기준이라 한쪽만 거르면 비교가 성립하지 않는다.</div>
       </div>
     </div>
   </section>
@@ -439,7 +440,11 @@
   <footer>
     Supercoder AIVIEW · 검색 유입 진단 2026-08-27 · 전환 병목 진단(2026-08-27)의 미해결 가설 “검색 유입의 브랜드/비브랜드 구성비”에 대한 답
     <br><br>
-    <b>다음 측정</b> — 1주 뒤 Search Console에서 실적 CSV를 다시 내려받아(내보내기 전 CTR·평균 게재순위 체크박스를 켤 것) 위 기준선과 대조한다. 볼 것: <code>/apply</code> CTR(0.8% 기준), 블로그 4편 CTR, 404 8개가 목록에서 빠졌는지, 그리고 링크를 받은 <code>hr-ax-ai-screening</code>(11.3위)·<code>ai-interview-resume-screening</code>(12.0위)의 순위 변화. <b>국가는 한국으로 필터</b>할 것.
+    <b>다음 측정</b> — 1주 뒤 Search Console에서 실적 CSV를 다시 내려받아 위 기준선과 대조한다. 볼 것: <code>/apply</code> CTR(0.8% 기준), 블로그 4편 CTR, 404 8개가 목록에서 빠졌는지, 그리고 링크를 받은 <code>hr-ax-ai-screening</code>(11.3위)·<code>ai-interview-resume-screening</code>(12.0위)의 순위 변화.
+    <br><br>
+    ⚠️ <b>비교용 CSV에는 국가 필터를 걸지 말 것.</b> 이 보고서의 기준선은 <b>전체 국가</b>로 받은 값이다(원본의 <code>필터.csv</code>에 검색 유형·기간만 있고 국가 조건 없음). 한쪽만 한국으로 거르면 CTR 상승이 개선 덕인지 미국 노출이 빠진 탓인지 구분되지 않는다. 내보내기 조건은 <b>오늘과 동일하게</b> — 검색 유형 웹 · 지난 3개월 · 국가 필터 없음 · 표 위의 클릭수·노출수·CTR·평균 게재순위 <b>네 지표 모두 체크</b>.
+    <br><br>
+    본문의 “국가=한국 필터”는 <b>CSV가 아니라 화면에서 성과를 볼 때</b> 쓰는 관점이다(전체 7.27% vs 한국만 9.41%). 저장되는 설정이 아니라 볼 때마다 거는 것이며, 기준선 비교와는 별개다.
   </footer>
 
 </div>
