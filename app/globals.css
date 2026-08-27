@@ -260,6 +260,14 @@ footer{background:#fff;color:var(--slate);padding:64px 0 40px;font-size:14px;bor
 .bro-agree .bro-agree-more i{font-size:10px}
 .bro-agree.invalid .bro-agree-main span{color:var(--red)}
 .bro-agree.invalid{color:var(--red)}
+
+/* 동의 요약 고지(components/ConsentNotice.tsx) — /apply·/brochure 공용.
+   처리방침 전문 링크와 별개로, 이 폼이 수집하는 것을 제출 직전에 보여준다. */
+.consent-notice{margin:0 0 14px;padding:11px 13px;background:var(--soft);border:1px solid var(--line);border-radius:10px;font-size:12.5px;line-height:1.55;color:var(--slate)}
+.consent-notice>div{display:flex;gap:10px}
+.consent-notice>div+div{margin-top:5px}
+.consent-notice dt{flex:0 0 62px;font-weight:700;color:var(--ink)}
+.consent-notice dd{margin:0;min-width:0}
 .bro-card .btn{width:100%;justify-content:center;font-size:15.5px;padding:14px}
 .bro-card .btn[disabled]{opacity:.6;cursor:default}
 .bro-formerr{display:none;background:#FDECEA;border:1px solid #F3C2BC;color:#B23B2E;font-size:13px;font-weight:600;border-radius:10px;padding:10px 13px;margin-bottom:12px}

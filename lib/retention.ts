@@ -7,6 +7,10 @@ export const RETENTION_YEARS = 1;
 export const RETENTION_LABEL = "자료 제공 완료일부터 1년";
 export const RETENTION_SOON_DAYS = 30;
 
+// 폼 하단 동의 요약 고지에 노출되는 문구. 방침 제2조 원문을 그대로 따른다 —
+// 방침이 개정되면 이 상수도 함께 고쳐야 고지와 방침이 어긋나지 않는다.
+export const RETENTION_NOTICE = "문의·고충처리 또는 자료 제공 완료일부터 1년";
+
 export type RetentionRow = {
   created_at: string;
   completed_at?: string | null;

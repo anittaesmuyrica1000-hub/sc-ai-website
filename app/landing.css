@@ -247,6 +247,15 @@
   .pc2 .big.big-phrase{white-space:nowrap;font-size:clamp(14px,2.8vw,32px);line-height:1.2}
   .pc2 p{font-size:15px;color:var(--slate);margin-top:10px}
   .pc2 .psrc{font-size:11.5px;color:var(--slate-2);margin-top:5px}
+  /* 저관여 CTA 밴드 — 상담(고관여) 앞단에 소개서 경로를 본문에 노출한다.
+     PROOF 카드 바로 아래에 붙어 '검증 효과는 봤지만 아직 확신은 없는' 구간을 받는다. */
+  .soft-cta{display:flex;align-items:center;justify-content:space-between;gap:24px;flex-wrap:wrap;margin-top:34px;background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:22px 28px;box-shadow:0 12px 30px -22px rgba(20,40,90,.2)}
+  .soft-cta-txt{display:flex;flex-direction:column;gap:4px;min-width:0}
+  .soft-cta-txt strong{font-size:17px;font-weight:700;color:var(--ink);letter-spacing:-.01em}
+  .soft-cta-txt span{font-size:14px;color:var(--slate)}
+  .soft-cta-btn{flex-shrink:0}
+  @media(max-width:680px){.soft-cta{flex-direction:column;align-items:stretch;text-align:center;gap:16px;padding:20px}.soft-cta-txt strong{font-size:16px}.soft-cta-txt span{font-size:13px}.soft-cta-btn{justify-content:center}}
+
   .logo-wall{display:flex;flex-wrap:wrap;justify-content:center;gap:16px 40px;align-items:center;margin-top:52px;padding-top:40px;border-top:1px solid var(--line)}
   .logo-wall span{font-weight:700;font-size:20px;color:#A2ACC2}
   /* 3개 지표는 어떤 폭에서도 한 줄(3열) 유지 — VALUE와 동일하게 gap·패딩·폰트만 축소 */

@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { supabase } from "@/lib/supabase";
 import { trackEvent } from "@/lib/track";
+import ConsentNotice from "@/components/ConsentNotice";
 import { getUtm, type Utm } from "@/lib/utm";
 import {
   emailError, EMAIL_ERROR_MSG, isValidPhone,
@@ -218,6 +219,10 @@ export default function ApplyForm() {
           <textarea id="f-memo" placeholder="궁금한 점이나 도입 배경을 자유롭게 적어주세요." value={fields.memo} onChange={(e) => set("memo", e.target.value)} />
         </div>
 
+        <ConsentNotice
+          items="이름, 회사명, 회사 이메일, 연락처, 연간 채용 규모, 유입 경로(직무·직책, 문의 내용은 선택)"
+          purpose="도입 문의 상담 및 서비스 안내"
+        />
         <div className={`agree${agreeInvalid ? " invalid" : ""}`}>
           <label className="agree-main">
             <input type="checkbox" checked={agree} onChange={(e) => { setAgree(e.target.checked); setAgreeInvalid(false); }} />

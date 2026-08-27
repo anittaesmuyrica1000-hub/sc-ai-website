@@ -17,14 +17,15 @@ Supercoder AI 웹사이트 — **AIVIEW** 제품 랜딩 + 블로그/도입문의
 
 - **라우트(`app/`):**
   - `app/page.tsx` — 랜딤(index). 서버 컴포넌트. 섹션 CSS는 `app/landing.css`.
-  - `app/apply/` — 도입 문의 폼. `page.tsx`(서버, metadata) + `ApplyForm.tsx`(클라이언트, Supabase insert).
+  - `app/apply/` — 도입 문의 폼(고관여). `page.tsx`(서버, metadata) + `ApplyForm.tsx`(클라이언트, Supabase insert).
+  - `app/brochure/` — 서비스소개서 신청(저관여 리드). `page.tsx`(서버) + `BrochureForm.tsx`(클라이언트, `brochure_requests` insert) + `BrochurePreview.tsx`. 두 폼의 공통 검증은 `lib/leadForm.ts`(개인 메일 도메인은 **제출 차단**).
   - `app/blog/` — 블로그 목록. `page.tsx`(서버, Supabase에서 published 글 SSR) + `BlogClient.tsx`(클라이언트, 카테고리 필터).
   - `app/blog/[id]/` — 블로그 상세. 서버 컴포넌트, `generateMetadata`로 글별 OG. 본문은 `lib/postRender.ts`(간이 마크다운)로 렌더.
   - `app/admin/` — 블로그 관리. `page.tsx`(noindex) + `AdminClient.tsx`(**Supabase Auth 로그인 게이트** + CRUD).
   - `app/privacy`, `app/terms`, `app/terms-applicant` — 법적 페이지(서버). `app/not-found.tsx` — 404.
 - **공유 디자인 토큰·컴포넌트 CSS는 `app/globals.css` (SSOT).** `:root` 변수(`--blue`,`--ink`,`--soft`,`--r`,`--shadow` 등)·버튼(`.btn*`)·`.eyebrow`·GNB(`header`/`nav`)·푸터(`footer`)·모달(`.bro-*`)·챗봇(`.cbot*`)·법적 페이지(`.legal`)가 모두 여기. 루트 `layout.tsx`에서 1회 import. **공유 컴포넌트를 바꿀 땐 `app/globals.css`만 고치면 전 페이지가 함께 바뀐다.**
 - **페이지 고유 CSS는 라우트 폴더에 co-located** (`app/landing.css`, `app/apply/apply.css`, `app/blog/blog.css`, `app/blog/[id]/post.css`, `app/admin/admin.css`). 해당 page에서 import. 클래스는 전역 스코프(원본 정적 사이트와 동일 동작).
-- **공유 컴포넌트(`components/`):** `SiteHeader`(섹션 인지형 GNB·메뉴), `SiteFooter`, `BrochureModal`(서비스소개서 리드 — `#navBrochure` 클릭 위임), `Chatbot`(FAQ 챗봇), `HeroParticles`(canvas 입자 모션, 히어로·CTA 공용). 모두 `layout.tsx`에 마운트되거나 page에서 사용. `"use client"`.
+- **공유 컴포넌트(`components/`):** `SiteHeader`(섹션 인지형 GNB·메뉴), `SiteFooter`, `Chatbot`(FAQ 챗봇), `HeroParticles`(canvas 입자 모션, 히어로·CTA 공용), `Analytics`·`UtmCapture`·`ViewCounter`. 모두 `layout.tsx`에 마운트되거나 page에서 사용. `"use client"`. ⚠️ `CostCalculator.tsx`는 **어디에도 마운트돼 있지 않다**(미사용). 소개서 리드는 옛 `BrochureModal`이 아니라 `app/brochure/` 라우트가 담당한다.
 - **섹션 = 랜딩 구조 (정의된 이름·번호·id).** `app/page.tsx`는 번호 매겨진 섹션 스택이다. 정식 목록: 01 DECLARATION(`#hero`), 02 CLIENTS(`#clients`), 03 VALUE(`#value`), 04 FLOOD(`#flood`), 05 ROLE REVERSAL(`#role`, 깔때기 SVG), 06 HOW IT WORKS(`#how`), 07 PROOF(`#proof`), 08 VOICES(`#voices`), 08.5 FAQ(`#faq`), 09 FINAL CTA(`#final`). GNB 메뉴 앵커는 `#value`·`#how`·`#proof`·`#voices`.
 - **섹션 인지형 GNB:** `[data-nav="dark"]` 섹션(히어로·FINAL) 위에선 헤더 반전(흰 로고). 색 전환 클래스(`header.nav-invert`/`.nav-solid`)는 `globals.css`(SSOT), 감지 로직은 `SiteHeader.tsx`의 `syncHeader`.
 - **폰트·아이콘은 자체 호스팅 서브셋(2026-08-10 성능 최적화):** `layout.tsx`가 `pretendard.css`(woff2 청크만 jsdelivr)와 `fontawesome.css`를 import한다. 아이콘은 `<i className="fa-...">`로 쓰되, **`app/fontawesome.css`에 정의된 아이콘만 쓸 수 있다** — `public/fonts/`의 woff2도 pyftsubset으로 잘라낸 상태라 목록에 없는 이름을 쓰면 버튼은 동작해도 글리프가 렌더되지 않는다(2026-08-21 `fa-flask` 사례). 새 아이콘이 꼭 필요하면 CSS 룰 추가 + 폰트 재서브셋이 함께 필요하다. Supabase는 `@supabase/supabase-js`(npm).

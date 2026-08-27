@@ -284,6 +284,16 @@ export default async function HomePage() {
             <div className="pc2"><div className="vlabel">속도</div><div className="big big-phrase">만 명도 즉시 스크리닝</div><p>사람이 한 명당 10분씩 만 명을 보면 약 <strong>208일</strong>. AI는 동시에 진행해 <strong>당일</strong> 끝나, 검토가 밀려 좋은 후보를 놓치는 일이 없습니다.</p><p className="psrc">출처: 서류 10분 사람인·잡코리아 (208일=추산)</p></div>
             <div className="pc2"><div className="vlabel">비용 절감</div><div className="big big-phrase">면접관 시간 절약</div><p>핵심역량 미달자를 1차에서 걸러, 현업 면접관은 <strong>검증된 소수</strong>만 만납니다. 가장 비싼 자원인 면접관의 시간을 아낍니다.</p><p className="psrc">현업 면접관 시간 = 가장 비싼 채용 자원</p></div>
           </div>
+
+          {/* 저관여 오퍼 — 상담(고관여) 전에 소개서로 먼저 검토할 길을 본문 안에 둔다.
+              기존에는 /brochure 링크가 GNB·푸터에만 있어 스크롤 흐름에서 노출되지 않았다. */}
+          <div className="soft-cta">
+            <div className="soft-cta-txt">
+              <strong>아직 상담까지는 이르다면</strong>
+              <span>도입 사례와 검증 리포트 예시를 담은 서비스소개서를 회사 메일로 보내드립니다.</span>
+            </div>
+            <Link href="/brochure" className="btn btn-out soft-cta-btn">서비스소개서 받기 <i className="fa-solid fa-arrow-right"></i></Link>
+          </div>
         </div>
       </section>
 

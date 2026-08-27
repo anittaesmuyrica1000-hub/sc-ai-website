@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { trackEvent } from "@/lib/track";
+import ConsentNotice from "@/components/ConsentNotice";
 import { getUtm, type Utm } from "@/lib/utm";
 import {
   emailError, EMAIL_ERROR_MSG, isValidPhone,
@@ -190,6 +191,10 @@ export default function BrochureForm() {
             <div className="b-err">유입 경로를 입력해 주세요.</div>
           </div>
         )}
+        <ConsentNotice
+          items="이름, 회사명, 회사 이메일, 연락처, 연간 채용 규모, 유입 경로(직무·직책은 선택)"
+          purpose="서비스소개서 발송 및 도입 관련 상담 안내"
+        />
         <div className={`bro-agree${agreeInvalid ? " invalid" : ""}`}>
           <label className="bro-agree-main">
             <input type="checkbox" checked={agree} onChange={(e) => { setAgree(e.target.checked); setAgreeInvalid(false); }} />
