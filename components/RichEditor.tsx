@@ -120,6 +120,28 @@ export default function RichEditor({ value, onChange, placeholder, minHeight = 3
   function emit() {
     if (ref.current) onChange(ref.current.innerHTML);
   }
+
+  // 타이핑은 상태 반영을 200ms 미룬다.
+  // emit 한 번에 innerHTML 전체 직렬화 + 부모 리렌더(본문 재파싱·키워드 재추천)가 딸려 오는데,
+  // 이걸 매 글자마다 하면 본문이 길수록 입력이 눈에 띄게 밀린다(3,500자 글에서 체감).
+  // 툴바 명령·붙여넣기는 결과가 바로 보여야 하므로 기존대로 emit()을 즉시 부른다.
+  const typeTimer = useRef<number | null>(null);
+  function emitTyping() {
+    if (typeTimer.current) clearTimeout(typeTimer.current);
+    typeTimer.current = window.setTimeout(() => { typeTimer.current = null; emit(); }, 200);
+  }
+  function emitNow() {
+    if (typeTimer.current) { clearTimeout(typeTimer.current); typeTimer.current = null; }
+    emit();
+  }
+  // 대기 중인 입력이 있는 채로 언마운트되면 마지막 타이핑이 유실된다 — 떠나기 전에 흘려보낸다.
+  useEffect(() => () => {
+    if (typeTimer.current) {
+      clearTimeout(typeTimer.current);
+      if (ref.current) onChange(ref.current.innerHTML);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   function exec(command: string, val?: string) {
     ref.current?.focus();
     try { document.execCommand("styleWithCSS", false, "true"); } catch { /* noop */ }
@@ -635,8 +657,8 @@ export default function RichEditor({ value, onChange, placeholder, minHeight = 3
         className={"rich-area post-content" + (colHover ? " rich-colresize" : "")}
         contentEditable
         suppressContentEditableWarning
-        onInput={emit}
-        onBlur={emit}
+        onInput={emitTyping}
+        onBlur={emitNow}
         onPaste={onPaste}
         onPointerMove={onAreaPointerMove}
         onPointerDown={onAreaPointerDown}

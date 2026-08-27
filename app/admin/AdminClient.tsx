@@ -795,11 +795,13 @@ function BlogManager() {
   // ── 주제 키워드 · 해시태그(SEO) ─────────────────────────────
   const [tagInput, setTagInput] = useState("");
   // 제목·본문·카테고리에서 자동 추천(이미 고른 건 제외)
+  // 의존성을 form 객체 전체로 두면 다른 필드(썸네일·발행일 등)만 바뀌어도 본문 전체를
+  // 다시 분석한다. 실제로 필요한 네 값만 본다.
   const recoTags = useMemo(() => {
     if (!form) return [] as string[];
     return recommendTags({ title: form.title, content: form.content, category: form.category })
       .filter((t) => !form.tags.includes(t));
-  }, [form]);
+  }, [form?.title, form?.content, form?.category, form?.tags]);
   function normTag(s: string) { return s.replace(/^#+/, "").replace(/\s+/g, " ").trim(); }
   function addTag(raw: string) {
     const t = normTag(raw);
