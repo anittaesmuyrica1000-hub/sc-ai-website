@@ -75,6 +75,20 @@ const nextConfig = {
       { source: "/events-:slug", destination: "/", permanent: true },
       { source: "/events/:path*", destination: "/", permanent: true },
       { source: "/co/:path*", destination: "/", permanent: true },
+      // Search Console 404 정리(2026-08-27): 3개월 실적 CSV의 색인 페이지 92개를 전수 검사해
+      // 404로 남아 있던 8개를 흡수한다(3개월 노출 660·클릭 6이 404를 보고 있었다).
+      // 옛 사이트의 legal 문서는 이름에 대상이 박혀 있어 현재 문서와 1:1로 대응된다 —
+      // candidates=지원자(/terms-applicant), customers=고객사(/terms).
+      { source: "/legal/privacy-policy-ai-interviewer", destination: "/privacy", permanent: true },
+      { source: "/legal/privacy-policy", destination: "/privacy", permanent: true },
+      { source: "/legal/terms-of-service", destination: "/terms", permanent: true },
+      { source: "/legal/terms-of-service-ai-interviewer-customers", destination: "/terms", permanent: true },
+      { source: "/legal/terms-of-service-ai-interviewer-candidates", destination: "/terms-applicant", permanent: true },
+      // /promotion-ai-recruiter → /apply 와 같은 계열의 옛 프로모션 페이지
+      { source: "/promotion-ai-interviewer", destination: "/apply", permanent: true },
+      { source: "/announcements", destination: "/blog", permanent: true },
+      // 옛 빌더가 쓰던 형식의 글 ID. 대응 글이 없어 목록으로 보낸다
+      { source: "/blog/1737519639648x358002299084996600", destination: "/blog", permanent: true },
     ];
   },
 };

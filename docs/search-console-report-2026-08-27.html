@@ -1,0 +1,406 @@
+<title>브랜드 검색에 갇힌 유입</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;600&family=IBM+Plex+Sans+KR:wght@400;500;600;700&family=Noto+Serif+KR:wght@600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#F2F5F6;
+    --paper-raised:#FFFFFF;
+    --ink:#1B2430;
+    --ink-soft:#55626D;
+    --ink-faint:#8996A1;
+    --accent:#2A5F8F;
+    --accent-soft:#DCE8F1;
+    --brand:#2F5FA8;
+    --brand-soft:#DEE7F5;
+    --gap:#A8702A;
+    --gap-soft:#F5E9D6;
+    --good:#2F7D5A;
+    --good-soft:#E1F0E7;
+    --alert:#9C4A2E;
+    --alert-soft:#F5E1D8;
+    --border:#D9E0E5;
+    --border-soft:#E7ECEF;
+    --shadow: 0 1px 2px rgba(27,36,48,0.06), 0 8px 24px -16px rgba(27,36,48,0.18);
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --paper:#101720;
+      --paper-raised:#19222C;
+      --ink:#E7ECF0;
+      --ink-soft:#A6B2BD;
+      --ink-faint:#71808C;
+      --accent:#7EB0DC;
+      --accent-soft:#1E3245;
+      --brand:#7FA6E0;
+      --brand-soft:#1C2A40;
+      --gap:#DBA55E;
+      --gap-soft:#352818;
+      --good:#74C29A;
+      --good-soft:#1B3128;
+      --alert:#E08A6C;
+      --alert-soft:#3A241C;
+      --border:#2A3641;
+      --border-soft:#222D38;
+      --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 8px 24px -16px rgba(0,0,0,0.5);
+    }
+  }
+  :root[data-theme="dark"]{
+    --paper:#101720;
+    --paper-raised:#19222C;
+    --ink:#E7ECF0;
+    --ink-soft:#A6B2BD;
+    --ink-faint:#71808C;
+    --accent:#7EB0DC;
+    --accent-soft:#1E3245;
+    --brand:#7FA6E0;
+    --brand-soft:#1C2A40;
+    --gap:#DBA55E;
+    --gap-soft:#352818;
+    --good:#74C29A;
+    --good-soft:#1B3128;
+    --alert:#E08A6C;
+    --alert-soft:#3A241C;
+    --border:#2A3641;
+    --border-soft:#222D38;
+    --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 8px 24px -16px rgba(0,0,0,0.5);
+  }
+
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'IBM Plex Sans KR','Apple SD Gothic Neo','Malgun Gothic',sans-serif;
+    line-height:1.65;
+    -webkit-font-smoothing:antialiased;
+  }
+  .page{ max-width:860px; margin:0 auto; padding:56px 24px 96px; }
+  h1,h2,h3{ font-family:'Noto Serif KR',serif; color:var(--ink); text-wrap:balance; margin:0; }
+  .num{ font-family:'IBM Plex Mono',monospace; font-variant-numeric:tabular-nums; }
+
+  /* ---- header ---- */
+  .report-head{ display:flex; flex-direction:column; gap:10px; padding-bottom:30px; border-bottom:1px solid var(--border); }
+  .eyebrow{ font-size:12.5px; font-weight:600; letter-spacing:.08em; color:var(--accent); text-transform:uppercase; }
+  h1{ font-size:clamp(28px,4vw,38px); font-weight:700; }
+  .meta{ display:flex; flex-wrap:wrap; gap:6px 18px; font-size:14px; color:var(--ink-soft); margin-top:4px; }
+  .meta span{ white-space:nowrap; }
+
+  /* ---- stat strip ---- */
+  .stat-grid{
+    display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
+    gap:1px; background:var(--border); border:1px solid var(--border);
+    border-radius:10px; overflow:hidden; margin:28px 0 12px;
+  }
+  .stat{ background:var(--paper-raised); padding:16px 18px; display:flex; flex-direction:column; gap:3px; }
+  .stat-v{ font-family:'IBM Plex Mono',monospace; font-variant-numeric:tabular-nums; font-size:24px; font-weight:600; color:var(--ink); line-height:1.2; }
+  .stat-l{ font-size:12.5px; color:var(--ink-soft); line-height:1.4; }
+
+  .note{ font-size:13px; color:var(--ink-soft); margin:0 0 8px; }
+
+  /* ---- sections ---- */
+  section{ margin-top:52px; }
+  h2{ font-size:23px; font-weight:700; padding-bottom:10px; border-bottom:2px solid var(--ink); }
+  .section-sub{ font-size:14.5px; color:var(--ink-soft); margin:12px 0 22px; }
+
+  /* ---- split bar: the core inversion ---- */
+  .split{ display:flex; flex-direction:column; gap:18px; background:var(--paper-raised); border:1px solid var(--border); border-radius:12px; padding:24px; box-shadow:var(--shadow); }
+  .split-row{ display:flex; flex-direction:column; gap:7px; }
+  .split-cap{ display:flex; justify-content:space-between; align-items:baseline; font-size:13px; color:var(--ink-soft); }
+  .split-cap b{ color:var(--ink); font-weight:600; font-size:14px; }
+  .bar{ display:flex; height:34px; border-radius:7px; overflow:hidden; background:var(--border-soft); }
+  .seg{ display:flex; align-items:center; justify-content:center; font-family:'IBM Plex Mono',monospace; font-variant-numeric:tabular-nums; font-size:13px; font-weight:600; color:#fff; white-space:nowrap; min-width:0; }
+  .seg-brand{ background:var(--brand); }
+  .seg-gap{ background:var(--gap); }
+  .legend{ display:flex; flex-wrap:wrap; gap:8px 20px; font-size:13px; color:var(--ink-soft); padding-top:4px; border-top:1px solid var(--border-soft); }
+  .legend span{ display:inline-flex; align-items:center; gap:7px; }
+  .dot{ width:11px; height:11px; border-radius:3px; flex:none; }
+  .dot-brand{ background:var(--brand); }
+  .dot-gap{ background:var(--gap); }
+
+  /* ---- finding cards ---- */
+  .card{ background:var(--paper-raised); border:1px solid var(--border); border-left:3px solid var(--accent); border-radius:0 12px 12px 0; padding:20px 22px; box-shadow:var(--shadow); margin-top:16px; }
+  .card.loss{ border-left-color:var(--alert); }
+  .card.opp{ border-left-color:var(--gap); }
+  .card h3{ font-size:17.5px; font-weight:700; display:flex; flex-wrap:wrap; align-items:center; gap:9px; margin-bottom:9px; line-height:1.4; }
+  .chip{ font-family:'IBM Plex Sans KR',sans-serif; font-size:11.5px; font-weight:700; letter-spacing:.02em; padding:3px 9px; border-radius:5px; flex:none; }
+  .chip.fact{ background:var(--good-soft); color:var(--good); }
+  .chip.loss{ background:var(--alert-soft); color:var(--alert); }
+  .chip.opp{ background:var(--gap-soft); color:var(--gap); }
+  .card p{ margin:0 0 9px; font-size:14.5px; }
+  .card p:last-child{ margin-bottom:0; }
+  .card .foot{ font-size:13px; color:var(--ink-soft); }
+
+  /* ---- tables ---- */
+  .table-wrap{ overflow-x:auto; margin:14px 0 4px; border:1px solid var(--border); border-radius:10px; background:var(--paper-raised); }
+  table{ border-collapse:collapse; width:100%; font-size:14px; min-width:460px; }
+  th,td{ padding:9px 13px; text-align:left; border-bottom:1px solid var(--border-soft); }
+  th{ background:var(--accent-soft); color:var(--ink); font-weight:600; font-size:12.5px; letter-spacing:.02em; white-space:nowrap; }
+  tr:last-child td{ border-bottom:none; }
+  td.n{ font-family:'IBM Plex Mono',monospace; font-variant-numeric:tabular-nums; text-align:right; white-space:nowrap; }
+  td code{ font-family:'IBM Plex Mono',monospace; font-size:12.5px; background:var(--border-soft); padding:1px 5px; border-radius:4px; }
+  .hi{ color:var(--alert); font-weight:600; }
+  .lo{ color:var(--ink-faint); }
+
+  /* ---- inline CTR bar in tables ---- */
+  .ctrbar{ display:flex; align-items:center; gap:8px; min-width:96px; }
+  .ctrbar i{ display:block; height:6px; border-radius:3px; background:var(--brand); flex:none; }
+  .ctrbar.weak i{ background:var(--gap); }
+  .ctrbar em{ font-family:'IBM Plex Mono',monospace; font-variant-numeric:tabular-nums; font-style:normal; font-size:12.5px; color:var(--ink-soft); }
+
+  /* ---- action list ---- */
+  .act{ display:flex; gap:14px; padding:16px 0; border-bottom:1px solid var(--border); align-items:flex-start; }
+  .act:last-child{ border-bottom:none; }
+  .act-n{ font-family:'IBM Plex Mono',monospace; font-size:13px; font-weight:600; color:var(--accent); background:var(--accent-soft); width:26px; height:26px; border-radius:6px; display:grid; place-items:center; flex:none; margin-top:2px; }
+  .act:first-child .act-n{ color:var(--good); background:var(--good-soft); }
+  .act-b{ display:flex; flex-direction:column; gap:4px; min-width:0; }
+  .act-t{ font-size:15.5px; font-weight:600; color:var(--ink); }
+  .act-d{ font-size:13.5px; color:var(--ink-soft); }
+
+  .caveat{ background:var(--gap-soft); border-left:3px solid var(--gap); border-radius:0 8px 8px 0; padding:13px 16px; font-size:13.5px; margin:16px 0 0; }
+  footer{ margin-top:56px; padding-top:20px; border-top:1px solid var(--border); font-size:13px; color:var(--ink-faint); }
+</style>
+
+<div class="page">
+
+  <header class="report-head">
+    <div class="eyebrow">Search Console · 3-Month Review</div>
+    <h1>브랜드 검색에 갇힌 유입</h1>
+    <div class="meta">
+      <span>Supercoder AIVIEW · www.supercoder.co</span>
+      <span>대상 기간 2026-05-25 ~ 2026-08-24 (92일)</span>
+      <span>작성일 2026-08-27</span>
+    </div>
+  </header>
+
+  <div class="stat-grid">
+    <div class="stat"><div class="stat-v">720</div><div class="stat-l">클릭 (3개월 합계)</div></div>
+    <div class="stat"><div class="stat-v">9,905</div><div class="stat-l">노출</div></div>
+    <div class="stat"><div class="stat-v">7.27%</div><div class="stat-l">평균 CTR</div></div>
+    <div class="stat"><div class="stat-v">88%</div><div class="stat-l">브랜드 검색이 가져온 클릭 비중</div></div>
+  </div>
+  <p class="note">검색 유입은 3개월 내내 성장했다. 다만 늘어난 것은 <b>이미 우리를 아는 사람</b>이고, 우리를 모르는 사람이 문제를 검색해서 우리를 찾는 경로는 거의 작동하지 않는다.</p>
+
+  <section>
+    <h2>유입은 자라고 있다</h2>
+    <p class="section-sub">3개월 동안 클릭은 월 25회에서 363회로 늘었다. CTR도 4.5%에서 8.6%로 올랐다 — 노출만 늘어난 게 아니라 실제로 더 눌리고 있다.</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>월</th><th style="text-align:right;">클릭</th><th style="text-align:right;">노출</th><th style="text-align:right;">CTR</th></tr></thead>
+        <tbody>
+          <tr><td>2026-05 <span class="lo">(25일부터)</span></td><td class="n">25</td><td class="n">553</td><td class="n">4.52%</td></tr>
+          <tr><td>2026-06</td><td class="n">151</td><td class="n">2,430</td><td class="n">6.21%</td></tr>
+          <tr><td>2026-07</td><td class="n">181</td><td class="n">2,704</td><td class="n">6.69%</td></tr>
+          <tr><td>2026-08 <span class="lo">(24일까지)</span></td><td class="n">363</td><td class="n">4,218</td><td class="n">8.61%</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <h2>핵심 발견 — 노출의 절반이 클릭의 12%만 만든다</h2>
+    <p class="section-sub">검색어를 '브랜드'(슈퍼코더·supercoder·AIVIEW가 들어간 것)와 '비브랜드'(그 외 문제·주제 검색)로 갈랐다. 노출은 반반인데 클릭은 9:1로 갈린다.</p>
+
+    <div class="split">
+      <div class="split-row">
+        <div class="split-cap"><b>노출 — 사람들이 우리를 본 횟수</b><span class="num">3,307회</span></div>
+        <div class="bar">
+          <div class="seg seg-brand" style="width:48%">브랜드 48%</div>
+          <div class="seg seg-gap" style="width:52%">비브랜드 52%</div>
+        </div>
+      </div>
+      <div class="split-row">
+        <div class="split-cap"><b>클릭 — 실제로 들어온 횟수</b><span class="num">344회</span></div>
+        <div class="bar">
+          <div class="seg seg-brand" style="width:88.4%">브랜드 88%</div>
+          <div class="seg seg-gap" style="width:11.6%">12%</div>
+        </div>
+      </div>
+      <div class="legend">
+        <span><i class="dot dot-brand"></i> 브랜드 · 검색어 27개 · CTR <b class="num">19.14%</b></span>
+        <span><i class="dot dot-gap"></i> 비브랜드 · 검색어 215개 · CTR <b class="num">2.33%</b></span>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3><span class="chip fact">확인</span>브랜드 검색은 잘 작동한다</h3>
+      <p>“슈퍼코더”로 검색하면 순위 <span class="num">1.3</span>위, CTR <span class="num">61.4%</span>다. 이름을 아는 사람은 확실히 찾아온다. 브랜드 검색 자체는 손볼 게 없다.</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>검색어</th><th style="text-align:right;">클릭</th><th style="text-align:right;">노출</th><th style="text-align:right;">CTR</th><th style="text-align:right;">순위</th></tr></thead>
+          <tbody>
+            <tr><td>슈퍼코더</td><td class="n">135</td><td class="n">220</td><td class="n">61.4%</td><td class="n">1.3</td></tr>
+            <tr><td>supercoder</td><td class="n">137</td><td class="n">858</td><td class="n">16.0%</td><td class="n">10.2</td></tr>
+            <tr><td>슈퍼코더 ai 면접</td><td class="n">8</td><td class="n">12</td><td class="n">66.7%</td><td class="n">1.0</td></tr>
+            <tr><td>super coder</td><td class="n">6</td><td class="n">231</td><td class="n">2.6%</td><td class="n">5.3</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="foot" style="margin-top:10px;">단 <code style="font-family:'IBM Plex Mono',monospace;">supercoder</code>(영문)는 순위가 10.2위로 밀린다 — 동명의 해외 서비스·일반명사와 겹치는 자리다. “super coder”(띄어쓰기)는 CTR 2.6%로, 노출 231회 중 6회만 눌렸다. 영문 브랜드명은 우리 것이 아니다.</p>
+    </div>
+
+    <div class="card opp">
+      <h3><span class="chip opp">기회</span>비브랜드 검색어 215개 중 204개가 클릭 0</h3>
+      <p>우리를 모르는 사람이 문제를 검색했을 때 노출은 <span class="num">1,022</span>회 됐지만 클릭은 <b>한 번도</b> 없었다. 대부분 순위가 8~12위, 즉 검색 결과 1페이지 맨 아래이거나 2페이지다. 보이긴 하는데 눌리지 않는 자리다.</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>노출은 있는데 클릭 0인 검색어</th><th style="text-align:right;">노출</th><th style="text-align:right;">순위</th></tr></thead>
+          <tbody>
+            <tr><td>ai 자소서 탐지기</td><td class="n">69</td><td class="n">8.8</td></tr>
+            <tr><td>면접 일정 조율</td><td class="n">59</td><td class="n">8.7</td></tr>
+            <tr><td>자소서 ai 탐지기</td><td class="n">57</td><td class="n">9.1</td></tr>
+            <tr><td>ai프롬프트 모음</td><td class="n">47</td><td class="n">8.2</td></tr>
+            <tr><td>면접 자동화</td><td class="n">25</td><td class="n">12.8</td></tr>
+            <tr><td>ai 면접 질문</td><td class="n">24</td><td class="n">11.2</td></tr>
+            <tr><td>구조화 면접 질문지</td><td class="n">22</td><td class="n">6.4</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="foot" style="margin-top:10px;">이 검색어들은 <b>채용 담당자가 실제로 겪는 문제</b>다 — 자소서가 AI로 쓰였는지, 면접 일정을 어떻게 조율하는지. 우리 제품이 정확히 답하는 영역인데 순위가 모자라 놓치고 있다.</p>
+    </div>
+
+    <div class="card">
+      <h3><span class="chip fact">확인</span>비브랜드에서 클릭이 나오는 곳은 전부 블로그다</h3>
+      <p>비브랜드 클릭 40회 중 대부분이 블로그 글에서 나왔다. 랜딩이 아니라 <b>콘텐츠가 새 사람을 데려오고 있다.</b></p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>검색어</th><th style="text-align:right;">클릭</th><th style="text-align:right;">노출</th><th style="text-align:right;">CTR</th><th style="text-align:right;">순위</th></tr></thead>
+          <tbody>
+            <tr><td>ai 면접 질문 리스트</td><td class="n">6</td><td class="n">41</td><td class="n">14.6%</td><td class="n">8.9</td></tr>
+            <tr><td>ai 프롬프트 모음</td><td class="n">5</td><td class="n">301</td><td class="n">1.7%</td><td class="n">8.4</td></tr>
+            <tr><td>세컨드팀</td><td class="n">5</td><td class="n">63</td><td class="n">7.9%</td><td class="n">3.6</td></tr>
+            <tr><td>2026 채용 트렌드</td><td class="n">3</td><td class="n">79</td><td class="n">3.8%</td><td class="n">11.7</td></tr>
+            <tr><td>학력위조 확인</td><td class="n">2</td><td class="n">13</td><td class="n">15.4%</td><td class="n">4.3</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>지금 새고 있는 것</h2>
+    <p class="section-sub">순위는 이미 확보했는데 클릭으로 바뀌지 않는 자리들. 새 콘텐츠를 만드는 것보다 먼저 막을 구멍이다.</p>
+
+    <div class="card loss">
+      <h3><span class="chip loss">손실</span>/apply — 순위 4.8위인데 CTR 0.8%</h3>
+      <p>도입 문의 페이지는 검색 결과 <b>5위권</b>에 올라 있다. 노출 <span class="num">377</span>회. 그런데 클릭은 <span class="num">3</span>회뿐이다. 같은 순위대의 다른 페이지가 6~10% CTR을 내는 것과 비교하면 명백히 낮다.</p>
+      <p>순위 문제가 아니라 <b>검색 결과에 뜨는 제목·설명 문제</b>다. 사람들이 보고도 “내가 찾던 게 아니다”라고 판단하고 있다.</p>
+      <p class="foot">같은 증상: <code style="font-family:'IBM Plex Mono',monospace;">/brochure</code> 순위 6.8위 · 노출 251 · CTR 2.4%. 리드를 받는 두 페이지가 나란히 같은 문제를 갖고 있다.</p>
+    </div>
+
+    <div class="card loss">
+      <h3><span class="chip loss">손실</span>구글이 색인한 페이지 8개가 404였다 <span class="chip fact">조치 완료</span></h3>
+      <p>검색 결과에는 순위 6~9위로 살아 있는데 눌러 들어오면 “페이지를 찾을 수 없습니다”가 뜨던 주소들이다. 색인된 92개 페이지를 전수 검사해 찾았다. 3개월 동안 노출 <span class="num">660</span>회, 클릭 <span class="num">6</span>회 — 그 6명은 404를 봤다.</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>404였던 주소</th><th style="text-align:right;">노출</th><th style="text-align:right;">클릭</th><th>보내는 곳</th></tr></thead>
+          <tbody>
+            <tr><td><code>/legal/privacy-policy-ai-interviewer</code></td><td class="n">309</td><td class="n">3</td><td><code>/privacy</code></td></tr>
+            <tr><td><code>/promotion-ai-interviewer</code></td><td class="n">133</td><td class="n">1</td><td><code>/apply</code></td></tr>
+            <tr><td><code>/legal/terms-of-service-ai-interviewer-customers</code></td><td class="n">66</td><td class="n">0</td><td><code>/terms</code></td></tr>
+            <tr><td><code>/legal/terms-of-service-ai-interviewer-candidates</code></td><td class="n">56</td><td class="n">1</td><td><code>/terms-applicant</code></td></tr>
+            <tr><td><code>/legal/privacy-policy</code></td><td class="n">38</td><td class="n">0</td><td><code>/privacy</code></td></tr>
+            <tr><td><code>/legal/terms-of-service</code></td><td class="n">28</td><td class="n">1</td><td><code>/terms</code></td></tr>
+            <tr><td><code>/blog/1737519639648x35800…</code></td><td class="n">18</td><td class="n">0</td><td><code>/blog</code></td></tr>
+            <tr><td><code>/announcements</code></td><td class="n">12</td><td class="n">0</td><td><code>/blog</code></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p style="margin-top:10px;"><b>대상은 추측하지 않았다.</b> 옛 사이트의 legal 문서는 이름에 대상이 박혀 있어 현재 문서와 그대로 대응된다 — <code>candidates</code>=지원자 → <code>/terms-applicant</code>, <code>customers</code>=고객사 → <code>/terms</code>. <code>/promotion-ai-interviewer</code>도 같은 계열의 <code>/promotion-ai-recruiter</code>가 이미 <code>/apply</code>로 가 있어 그 선례를 따랐다.</p>
+      <p class="foot">전부 홈으로 몰지 않은 이유: 구글은 주제가 맞지 않는 홈 리다이렉트를 soft 404로 처리해 기존 순위를 버린다. 주제가 맞는 페이지로 보내야 그 순위를 이어받는다. 2026-08-27 <code>next.config.mjs</code>에 반영(커밋 <code>83b254d</code>), 로컬 프로덕션 빌드에서 8개 전부 308 확인. <b>운영 반영은 PR 대기.</b></p>
+    </div>
+
+    <div class="card opp">
+      <h3><span class="chip opp">기회</span>1페이지에 올라 있는데 CTR이 낮은 페이지 23개</h3>
+      <p>순위 10위 안, 노출 100회 이상, CTR 6% 미만인 페이지가 23개다. 이들이 <b>CTR 10%</b>만 됐어도 3개월간 클릭이 <span class="num">+468</span>회 늘었다 — 지금 전체 클릭(720회)의 절반이 넘는다.</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>페이지</th><th style="text-align:right;">노출</th><th>CTR</th><th style="text-align:right;">순위</th></tr></thead>
+          <tbody>
+            <tr><td><code>/blog/recruiter-ai-prompts</code></td><td class="n">930</td><td><span class="ctrbar weak"><i style="width:9px"></i><em>3.0%</em></span></td><td class="n">7.5</td></tr>
+            <tr><td><code>/blog/ai-recruitment-trends-2026</code></td><td class="n">820</td><td><span class="ctrbar weak"><i style="width:15px"></i><em>5.0%</em></span></td><td class="n">6.6</td></tr>
+            <tr><td><code>/apply</code></td><td class="n">377</td><td><span class="ctrbar weak"><i style="width:3px"></i><em>0.8%</em></span></td><td class="n">4.8</td></tr>
+            <tr><td><code>/blog/ai-cover-letter-detector-compare</code></td><td class="n">325</td><td><span class="ctrbar weak"><i style="width:8px"></i><em>2.5%</em></span></td><td class="n">7.8</td></tr>
+            <tr><td><code>/blog/ai-hiring-adoption-2026</code></td><td class="n">262</td><td><span class="ctrbar weak"><i style="width:7px"></i><em>2.3%</em></span></td><td class="n">6.5</td></tr>
+            <tr><td><code>/brochure</code></td><td class="n">251</td><td><span class="ctrbar weak"><i style="width:7px"></i><em>2.4%</em></span></td><td class="n">6.8</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="caveat"><b>+468회는 가정치다.</b> “CTR 10%”는 같은 순위대에서 흔히 나오는 값을 대입한 것이지 보장된 수치가 아니다. 실제 개선폭은 제목·설명을 얼마나 잘 고치느냐에 달렸다. 다만 <b>순위를 올리지 않고도</b> 손댈 수 있는 자리라는 점은 분명하다.</p>
+    </div>
+  </section>
+
+  <section>
+    <h2>해외 노출은 숫자만 부풀린다</h2>
+    <p class="section-sub">전체 노출의 36%가 한국 밖에서 나온다. 그런데 클릭은 17%뿐이고, 그마저 채용 담당자일 가능성이 낮다.</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>국가</th><th style="text-align:right;">클릭</th><th style="text-align:right;">노출</th><th style="text-align:right;">CTR</th></tr></thead>
+        <tbody>
+          <tr><td>한국</td><td class="n">600</td><td class="n">6,377</td><td class="n">9.41%</td></tr>
+          <tr><td>미국</td><td class="n">6</td><td class="n">1,384</td><td class="n"><span class="hi">0.43%</span></td></tr>
+          <tr><td>인도</td><td class="n">55</td><td class="n">779</td><td class="n">7.06%</td></tr>
+          <tr><td>베트남</td><td class="n">15</td><td class="n">149</td><td class="n">10.07%</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="note" style="margin-top:14px;">미국은 노출 <span class="num">1,384</span>회로 두 번째로 많은데 클릭은 <span class="num">6</span>회, CTR <span class="num">0.43%</span>다. “supercoder”가 해외에서 <b>일반명사·동명 서비스로 검색되면서 우리와 무관한 노출이 쌓이는</b> 것으로 보인다. 전체 CTR(7.27%)을 끌어내리는 주범이기도 하다.</p>
+    <p class="note"><b>실무적 함의:</b> 앞으로 GSC 수치를 볼 때는 <b>국가를 한국으로 필터</b>하고 보는 편이 실제 성과에 가깝다. 한국만 보면 CTR은 9.41%로 올라간다.</p>
+  </section>
+
+  <section>
+    <h2>무엇을 먼저 할까</h2>
+    <p class="section-sub">순위를 올리는 일(느리고 불확실)보다 이미 확보한 순위에서 클릭을 회수하는 일(빠르고 통제 가능)이 먼저다.</p>
+
+    <div class="act">
+      <div class="act-n">✓</div>
+      <div class="act-b">
+        <div class="act-t">404 여덟 개 리다이렉트 — 완료(dev)</div>
+        <div class="act-d">색인 페이지 92개를 전수 검사해 404 8개를 찾아 각각 주제가 맞는 페이지로 308 연결했다. 커밋 <code>83b254d</code>. 운영 반영은 PR 대기 중이며, 머지되면 노출 660회 자리가 살아난다.</div>
+      </div>
+    </div>
+    <div class="act">
+      <div class="act-n">2</div>
+      <div class="act-b">
+        <div class="act-t">/apply · /brochure의 검색 제목·설명 다시 쓰기</div>
+        <div class="act-d">순위 5~7위를 이미 확보한 상태에서 CTR이 1~2%대다. 검색 결과에 뜨는 문구가 클릭을 못 만들고 있다. <code>page_seo</code> DB(<code>/admin</code> SEO 탭)에서 수정 가능하며 재배포도 필요 없다.</div>
+      </div>
+    </div>
+    <div class="act">
+      <div class="act-n">3</div>
+      <div class="act-b">
+        <div class="act-t">노출 상위 블로그 3편의 제목 손보기</div>
+        <div class="act-d"><code>recruiter-ai-prompts</code>(노출 930·CTR 3.0%), <code>ai-recruitment-trends-2026</code>(820·5.0%), <code>ai-cover-letter-detector-compare</code>(325·2.5%). 노출이 가장 많은 자리부터 고쳐야 회수량이 크다.</div>
+      </div>
+    </div>
+    <div class="act">
+      <div class="act-n">4</div>
+      <div class="act-b">
+        <div class="act-t">클릭 0인 검색어를 콘텐츠 주제로 전환</div>
+        <div class="act-d">“ai 자소서 탐지기”, “면접 일정 조율”, “구조화 면접 질문지” — 노출은 이미 잡히는데 순위가 모자라 못 먹는 주제다. 이미 관심이 확인된 키워드라 새 주제를 찍는 것보다 성공률이 높다.</div>
+      </div>
+    </div>
+    <div class="act">
+      <div class="act-n">5</div>
+      <div class="act-b">
+        <div class="act-t">앞으로 GSC는 국가=한국 필터로 볼 것</div>
+        <div class="act-d">해외 노출 36%가 지표를 왜곡한다. 전체 CTR 7.27% vs 한국만 9.41%.</div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>이 데이터의 한계</h2>
+    <div class="card">
+      <h3><span class="chip fact">확인</span>검색어 표는 전체의 절반만 보여준다</h3>
+      <p>Google은 검색량이 적은 검색어를 개인정보 보호 목적으로 익명 처리해 표에서 뺀다. 그래서 검색어 합계(클릭 <span class="num">344</span>·노출 <span class="num">3,307</span>)는 전체(클릭 <span class="num">720</span>·노출 <span class="num">9,905</span>)의 <b>48% / 33%</b>에 불과하다.</p>
+      <p>즉 <b>클릭 376회, 노출 6,598회는 어떤 검색어에서 왔는지 알 수 없다.</b> 다만 빠진 몫은 정의상 전부 <b>저빈도 롱테일</b>이고, 브랜드명은 검색량이 많아 표에 남는다. 따라서 실제 브랜드 비중은 88%보다 <b>낮을 가능성</b>이 있다 — 브랜드 의존이 과대평가됐을 수는 있어도 과소평가되진 않았다.</p>
+      <p class="foot">출처: Search Console → 실적 → CSV 내보내기(2026-08-27 다운로드, 기간 지난 3개월). 404 응답 코드는 같은 날 직접 확인. GCP Search Console API는 사용 설정되지 않아 자동 조회는 불가하며, 이 분석은 수동 내보내기 기반이다.</p>
+    </div>
+  </section>
+
+  <footer>
+    Supercoder AIVIEW · 검색 유입 진단 2026-08-27 · 전환 병목 진단(2026-08-27)의 미해결 가설 “검색 유입의 브랜드/비브랜드 구성비”에 대한 답
+  </footer>
+
+</div>
