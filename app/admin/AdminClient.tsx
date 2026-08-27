@@ -872,7 +872,18 @@ function BlogManager() {
       }
       if (res.error) throw res.error;
       showMsg(form.id ? "수정되었습니다." : "등록되었습니다.", true);
-      setForm(null); await load();
+      // 저장 후 목록을 통째로 다시 받으면(load 의 select("*")) 글 수십 편의 본문까지 딸려 와
+      // 저장할 때마다 화면이 눈에 띄게 멈춘다. 수정은 방금 보낸 값을 이미 알고 있으므로
+      // 로컬 목록만 갱신하고, 신규는 서버가 만든 id 가 필요하므로 그때만 재조회한다.
+      if (form.id) {
+        const id = form.id;
+        const now = new Date().toISOString();
+        setPosts((prev) => prev.map((p) => (p.id === id ? ({ ...p, ...payload, updated_at: now } as Post) : p)));
+        setForm(null);
+      } else {
+        setForm(null);
+        await load();
+      }
     } catch (err) { console.error("save failed:", err); showMsg("저장에 실패했습니다. 권한 또는 입력값을 확인해 주세요.", false); }
     finally { setSaving(false); }
   }
@@ -1308,7 +1319,16 @@ function UpdatesManager() {
       }
       if (res.error) throw res.error;
       showMsg(form.id ? "수정되었습니다." : "등록되었습니다.", true);
-      setForm(null); await load();
+      // 블로그 저장과 같은 이유 — 수정은 로컬 목록만 갱신해 전체 재조회를 피한다.
+      if (form.id) {
+        const id = form.id;
+        const now = new Date().toISOString();
+        setItems((prev) => prev.map((it) => (it.id === id ? ({ ...it, ...payload, updated_at: now } as Update) : it)));
+        setForm(null);
+      } else {
+        setForm(null);
+        await load();
+      }
     } catch (err) {
       console.error("save failed:", err);
       showMsg("저장에 실패했습니다. 로그인·권한을 확인하세요. (테이블이 없으면 supabase/updates-setup.sql을 먼저 실행)", false);
