@@ -6,10 +6,12 @@ import { buildPageMetadata } from "@/lib/pageSeo";
 // 어드민 SEO 초안(page_seo)이 바뀌면 주기적으로 반영(정적 생성 → ISR).
 export const revalidate = 120;
 
+// ⚠️ title 에는 사이트명을 넣지 않는다 — layout.tsx 의 template("%s · AI면접")이 자동으로 붙인다.
+//    (openGraph.title 은 template 이 적용되지 않으므로 그대로 둬도 된다.)
 const FALLBACK_METADATA: Metadata = {
-  title: "무료 신청 · AI 면접 채용 검증",
+  title: "AI 면접 도입 — 비용·기간·리포트 예시",
   description:
-    "AI면접 무료 도입 신청. AI 면접으로 지원자를 자동 검증하고, 채용팀에 검증된 핵심 인재 리포트를 전달받으세요.",
+    "우리 채용 규모에 AI 면접이 맞는지 무료 상담으로 확인하세요. 도입 비용과 준비 기간, 실제 검증 리포트 예시까지 함께 안내드립니다.",
   alternates: { canonical: "/apply" },
   openGraph: {
     title: "무료 신청 · AI면접 | AI 면접 채용 검증",

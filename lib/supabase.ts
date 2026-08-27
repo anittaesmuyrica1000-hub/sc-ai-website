@@ -184,9 +184,12 @@ export type PageSeo = {
 };
 
 // SEO 관리 대상 페이지(어드민 시드/표시 기준). path 가 page_seo.path 와 매칭된다.
+// 새 공개 라우트를 만들면 여기에도 넣어야 어드민 SEO 탭에서 관리할 수 있다 —
+// /brochure 는 모달에서 라우트로 바뀔 때 빠져 있었다(2026-08-27 추가).
 export const SEO_PAGES: { path: string; label: string }[] = [
   { path: "/", label: "홈 (랜딩)" },
   { path: "/apply", label: "도입문의" },
+  { path: "/brochure", label: "서비스소개서" },
   { path: "/blog", label: "블로그 목록" },
   { path: "/privacy", label: "개인정보처리방침" },
   { path: "/terms", label: "서비스 이용약관(기업)" },

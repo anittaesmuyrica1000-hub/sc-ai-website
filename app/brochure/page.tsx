@@ -6,10 +6,12 @@ import { buildPageMetadata } from "@/lib/pageSeo";
 
 export const revalidate = 120;
 
+// ⚠️ title 에는 사이트명을 넣지 않는다 — layout.tsx 의 template("%s · AI면접")이 자동으로 붙인다.
+//    넣으면 "… · AI 면접 · AI면접" 처럼 두 번 붙는다(2026-08-27 수정).
 const FALLBACK_METADATA: Metadata = {
-  title: "서비스 소개서 신청 · AI 면접",
+  title: "AI 면접 소개서 — 역량모델·리포트·ROI",
   description:
-    "AI 면접 서비스 소개서를 신청하세요. 역량 모델링·AI 면접·분석 리포트부터 측정 가능한 ROI·도입 사례까지, 입력한 회사 이메일로 바로 보내드립니다.",
+    "역량 모델링부터 분석 리포트까지, AI 면접 도입 사례와 측정 가능한 ROI를 PDF로 정리했습니다. 회사 메일로 즉시 발송.",
   alternates: { canonical: "/brochure" },
   openGraph: {
     title: "AI 면접 서비스 소개서 신청",
