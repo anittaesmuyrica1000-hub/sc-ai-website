@@ -1,127 +1,124 @@
 <title>왜 리드가 오지 않는가</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;600&family=IBM+Plex+Sans+KR:wght@400;500;600;700&family=Noto+Serif+KR:wght@600;700&display=swap" rel="stylesheet">
 <style>
+  /* 폰트는 Pretendard 하나로 통일. 맥에 설치돼 있어 PDF 변환 시 그대로 임베드된다.
+     없으면 Apple SD Gothic Neo 로 떨어진다(웹 뷰어 기준). */
   :root{
-    --paper:#F2F5F6; --paper-raised:#FFFFFF;
-    --ink:#1B2430; --ink-soft:#55626D; --ink-faint:#8996A1;
-    --accent:#2A5F8F; --accent-soft:#DCE8F1;
-    --good:#2F7D5A; --good-soft:#E1F0E7;
-    --warn:#A8702A; --warn-soft:#F5E9D6;
-    --alert:#9C4A2E; --alert-soft:#F5E1D8;
-    --border:#D9E0E5; --border-soft:#E7ECEF;
-    --shadow: 0 1px 2px rgba(27,36,48,.06), 0 8px 24px -16px rgba(27,36,48,.18);
+    --paper:#FFFFFF;
+    --ink:#141B26;
+    --ink-soft:#4A5563;
+    --ink-faint:#8A93A0;
+    --blue:#2E6CF0;
+    --blue-soft:#EAF1FE;
+    --blue-line:#C7DAFB;
+    --red:#D64530;
+    --red-soft:#FCEBE8;
+    --red-line:#F3C9C1;
+    --line:#E2E7EE;
+    --line-soft:#EFF2F6;
   }
   @media (prefers-color-scheme: dark){
     :root:not([data-theme="light"]){
-      --paper:#101720; --paper-raised:#19222C;
-      --ink:#E7ECF0; --ink-soft:#A6B2BD; --ink-faint:#71808C;
-      --accent:#7EB0DC; --accent-soft:#1E3245;
-      --good:#74C29A; --good-soft:#1B3128;
-      --warn:#DBA55E; --warn-soft:#352818;
-      --alert:#E08A6C; --alert-soft:#3A241C;
-      --border:#2A3641; --border-soft:#222D38;
-      --shadow: 0 1px 2px rgba(0,0,0,.3), 0 8px 24px -16px rgba(0,0,0,.5);
+      --paper:#FFFFFF; --ink:#141B26; --ink-soft:#4A5563; --ink-faint:#8A93A0;
+      --blue:#2E6CF0; --blue-soft:#EAF1FE; --blue-line:#C7DAFB;
+      --red:#D64530; --red-soft:#FCEBE8; --red-line:#F3C9C1;
+      --line:#E2E7EE; --line-soft:#EFF2F6;
     }
   }
   :root[data-theme="dark"]{
-    --paper:#101720; --paper-raised:#19222C;
-    --ink:#E7ECF0; --ink-soft:#A6B2BD; --ink-faint:#71808C;
-    --accent:#7EB0DC; --accent-soft:#1E3245;
-    --good:#74C29A; --good-soft:#1B3128;
-    --warn:#DBA55E; --warn-soft:#352818;
-    --alert:#E08A6C; --alert-soft:#3A241C;
-    --border:#2A3641; --border-soft:#222D38;
-    --shadow: 0 1px 2px rgba(0,0,0,.3), 0 8px 24px -16px rgba(0,0,0,.5);
+    --paper:#FFFFFF; --ink:#141B26; --ink-soft:#4A5563; --ink-faint:#8A93A0;
+    --blue:#2E6CF0; --blue-soft:#EAF1FE; --blue-line:#C7DAFB;
+    --red:#D64530; --red-soft:#FCEBE8; --red-line:#F3C9C1;
+    --line:#E2E7EE; --line-soft:#EFF2F6;
   }
 
   *{box-sizing:border-box;}
-  body{margin:0;background:var(--paper);color:var(--ink);
-    font-family:'IBM Plex Sans KR','Apple SD Gothic Neo','Malgun Gothic',sans-serif;
-    line-height:1.68;-webkit-font-smoothing:antialiased;}
-  .page{max-width:880px;margin:0 auto;padding:56px 24px 100px;}
-  h1,h2,h3{font-family:'Noto Serif KR',serif;color:var(--ink);text-wrap:balance;margin:0;}
-  .num{font-family:'IBM Plex Mono',monospace;font-variant-numeric:tabular-nums;}
+  body{
+    margin:0; background:var(--paper); color:var(--ink);
+    font-family:'Pretendard Variable',Pretendard,-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo','Malgun Gothic',sans-serif;
+    font-size:15px; line-height:1.62; letter-spacing:-.003em;
+    -webkit-font-smoothing:antialiased;
+  }
+  .page{max-width:940px;margin:0 auto;padding:40px 28px 64px;}
+  h1,h2,h3{margin:0;text-wrap:balance;letter-spacing:-.02em;}
+  .n{font-variant-numeric:tabular-nums;}
 
-  /* header */
-  .head{display:flex;flex-direction:column;gap:12px;padding-bottom:30px;border-bottom:1px solid var(--border);}
-  .eyebrow{font-size:12.5px;font-weight:600;letter-spacing:.09em;color:var(--accent);text-transform:uppercase;}
-  h1{font-size:clamp(30px,4.4vw,42px);font-weight:700;line-height:1.28;}
-  .sub{font-size:17px;color:var(--ink-soft);max-width:60ch;}
-  .meta{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:13.5px;color:var(--ink-faint);margin-top:2px;}
+  /* ── header ── */
+  .head{padding-bottom:20px;border-bottom:2px solid var(--ink);}
+  .eyebrow{font-size:12px;font-weight:700;letter-spacing:.1em;color:var(--blue);text-transform:uppercase;}
+  h1{font-size:34px;font-weight:800;line-height:1.25;margin:8px 0 10px;}
+  .sub{font-size:15px;color:var(--ink-soft);max-width:70ch;margin:0;}
+  .meta{font-size:12.5px;color:var(--ink-faint);margin-top:10px;}
 
-  /* 한 줄 결론 */
-  .thesis{background:var(--accent-soft);border-radius:12px;padding:22px 26px;margin:30px 0 8px;
-    border-left:4px solid var(--accent);}
-  .thesis b{font-size:17.5px;font-weight:700;display:block;margin-bottom:6px;color:var(--ink);}
-  .thesis p{margin:0;font-size:15px;color:var(--ink);}
+  /* ── thesis ── */
+  .thesis{background:var(--blue-soft);border-left:4px solid var(--blue);border-radius:0 10px 10px 0;
+    padding:16px 20px;margin:22px 0 0;}
+  /* 제목만 블록으로. `.thesis b` 로 잡으면 본문 안의 강조 <b> 까지 블록이 돼 문장이 쪼개진다. */
+  .thesis .t-head{display:block;font-size:19px;font-weight:800;color:var(--ink);margin-bottom:5px;
+    letter-spacing:-.03em;}
+  .thesis p{margin:0;font-size:14.5px;color:var(--ink);}
 
-  /* sections */
-  section{margin-top:56px;}
-  h2{font-size:24px;font-weight:700;padding-bottom:11px;border-bottom:2px solid var(--ink);}
-  .lead-p{font-size:15.5px;color:var(--ink-soft);margin:14px 0 24px;max-width:66ch;}
-  h3{font-size:18px;font-weight:700;margin:30px 0 10px;}
-  p{font-size:15px;}
+  /* ── sections ── */
+  section{margin-top:38px;}
+  h2{font-size:21px;font-weight:800;padding-bottom:8px;border-bottom:1.5px solid var(--ink);}
+  .lead-p{font-size:14.5px;color:var(--ink-soft);margin:11px 0 16px;max-width:72ch;}
+  p{margin:0 0 8px;}
 
-  /* 2층 구조 다이어그램 */
-  .layer{background:var(--paper-raised);border:1px solid var(--border);border-radius:14px;
-    padding:24px;box-shadow:var(--shadow);margin-bottom:18px;}
-  .layer-top{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:8px;
-    padding-bottom:14px;margin-bottom:16px;border-bottom:1px solid var(--border-soft);}
-  .layer-name{font-family:'Noto Serif KR',serif;font-size:17px;font-weight:700;}
-  .layer-src{font-size:12.5px;color:var(--ink-faint);font-family:'IBM Plex Mono',monospace;}
-  .steps{display:flex;flex-wrap:wrap;align-items:center;gap:10px;}
-  .step{flex:1 1 130px;min-width:0;text-align:center;padding:14px 10px;border-radius:10px;
-    background:var(--accent-soft);}
-  .step-v{font-family:'IBM Plex Mono',monospace;font-variant-numeric:tabular-nums;
-    font-size:26px;font-weight:600;line-height:1.15;color:var(--ink);}
-  .step-l{font-size:12.5px;color:var(--ink-soft);margin-top:3px;}
-  .arrow{flex:0 0 auto;text-align:center;color:var(--ink-faint);font-size:12px;padding:0 2px;}
-  .arrow b{display:block;font-family:'IBM Plex Mono',monospace;font-size:14px;color:var(--accent);font-weight:600;}
-  .leak{margin-top:14px;font-size:13.5px;color:var(--ink-soft);
-    background:var(--alert-soft);border-left:3px solid var(--alert);border-radius:0 8px 8px 0;padding:11px 14px;}
+  /* ── 층 다이어그램 ── */
+  .layer{border:1px solid var(--line);border-radius:11px;padding:17px 19px;margin-bottom:13px;}
+  .layer-top{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:6px;
+    padding-bottom:10px;margin-bottom:12px;border-bottom:1px solid var(--line-soft);}
+  .layer-name{font-size:15.5px;font-weight:700;}
+  .layer-src{font-size:11.5px;color:var(--ink-faint);font-variant-numeric:tabular-nums;}
+  .steps{display:flex;align-items:center;gap:9px;}
+  .step{flex:1 1 0;min-width:0;text-align:center;padding:11px 8px;border-radius:9px;background:var(--blue-soft);}
+  .step-v{font-size:25px;font-weight:800;line-height:1.1;font-variant-numeric:tabular-nums;letter-spacing:-.03em;}
+  .step-l{font-size:12px;color:var(--ink-soft);margin-top:2px;line-height:1.35;}
+  .arrow{flex:0 0 auto;text-align:center;font-size:11px;color:var(--ink-faint);}
+  .arrow b{display:block;font-size:14px;font-weight:700;color:var(--blue);font-variant-numeric:tabular-nums;}
+  .leak{margin-top:11px;font-size:13.5px;color:var(--ink-soft);background:var(--red-soft);
+    border-left:3px solid var(--red);border-radius:0 7px 7px 0;padding:9px 13px;}
   .leak b{color:var(--ink);}
+  .leak.blue{background:var(--blue-soft);border-left-color:var(--blue);}
 
-  /* 분할 막대 */
-  .split{margin:18px 0 6px;}
-  .split-cap{display:flex;justify-content:space-between;align-items:baseline;font-size:13px;
-    color:var(--ink-soft);margin-bottom:6px;}
-  .split-cap b{color:var(--ink);font-size:14px;font-weight:600;}
-  .bar{display:flex;height:32px;border-radius:7px;overflow:hidden;background:var(--border-soft);}
+  /* ── 분할 막대 ── */
+  .split{margin:13px 0 4px;}
+  .split-cap{display:flex;justify-content:space-between;align-items:baseline;font-size:12.5px;
+    color:var(--ink-soft);margin-bottom:5px;}
+  .split-cap b{color:var(--ink);font-size:13.5px;font-weight:700;}
+  .bar{display:flex;height:28px;border-radius:6px;overflow:hidden;background:var(--line-soft);}
   .seg{display:flex;align-items:center;justify-content:center;color:#fff;white-space:nowrap;min-width:0;
-    font-family:'IBM Plex Mono',monospace;font-size:12.5px;font-weight:600;}
-  .seg-a{background:var(--accent);} .seg-b{background:var(--warn);}
+    font-size:12px;font-weight:700;font-variant-numeric:tabular-nums;}
+  .seg-a{background:var(--blue);} .seg-b{background:var(--red);}
 
-  /* 카드 */
-  .card{background:var(--paper-raised);border:1px solid var(--border);border-left:3px solid var(--accent);
-    border-radius:0 12px 12px 0;padding:19px 22px;box-shadow:var(--shadow);margin-top:14px;}
-  .card.bad{border-left-color:var(--alert);} .card.opp{border-left-color:var(--warn);}
-  .card.ok{border-left-color:var(--good);}
-  .card h3{font-size:16.5px;margin:0 0 8px;display:flex;flex-wrap:wrap;align-items:center;gap:8px;line-height:1.45;}
-  .card p{margin:0 0 8px;font-size:14.5px;} .card p:last-child{margin-bottom:0;}
+  /* ── 카드 ── */
+  .card{border:1px solid var(--line);border-left:3px solid var(--blue);border-radius:0 10px 10px 0;
+    padding:14px 18px;margin-top:11px;}
+  .card.bad{border-left-color:var(--red);}
+  .card h3{font-size:15.5px;font-weight:700;margin:0 0 6px;display:flex;flex-wrap:wrap;
+    align-items:center;gap:7px;line-height:1.4;}
+  .card p{font-size:14px;margin:0 0 6px;} .card p:last-child{margin-bottom:0;}
   .card .foot{font-size:13px;color:var(--ink-soft);}
-  .chip{font-family:'IBM Plex Sans KR',sans-serif;font-size:11.5px;font-weight:700;padding:3px 9px;
-    border-radius:5px;flex:none;letter-spacing:.02em;}
-  .chip.done{background:var(--good-soft);color:var(--good);}
-  .chip.bad{background:var(--alert-soft);color:var(--alert);}
-  .chip.opp{background:var(--warn-soft);color:var(--warn);}
-  .chip.wait{background:var(--accent-soft);color:var(--accent);}
+  .chip{font-size:11px;font-weight:700;padding:2px 8px;border-radius:4px;flex:none;letter-spacing:.01em;}
+  .chip.b{background:var(--blue-soft);color:var(--blue);}
+  .chip.r{background:var(--red-soft);color:var(--red);}
+  .chip.g{background:var(--line-soft);color:var(--ink-soft);}
 
-  /* 표 */
-  .tw{overflow-x:auto;margin:14px 0 4px;border:1px solid var(--border);border-radius:10px;background:var(--paper-raised);}
-  table{border-collapse:collapse;width:100%;font-size:14px;min-width:480px;}
-  th,td{padding:9px 13px;text-align:left;border-bottom:1px solid var(--border-soft);vertical-align:top;}
-  th{background:var(--accent-soft);font-weight:600;font-size:12.5px;white-space:nowrap;}
+  /* ── 표 ── */
+  .tw{overflow-x:auto;margin:11px 0 3px;border:1px solid var(--line);border-radius:9px;}
+  table{border-collapse:collapse;width:100%;font-size:13.5px;min-width:460px;}
+  th,td{padding:7px 11px;text-align:left;border-bottom:1px solid var(--line-soft);vertical-align:top;}
+  th{background:var(--blue-soft);font-weight:700;font-size:12px;white-space:nowrap;color:var(--ink);}
   tr:last-child td{border-bottom:none;}
-  td.n{font-family:'IBM Plex Mono',monospace;font-variant-numeric:tabular-nums;text-align:right;white-space:nowrap;}
-  code{font-family:'IBM Plex Mono',monospace;font-size:12.5px;background:var(--border-soft);
-    padding:1px 5px;border-radius:4px;}
+  td.num{text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums;}
+  code{font-size:12.5px;background:var(--line-soft);padding:1px 4px;border-radius:3px;
+    font-family:'Pretendard Variable',Pretendard,monospace;}
+  .hi{color:var(--red);font-weight:700;}
 
-  .caveat{background:var(--warn-soft);border-left:3px solid var(--warn);border-radius:0 8px 8px 0;
-    padding:13px 16px;font-size:13.5px;margin:16px 0 0;}
-  footer{margin-top:60px;padding-top:22px;border-top:1px solid var(--border);
-    font-size:13px;color:var(--ink-faint);}
+  .note{background:var(--red-soft);border-left:3px solid var(--red);border-radius:0 7px 7px 0;
+    padding:10px 14px;font-size:13.5px;margin:12px 0 0;}
+  .note.blue{background:var(--blue-soft);border-left-color:var(--blue);}
+  footer{margin-top:40px;padding-top:16px;border-top:1px solid var(--line);
+    font-size:12.5px;color:var(--ink-faint);}
 </style>
 
 <div class="page">
@@ -130,15 +127,12 @@
     <div class="eyebrow">Growth Diagnosis · 2026-08-27</div>
     <h1>왜 리드가 오지 않는가</h1>
     <p class="sub">전환 병목 진단과 검색 유입 분석을 하나로 합친 종합 보고서. 코드 직접 열람 · GA4 Data API · Vercel Web Analytics · Supabase 실측 · Search Console 3개월 데이터를 근거로 한다.</p>
-    <div class="meta">
-      <span>Supercoder AIVIEW · www.supercoder.co</span>
-      <span>작성 2026-08-27</span>
-    </div>
+    <div class="meta">Supercoder AIVIEW · www.supercoder.co · 작성 2026-08-27</div>
   </header>
 
   <div class="thesis">
-    <b>한 줄로 — 전환율이 아니라 유입이 문제다. 그리고 그 유입마저 이미 우리를 아는 사람이다.</b>
-    <p>55일간 리드 12건, 전환율 0.54%. 낮아 보이지만 진짜 문제는 그 앞단에 있다. 검색 유입은 자라고 있는데 <b>클릭의 88%가 브랜드 검색</b> — 이름을 아는 사람만 찾아온다. 우리를 모르는 사람이 문제를 검색했을 때는 <b>215개 검색어 중 204개가 클릭 0</b>이었다.</p>
+    <b class="t-head">전환율이 아니라 유입이 문제였다</b>
+    <p>55일간 리드 12건, 전환율 0.54%. 낮아 보이지만 진짜 문제는 그 앞단이다. 검색 유입은 자라고 있는데 <b>클릭의 88%가 브랜드 검색</b> — 이름을 아는 사람만 찾아온다. 우리를 모르는 사람이 문제를 검색했을 때는 <b>215개 검색어 중 204개가 클릭 0</b>이었다.</p>
   </div>
 
   <section>
@@ -164,14 +158,14 @@
         <span class="layer-src">GA4 + Vercel + Supabase · 2026-06-30 ~ 08-23 (55일)</span>
       </div>
       <div class="steps">
-        <div class="step"><div class="step-v">2,235</div><div class="step-l">방문자<br>(구간별 실측 보정)</div></div>
+        <div class="step"><div class="step-v">2,235</div><div class="step-l">방문자 (구간별 실측 보정)</div></div>
         <div class="arrow">→<b>0.54%</b></div>
-        <div class="step"><div class="step-v">12</div><div class="step-l">리드<br>(문의 3 · 소개서 9)</div></div>
+        <div class="step"><div class="step-v">12</div><div class="step-l">리드 (문의 3 · 소개서 9)</div></div>
       </div>
       <div class="leak"><b>여기서 새는 것</b> — 홈 본문에 저관여 오퍼(<code>/brochure</code>) 링크가 <b>0개</b>였다. GNB·푸터에만 있었는데, 실측은 소개서 신청(9건)이 도입문의(3건)보다 <b>3배 많다</b>. 더 잘 팔리는 오퍼가 오히려 덜 노출되고 있었다.</div>
     </div>
 
-    <p class="caveat"><b>방문자 2,235명은 보정치다.</b> GA4 원자료는 783명이지만, 7/30~8/20 쿠키 배너 구간의 실측 포착률이 8.7%까지 떨어졌던 시기라 구간별로 보정한 값이다(배너 제거 후 66.1%). Vercel Web Analytics와 교차검증해 오차 1% 미만을 확인했다. 원자료 그대로 계산하면 전환율이 1.53%로 <b>부풀려진다</b>.</p>
+    <div class="note"><b>방문자 2,235명은 보정치다.</b> GA4 원자료는 783명이지만, 7/30~8/20 쿠키 배너 구간의 실측 포착률이 8.7%까지 떨어졌던 시기라 구간별로 보정했다(배너 제거 후 66.1%). Vercel Web Analytics와 교차검증해 오차 1% 미만을 확인했다. 원자료 그대로 계산하면 전환율이 1.53%로 <b>부풀려진다</b>.</div>
   </section>
 
   <section>
@@ -180,36 +174,34 @@
 
     <div class="layer">
       <div class="split">
-        <div class="split-cap"><b>노출 — 사람들이 우리를 본 횟수</b><span class="num">3,307회</span></div>
+        <div class="split-cap"><b>노출 — 사람들이 우리를 본 횟수</b><span class="n">3,307회</span></div>
         <div class="bar"><div class="seg seg-a" style="width:48%">브랜드 48%</div><div class="seg seg-b" style="width:52%">비브랜드 52%</div></div>
       </div>
       <div class="split">
-        <div class="split-cap"><b>클릭 — 실제로 들어온 횟수</b><span class="num">344회</span></div>
+        <div class="split-cap"><b>클릭 — 실제로 들어온 횟수</b><span class="n">344회</span></div>
         <div class="bar"><div class="seg seg-a" style="width:88.4%">브랜드 88%</div><div class="seg seg-b" style="width:11.6%">12%</div></div>
       </div>
-      <div class="leak" style="background:var(--warn-soft);border-left-color:var(--warn);">
-        브랜드 검색 CTR <b>19.14%</b> vs 비브랜드 <b>2.33%</b>. “슈퍼코더”로 검색하면 순위 1.3위·CTR 61%로 잘 작동한다 — <b>브랜드 검색 자체는 손볼 게 없다.</b> 문제는 우리를 모르는 사람이 들어올 길이다.
-      </div>
+      <div class="leak blue">브랜드 검색 CTR <b>19.14%</b> vs 비브랜드 <b>2.33%</b>. “슈퍼코더”로 검색하면 순위 1.3위·CTR 61%로 잘 작동한다 — <b>브랜드 검색 자체는 손볼 게 없다.</b> 문제는 우리를 모르는 사람이 들어올 길이다.</div>
     </div>
 
-    <div class="card opp">
-      <h3><span class="chip opp">기회</span>비브랜드 검색어 215개 중 204개가 클릭 0</h3>
-      <p>우리를 모르는 사람이 문제를 검색했을 때 노출은 <span class="num">1,022</span>회 됐지만 클릭은 <b>한 번도</b> 없었다. 대부분 순위가 8~12위 — 1페이지 맨 아래이거나 2페이지다.</p>
+    <div class="card bad">
+      <h3><span class="chip r">기회</span>비브랜드 검색어 215개 중 204개가 클릭 0</h3>
+      <p>우리를 모르는 사람이 문제를 검색했을 때 노출은 <span class="n">1,022</span>회 됐지만 클릭은 <b>한 번도</b> 없었다. 대부분 순위가 8~12위 — 1페이지 맨 아래이거나 2페이지다.</p>
       <div class="tw"><table>
-        <thead><tr><th>클릭 0인 검색어</th><th style="text-align:right;">노출</th><th style="text-align:right;">순위</th></tr></thead>
+        <thead><tr><th>클릭 0인 검색어</th><th style="text-align:right;">노출</th><th style="text-align:right;">순위</th><th>같은 주제 글</th></tr></thead>
         <tbody>
-          <tr><td>ai 자소서 탐지기</td><td class="n">69</td><td class="n">8.8</td></tr>
-          <tr><td>면접 일정 조율</td><td class="n">59</td><td class="n">8.7</td></tr>
-          <tr><td>자소서 ai 탐지기</td><td class="n">57</td><td class="n">9.1</td></tr>
-          <tr><td>면접 자동화</td><td class="n">25</td><td class="n">12.8</td></tr>
-          <tr><td>구조화 면접 질문지</td><td class="n">22</td><td class="n">6.4</td></tr>
+          <tr><td>ai 자소서 탐지기</td><td class="num">69</td><td class="num">8.8</td><td>있음</td></tr>
+          <tr><td>면접 일정 조율</td><td class="num">59</td><td class="num">8.7</td><td>있음</td></tr>
+          <tr><td>자소서 ai 탐지기</td><td class="num">57</td><td class="num">9.1</td><td>있음</td></tr>
+          <tr><td>면접 자동화</td><td class="num">25</td><td class="num">12.8</td><td>있음</td></tr>
+          <tr><td>구조화 면접 질문지</td><td class="num">22</td><td class="num">6.4</td><td>있음</td></tr>
         </tbody>
       </table></div>
-      <p class="foot" style="margin-top:10px;">전부 <b>채용 담당자가 실제로 겪는 문제</b>다. 우리 제품이 정확히 답하는 영역인데 놓치고 있었다.</p>
+      <p class="foot" style="margin-top:8px;">전부 <b>채용 담당자가 실제로 겪는 문제</b>이고, 우리 글이 이미 다루고 있는 주제다.</p>
     </div>
 
-    <div class="card ok">
-      <h3><span class="chip done">정정</span>“새 글이 필요하다”는 틀린 처방이었다</h3>
+    <div class="card">
+      <h3><span class="chip b">정정</span>“새 글이 필요하다”는 틀린 처방이었다</h3>
       <p>처음엔 이 검색어들을 콘텐츠 주제로 만들어야 한다고 판단했다. 그런데 공개 글 <b>38편</b>과 대조하니 <b>해당 주제가 이미 전부 커버돼 있었다.</b></p>
       <p>진짜 문제는 글들이 서로 고립돼 순위가 안 오르는 것이었다 — 내부 링크가 19개뿐이었고 28편이 나가는 링크 0개. 특히 <b>노출 1·2위 자산이 링크를 하나도 주지 않는</b> 반면, 노출 0인 글이 4개를 내보내고 있었다. 힘없는 글이 힘을 나눠주는 구조였다.</p>
     </div>
@@ -217,24 +209,22 @@
 
   <section>
     <h2>들어와도 리드가 되지 않는 이유</h2>
-    <p class="lead-p">층 2의 문제. 방문자가 리드로 가는 길에서 확인된 것들이다.</p>
 
     <div class="card bad">
-      <h3><span class="chip bad">손실</span>홈 본문에 저관여 오퍼가 없었다</h3>
-      <p><code>app/page.tsx</code>의 9개 섹션을 전부 확인한 결과, <code>/apply</code>(고관여 상담) 링크는 히어로·파이널 2곳에 있지만 <code>/brochure</code>(저관여 소개서)는 GNB·푸터에만 있고 <b>스크롤 흐름 안에는 전혀 없었다.</b></p>
-      <p>그런데 실측은 소개서 신청 9건 > 도입문의 3건. <b>더 잘 팔리는 오퍼가 덜 노출되고 있었다.</b></p>
+      <h3><span class="chip r">손실</span>홈 본문에 저관여 오퍼가 없었다</h3>
+      <p><code>app/page.tsx</code>의 9개 섹션을 전부 확인한 결과, <code>/apply</code>(고관여 상담) 링크는 히어로·파이널 2곳에 있지만 <code>/brochure</code>(저관여 소개서)는 GNB·푸터에만 있고 <b>스크롤 흐름 안에는 전혀 없었다.</b> 그런데 실측은 소개서 신청 9건 &gt; 도입문의 3건이다.</p>
     </div>
 
     <div class="card bad">
-      <h3><span class="chip bad">손실</span>리드를 받는 두 페이지가 나란히 CTR이 낮았다</h3>
-      <p><code>/apply</code>는 검색 결과 <b>5위권</b>(순위 4.8)에 올라 있는데 클릭은 노출 377회 중 3회, <b>CTR 0.8%</b>였다. <code>/brochure</code>도 6.8위에 2.4%.</p>
+      <h3><span class="chip r">손실</span>리드를 받는 두 페이지가 나란히 CTR이 낮았다</h3>
+      <p><code>/apply</code>는 검색 <b>5위권</b>(순위 4.8)인데 클릭은 노출 377회 중 3회, <b>CTR 0.8%</b>였다. <code>/brochure</code>도 6.8위에 2.4%.</p>
       <p>순위 문제가 아니라 <b>제목이 “도입 문의”·“서비스 소개서 신청”처럼 폼 이름으로 시작</b>했기 때문이다. 검색하는 사람은 아직 문의할 결심을 안 한 상태라, 잘 보이는 자리에 있어도 “아직 그 단계 아닌데”라며 지나간다.</p>
     </div>
 
-    <div class="card opp">
-      <h3><span class="chip opp">미해결</span>두 폼이 동일한 마찰을 요구한다</h3>
+    <div class="card bad">
+      <h3><span class="chip r">미해결</span>두 폼이 동일한 마찰을 요구한다</h3>
       <p>저관여 오퍼인 <code>/brochure</code>조차 필수 6개(이름·회사명·회사이메일·연락처·연간채용규모·유입경로)를 요구하고 <b>전화번호가 필수</b>다. 개인 메일(gmail·naver)은 경고가 아니라 <b>제출 자체를 차단</b>한다.</p>
-      <p class="foot">전화번호 필수는 <b>영업 팔로업에 필요해 유지하기로 결정</b>했다(2026-08-27). 리드 품질 우선. 개인 메일 차단의 실제 이탈 규모는 측정 수단이 없어 확인 불가.</p>
+      <p class="foot">전화번호 필수는 <b>영업 팔로업에 필요해 유지하기로 결정</b>했다(2026-08-27). 개인 메일 차단의 실제 이탈 규모는 측정 수단이 없어 확인 불가.</p>
     </div>
   </section>
 
@@ -242,20 +232,20 @@
     <h2>속도 — 처음 판단이 틀렸던 곳</h2>
     <p class="lead-p">“모바일 LCP 8.4초”라는 진단이 있었으나 직접 계측해 뒤집었다. 이 정정이 이후 우선순위를 바꿨다.</p>
 
-    <div class="card ok">
-      <h3><span class="chip done">정정</span>병목은 LCP가 아니라 서드파티였다</h3>
-      <p>운영 도메인을 느린 4G·CPU 4배 감속(Lighthouse 모바일과 같은 조건)으로 직접 재니 <b>관측 LCP는 1.37초</b>, LCP 요소는 히어로 <code>H1</code> 텍스트였다. 8.4초는 Lighthouse가 <i>시뮬레이션</i>으로 추정한 값이다.</p>
+    <div class="card">
+      <h3><span class="chip b">정정</span>병목은 LCP가 아니라 서드파티였다</h3>
+      <p>운영 도메인을 느린 4G·CPU 4배 감속(Lighthouse 모바일과 같은 조건)으로 직접 재니 <b>관측 LCP는 1.37초</b>였다. 8.4초는 Lighthouse가 <i>시뮬레이션</i>으로 추정한 값이다.</p>
       <p>LCP가 빠른 이유는 <code>font-display:swap</code> — H1이 대체 폰트로 즉시 그려지면서 그 시점에 LCP가 확정되고, 늦게 오는 웹폰트는 LCP를 밀지 않는다. 즉 <b>폰트를 손봐도 LCP는 안 변한다.</b></p>
       <div class="tw"><table>
         <thead><tr><th>조건</th><th style="text-align:right;">LCP</th><th style="text-align:right;">로드 완료</th></tr></thead>
         <tbody>
-          <tr><td>진단 시점</td><td class="n">1,372 ms</td><td class="n">6,853 ms</td></tr>
-          <tr><td><code>gtm.js</code> 차단</td><td class="n">1,156 ms</td><td class="n">5,506 ms</td></tr>
-          <tr><td>폰트 CDN 차단</td><td class="n">1,428 ms</td><td class="n">4,804 ms</td></tr>
-          <tr><td><b>GTM 실제 제거 후(실측)</b></td><td class="n"><b>1,312 ms</b></td><td class="n"><b>5,295 ms</b></td></tr>
+          <tr><td>진단 시점</td><td class="num">1,372 ms</td><td class="num">6,853 ms</td></tr>
+          <tr><td><code>gtm.js</code> 차단</td><td class="num">1,156 ms</td><td class="num">5,506 ms</td></tr>
+          <tr><td>폰트 CDN 차단</td><td class="num">1,428 ms</td><td class="num">4,804 ms</td></tr>
+          <tr><td><b>GTM 실제 제거 후 (실측)</b></td><td class="num"><b>1,312 ms</b></td><td class="num"><b>5,295 ms</b></td></tr>
         </tbody>
       </table></div>
-      <p class="foot" style="margin-top:10px;">진짜 비용은 로드 6.9초 중 서드파티 4.6초였다. GTM 컨테이너는 <b>비어 있는 채로</b>(광고용으로 미리 달아둔 상태) 로드 비용만 쓰고 있어 제거했고, <b>−1.56초</b>를 실측으로 회수했다. 광고 집행을 시작할 때 다시 넣으면 된다.</p>
+      <p class="foot" style="margin-top:8px;">진짜 비용은 로드 6.9초 중 서드파티 4.6초였다. GTM 컨테이너는 <b>비어 있는 채로</b>(광고용으로 미리 달아둔 상태) 로드 비용만 쓰고 있어 제거했고 <b>−1.56초</b>를 회수했다. 광고 집행 시작 시 다시 넣으면 된다.</p>
     </div>
   </section>
 
@@ -264,39 +254,37 @@
     <p class="lead-p">순위를 올리는 일(느리고 불확실)이 아니라 <b>이미 확보한 순위에서 클릭을 회수하는 일</b>에 집중했다. 전부 운영 반영·검증 완료.</p>
 
     <div class="tw"><table>
-      <thead><tr><th>영역</th><th>한 일</th><th>상태</th></tr></thead>
+      <thead><tr><th style="width:96px;">영역</th><th>한 일</th><th style="width:104px;">상태</th></tr></thead>
       <tbody>
         <tr><td rowspan="3"><b>검색에서<br>클릭 회수</b></td>
-            <td><b>메타 6건 교체</b> — <code>/apply</code>·<code>/brochure</code>·블로그 4편. 폼 이름 대신 구매 판단 재료(비용·기간·리포트)를 앞세움</td><td><span class="chip wait">측정 대기</span></td></tr>
-        <tr><td><b>404 8개 리다이렉트</b> — 색인된 죽은 주소를 주제가 맞는 페이지로 308 연결. 3개월 노출 660회 회수</td><td><span class="chip wait">측정 대기</span></td></tr>
-        <tr><td><b>내부 링크 19개 → 40개</b> — 노출 상위 글이 순위 아쉬운 관련 글로 링크. 링크 못 받던 글 25편 → 13편</td><td><span class="chip wait">측정 대기</span></td></tr>
+            <td><b>메타 6건 교체</b> — <code>/apply</code>·<code>/brochure</code>·블로그 4편. 폼 이름 대신 구매 판단 재료(비용·기간·리포트)를 앞세움</td><td><span class="chip g">측정 대기</span></td></tr>
+        <tr><td><b>404 8개 리다이렉트</b> — 색인된 죽은 주소를 주제가 맞는 페이지로 연결. 3개월 노출 660회 회수</td><td><span class="chip g">측정 대기</span></td></tr>
+        <tr><td><b>내부 링크 19개 → 40개</b> — 노출 상위 글이 순위 아쉬운 관련 글로 링크. 링크 못 받던 글 25편 → 13편</td><td><span class="chip g">측정 대기</span></td></tr>
         <tr><td rowspan="2"><b>방문에서<br>리드 회수</b></td>
-            <td><b>홈 본문에 저관여 CTA</b> — PROOF 섹션 끝에 <code>/brochure</code> 진입점 신설</td><td><span class="chip wait">측정 대기</span></td></tr>
-        <tr><td><b><code>login_click</code> 측정</b> — GNB 로그인 클릭 + GA4 맞춤 측정기준 등록</td><td><span class="chip wait">데이터 축적 중</span></td></tr>
+            <td><b>홈 본문에 저관여 CTA</b> — PROOF 섹션 끝에 <code>/brochure</code> 진입점 신설</td><td><span class="chip g">측정 대기</span></td></tr>
+        <tr><td><b><code>login_click</code> 측정</b> — GNB 로그인 클릭 + GA4 맞춤 측정기준 등록</td><td><span class="chip g">축적 중</span></td></tr>
         <tr><td rowspan="2"><b>속도</b></td>
-            <td><b>GTM 컨테이너 제거</b></td><td><span class="chip done">−1.56초 실측</span></td></tr>
-        <tr><td><b>Pretendard 자체 호스팅</b> — 성능 이득은 없었으나, 방침에 없던 외부 CDN으로 방문자 IP가 나가던 경로가 사라짐</td><td><span class="chip done">완료</span></td></tr>
+            <td><b>GTM 컨테이너 제거</b></td><td><span class="chip b">−1.56초</span></td></tr>
+        <tr><td><b>Pretendard 자체 호스팅</b> — 성능 이득은 없었으나, 방침에 없던 외부 CDN으로 방문자 IP가 나가던 경로가 사라짐</td><td><span class="chip b">완료</span></td></tr>
       </tbody>
     </table></div>
 
-    <div class="card ok" style="margin-top:18px;">
-      <h3><span class="chip done">부수 성과</span>작업 중 드러난 버그 4건</h3>
-      <p><b>제목에 사이트명이 두 번</b> — <code>layout.tsx</code> 템플릿이 자동으로 붙이는데 코드에도 넣어둬 <code>… · AI 면접 · AI면접</code>으로 나가고 있었다(<code>/brochure</code>·<code>/update</code>). <b><code>/brochure</code>가 어드민 SEO 탭에 없었다</b> — 관리 목록 누락.</p>
-      <p><b>어드민 편집기 타이핑 지연·저장 시 멈춤</b> — 글자마다 본문 전체를 재분석하고, 저장할 때마다 38편 본문 약 100KB를 다시 받아오고 있었다. SEO 작업은 아니지만 콘텐츠 운영 속도를 계속 좌우하는 부분이라 함께 고쳤다.</p>
+    <div class="card" style="margin-top:13px;">
+      <h3><span class="chip b">부수 성과</span>작업 중 드러난 버그 4건</h3>
+      <p><b>제목에 사이트명이 두 번</b> — 템플릿이 자동으로 붙이는데 코드에도 넣어둬 <code>… · AI 면접 · AI면접</code>으로 나가고 있었다. <b><code>/brochure</code>가 어드민 SEO 탭에 없었다</b> — 관리 목록 누락.</p>
+      <p><b>어드민 편집기 타이핑 지연·저장 시 멈춤</b> — 글자마다 본문 전체를 재분석하고, 저장할 때마다 38편 본문 약 100KB를 다시 받아오고 있었다. 콘텐츠 운영 속도를 계속 좌우하는 부분이라 함께 고쳤다.</p>
     </div>
   </section>
 
   <section>
     <h2>아직 답하지 못한 것</h2>
-
     <div class="tw"><table>
-      <thead><tr><th>항목</th><th>상태</th></tr></thead>
+      <thead><tr><th>항목</th><th style="width:110px;">상태</th></tr></thead>
       <tbody>
-        <tr><td><b>“500개 이상의 기업” 문구의 근거</b> — <code>/apply</code>에 노출되는데 코드·DB 어디서도 근거를 찾지 못했다. 웹사이트 밖 영업 채널 숫자일 수 있으나, 가장 중요한 전환 시점에 뜨는 수치라 확인이 필요하다</td><td>보류(추후 확인)</td></tr>
-        <tr><td><b>개인정보 동의 3줄 고지</b> — 폼에 수집 항목·목적·보유기간 요약이 없다. 만들었으나 법적 문구라 이번 배포에서 제외(코드는 커밋 <code>a787632</code>에 보존)</td><td>보류</td></tr>
+        <tr><td><b>“500개 이상의 기업” 문구의 근거</b> — <code>/apply</code>에 노출되는데 코드·DB 어디서도 근거를 찾지 못했다. 웹사이트 밖 영업 채널 숫자일 수 있으나, 가장 중요한 전환 시점에 뜨는 수치라 확인이 필요하다</td><td><span class="hi">확인 요청</span></td></tr>
+        <tr><td><b>개인정보 동의 3줄 고지</b> — 폼에 수집 항목·목적·보유기간 요약이 없다. 문안은 준비했으나 법적 고지라 확정 전 배포하지 않았다</td><td><span class="hi">확인 요청</span></td></tr>
         <tr><td><b>기존 고객 트래픽 규모</b> — <code>login_click</code>으로 지금부터 측정 가능. 8/27 이전 데이터는 존재하지 않는다</td><td>축적 중</td></tr>
         <tr><td><b>개인 메일 차단의 이탈 규모</b> — 차단 시점에 이탈한 사람은 기록이 남지 않아 측정 수단이 없다</td><td>측정 불가</td></tr>
-        <tr><td><b>GSC API 자동 조회</b> — GCP 프로젝트에서 Search Console API 미사용 설정(403). 권한 문제로 진행하지 않기로 해, 데이터는 화면에서 CSV로 받는다</td><td>수동 유지</td></tr>
       </tbody>
     </table></div>
   </section>
@@ -305,41 +293,40 @@
     <h2>다음 측정</h2>
     <p class="lead-p">위 변경은 전부 구글 재크롤링 이후에야 숫자로 나타난다. 2026-09-03 전후에 확인한다.</p>
 
-    <div class="card">
-      <h3>비교 기준선</h3>
-      <p><code>/apply</code> CTR <b>0.8%</b>(순위 4.8) · <code>/brochure</code> <b>2.4%</b>(6.8) · 블로그 4편 <b>3.0 / 5.0 / 2.5 / 1.1%</b> · 404 8개가 목록에서 빠졌는지 · 링크를 받은 <code>hr-ax-ai-screening</code>(11.3위)·<code>ai-interview-resume-screening</code>(12.0위)의 순위 변화 · 브랜드 비중 88.4%의 변화</p>
-    </div>
+    <div class="tw"><table>
+      <thead><tr><th>비교 기준선</th><th style="text-align:right;">CTR</th><th style="text-align:right;">순위</th></tr></thead>
+      <tbody>
+        <tr><td><code>/apply</code></td><td class="num">0.8%</td><td class="num">4.8</td></tr>
+        <tr><td><code>/brochure</code></td><td class="num">2.4%</td><td class="num">6.8</td></tr>
+        <tr><td>블로그 4편 (프롬프트·트렌드·자소서탐지·일정조율)</td><td class="num">3.0 / 5.0 / 2.5 / 1.1%</td><td class="num">—</td></tr>
+        <tr><td>링크를 받은 <code>hr-ax-ai-screening</code> · <code>ai-interview-resume-screening</code></td><td class="num">—</td><td class="num">11.3 / 12.0</td></tr>
+        <tr><td>브랜드 검색 비중</td><td class="num">88.4%</td><td class="num">—</td></tr>
+      </tbody>
+    </table></div>
 
-    <p class="caveat"><b>내보내기 조건을 8/27과 동일하게.</b> 검색 유형 웹 · 지난 3개월 · <b>국가 필터 없음</b> · 표 위의 클릭수·노출수·CTR·평균 게재순위 <b>네 지표 모두 체크</b>(기본값은 앞 둘만 켜져 있다).
-    <br><br>
-    “국가=한국 필터”는 <b>화면에서 성과를 볼 때</b> 쓰는 관점이다(전체 CTR 7.27% vs 한국만 9.41% — 해외 노출 36%가 지표를 끌어내린다). 비교용 CSV에 걸면 기준선과 대조가 성립하지 않는다.</p>
+    <div class="note blue"><b>내보내기 조건을 8/27과 동일하게.</b> 검색 유형 웹 · 지난 3개월 · <b>국가 필터 없음</b> · 표 위의 클릭수·노출수·CTR·평균 게재순위 <b>네 지표 모두 체크</b>(기본값은 앞 둘만 켜져 있다). “국가=한국 필터”는 화면에서 성과를 볼 때 쓰는 관점이며(전체 7.27% vs 한국만 9.41%), 비교용 CSV에 걸면 기준선과 대조가 성립하지 않는다.</div>
 
-    <p class="caveat" style="background:var(--alert-soft);border-left-color:var(--alert);"><b>귀속의 한계</b> — 하루에 메타·404·내부링크를 동시에 바꿨다. CTR이 올라도 <b>무엇이 효과를 냈는지 항목별로 분리할 수 없다.</b> 전체 방향의 성패만 판단 가능하다.</p>
+    <div class="note"><b>귀속의 한계</b> — 하루에 메타·404·내부링크를 동시에 바꿨다. CTR이 올라도 <b>무엇이 효과를 냈는지 항목별로 분리할 수 없다.</b> 전체 방향의 성패만 판단 가능하다.</div>
   </section>
 
   <section>
     <h2>데이터 출처와 한계</h2>
     <div class="tw"><table>
-      <thead><tr><th>데이터</th><th>출처</th><th>기간</th></tr></thead>
+      <thead><tr><th>데이터</th><th>출처</th><th style="width:96px;">기간</th></tr></thead>
       <tbody>
-        <tr><td>리드 실측치</td><td>Supabase SQL Editor 직접 실행(<code>ir-leads-daily-260824.sql</code>)</td><td>6/30~8/23</td></tr>
-        <tr><td>방문자</td><td>GA4 Data API(속성 543685790) + Vercel Web Analytics 교차검증</td><td>6/30~8/23</td></tr>
+        <tr><td>리드 실측치</td><td>Supabase SQL Editor 직접 실행</td><td>6/30~8/23</td></tr>
+        <tr><td>방문자</td><td>GA4 Data API + Vercel Web Analytics 교차검증</td><td>6/30~8/23</td></tr>
         <tr><td>검색 성과</td><td>Search Console 실적 CSV 수동 내보내기</td><td>5/25~8/24</td></tr>
-        <tr><td>랜딩·폼·라우트 구조</td><td>코드 직접 열람</td><td>8/27 dev 기준</td></tr>
+        <tr><td>랜딩·폼·라우트 구조</td><td>코드 직접 열람</td><td>8/27 기준</td></tr>
         <tr><td>속도</td><td>CDP 직접 계측(느린 4G·CPU 4×) · 차단 A/B</td><td>8/27</td></tr>
       </tbody>
     </table></div>
 
-    <div class="card" style="margin-top:16px;">
-      <h3>검색어 표는 전체의 절반만 보여준다</h3>
-      <p>Google은 검색량이 적은 검색어를 개인정보 보호 목적으로 익명 처리해 표에서 뺀다. 검색어 합계(클릭 344·노출 3,307)는 전체(클릭 720·노출 9,905)의 <b>48% / 33%</b>에 불과하다.</p>
-      <p>즉 클릭 376회는 어떤 검색어에서 왔는지 알 수 없다. 다만 빠진 몫은 정의상 전부 <b>저빈도 롱테일</b>이고 브랜드명은 검색량이 많아 표에 남으므로, 실제 브랜드 비중은 88%보다 <b>낮을 가능성</b>이 있다 — 과대평가됐을 수는 있어도 과소평가되진 않았다.</p>
-    </div>
+    <div class="note"><b>검색어 표는 전체의 절반만 보여준다.</b> Google은 검색량이 적은 검색어를 개인정보 보호 목적으로 익명 처리해 표에서 뺀다. 검색어 합계(클릭 344·노출 3,307)는 전체(클릭 720·노출 9,905)의 <b>48% / 33%</b>에 불과하다. 빠진 몫은 정의상 전부 저빈도 롱테일이고 브랜드명은 검색량이 많아 표에 남으므로, 실제 브랜드 비중은 88%보다 <b>낮을 가능성</b>이 있다 — 과대평가됐을 수는 있어도 과소평가되진 않았다.</div>
   </section>
 
   <footer>
-    Supercoder AIVIEW · 성장 병목 종합 진단 2026-08-27<br>
-    전환 병목 진단 + 검색 유입 분석 통합본. 원본 문서는 <code>docs/lead-conversion-report-2026-08-27.html</code>과 <code>docs/search-console-report-2026-08-27.html</code>에 남아 있다.
+    Supercoder AIVIEW · 성장 병목 종합 진단 2026-08-27 · 전환 병목 진단 + 검색 유입 분석 통합본
   </footer>
 
 </div>
