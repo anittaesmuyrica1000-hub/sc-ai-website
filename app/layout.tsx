@@ -64,8 +64,8 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       <head>
         {/* 한국어 전용 사이트 — 브라우저 자동번역이 원문을 오역(예: '비용 절감'→'미안해요')하는 것을 방지 */}
         <meta name="google" content="notranslate" />
-        {/* Pretendard woff2 청크(pretendard.css 참조)용 — CSS 자체는 번들에 포함되어 렌더 차단 외부 요청 없음 */}
-        <link rel="preconnect" href="https://cdn.jsdelivr.net" crossOrigin="" />
+        {/* Pretendard woff2 청크는 2026-08-27부터 자체 호스팅(public/fonts/pretendard/) —
+            같은 오리진이라 페이지 연결을 그대로 쓰고, jsdelivr preconnect는 더 이상 필요 없다. */}
         {useGoogleTags && (
           <>
             {/* 태그 호스트에 미리 붙어 gtag.js 다운로드 지연을 줄인다 */}

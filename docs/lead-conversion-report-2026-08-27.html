@@ -214,6 +214,15 @@
   .card p{ margin:0 0 8px; font-size:14.5px; color:var(--ink); }
   .card p:last-child{ margin-bottom:0; }
   .card .foot{ font-size:13px; color:var(--ink-soft); }
+  /* 수치를 잘못 읽기 쉬운 자리에 다는 단서 — 측정값의 적용 범위를 좁혀 준다 */
+  .card p.caveat{
+    background:var(--hypo-soft);
+    border-left:3px solid var(--hypo);
+    border-radius:0 8px 8px 0;
+    padding:11px 14px;
+    font-size:13.5px;
+    color:var(--ink);
+  }
 
   /* ---- callout ---- */
   .callout{
@@ -376,8 +385,22 @@
     </div>
 
     <div class="card">
-      <h3><span class="tag fact">사실</span>모바일 홈 LCP 8.4초 — 8/10 대비 회귀</h3>
-      <p>8/10 5.1초 → 8/25 8.4초로 악화(8/14 GTM 연동이 유력 원인). 현재 세션의 86%가 데스크톱(8/21~8/24 기준)이라 당장의 리드 손실은 제한적이지만, 모바일 비중이 높은 채널(유료광고·SNS)로 확장하면 바로 발목을 잡는다.</p>
+      <h3><span class="tag fact">사실</span>병목은 LCP가 아니라 서드파티 — 로드 6.9초 중 4.6초</h3>
+      <p><b>앞선 "모바일 LCP 8.4초" 판단은 정정한다.</b> 운영 도메인을 느린 4G·CPU 4배 감속(Lighthouse 모바일과 같은 조건)으로 직접 계측하니 <b>관측 LCP는 1.37초</b>였고, LCP 요소는 히어로 <code>H1</code> 텍스트였다. 8.4초는 Lighthouse가 <i>시뮬레이션</i>으로 추정한 값이고, 실제로 관측되는 LCP와는 다른 지표다.</p>
+      <p>LCP가 빠른 이유는 <code>font-display:swap</code> 때문이다 — H1이 대체 폰트로 즉시 그려지면서 그 시점에 LCP가 확정되고, 뒤늦게 도착하는 웹폰트는 LCP를 밀지 않는다. 즉 <b>폰트를 자체 호스팅해도 LCP는 거의 안 변한다.</b></p>
+      <p>대신 진짜 비용은 <b>로드 완료까지의 6.9초</b>이고, 그중 4.6초가 서드파티다. 차단 A/B로 각 항목의 몫을 분리했다.</p>
+      <div class="table-wrap">
+        <table>
+          <tr><th>조건</th><th>LCP</th><th>로드 완료</th><th>절감</th></tr>
+          <tr><td>현재 운영 (기준)</td><td class="num">1,372 ms</td><td class="num">6,853 ms</td><td>—</td></tr>
+          <tr><td><code>gtm.js</code>만 차단</td><td class="num">1,156 ms</td><td class="num">5,506 ms</td><td class="num">−1.35 s</td></tr>
+          <tr><td>폰트 CDN(jsdelivr)만 차단</td><td class="num">1,428 ms</td><td class="num">4,804 ms</td><td class="num">−2.05 s</td></tr>
+          <tr><td>둘 다 차단</td><td class="num">1,216 ms</td><td class="num">2,216 ms</td><td class="num">−4.64 s</td></tr>
+        </table>
+      </div>
+      <p>내역은 두 가지다. ① <b>googletagmanager 이중 로드</b> — GA4 직접 태그(<code>gtag/js</code>)와 GTM 컨테이너(<code>gtm.js</code>)가 각각 붙어 네트워크 점유 5.2초·4.2초를 쓴다. ② <b>Pretendard 청크 9개</b> — 동적 서브셋(전체 92개 중 이 페이지가 쓰는 9개)이라 한글 유니코드 범위가 넓어 매 방문 약 250KB를 외부 CDN에서 받는다.</p>
+      <p class="caveat"><b>차단 A/B 해석 주의</b> — 위 표의 −2.05초는 <i>웹폰트를 아예 안 받았을 때</i>의 값이지, 자체 호스팅으로 얻는 값이 아니다. 자체 호스팅은 바이트를 그대로 받되 외부 연결(DNS·TLS) 설정만 없애므로 회수분은 그중 일부(느린 4G 기준 수백 ms대)다. 바이트 자체를 줄이려면 청크 수를 줄이는 별도 서브셋 작업이 필요하고, 블로그 본문은 등장 글자가 열려 있어 함부로 자를 수 없다. 반면 GTM의 −1.35초는 <i>제거하면 그대로 회수되는</i> 값이다 — 우선순위는 GTM이 먼저다.</p>
+      <p>현재 세션의 86%가 데스크톱(8/21~8/24 기준)이라 당장의 리드 손실은 제한적이다. 다만 이 비용은 LCP가 아니라 <b>상호작용 지연(TBT)</b>과 실제 모바일 회선에서의 체감으로 나타나므로, 모바일 비중이 높은 채널(유료광고·SNS)로 확장하기 전에 정리해 두는 것이 맞다.</p>
     </div>
 
     <div class="card">
@@ -419,10 +442,10 @@
       <table>
         <thead><tr><th style="width:32px;">#</th><th>항목</th><th>담당</th></tr></thead>
         <tbody>
-          <tr><td class="num">1</td><td>"500개 이상의 기업" 문구 근거 확인 → 유지·수정 결정</td><td><span class="pill copy">b2b-hr-copywriter</span></td></tr>
-          <tr><td class="num">2</td><td>홈 본문(VALUE·PROOF 부근)에 저관여 CTA 추가 — "확신이 아직 없다면 소개서부터"로 /brochure 노출</td><td><span class="pill design">ux-ui-designer</span> <span class="pill copy">b2b-hr-copywriter</span></td></tr>
-          <tr><td class="num">3</td><td>동의 체크박스 옆에 수집 항목·목적·보유기간 3줄 요약 고지 추가</td><td><span class="pill copy">b2b-hr-copywriter</span> <span class="pill design">ux-ui-designer</span></td></tr>
-          <tr><td class="num">4</td><td>GNB "로그인" 클릭에 login_click 커스텀 이벤트 추가 — 기존 고객 트래픽 규모를 앞으로 실제 측정 가능하게 함</td><td><span class="pill gate">개발 · 승인 필요</span></td></tr>
+          <tr><td class="num">1</td><td>"500개 이상의 기업" 문구 근거 확인 → 유지·수정 결정 <b>(보류 — 나중에 확인하기로)</b></td><td><span class="pill copy">b2b-hr-copywriter</span></td></tr>
+          <tr><td class="num">2</td><td>홈 PROOF 섹션 끝에 저관여 CTA 밴드 추가 — "아직 상담까지는 이르다면"으로 /brochure 노출</td><td><b>dev 반영 완료</b> (a787632)</td></tr>
+          <tr><td class="num">3</td><td>동의 체크박스 위에 수집 항목·목적·보유기간 3줄 요약 고지 추가 — 두 폼 공용 <code>ConsentNotice</code></td><td><b>dev 반영 완료</b> (a787632)</td></tr>
+          <tr><td class="num">4</td><td>GNB·모바일 메뉴 "로그인"에 <code>login_click</code> 이벤트 추가 — 기존 고객 트래픽 규모를 앞으로 실제 측정 가능하게 함</td><td><b>dev 반영 완료</b> (a787632)</td></tr>
         </tbody>
       </table>
     </div>
@@ -432,9 +455,10 @@
       <table>
         <thead><tr><th style="width:32px;">#</th><th>항목</th><th>비고</th></tr></thead>
         <tbody>
-          <tr><td class="num">5</td><td>/brochure 전화번호를 선택값으로 낮추거나, 저관여·고관여 폼의 필수 항목 수를 차등화</td><td><span class="pill gate">코드 변경 필요</span></td></tr>
-          <tr><td class="num">6</td><td>모바일 히어로 폰트 자체 호스팅 + preload, GTM 필요성 재검토 (LCP 8.4s 대응)</td><td>SEO진단 2026-08-25 권고와 동일</td></tr>
-          <tr><td class="num">7</td><td>GSC API 활성화 (GCP 프로젝트 80981256517)</td><td>이후 브랜드/비브랜드 키워드 비중 실측 가능</td></tr>
+          <tr><td class="num">5</td><td><s>/brochure 전화번호를 선택값으로 낮추거나, 저관여·고관여 폼의 필수 항목 수를 차등화</s> <b>— 진행하지 않음</b></td><td>영업 팔로업에 연락처가 필요해 필수 유지로 결정(2026-08-27). 리드 품질 우선</td></tr>
+          <tr><td class="num">6</td><td><b>GTM 컨테이너를 지금은 내린다(−1.35s)</b> — 광고 집행 시작할 때 다시 붙인다. 코드 변경 없이 <code>/admin</code> 설정에서 GTM ID를 비우면 된다</td><td>현재 컨테이너는 비어 있음(광고용으로 미리 달아둔 상태) — 지금은 순수 비용</td></tr>
+          <tr><td class="num">6-b</td><td>Pretendard 92개 청크 자체 호스팅 — 외부 연결 제거(수백 ms) + 서드파티 의존 해소</td><td>바이트는 그대로. LCP는 변하지 않는다</td></tr>
+          <tr><td class="num">7</td><td>GSC API 활성화 — ① GCP 프로젝트 <code>aiview-mail</code>에서 <b>Search Console API</b> 사용 설정 ② Search Console 속성 <code>www.supercoder.co</code>의 사용자·권한에 서비스계정 <code>aiview-mailer@aiview-mail.iam.gserviceaccount.com</code>을 <b>전체 보기</b>로 추가</td><td>둘 다 해야 열린다(현재 403). 이후 브랜드/비브랜드 키워드 비중 실측 가능</td></tr>
         </tbody>
       </table>
     </div>
@@ -455,7 +479,9 @@
   </section>
 
   <div class="callout" style="margin-top:44px;">
-    <strong>교차검증 완료 —</strong> Vercel Web Analytics(8/13~8/23 실측 467명)와 GA4를 대조해 기존 2,235명·0.54% 수치가 유지됨을 확인했고, 8/21 포착률 반등의 원인도 배포 시각(11:52 KST) 기준 시간대별 대조로 "배너 제거가 맞다"고 확정했습니다. 자세한 근거는 위 관련 항목 참고.
+    <strong>교차검증 완료 —</strong> Vercel Web Analytics(8/13~8/23 실측 467명)와 GA4를 대조해 기존 2,235명·0.54% 수치가 유지됨을 확인했고, 8/21 포착률 반등의 원인도 배포 시각(11:52 KST) 기준 시간대별 대조로 "배너 제거가 맞다"고 확정했습니다.
+    <br><br>
+    <strong>정정 1건 —</strong> "모바일 LCP 8.4초" 항목은 운영 도메인 직접 계측으로 뒤집혔습니다. 관측 LCP는 1.37초이고, 8.4초는 Lighthouse 시뮬레이션 추정치였습니다. 실제 개선 대상은 LCP가 아니라 로드 6.9초 중 서드파티가 차지하는 4.6초입니다. 자세한 근거는 위 관련 항목 참고.
   </div>
 
   <footer>
