@@ -324,7 +324,6 @@ export default async function HomePage() {
       <section className="faq" id="faq">
         <div className="wrap">
           <div className="head">
-            <span className="eyebrow">FAQ</span>
             <h2>자주 묻는 질문</h2>
           </div>
           <div className="faq-list">
