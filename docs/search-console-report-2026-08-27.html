@@ -376,20 +376,55 @@
         불필요한 <code>| Supercoder</code>(블로그 제목은 <code>absolute</code>라 사이트명이 자동으로 안 붙는데도 수동으로 넣어 10~12자를 낭비하던 것)를 걷어냈다. 35·32·39자로 잘리던 제목을 29·28·31자로 줄였다.</div>
       </div>
     </div>
-    <div class="act">
-      <div class="act-n">4</div>
+    <div class="act done">
+      <div class="act-n">✓</div>
       <div class="act-b">
-        <div class="act-t">클릭 0인 검색어를 콘텐츠 주제로 전환</div>
-        <div class="act-d">“ai 자소서 탐지기”, “면접 일정 조율”, “구조화 면접 질문지” — 노출은 이미 잡히는데 순위가 모자라 못 먹는 주제다. 이미 관심이 확인된 키워드라 새 주제를 찍는 것보다 성공률이 높다.</div>
+        <div class="act-t">클릭 0인 검색어 대응 — 새 글이 아니라 <b>연결</b>이 답이었다</div>
+        <div class="act-d">처음엔 “콘텐츠 주제로 전환”이라 판단했으나, 공개 글 38편을 검색어와 대조하니 <b>해당 주제가 이미 전부 커버돼 있었다.</b> 진짜 문제는 글들이 서로 고립돼 순위가 안 오르는 것이었다 — 아침 기준 내부 링크 19개, 28편이 나가는 링크 0개.
+        노출 1·2위 자산(<code>recruiter-ai-prompts</code> 930, <code>ai-recruitment-trends-2026</code> 820)이 링크를 하나도 주지 않는 반면, 노출 0인 글이 4개를 내보내고 있었다. 힘없는 글이 힘을 나눠주는 구조였다.
+        노출 상위 글에서 순위가 아쉬운 관련 글로 링크를 연결해 <b>19개 → 40개</b>로 늘렸다.</div>
       </div>
     </div>
     <div class="act">
       <div class="act-n">5</div>
       <div class="act-b">
-        <div class="act-t">앞으로 GSC는 국가=한국 필터로 볼 것</div>
-        <div class="act-d">해외 노출 36%가 지표를 왜곡한다. 전체 CTR 7.27% vs 한국만 9.41%.</div>
+        <div class="act-t">평소 성과를 볼 때는 국가=한국 필터로</div>
+        <div class="act-d">해외 노출 36%가 지표를 끌어내린다. 전체 CTR 7.27% vs 한국만 9.41% — 필터 없이 보면 실제보다 나빠 보인다.
+        <b>단, 기준선과 비교할 CSV에는 걸지 말 것</b> — 이 보고서의 수치가 전체 국가 기준이라 한쪽만 거르면 비교가 성립하지 않는다.</div>
       </div>
     </div>
+  </section>
+
+  <section>
+    <h2>실행 결과</h2>
+    <p class="section-sub">2026-08-27 하루에 반영한 것. 순위를 올리는 일이 아니라 <b>이미 확보한 순위에서 클릭을 회수하는 일</b>에 집중했다.</p>
+
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>항목</th><th>내용</th><th style="text-align:right;">기준 CTR</th></tr></thead>
+        <tbody>
+          <tr><td rowspan="6"><b>메타 교체<br>6건</b></td><td><code>/apply</code> — “도입 문의” → “비용·기간·리포트 예시”</td><td class="num">0.8%</td></tr>
+          <tr><td><code>/brochure</code> — 제목 중복 버그 수정 + 교체</td><td class="num">2.4%</td></tr>
+          <tr><td><code>recruiter-ai-prompts</code> — ChatGPT → <b>AI 프롬프트 모음</b></td><td class="num">3.0%</td></tr>
+          <tr><td><code>ai-recruitment-trends-2026</code> — 수치를 제목으로</td><td class="num">5.0%</td></tr>
+          <tr><td><code>ai-cover-letter-detector-compare</code> — 탐지 툴 → <b>탐지기</b></td><td class="num">2.5%</td></tr>
+          <tr><td><code>interview-scheduling-automation</code> — 자동화 → <b>아예 없애는</b></td><td class="num">1.1%</td></tr>
+          <tr><td><b>404 정리</b></td><td>색인된 죽은 주소 8개를 주제가 맞는 페이지로 308 연결</td><td class="num">노출 660</td></tr>
+          <tr><td><b>내부 링크</b></td><td>19개 → <b>40개</b>. 링크 못 받던 글 25편 → 13편</td><td>—</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p style="margin-top:14px;"><b>공통으로 걷어낸 것</b> — 블로그 제목의 <code>| Supercoder</code>(제목이 <code>absolute</code>라 사이트명이 자동으로 안 붙는데 수동으로 넣어 10~12자를 낭비하고 있었다), 그리고 <code>layout.tsx</code> 템플릿과 이중으로 붙던 제목 사이트명 중복 버그.</p>
+
+    <div class="card">
+      <h3><span class="chip fact">확인</span>작업 중 드러난 병목 — 어드민 편집기</h3>
+      <p>글 한 편에 링크를 2~3개씩 넣고 저장을 반복하는 작업이라, 편집기 성능 문제가 그대로 드러났다. 두 가지를 함께 고쳤다.</p>
+      <p><b>타이핑 지연</b> — 글자마다 본문 전체를 직렬화·재분석·리렌더하고 있었다(디바운스 없음). <b>저장 시 멈춤</b> — 저장 직후 <code>select("*")</code>로 38편의 본문까지 약 100KB를 다시 받아왔다. 수정은 이미 아는 값이므로 로컬 갱신으로 바꿨다.</p>
+      <p class="foot">SEO 작업이 아니지만, 앞으로 모든 콘텐츠 운영 속도를 좌우하는 부분이라 함께 기록한다.</p>
+    </div>
+
+    <p class="caveat" style="margin-top:18px;"><b>효과는 아직 측정 전이다.</b> 위 변경은 전부 구글 재크롤링 이후에야 숫자로 나타난다(보통 며칠~2주). 하루에 여러 가지를 동시에 바꿨으므로, 다음 측정 때 <b>무엇이 효과를 냈는지 항목별로 분리하기는 어렵다</b>는 점을 감안해야 한다. 기준선은 위 표의 CTR 값이다.</p>
   </section>
 
   <section>
@@ -404,6 +439,12 @@
 
   <footer>
     Supercoder AIVIEW · 검색 유입 진단 2026-08-27 · 전환 병목 진단(2026-08-27)의 미해결 가설 “검색 유입의 브랜드/비브랜드 구성비”에 대한 답
+    <br><br>
+    <b>다음 측정</b> — 1주 뒤 Search Console에서 실적 CSV를 다시 내려받아 위 기준선과 대조한다. 볼 것: <code>/apply</code> CTR(0.8% 기준), 블로그 4편 CTR, 404 8개가 목록에서 빠졌는지, 그리고 링크를 받은 <code>hr-ax-ai-screening</code>(11.3위)·<code>ai-interview-resume-screening</code>(12.0위)의 순위 변화.
+    <br><br>
+    ⚠️ <b>비교용 CSV에는 국가 필터를 걸지 말 것.</b> 이 보고서의 기준선은 <b>전체 국가</b>로 받은 값이다(원본의 <code>필터.csv</code>에 검색 유형·기간만 있고 국가 조건 없음). 한쪽만 한국으로 거르면 CTR 상승이 개선 덕인지 미국 노출이 빠진 탓인지 구분되지 않는다. 내보내기 조건은 <b>오늘과 동일하게</b> — 검색 유형 웹 · 지난 3개월 · 국가 필터 없음 · 표 위의 클릭수·노출수·CTR·평균 게재순위 <b>네 지표 모두 체크</b>.
+    <br><br>
+    본문의 “국가=한국 필터”는 <b>CSV가 아니라 화면에서 성과를 볼 때</b> 쓰는 관점이다(전체 7.27% vs 한국만 9.41%). 저장되는 설정이 아니라 볼 때마다 거는 것이며, 기준선 비교와는 별개다.
   </footer>
 
 </div>

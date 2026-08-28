@@ -63,7 +63,6 @@ export default async function HomePage() {
 
           <div className="wrap">
             <div>
-              <div className="tagchip"><i className="fa-solid fa-bolt"></i> AI 면접 채용 검증</div>
               <h1>
                 <span className="sky">지원자 검증은 </span><span className="hl" id="real-word">AI</span><span className="sky">가,</span><br />
                 <span className="sky">채용 결정은 </span><span className="hl">사람</span><span className="sky">이 더 빠르게</span>
@@ -104,7 +103,6 @@ export default async function HomePage() {
       <section className="flood" id="flood">
         <div className="wrap">
           <div className="head">
-            <div className="tagchip"><i className="fa-solid fa-triangle-exclamation"></i> 채용의 현실</div>
             <h2>AI로 쓴 이력서는 좋아졌는데,<br />지원자의 <span className="blue">실력</span>도 좋아졌을까요?</h2>
             <p className="lead">진짜를 못 거르는 1차 검토는<br />결국 채용 비용과 미스매치로 이어집니다.</p>
           </div>
@@ -133,7 +131,6 @@ export default async function HomePage() {
       <section className="value" id="value">
         <div className="wrap">
           <div className="head">
-            <div className="tagchip"><i className="fa-solid fa-circle-check"></i> 솔루션</div>
             <h2>그래서, 사람을 만나기 전에<br /><span className="blue">AI 면접이 먼저 검증</span>합니다</h2>
             <p className="lead">더 빠르게, 더 효율적으로, 더 일관되게.</p>
           </div>
@@ -164,7 +161,6 @@ export default async function HomePage() {
       <section className="role-funnel" id="role">
         <div className="wrap">
           <div className="head">
-            <div className="tagchip"><i className="fa-solid fa-circle-check"></i> 역할 분담</div>
             <h2>지원자 선별은 <span className="blue">AI</span>가,<br />최종 판단은 <span className="blue">사람</span>이</h2>
             <p className="lead">AI가 전체 지원자를 먼저 선별하고, 채용팀은 최종 의사결정에 집중합니다.</p>
           </div>
@@ -178,7 +174,7 @@ export default async function HomePage() {
                   </linearGradient>
                 </defs>
                 <g className="fn-guides">
-                  <path d="M925 135 H990 Q1000 135 1000 145 V425 Q1000 435 990 435 H730" fill="none" stroke="#5B8DF7" strokeWidth="1.5" strokeDasharray="6 6" strokeLinecap="round" strokeLinejoin="round" />
+                  <path d="M925 135 H990 Q1000 135 1000 145 V425 Q1000 435 990 435 H730" fill="none" stroke="#5382FF" strokeWidth="1.5" strokeDasharray="6 6" strokeLinecap="round" strokeLinejoin="round" />
                   <path d="M950 580 H650" fill="none" stroke="#2144a5" strokeWidth="1.5" strokeDasharray="6 6" strokeLinecap="round" />
                 </g>
                 <path className="seg" d="M215.2 71.7 Q210 62 221 62 L919 62 Q930 62 924.8 71.7 L857.2 198.3 Q852 208 841 208 L299 208 Q288 208 282.8 198.3 Z" fill="url(#fnGrad)" />
@@ -202,7 +198,6 @@ export default async function HomePage() {
       <section className="how" id="how">
         <div className="wrap">
           <div className="head">
-            <div className="tagchip"><i className="fa-solid fa-file-lines"></i> AI 리포트</div>
             <h2>핵심 후보 판단에 필요한 내용을<br /><span className="blue">리포트 한 장</span>에 담았습니다</h2>
             <p className="lead">요약, 등급, 역량, 면접 포인트까지 한눈에 확인하세요.</p>
           </div>
@@ -243,7 +238,6 @@ export default async function HomePage() {
           </div>
 
           <div className="head" style={{ paddingTop: "clamp(112px,15vw,190px)" }}>
-            <div className="tagchip"><i className="fa-solid fa-diagram-project"></i> 진행 절차</div>
             <h2>채용공고만 등록하면, 검증 리포트까지<br /><span className="blue">AI가 진행</span>합니다</h2>
           </div>
 
@@ -275,7 +269,6 @@ export default async function HomePage() {
       <section className="proof2" id="proof">
         <div className="wrap">
           <div className="head">
-            <div className="tagchip"><i className="fa-solid fa-chart-simple"></i> 검증된 효과</div>
             <h2 className="proof-h2">만 명이 몰려도, 검증된 핵심인재만 <span className="blue">남깁니다</span></h2>
             <p className="lead">인력은 못 늘리고, 뽑은 사람은 쉽게 나가지 않습니다. 1명을 뽑아도 확실한 핵심인재여야 합니다.</p>
           </div>
@@ -298,7 +291,6 @@ export default async function HomePage() {
       <section className="voices" id="voices">
         <div className="wrap">
           <div className="head">
-            <div className="tagchip"><i className="fa-solid fa-comment-dots"></i> 활용 사례</div>
             <h2>채용팀은 이렇게 활용하고 있습니다</h2>
             <p className="lead">반복 검토는 줄이고, <span className="blue" style={{ fontWeight: 700 }}>핵심 후보 판단</span>에 더 많은 시간을 쓰고 있습니다.</p>
           </div>
@@ -332,7 +324,6 @@ export default async function HomePage() {
       <section className="faq" id="faq">
         <div className="wrap">
           <div className="head">
-            <span className="eyebrow">FAQ</span>
             <h2>자주 묻는 질문</h2>
           </div>
           <div className="faq-list">

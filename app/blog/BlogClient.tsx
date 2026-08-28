@@ -39,7 +39,6 @@ export default function BlogClient({ posts, error }: { posts: Post[]; error: boo
     <>
       <section className="blog-head">
         <div className="wrap">
-          <div className="eyebrow"><i className="fa-solid fa-pen-nib"></i> AI면접 블로그</div>
           <h1>채용을 바꾸는<br />AI 면접 인사이트</h1>
           <p className="lead">AI 면접, 채용 검증, HR 트렌드까지 — 더 나은 채용을 위한 이야기를 전합니다.</p>
 

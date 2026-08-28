@@ -83,6 +83,47 @@ commit/push 전에 **항상** `npm run build`로 타입·린트·빌드를 통�
 - **외부 문서(Word·Notion·메일)에서 붙여넣지 말 것** — 통짜 `<pre>`/인라인 스타일이 딸려 와 표·제목 서식이 전부 죽는다. 붙여넣었다면 템플릿을 다시 적용하고 내용만 옮긴다. (편집기가 통짜 `<pre>` 붙여넣기는 문단으로 풀어주지만, 표·제목은 직접 다시 잡아야 한다.)
 - 저장 전 어드민 **미리보기**로 확인한다. DB는 dev·운영 공유이므로 공개(published) 전환은 **명시적 지시가 있을 때만** 한다.
 
+### 보고서·문서 PDF 스타일 (MUST)
+
+보고용 문서(HTML → PDF)를 만들 때는 **아래 팔레트와 폰트만** 쓴다. 예외 없이 적용한다.
+
+- **폰트는 Pretendard.** `font-family: "Pretendard", -apple-system, BlinkMacSystemFont, sans-serif`. 시스템(`~/Library/Fonts`)에 9개 웨이트가 설치돼 있어 헤드리스 Chrome이 바로 렌더한다. 숫자가 열로 정렬되는 곳엔 `font-variant-numeric: tabular-nums`.
+- **배경은 항상 흰색.** PDF는 인쇄물이므로 **다크 모드 블록을 넣지 않는다**(`@media (prefers-color-scheme: dark)`·`[data-theme]` 금지). `body`에 흰 배경을 명시한다.
+- **색은 블루 + 그레이 + 레드뿐.** 초록·주황 등 다른 색상 계열을 추가하지 않는다. 상태 표기(완료/보류/제외)도 이 세 가지 안에서 농도로 구분한다.
+- **레드는 유일한 강조색**이다. 경고·초과·중단처럼 진짜 눈에 걸려야 하는 곳에만 쓰고, 남발하지 않는다.
+
+```css
+:root {
+  --ground:    #FFFFFF;  /* 페이지 배경 — 항상 흰색 */
+  --surface:   #FFFFFF;  /* 카드 */
+  --surface-2: #F5F8FF;  /* 표 헤더 등 옅은 면 (로고 블루 5%) */
+  --ink:       #141C2E;  /* 본문 (17.0:1) */
+  --ink-2:     #4C5870;  /* 보조 텍스트 (7.15:1) */
+  --muted:     #6D7689;  /* 캡션·라벨 (4.56:1, AA 하한) */
+  --line:      #E2E8F5;  /* 테두리 */
+  --line-soft: #EDF1F9;
+  --blue:      #3A6FFF;  /* 로고 주색 — 큰 수치·테두리·그래픽 전용 */
+  --blue-d:    #2144A5;  /* 로고 진한색 — 작은 파란 글씨·링크 (8.62:1) */
+  --blue-soft: #EFF3FF;  /* 블루 옅은 면 (로고 블루 8%) */
+  --red:       #C62828;  /* 유일한 강조색 (5.62:1) */
+  --red-soft:  #FBEAEA;
+}
+```
+
+색 출처는 로고 파일 `속성 1=logo.svg`(`#3A6FFF` 12곳, `#2144A5` 1곳)다. 사이트 CSS의 `--blue: #2E6CF0`(`app/globals.css`)과는 미세하게 다르니, **문서에는 로고 값을 쓴다.**
+
+⚠️ **`--blue`(#3A6FFF)는 흰 배경에서 4.29:1이라 본문 크기 글자에 쓰면 WCAG AA 미달**이다. 큰 수치(24px 이상 볼드)·테두리·아이콘에만 쓰고, 작은 파란 글씨는 `--blue-d`(#2144A5)를 쓴다. 회색은 전부 블루 쪽으로 살짝 치우친 값이라 무채색 회색을 섞지 않는다.
+
+PDF 생성은 헤드리스 Chrome으로 한다. 프로세스가 종료되지 않고 걸릴 수 있는데, **파일은 이미 생성돼 있으니** 타임아웃 뒤 경로를 확인하면 된다.
+
+```bash
+"/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" \
+  --headless --disable-gpu --no-pdf-header-footer \
+  --user-data-dir=<스크래치패드>/chrome-pdf \
+  --print-to-pdf=docs/<이름>.pdf \
+  "file:///절대경로/docs/<이름>.html"
+```
+
 ## MCP 연결 (Connected Integrations)
 - **Vercel** — 배포/프로젝트 관리
 - **Supabase** — DB/백엔드

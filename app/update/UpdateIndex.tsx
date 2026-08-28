@@ -24,7 +24,6 @@ export default function UpdateIndex({ items, error }: { items: Update[]; error: 
   return (
     <main className="upd-index">
       <div className="upd-index-head">
-        <div className="upd-eyebrow"><i className="fa-solid fa-bullhorn"></i> 제품 업데이트</div>
         <h1>업데이트 노트</h1>
         <p>슈퍼코더AI면접의 새로운 기능과 개선 사항을 가장 먼저 전해드립니다.</p>
         <div className={`upd-search${q ? " on" : ""}`}>

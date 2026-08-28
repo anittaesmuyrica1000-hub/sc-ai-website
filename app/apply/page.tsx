@@ -59,7 +59,6 @@ export default function ApplyPage() {
       <div className="wrap">
         <div className="apply-grid">
           <div className="apply-intro">
-            <div className="tagchip"><i className="fa-solid fa-comments"></i> 우리 회사 맞춤 상담</div>
             {/* 제목: 데스크톱은 긴 문구, 모바일은 짧게 */}
             <h1>
               <span className="apply-h1-d">AI 면접 도입,<br />우리 회사에 맞게 시작하세요</span>
