@@ -133,6 +133,35 @@ function stripInjectedFormatting(scope: Element) {
   scope.querySelectorAll("[style]").forEach((el) => el.removeAttribute("style"));
 }
 
+// 편집기 내용이 통째로 선택돼 있는가(⌘A) — 또는 본문이 비어 있는가.
+// 이때는 execCommand를 거치지 않고 innerHTML로 교체한다: 브라우저가 커서 자리의 서식을
+// 끼워 넣을 여지 자체가 없어서, 정리된 HTML이 글자 그대로 들어간다.
+function selectionIsWholeBody(root: HTMLElement): boolean {
+  if (!stripText(root.innerHTML)) return true;
+  const sel = window.getSelection();
+  if (!sel || sel.rangeCount === 0) return false;
+  const r = sel.getRangeAt(0);
+  if (r.collapsed || !root.contains(r.commonAncestorContainer)) return false;
+  const all = root.ownerDocument.createRange();
+  all.selectNodeContents(root);
+  try {
+    return r.compareBoundaryPoints(Range.START_TO_START, all) <= 0
+      && r.compareBoundaryPoints(Range.END_TO_END, all) >= 0;
+  } catch {
+    return false;
+  }
+}
+
+function caretToEnd(root: HTMLElement) {
+  const sel = window.getSelection();
+  if (!sel) return;
+  const r = root.ownerDocument.createRange();
+  r.selectNodeContents(root);
+  r.collapse(false);
+  sel.removeAllRanges();
+  sel.addRange(r);
+}
+
 export default function RichEditor({ value, onChange, placeholder, minHeight = 380, templates }: Props) {
   const wrapRef = useRef<HTMLDivElement>(null);
   const ref = useRef<HTMLDivElement>(null);
@@ -546,6 +575,13 @@ export default function RichEditor({ value, onChange, placeholder, minHeight = 3
     e.preventDefault();
     const rawHtml = e.clipboardData.getData("text/html");
     const clean = rawHtml ? sanitizePastedHtml(rawHtml) : "";
+    // 본문 전체를 갈아 끼우는 붙여넣기(⌘A → ⌘V, 빈 편집기)는 execCommand를 아예 쓰지 않는다.
+    if (clean && ref.current && selectionIsWholeBody(ref.current)) {
+      ref.current.innerHTML = clean;
+      caretToEnd(ref.current);
+      emit();
+      return;
+    }
     resetTypingStyle(); // 커서 자리의 굵기가 붙여넣는 내용에 씌워지는 것을 막는다
     if (clean) {
       // 임시 컨테이너에 담아 넣고 → 그 안에서만 끼어든 서식을 벗긴 뒤 → 컨테이너를 푼다.
