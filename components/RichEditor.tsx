@@ -152,6 +152,20 @@ function selectionIsWholeBody(root: HTMLElement): boolean {
   }
 }
 
+// 붙여넣기 정리는 class와 <div>를 전부 지우므로 표가 bare <table>로 들어온다.
+// 둥근 테두리는 래퍼(.post-table-wrap)가 그리는 것이라 그대로 두면 편집기에서 표가 각지게 보인다
+// — 사이트 렌더(renderBody)는 알아서 감싸주지만, 편집기와 저장본도 표 삽입 버튼과 같은 구조로 맞춘다.
+function normalizeTables(root: HTMLElement) {
+  root.querySelectorAll("table").forEach((table) => {
+    table.classList.add("post-table");
+    if (table.parentElement?.classList.contains("post-table-wrap")) return;
+    const wrap = root.ownerDocument.createElement("div");
+    wrap.className = "post-table-wrap";
+    table.replaceWith(wrap);
+    wrap.appendChild(table);
+  });
+}
+
 function caretToEnd(root: HTMLElement) {
   const sel = window.getSelection();
   if (!sel) return;
@@ -180,7 +194,11 @@ export default function RichEditor({ value, onChange, placeholder, minHeight = 3
 
   // 초기 1회만 주입(이후엔 사용자 입력이 출처)
   useEffect(() => {
-    if (ref.current) ref.current.innerHTML = value || "";
+    if (!ref.current) return;
+    ref.current.innerHTML = value || "";
+    // 예전에 class 없이 저장된 bare <table>도 열자마자 래퍼를 붙여 둥근 테두리를 되살린다.
+    normalizeTables(ref.current);
+    if (ref.current.innerHTML !== (value || "")) onChange(ref.current.innerHTML);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -578,6 +596,7 @@ export default function RichEditor({ value, onChange, placeholder, minHeight = 3
     // 본문 전체를 갈아 끼우는 붙여넣기(⌘A → ⌘V, 빈 편집기)는 execCommand를 아예 쓰지 않는다.
     if (clean && ref.current && selectionIsWholeBody(ref.current)) {
       ref.current.innerHTML = clean;
+      normalizeTables(ref.current);
       caretToEnd(ref.current);
       emit();
       return;
@@ -590,6 +609,7 @@ export default function RichEditor({ value, onChange, placeholder, minHeight = 3
         stripInjectedFormatting(scope);
         scope.replaceWith(...Array.from(scope.childNodes));
       });
+      if (ref.current) normalizeTables(ref.current);
     } else {
       const text = e.clipboardData.getData("text/plain");
       document.execCommand("insertText", false, text);
