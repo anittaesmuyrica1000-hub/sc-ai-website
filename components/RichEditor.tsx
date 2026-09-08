@@ -39,10 +39,13 @@ type Props = {
 // 붙여넣기 HTML 정리 — 지원하는 서식 태그만 남기고(제목·굵게·목록·표·링크 등)
 // 나머지 태그는 내용만 남겨 풀고(span/font 등), style·class 등 잡스러운 속성은 전부 제거한다.
 const PASTE_ALLOWED = new Set([
-  "H1", "H2", "H3", "H4", "P", "BR", "STRONG", "B", "EM", "I", "U", "S",
+  "H1", "H2", "H3", "H4", "P", "BR", "STRONG", "EM", "U", "S",
   "UL", "OL", "LI", "A", "BLOCKQUOTE", "HR", "PRE", "CODE",
   "TABLE", "THEAD", "TBODY", "TR", "TH", "TD", "FIGURE", "IMG", "FIGCAPTION",
 ]);
+// 붙여온 <b>/<i>는 <strong>/<em>으로 통일한다(렌더 결과는 같다).
+// 덕분에 삽입이 끝난 뒤 남아 있는 <b>/<i>는 '브라우저가 끼워 넣은 것'으로 확정할 수 있다 — stripInjectedFormatting 참고.
+const PASTE_RENAME: Record<string, string> = { B: "STRONG", I: "EM" };
 // 통짜 <pre> 붙여넣기 방어 — 문서 전체가 <pre> 하나면 서식 없이 텍스트만 복사해 온 것이므로
 // 코드블록이 아니라 문단(<p>)으로 푼다. 그대로 두면 본문 전체가 monospace 한 덩어리가 되고,
 // 제목·표 서식을 다시 잡을 수 없다(2026-08 업데이트 글 사례).
@@ -73,8 +76,15 @@ function sanitizePastedHtml(html: string): string {
   const walk = (node: Node) => {
     Array.from(node.childNodes).forEach((child) => {
       if (child.nodeType === Node.ELEMENT_NODE) {
-        const el = child as HTMLElement;
+        let el = child as HTMLElement;
         walk(el);
+        const rename = PASTE_RENAME[el.tagName];
+        if (rename) {
+          const next = doc.createElement(rename);
+          while (el.firstChild) next.appendChild(el.firstChild);
+          el.replaceWith(next);
+          el = next;
+        }
         if (!PASTE_ALLOWED.has(el.tagName)) {
           el.replaceWith(...Array.from(el.childNodes)); // 태그는 벗기고 내용만 유지
         } else {
@@ -93,6 +103,34 @@ function sanitizePastedHtml(html: string): string {
   walk(body);
   unwrapWholePre(body);
   return body.innerHTML.trim();
+}
+
+// 붙여넣기 굵어짐 방어 — Chrome의 execCommand("insertHTML")은 커서 자리의 typing style을
+// 넣는 내용 전체에 씌운다. 본문을 ⌘A로 전체 선택하고 붙여넣으면 선택이 <h2>(굵기 800)에서
+// 시작하므로 글 전체가 <b>로 감싸져 올라온다(2026-09-08 업데이트 글에서 확인).
+// ① 선택을 먼저 지우고 굵게/기울임/밑줄 typing style을 끈 뒤 넣고,
+// ② 그래도 끼어든 서식은 붙여넣은 범위 안에서만 벗겨낸다.
+const PASTE_SCOPE = "data-paste-scope";
+
+function resetTypingStyle() {
+  const sel = window.getSelection();
+  if (sel && sel.rangeCount > 0 && !sel.isCollapsed) {
+    try { document.execCommand("delete"); } catch { /* noop */ }
+  }
+  // 툴바 exec()가 styleWithCSS를 true로 켜 두면 <b> 대신 <span style>로 들어온다 — 끄고 시작한다.
+  try { document.execCommand("styleWithCSS", false, "false"); } catch { /* noop */ }
+  (["bold", "italic", "underline"] as const).forEach((cmd) => {
+    try { if (document.queryCommandState(cmd)) document.execCommand(cmd, false); } catch { /* noop */ }
+  });
+}
+
+// sanitizePastedHtml이 속성을 전부 지우고 <b>/<i>·<span>·<font>도 남기지 않으므로,
+// 방금 붙여넣은 범위 안에 이것들이 있다면 전부 브라우저가 삽입 과정에서 끼워 넣은 것이다.
+function stripInjectedFormatting(scope: Element) {
+  scope.querySelectorAll("b, i, font, span").forEach((el) => {
+    el.replaceWith(...Array.from(el.childNodes));
+  });
+  scope.querySelectorAll("[style]").forEach((el) => el.removeAttribute("style"));
 }
 
 export default function RichEditor({ value, onChange, placeholder, minHeight = 380, templates }: Props) {
@@ -508,8 +546,14 @@ export default function RichEditor({ value, onChange, placeholder, minHeight = 3
     e.preventDefault();
     const rawHtml = e.clipboardData.getData("text/html");
     const clean = rawHtml ? sanitizePastedHtml(rawHtml) : "";
+    resetTypingStyle(); // 커서 자리의 굵기가 붙여넣는 내용에 씌워지는 것을 막는다
     if (clean) {
-      document.execCommand("insertHTML", false, clean);
+      // 임시 컨테이너에 담아 넣고 → 그 안에서만 끼어든 서식을 벗긴 뒤 → 컨테이너를 푼다.
+      document.execCommand("insertHTML", false, `<div ${PASTE_SCOPE}="1">${clean}</div>`);
+      ref.current?.querySelectorAll(`[${PASTE_SCOPE}]`).forEach((scope) => {
+        stripInjectedFormatting(scope);
+        scope.replaceWith(...Array.from(scope.childNodes));
+      });
     } else {
       const text = e.clipboardData.getData("text/plain");
       document.execCommand("insertText", false, text);
