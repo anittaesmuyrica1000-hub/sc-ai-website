@@ -124,12 +124,22 @@ function toBlocks(input: string): Block[] {
 // 한 줄을 종류별로 분류한다. <p>·<li> 안의 줄과 통짜 텍스트가 같은 규칙을 타도록 한 곳에 모았다.
 // 번호(1. / 1))로 시작하는 줄은 목록으로 보지 않는다 — 업데이트 글에서 그건 대개 기능 제목이다.
 // 진짜 목록인지 제목인지는 길이를 보고 조립 단계에서 가른다.
+// 붙여넣기 과정에서 줄바꿈이 사라져 여러 줄이 한 줄로 붙는 경우가 있다(뷰어·PDF에서 줄마다
+// <span>으로 복사되면 태그를 벗길 때 그대로 이어진다). 문장 중간에 나타난 '- ' 앞에서 다시 끊는다.
+// 앞 글자가 숫자·하이픈이면 날짜(2026-09-09)일 수 있으니 제외하고, 항목 구분에 쓰는 긴 줄표(—)는 건드리지 않는다.
+const GLUED_BULLET = /(?<=[^\s\d-])\s*(?=-\s+\S)/g;
+
 function classifyLine(
   line: string,
   defaultKind: Kind,
   push: (k: Kind, raw: string, level?: number) => void,
   tables: string[]
 ) {
+  // 태그가 하나도 없는 순수 텍스트 줄에서만 되살린다(태그 속 하이픈을 건드리지 않기 위해).
+  if (!line.includes("<") && GLUED_BULLET.test(line)) {
+    const parts = line.split(GLUED_BULLET).filter((p) => p.trim());
+    if (parts.length > 1) { parts.forEach((p) => classifyLine(p, defaultKind, push, tables)); return; }
+  }
   const s = line.trim();
   const plain = textOf(s);
   const t = /^TABLEMARK(\d+)$/.exec(plain);

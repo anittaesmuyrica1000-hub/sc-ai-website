@@ -49,6 +49,11 @@ const PASTE_ALLOWED = new Set([
 // 붙여온 <b>/<i>는 <strong>/<em>으로 통일한다(렌더 결과는 같다).
 // 덕분에 삽입이 끝난 뒤 남아 있는 <b>/<i>는 '브라우저가 끼워 넣은 것'으로 확정할 수 있다 — stripInjectedFormatting 참고.
 const PASTE_RENAME: Record<string, string> = { B: "STRONG", I: "EM" };
+// 지원 태그가 아니어서 벗겨내지만, 원래 줄(블록)을 나누던 요소들 — 벗길 때 줄바꿈을 대신 남긴다.
+const PASTE_BLOCKISH = new Set([
+  "DIV", "SECTION", "ARTICLE", "HEADER", "FOOTER", "MAIN", "ASIDE", "NAV",
+  "TR", "DL", "DT", "DD", "ADDRESS", "CENTER", "FORM", "FIELDSET",
+]);
 // 통짜 <pre> 붙여넣기 방어 — 문서 전체가 <pre> 하나면 서식 없이 텍스트만 복사해 온 것이므로
 // 코드블록이 아니라 문단(<p>)으로 푼다. 그대로 두면 본문 전체가 monospace 한 덩어리가 되고,
 // 제목·표 서식을 다시 잡을 수 없다(2026-08 업데이트 글 사례).
@@ -89,7 +94,11 @@ function sanitizePastedHtml(html: string): string {
           el = next;
         }
         if (!PASTE_ALLOWED.has(el.tagName)) {
-          el.replaceWith(...Array.from(el.childNodes)); // 태그는 벗기고 내용만 유지
+          // 태그는 벗기고 내용만 유지. 단 줄을 나누던 블록 요소였다면 줄바꿈을 남긴다 —
+          // 그냥 벗기면 <div>줄1</div><div>줄2</div>가 '줄1줄2'로 붙어 버린다.
+          const kids = Array.from(el.childNodes);
+          if (PASTE_BLOCKISH.has(el.tagName)) kids.push(doc.createTextNode("\n"));
+          el.replaceWith(...kids);
         } else {
           Array.from(el.attributes).forEach((a) => {
             const keep =
