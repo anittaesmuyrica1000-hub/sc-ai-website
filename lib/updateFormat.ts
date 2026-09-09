@@ -23,18 +23,20 @@ const SECTIONS: SectionDef[] = [
 const OPS_SECTION = SECTIONS.find((s) => s.key === "ops")!;
 
 // 기능 제목(h3)에 붙일 이모지 — 제목 낱말로 고른다. 원고에 이미 이모지가 있으면 그대로 둔다.
+// 위에서부터 먼저 걸리는 것을 쓴다 — 구체적인 낱말을 앞에 둔다.
+// (예: '리포트 언어 별도 선택'은 언어(🌐)보다 리포트(📄)가 주제다.)
 const H3_EMOJI: [RegExp, string][] = [
+  [/리포트|보고서|문서|결과지/, "📄"],
+  [/인재상|기준|평가|채점/, "🧭"],
   [/언어|다국어|번역|글로벌/, "🌐"],
   [/시간|시각|일정|마감|기한|예약/, "⏰"],
-  [/리포트|보고서|문서|결과지/, "📄"],
-  [/화면|페이지|모바일|앱|ui/i, "📱"],
-  [/알림|메일|초대|발송/, "🔔"],
-  [/보안|권한|인증|계정/, "🔐"],
   [/질문|면접관|대화|문항/, "💬"],
-  [/설정|옵션|관리/, "⚙️"],
-  [/속도|성능|안정|복구/, "🛠️"],
-  [/기준|평가|인재상|채점/, "🧭"],
+  [/알림|메일|초대|발송/, "🔔"],
+  [/화면|페이지|모바일|앱|ui/i, "📱"],
+  [/보안|권한|인증|계정/, "🔐"],
   [/다시|재시도|반복/, "🔁"],
+  [/속도|성능|안정|복구/, "🛠️"],
+  [/설정|옵션|관리/, "⚙️"],
 ];
 const DEFAULT_H3_EMOJI = "✨";
 // 줄 앞의 이모지 덩어리(변이 선택자·ZWJ 포함). \p{Extended_Pictographic}로 잡아야 서로게이트가 깨지지 않는다.
@@ -267,7 +269,9 @@ export function formatUpdateBody(input: string): string {
       const emoji = EMOJI_HEAD.exec(text)?.[0]?.trim() || "";
       if (section === "features") {
         featureNo += 1;
-        const pick = emoji || H3_EMOJI.find(([re]) => re.test(bare))?.[1] || DEFAULT_H3_EMOJI;
+        // '(옵션 · 별도 설정 필요)' 같은 꼬리표는 주제가 아니므로 이모지 판단에서 뺀다
+        const topic = bare.replace(/[(（][^)）]*[)）]\s*$/, "").trim() || bare;
+        const pick = emoji || H3_EMOJI.find(([re]) => re.test(topic))?.[1] || DEFAULT_H3_EMOJI;
         out.push(`<h3>${pick} ${featureNo}. ${esc(bare)}</h3>`);
       } else {
         out.push(`<h3>${emoji ? emoji + " " : ""}${esc(bare)}</h3>`);

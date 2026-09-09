@@ -595,7 +595,20 @@ export default function RichEditor({ value, onChange, placeholder, minHeight = 3
   function onPaste(e: React.ClipboardEvent) {
     e.preventDefault();
     const rawHtml = e.clipboardData.getData("text/html");
-    const clean = rawHtml ? sanitizePastedHtml(rawHtml) : "";
+    // 메모장·터미널에서 복사하면 text/html 플레이버가 없다 — 본문을 통째로 갈아 끼우는 경우에 한해
+    // 줄 단위로 <p>를 씌워 HTML 경로에 태운다(서식 정리·transformFullPaste가 똑같이 동작하도록).
+    let clean = rawHtml ? sanitizePastedHtml(rawHtml) : "";
+    if (!clean && ref.current && selectionIsWholeBody(ref.current)) {
+      const text = e.clipboardData.getData("text/plain");
+      if (text.trim()) {
+        clean = text
+          .split(/\r?\n/)
+          .map((l) => l.trim())
+          .filter(Boolean)
+          .map((l) => `<p>${l.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")}</p>`)
+          .join("");
+      }
+    }
     // 본문 전체를 갈아 끼우는 붙여넣기(⌘A → ⌘V, 빈 편집기)는 execCommand를 아예 쓰지 않는다.
     if (clean && ref.current && selectionIsWholeBody(ref.current)) {
       // 전체 교체 붙여넣기 — 필요하면 여기서 한 번 가공한다(업데이트 글의 표준 서식 정리).
