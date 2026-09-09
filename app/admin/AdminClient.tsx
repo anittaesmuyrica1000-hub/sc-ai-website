@@ -10,6 +10,7 @@ import { retentionInfo, isExpired, RETENTION_LABEL, type RetentionRow } from "@/
 import MarkdownEditor from "@/components/MarkdownEditor";
 import RichEditor, { type EditorTemplate } from "@/components/RichEditor";
 import { renderBody } from "@/lib/postRender";
+import { formatUpdateBody } from "@/lib/updateFormat";
 import { recommendTags } from "@/lib/keywords";
 
 // HTML 태그 제거(목록 미리보기·검증용)
@@ -1257,6 +1258,10 @@ function UpdatesManager() {
   const [preview, setPreview] = useState(false);
   // 요약을 자동 채움 중인지(사용자가 직접 요약을 건드리면 false). 본문 작성 시 요약을 자동 생성.
   const [excerptAuto, setExcerptAuto] = useState(true);
+  // 서식 변환 진행 상태 + 편집기 remount 키. RichEditor는 mount 때만 value를 주입하므로
+  // 변환 결과를 화면에 반영하려면 키를 바꿔 다시 마운트시켜야 한다.
+  const [formatting, setFormatting] = useState(false);
+  const [contentNonce, setContentNonce] = useState(0);
   const isEdit = !!form?.id;
 
   const load = useCallback(async () => {
@@ -1282,6 +1287,42 @@ function UpdatesManager() {
   }
   // 요약 직접 수정 — 비우면 자동 채움 재개, 입력하면 자동 중단
   function onExcerptChange(v: string) { set("excerpt", v); setExcerptAuto(!v.trim()); }
+  // 본문 전체를 갈아 끼우는 붙여넣기(⌘A → ⌘V, 빈 편집기)는 붙여넣는 순간 표준 서식으로 맞춘다.
+  // 대표님 원고를 그대로 붙여넣는 게 이 화면의 기본 동작이라, 버튼을 따로 누르지 않아도 되게 했다.
+  // 문단 중간에 일부만 붙여넣을 때는 적용되지 않는다(원문을 건드리면 안 되므로).
+  function onPasteWholeDraft(html: string): string {
+    try {
+      const next = formatUpdateBody(html);
+      if (!stripTags(next)) return html;
+      showMsg("붙여넣은 원고를 표준 서식으로 정리했습니다. 미리보기로 확인해 주세요.", true);
+      return next;
+    } catch (err) {
+      console.error("format on paste failed:", err);
+      return html;
+    }
+  }
+  // 표준 서식으로 맞추기 — 자유 형식 원고를 기존 회차와 같은 골격(h2·h3·표·목록)으로 정리한다.
+  // 브라우저에서 바로 도는 규칙 변환(lib/updateFormat.ts)이라 외부 호출·비용이 없다.
+  // 문장을 다시 쓰지는 않으므로, 표로 묶을지 같은 판단이 남으면 편집기에서 손보고 미리보기로 확인한다.
+  function formatBody() {
+    if (!form) return;
+    const src = form.content.trim();
+    if (!src) { showMsg("먼저 본문에 원고를 붙여넣어 주세요.", false); return; }
+    if (!window.confirm("현재 본문을 표준 업데이트 서식으로 정리합니다. 되돌리려면 다시 붙여넣어야 합니다. 진행할까요?")) return;
+    setFormatting(true); setMsg(null);
+    try {
+      const html = formatUpdateBody(src);
+      if (!stripTags(html)) { showMsg("정리할 내용을 찾지 못했습니다. 원고를 확인해 주세요.", false); return; }
+      setForm((f) => (f ? { ...f, content: html, excerpt: excerptAuto ? summarizeContent(html) : f.excerpt } : f));
+      setContentNonce((n) => n + 1);
+      showMsg("표준 서식으로 정리했습니다. 미리보기로 확인한 뒤 저장해 주세요.", true);
+    } catch (err) {
+      console.error("format update body failed:", err);
+      showMsg("정리 중 오류가 발생했습니다. 원고를 확인해 주세요.", false);
+    } finally {
+      setFormatting(false);
+    }
+  }
   function enterNew() { setForm({ ...UPD_EMPTY, publish_date: todayKST() }); setExcerptAuto(true); setMsg(null); window.scrollTo({ top: 0, behavior: "smooth" }); }
   function enterEdit(u: Update) {
     setForm({ id: u.id, title: u.title || "", slug: u.slug || "", category: u.category || "", publish_date: (u.publish_date || "").slice(0, 10), excerpt: u.excerpt || "", content: u.content || "", published: u.published !== false });
@@ -1389,17 +1430,27 @@ function UpdatesManager() {
               <input type="text" id="u-excerpt" placeholder="비우면 본문 첫 문장으로 자동 생성됩니다" value={form.excerpt} onChange={(e) => onExcerptChange(e.target.value)} />
             </div>
             <div className="field">
-              <label>본문 <span className="req">*</span></label>
+              <div className="label-row">
+                <label>본문 <span className="req">*</span></label>
+                <button type="button" className="btn btn-out btn-sm" onClick={formatBody} disabled={formatting || !form.content.trim()}>
+                  {formatting
+                    ? <><i className="fa-solid fa-spinner fa-spin"></i> 정리 중…</>
+                    : <><i className="fa-solid fa-wand-magic-sparkles"></i> 표준 서식으로 맞추기</>}
+                </button>
+              </div>
               <RichEditor
-                key={form.id || "new"}
+                key={`${form.id || "new"}:${contentNonce}`}
                 value={renderBody(form.content)}
                 onChange={onContentChange}
                 templates={UPDATE_TEMPLATES}
+                transformFullPaste={onPasteWholeDraft}
                 placeholder="업데이트 내용을 입력하세요. 제목·목록·표·이미지 등을 넣을 수 있습니다."
               />
               <p className="hint">
-                📄 템플릿에서 <strong>제품 업데이트 (표준)</strong>을 고르면 기존 업데이트 글과 같은 구조(대제목 h2 · 기능 h3 · 항목 표 · 💡 안내)로 시작합니다.
-                외부 문서에서 붙여넣은 뒤에는 문단 스타일을 <strong>제목/소제목</strong>으로 지정하고, 나열 항목은 표나 목록으로 바꿔 주세요.
+                <strong>원고를 붙여넣으면 자동으로 정리됩니다</strong>(빈 본문이거나 ⌘A로 전체 선택한 뒤 붙여넣을 때). 이후 손댄 내용을 다시 맞추려면 <strong>표준 서식으로 맞추기</strong>를 누르세요.
+                섹션 제목을 <strong>💡 Overview · ⭐ 주요 업데이트 · 🔧 운영 경험 개선(🐞·🔐) · ⚠️ 이용 안내 · ⏳</strong>로 승격하고,
+                기능마다 이모지와 번호를 붙이고, <strong>‘항목 — 설명’ 3줄 이상은 표</strong>로 묶고, 구분선·표 서식을 정리합니다. 문장은 손대지 않으니 <strong>미리보기</strong>로 확인한 뒤 저장해 주세요.
+                섹션 순서는 원고를 그대로 따릅니다. 빈 글에서 시작할 때는 📄 템플릿의 <strong>제품 업데이트 (표준)</strong>를 고르면 됩니다.
               </p>
             </div>
             <label className="check"><input type="checkbox" checked={form.published} onChange={(e) => set("published", e.target.checked)} /> 공개(게시) — 해제 시 비공개(임시저장, /update에 안 보임)</label>

@@ -34,6 +34,9 @@ type Props = {
   placeholder?: string;
   minHeight?: number;
   templates?: EditorTemplate[]; // 있으면 '템플릿' 드롭다운 노출(블로그 전용)
+  // 본문 전체를 갈아 끼우는 붙여넣기(⌘A → ⌘V, 빈 편집기)일 때 정리된 HTML을 한 번 더 가공한다.
+  // 업데이트 글에서 원고를 붙여넣자마자 표준 서식으로 맞추는 용도. 문단 중간 붙여넣기에는 적용하지 않는다.
+  transformFullPaste?: (html: string) => string;
 };
 
 // 붙여넣기 HTML 정리 — 지원하는 서식 태그만 남기고(제목·굵게·목록·표·링크 등)
@@ -46,6 +49,11 @@ const PASTE_ALLOWED = new Set([
 // 붙여온 <b>/<i>는 <strong>/<em>으로 통일한다(렌더 결과는 같다).
 // 덕분에 삽입이 끝난 뒤 남아 있는 <b>/<i>는 '브라우저가 끼워 넣은 것'으로 확정할 수 있다 — stripInjectedFormatting 참고.
 const PASTE_RENAME: Record<string, string> = { B: "STRONG", I: "EM" };
+// 지원 태그가 아니어서 벗겨내지만, 원래 줄(블록)을 나누던 요소들 — 벗길 때 줄바꿈을 대신 남긴다.
+const PASTE_BLOCKISH = new Set([
+  "DIV", "SECTION", "ARTICLE", "HEADER", "FOOTER", "MAIN", "ASIDE", "NAV",
+  "TR", "DL", "DT", "DD", "ADDRESS", "CENTER", "FORM", "FIELDSET",
+]);
 // 통짜 <pre> 붙여넣기 방어 — 문서 전체가 <pre> 하나면 서식 없이 텍스트만 복사해 온 것이므로
 // 코드블록이 아니라 문단(<p>)으로 푼다. 그대로 두면 본문 전체가 monospace 한 덩어리가 되고,
 // 제목·표 서식을 다시 잡을 수 없다(2026-08 업데이트 글 사례).
@@ -86,7 +94,11 @@ function sanitizePastedHtml(html: string): string {
           el = next;
         }
         if (!PASTE_ALLOWED.has(el.tagName)) {
-          el.replaceWith(...Array.from(el.childNodes)); // 태그는 벗기고 내용만 유지
+          // 태그는 벗기고 내용만 유지. 단 줄을 나누던 블록 요소였다면 줄바꿈을 남긴다 —
+          // 그냥 벗기면 <div>줄1</div><div>줄2</div>가 '줄1줄2'로 붙어 버린다.
+          const kids = Array.from(el.childNodes);
+          if (PASTE_BLOCKISH.has(el.tagName)) kids.push(doc.createTextNode("\n"));
+          el.replaceWith(...kids);
         } else {
           Array.from(el.attributes).forEach((a) => {
             const keep =
@@ -176,7 +188,7 @@ function caretToEnd(root: HTMLElement) {
   sel.addRange(r);
 }
 
-export default function RichEditor({ value, onChange, placeholder, minHeight = 380, templates }: Props) {
+export default function RichEditor({ value, onChange, placeholder, minHeight = 380, templates, transformFullPaste }: Props) {
   const wrapRef = useRef<HTMLDivElement>(null);
   const ref = useRef<HTMLDivElement>(null);
   const fileRef = useRef<HTMLInputElement>(null);
@@ -592,10 +604,29 @@ export default function RichEditor({ value, onChange, placeholder, minHeight = 3
   function onPaste(e: React.ClipboardEvent) {
     e.preventDefault();
     const rawHtml = e.clipboardData.getData("text/html");
-    const clean = rawHtml ? sanitizePastedHtml(rawHtml) : "";
+    // 메모장·터미널에서 복사하면 text/html 플레이버가 없다 — 본문을 통째로 갈아 끼우는 경우에 한해
+    // 줄 단위로 <p>를 씌워 HTML 경로에 태운다(서식 정리·transformFullPaste가 똑같이 동작하도록).
+    let clean = rawHtml ? sanitizePastedHtml(rawHtml) : "";
+    if (!clean && ref.current && selectionIsWholeBody(ref.current)) {
+      const text = e.clipboardData.getData("text/plain");
+      if (text.trim()) {
+        clean = text
+          .split(/\r?\n/)
+          .map((l) => l.trim())
+          .filter(Boolean)
+          .map((l) => `<p>${l.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")}</p>`)
+          .join("");
+      }
+    }
     // 본문 전체를 갈아 끼우는 붙여넣기(⌘A → ⌘V, 빈 편집기)는 execCommand를 아예 쓰지 않는다.
     if (clean && ref.current && selectionIsWholeBody(ref.current)) {
-      ref.current.innerHTML = clean;
+      // 전체 교체 붙여넣기 — 필요하면 여기서 한 번 가공한다(업데이트 글의 표준 서식 정리).
+      let next = clean;
+      if (transformFullPaste) {
+        try { next = transformFullPaste(clean) || clean; }
+        catch (err) { console.error("transformFullPaste failed:", err); }
+      }
+      ref.current.innerHTML = next;
       normalizeTables(ref.current);
       caretToEnd(ref.current);
       emit();
