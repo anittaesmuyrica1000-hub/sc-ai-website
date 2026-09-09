@@ -12,6 +12,9 @@
   .field{margin-bottom:15px}
   .field label{display:block;font-size:13px;font-weight:700;color:var(--ink);margin-bottom:6px}
   .field label .req{color:var(--blue)}
+  /* 라벨 옆에 동작 버튼을 두는 줄(예: 본문 + '표준 서식으로 변환') */
+  .label-row{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:6px}
+  .label-row label{margin-bottom:0}
   .field input,.field select,.field textarea{width:100%;padding:12px 13px;border:1px solid var(--line);border-radius:10px;font-size:14.5px;font-family:inherit;color:var(--ink);background:#fff;transition:.15s}
   .field input:focus,.field select:focus,.field textarea:focus{outline:none;border-color:var(--blue-2);box-shadow:0 0 0 3px rgba(91,141,247,.16)}
   .field textarea{resize:vertical;min-height:200px;line-height:1.7}
