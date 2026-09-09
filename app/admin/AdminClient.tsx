@@ -1165,7 +1165,13 @@ function todayKST(): string {
 
 // 본문(HTML)에서 한 줄 요약 자동 생성 — 태그 제거 후 첫 문장(또는 ~60자).
 function summarizeContent(html: string): string {
-  const text = String(html || "").replace(/<[^>]+>/g, " ").replace(/&[a-z]+;/gi, " ").replace(/\s+/g, " ").trim();
+  const src = String(html || "");
+  const flat = (s: string) => s.replace(/<[^>]+>/g, " ").replace(/&[a-z]+;/gi, " ").replace(/\s+/g, " ").trim();
+  // 제목은 요약에서 뺀다 — 빼지 않으면 '💡 Overview 이번에는 …'처럼 대제목이 요약 앞에 붙어
+  // 목록 카드에 그대로 나간다(2026-09-09 확인). 제목을 걷어낸 뒤 첫 문단을 쓴다.
+  const body = src.replace(/<h[1-6][^>]*>[\s\S]*?<\/h[1-6]>/gi, " ");
+  const firstPara = /<p[^>]*>([\s\S]*?)<\/p>/i.exec(body)?.[1];
+  const text = flat(firstPara || "") || flat(body) || flat(src);
   if (!text) return "";
   const firstSentence = text.split(/(?<=[.!?。！？])\s/)[0];
   const base = firstSentence && firstSentence.length <= 80 ? firstSentence : text;
