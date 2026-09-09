@@ -10,6 +10,7 @@ import { retentionInfo, isExpired, RETENTION_LABEL, type RetentionRow } from "@/
 import MarkdownEditor from "@/components/MarkdownEditor";
 import RichEditor, { type EditorTemplate } from "@/components/RichEditor";
 import { renderBody } from "@/lib/postRender";
+import { formatUpdateBody } from "@/lib/updateFormat";
 import { recommendTags } from "@/lib/keywords";
 
 // HTML 태그 제거(목록 미리보기·검증용)
@@ -1286,28 +1287,24 @@ function UpdatesManager() {
   }
   // 요약 직접 수정 — 비우면 자동 채움 재개, 입력하면 자동 중단
   function onExcerptChange(v: string) { set("excerpt", v); setExcerptAuto(!v.trim()); }
-  // 표준 서식으로 변환 — 자유 형식 원고를 기존 회차와 같은 골격(h2·h3·표·💡 안내)으로 재구성한다.
-  // 결과는 사람이 미리보기로 검수한 뒤 저장하는 것을 전제로 한다.
-  async function formatBody() {
+  // 표준 서식으로 맞추기 — 자유 형식 원고를 기존 회차와 같은 골격(h2·h3·표·목록)으로 정리한다.
+  // 브라우저에서 바로 도는 규칙 변환(lib/updateFormat.ts)이라 외부 호출·비용이 없다.
+  // 문장을 다시 쓰지는 않으므로, 표로 묶을지 같은 판단이 남으면 편집기에서 손보고 미리보기로 확인한다.
+  function formatBody() {
     if (!form) return;
     const src = form.content.trim();
     if (!src) { showMsg("먼저 본문에 원고를 붙여넣어 주세요.", false); return; }
-    if (!window.confirm("현재 본문을 표준 업데이트 서식으로 재구성합니다. 기존 본문은 결과로 대체됩니다. 진행할까요?")) return;
+    if (!window.confirm("현재 본문을 표준 업데이트 서식으로 정리합니다. 되돌리려면 다시 붙여넣어야 합니다. 진행할까요?")) return;
     setFormatting(true); setMsg(null);
     try {
-      const { data } = await supabase.auth.getSession();
-      const res = await fetch("/api/admin/format-update", {
-        method: "POST",
-        headers: { "Content-Type": "application/json", Authorization: `Bearer ${data.session?.access_token || ""}` },
-        body: JSON.stringify({ text: src }),
-      });
-      const json = (await res.json()) as { ok?: boolean; html?: string; error?: string };
-      if (!res.ok || !json.ok || !json.html) throw new Error(json.error || "변환에 실패했습니다.");
-      setForm((f) => (f ? { ...f, content: json.html!, excerpt: excerptAuto ? summarizeContent(json.html!) : f.excerpt } : f));
+      const html = formatUpdateBody(src);
+      if (!stripTags(html)) { showMsg("정리할 내용을 찾지 못했습니다. 원고를 확인해 주세요.", false); return; }
+      setForm((f) => (f ? { ...f, content: html, excerpt: excerptAuto ? summarizeContent(html) : f.excerpt } : f));
       setContentNonce((n) => n + 1);
-      showMsg("표준 서식으로 변환했습니다. 내용을 확인한 뒤 저장해 주세요.", true);
+      showMsg("표준 서식으로 정리했습니다. 미리보기로 확인한 뒤 저장해 주세요.", true);
     } catch (err) {
-      showMsg(err instanceof Error ? err.message : "변환에 실패했습니다.", false);
+      console.error("format update body failed:", err);
+      showMsg("정리 중 오류가 발생했습니다. 원고를 확인해 주세요.", false);
     } finally {
       setFormatting(false);
     }
@@ -1423,8 +1420,8 @@ function UpdatesManager() {
                 <label>본문 <span className="req">*</span></label>
                 <button type="button" className="btn btn-out btn-sm" onClick={formatBody} disabled={formatting || !form.content.trim()}>
                   {formatting
-                    ? <><i className="fa-solid fa-spinner fa-spin"></i> 변환 중… (최대 1분)</>
-                    : <><i className="fa-solid fa-wand-magic-sparkles"></i> 표준 서식으로 변환</>}
+                    ? <><i className="fa-solid fa-spinner fa-spin"></i> 정리 중…</>
+                    : <><i className="fa-solid fa-wand-magic-sparkles"></i> 표준 서식으로 맞추기</>}
                 </button>
               </div>
               <RichEditor
@@ -1435,8 +1432,9 @@ function UpdatesManager() {
                 placeholder="업데이트 내용을 입력하세요. 제목·목록·표·이미지 등을 넣을 수 있습니다."
               />
               <p className="hint">
-                원고를 그대로 붙여넣고 <strong>표준 서식으로 변환</strong>을 누르면 기존 업데이트 글과 같은 구조(💡 Overview → ⭐ 주요 업데이트 → 🔧 운영 경험 개선 → ⚠️ 이용 안내 → ⏳)로 재구성합니다.
-                원고에 없는 내용은 만들지 않으므로, 변환 뒤 <strong>미리보기</strong>로 확인하고 저장해 주세요. 빈 글에서 시작할 때는 📄 템플릿의 <strong>제품 업데이트 (표준)</strong>를 고르면 됩니다.
+                원고를 그대로 붙여넣고 <strong>표준 서식으로 맞추기</strong>를 누르면 섹션 제목을 <strong>💡 Overview · ⭐ 주요 업데이트 · 🔧 운영 경험 개선(🐞·🔐) · ⚠️ 이용 안내 · ⏳</strong>로 승격하고,
+                기능마다 이모지와 번호를 붙이고, <strong>‘항목 — 설명’ 3줄 이상은 표</strong>로 묶고, 구분선·표 서식을 정리합니다. 문장은 손대지 않으니 <strong>미리보기</strong>로 확인한 뒤 저장해 주세요.
+                섹션 순서는 원고를 그대로 따릅니다. 빈 글에서 시작할 때는 📄 템플릿의 <strong>제품 업데이트 (표준)</strong>를 고르면 됩니다.
               </p>
             </div>
             <label className="check"><input type="checkbox" checked={form.published} onChange={(e) => set("published", e.target.checked)} /> 공개(게시) — 해제 시 비공개(임시저장, /update에 안 보임)</label>
