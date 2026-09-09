@@ -1287,6 +1287,20 @@ function UpdatesManager() {
   }
   // 요약 직접 수정 — 비우면 자동 채움 재개, 입력하면 자동 중단
   function onExcerptChange(v: string) { set("excerpt", v); setExcerptAuto(!v.trim()); }
+  // 본문 전체를 갈아 끼우는 붙여넣기(⌘A → ⌘V, 빈 편집기)는 붙여넣는 순간 표준 서식으로 맞춘다.
+  // 대표님 원고를 그대로 붙여넣는 게 이 화면의 기본 동작이라, 버튼을 따로 누르지 않아도 되게 했다.
+  // 문단 중간에 일부만 붙여넣을 때는 적용되지 않는다(원문을 건드리면 안 되므로).
+  function onPasteWholeDraft(html: string): string {
+    try {
+      const next = formatUpdateBody(html);
+      if (!stripTags(next)) return html;
+      showMsg("붙여넣은 원고를 표준 서식으로 정리했습니다. 미리보기로 확인해 주세요.", true);
+      return next;
+    } catch (err) {
+      console.error("format on paste failed:", err);
+      return html;
+    }
+  }
   // 표준 서식으로 맞추기 — 자유 형식 원고를 기존 회차와 같은 골격(h2·h3·표·목록)으로 정리한다.
   // 브라우저에서 바로 도는 규칙 변환(lib/updateFormat.ts)이라 외부 호출·비용이 없다.
   // 문장을 다시 쓰지는 않으므로, 표로 묶을지 같은 판단이 남으면 편집기에서 손보고 미리보기로 확인한다.
@@ -1429,10 +1443,12 @@ function UpdatesManager() {
                 value={renderBody(form.content)}
                 onChange={onContentChange}
                 templates={UPDATE_TEMPLATES}
+                transformFullPaste={onPasteWholeDraft}
                 placeholder="업데이트 내용을 입력하세요. 제목·목록·표·이미지 등을 넣을 수 있습니다."
               />
               <p className="hint">
-                원고를 그대로 붙여넣고 <strong>표준 서식으로 맞추기</strong>를 누르면 섹션 제목을 <strong>💡 Overview · ⭐ 주요 업데이트 · 🔧 운영 경험 개선(🐞·🔐) · ⚠️ 이용 안내 · ⏳</strong>로 승격하고,
+                <strong>원고를 붙여넣으면 자동으로 정리됩니다</strong>(빈 본문이거나 ⌘A로 전체 선택한 뒤 붙여넣을 때). 이후 손댄 내용을 다시 맞추려면 <strong>표준 서식으로 맞추기</strong>를 누르세요.
+                섹션 제목을 <strong>💡 Overview · ⭐ 주요 업데이트 · 🔧 운영 경험 개선(🐞·🔐) · ⚠️ 이용 안내 · ⏳</strong>로 승격하고,
                 기능마다 이모지와 번호를 붙이고, <strong>‘항목 — 설명’ 3줄 이상은 표</strong>로 묶고, 구분선·표 서식을 정리합니다. 문장은 손대지 않으니 <strong>미리보기</strong>로 확인한 뒤 저장해 주세요.
                 섹션 순서는 원고를 그대로 따릅니다. 빈 글에서 시작할 때는 📄 템플릿의 <strong>제품 업데이트 (표준)</strong>를 고르면 됩니다.
               </p>

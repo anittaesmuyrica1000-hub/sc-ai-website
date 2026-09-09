@@ -34,6 +34,9 @@ type Props = {
   placeholder?: string;
   minHeight?: number;
   templates?: EditorTemplate[]; // 있으면 '템플릿' 드롭다운 노출(블로그 전용)
+  // 본문 전체를 갈아 끼우는 붙여넣기(⌘A → ⌘V, 빈 편집기)일 때 정리된 HTML을 한 번 더 가공한다.
+  // 업데이트 글에서 원고를 붙여넣자마자 표준 서식으로 맞추는 용도. 문단 중간 붙여넣기에는 적용하지 않는다.
+  transformFullPaste?: (html: string) => string;
 };
 
 // 붙여넣기 HTML 정리 — 지원하는 서식 태그만 남기고(제목·굵게·목록·표·링크 등)
@@ -176,7 +179,7 @@ function caretToEnd(root: HTMLElement) {
   sel.addRange(r);
 }
 
-export default function RichEditor({ value, onChange, placeholder, minHeight = 380, templates }: Props) {
+export default function RichEditor({ value, onChange, placeholder, minHeight = 380, templates, transformFullPaste }: Props) {
   const wrapRef = useRef<HTMLDivElement>(null);
   const ref = useRef<HTMLDivElement>(null);
   const fileRef = useRef<HTMLInputElement>(null);
@@ -595,7 +598,13 @@ export default function RichEditor({ value, onChange, placeholder, minHeight = 3
     const clean = rawHtml ? sanitizePastedHtml(rawHtml) : "";
     // 본문 전체를 갈아 끼우는 붙여넣기(⌘A → ⌘V, 빈 편집기)는 execCommand를 아예 쓰지 않는다.
     if (clean && ref.current && selectionIsWholeBody(ref.current)) {
-      ref.current.innerHTML = clean;
+      // 전체 교체 붙여넣기 — 필요하면 여기서 한 번 가공한다(업데이트 글의 표준 서식 정리).
+      let next = clean;
+      if (transformFullPaste) {
+        try { next = transformFullPaste(clean) || clean; }
+        catch (err) { console.error("transformFullPaste failed:", err); }
+      }
+      ref.current.innerHTML = next;
       normalizeTables(ref.current);
       caretToEnd(ref.current);
       emit();
