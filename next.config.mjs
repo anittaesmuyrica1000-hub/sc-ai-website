@@ -3,13 +3,26 @@ const nextConfig = {
   reactStrictMode: true,
   // 프레임워크 정보(X-Powered-By: Next.js) 노출 제거 — 버전별 취약점 탐색 방지
   poweredByHeader: false,
-  // 정적 호스팅 기반(이미지 외부 도메인 cover_url 허용)
+  // 정적 호스팅 기반(블로그 커버는 Supabase Storage에 업로드)
   images: {
-    remotePatterns: [{ protocol: "https", hostname: "**" }],
-    // 블로그 커버는 발행 후 거의 안 바뀌고(재업로드 시 새 파일명 발급) 원본 캐시도 1시간뿐이라,
-    // Vercel 엣지 캐시를 24시간으로 늘려 Supabase Storage 재요청(Cached Egress)을 줄인다.
-    // (2026-08-24: Supabase Cached Egress 무료 한도 초과 대응 — next/image 전환 후속 조치)
-    minimumCacheTTL: 86400,
+    // 호스트를 특정한다. 이전엔 hostname:"**"라 /_next/image가 사실상 공개 이미지 프록시였고,
+    // 외부에서 임의 URL을 넣어 우리 계정의 Transformations를 소진시킬 수 있었다.
+    // (2026-09-10: Vercel 무료 한도 5,000 Transformations 75% 경고 대응)
+    remotePatterns: [
+      { protocol: "https", hostname: "ymzlcghqamkynuvotzgh.supabase.co", pathname: "/storage/v1/object/public/**" },
+      { protocol: "https", hostname: "images.pexels.com" },
+    ],
+    // 품질도 한 가지로 고정 — q= 값마다 변환이 새로 카운트되기 때문.
+    qualities: [75],
+    // 실제 렌더 폭은 카드 560px·본문 히어로 712px·관련글 썸네일 64px뿐이다.
+    // 기본값(8단계 · 최대 3840)은 쓰지 않는 폭까지 변환을 만들어내므로 4단계로 줄인다.
+    // 2x 기준 최대 필요 폭은 1424px이라 1440으로 충분하다.
+    deviceSizes: [640, 828, 1080, 1440],
+    imageSizes: [64, 128],
+    // 캐시가 만료되면 같은 이미지도 '새 변환'으로 다시 카운트된다. 24시간으로 두면
+    // 변환 수가 최대 30배로 불어난다(원본 Supabase 응답이 no-cache라 이 값이 그대로 TTL이 됨).
+    // 커버는 재업로드 시 새 파일명을 받으므로 최대치(31일)로 올려도 갱신 문제가 없다.
+    minimumCacheTTL: 2678400,
   },
   // 보안 헤더 (SEO 진단 2026-08-07: 클릭재킹·MIME 스니핑·리퍼러 노출 방지)
   async headers() {
