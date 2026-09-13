@@ -18,7 +18,7 @@ Supercoder AI 웹사이트 — **AIVIEW** 제품 랜딩 + 블로그/도입문의
 - **라우트(`app/`):**
   - `app/page.tsx` — 랜딤(index). 서버 컴포넌트. 섹션 CSS는 `app/landing.css`.
   - `app/apply/` — 도입 문의 폼(고관여). `page.tsx`(서버, metadata) + `ApplyForm.tsx`(클라이언트 → `/api/submit-signup` 호출; 검증·저장·알림은 서버가 한다).
-  - `app/brochure/` — 서비스소개서 신청(저관여 리드). `page.tsx`(서버) + `BrochureForm.tsx`(클라이언트 → `/api/send-brochure` 호출) + `BrochurePreview.tsx`. 두 폼의 공통 검증은 `lib/leadForm.ts`(개인 메일·국내 전화번호 형식 — 클라이언트 즉시 피드백용)와 **서버 전용** `lib/leadGuard.ts`(`validateLead` — 일회용 메일 8,792개 대조 + 메일 도메인 DNS 확인). 블록리스트 갱신은 `node scripts/sync-disposable-domains.mjs`.
+  - `app/brochure/` — 서비스소개서 신청(저관여 리드). `page.tsx`(서버) + `BrochureForm.tsx`(클라이언트 → `/api/send-brochure` 호출) + `BrochurePreview.tsx`. 두 폼의 공통 검증은 `lib/leadForm.ts`(개인 메일·국내 전화번호 형식 — 클라이언트 즉시 피드백용)와 **서버 전용** `lib/leadGuard.ts`(`validateLead` — 일회용 메일 8,792개 + 무료 메일 제공자 4,466개 대조 + 메일 도메인 DNS 확인). ⚠️ 공개 목록엔 **국내 제공자(daum.net·kakao.com·nate.com)가 빠져 있어** 국내분은 `leadForm.ts`가 직접 관리한다 — 둘 다 필요하다. 갱신은 `node scripts/sync-email-blocklists.mjs`.
   - `app/blog/` — 블로그 목록. `page.tsx`(서버, Supabase에서 published 글 SSR) + `BlogClient.tsx`(클라이언트, 카테고리 필터).
   - `app/blog/[id]/` — 블로그 상세. 서버 컴포넌트, `generateMetadata`로 글별 OG. 본문은 `lib/postRender.ts`(간이 마크다운)로 렌더.
   - `app/admin/` — 블로그 관리. `page.tsx`(noindex) + `AdminClient.tsx`(**Supabase Auth 로그인 게이트** + CRUD).

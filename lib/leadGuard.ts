@@ -10,12 +10,14 @@
 
 import { promises as dns } from "node:dns";
 import DISPOSABLE from "./disposable-domains.json";
+import FREEMAIL from "./free-email-domains.json";
 import {
   isValidEmail, isPersonalEmail, isValidPhone, isValidHowFound,
-  EMAIL_ERROR_MSG, HOW_FOUND_ETC,
+  domainChain, EMAIL_ERROR_MSG, HOW_FOUND_ETC,
 } from "./leadForm";
 
 const DISPOSABLE_DOMAINS = new Set(DISPOSABLE as string[]);
+const FREEMAIL_DOMAINS = new Set(FREEMAIL as string[]);
 
 function domainOf(email: string): string {
   return email.trim().toLowerCase().split("@")[1] || "";
@@ -26,11 +28,16 @@ function domainOf(email: string): string {
  * (`x.mailinator.com`) 상위 도메인까지 거슬러 올라가며 대조한다.
  */
 export function isDisposableEmail(email: string): boolean {
-  const parts = domainOf(email).split(".");
-  for (let i = 0; i < parts.length - 1; i++) {
-    if (DISPOSABLE_DOMAINS.has(parts.slice(i).join("."))) return true;
-  }
-  return false;
+  return domainChain(domainOf(email)).some((d) => DISPOSABLE_DOMAINS.has(d));
+}
+
+/**
+ * 개인용 무료 메일 제공자인지(회사 이메일이 아님).
+ * `lib/leadForm.ts` 의 짧은 목록이 놓친 해외 제공자를 4,466개 공개 목록으로 받아낸다.
+ * 반대로 그 목록엔 국내 제공자(daum.net·kakao.com·nate.com)가 없으니 **둘 다 필요하다.**
+ */
+export function isFreeMailDomain(email: string): boolean {
+  return domainChain(domainOf(email)).some((d) => FREEMAIL_DOMAINS.has(d));
 }
 
 /**
@@ -87,7 +94,7 @@ export type LeadInput = {
 export async function validateLead(v: LeadInput): Promise<string | null> {
   if (!v.name || !v.company || !v.size) return "필수 항목을 입력해 주세요.";
   if (!isValidEmail(v.email)) return EMAIL_ERROR_MSG.format;
-  if (isPersonalEmail(v.email)) return EMAIL_ERROR_MSG.personal;
+  if (isPersonalEmail(v.email) || isFreeMailDomain(v.email)) return EMAIL_ERROR_MSG.personal;
   if (isDisposableEmail(v.email)) return LEAD_GUARD_MSG.disposable;
   if (!isValidPhone(v.phone)) return LEAD_GUARD_MSG.phone;
   if (!isValidHowFound(v.howFound)) return "유입 경로를 선택해 주세요.";

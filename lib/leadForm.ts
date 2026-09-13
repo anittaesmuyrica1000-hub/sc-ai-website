@@ -5,22 +5,44 @@ export const emailRe = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
 
 // 개인용 무료 메일·일회용 메일 도메인 — B2B 리드 품질을 위해 "회사 이메일"만 받는다.
 // 여기에 걸리면 폼 제출 자체를 막는다(경고가 아니라 차단).
+//
+// 이건 **클라이언트 즉시 피드백용 짧은 목록**이다. 서버(lib/leadGuard.ts)가 공개 목록
+// 4,466개(무료 제공자) + 8,792개(일회용)로 한 번 더 거른다 — 그쪽이 최종 방어선.
+// 국내 제공자는 공개 목록에 빠진 게 많아(daum.net·kakao.com·nate.com 등) 여기서 직접 관리한다.
 const PERSONAL_EMAIL_DOMAINS = new Set([
   // 국내
-  "naver.com", "hanmail.net", "daum.net", "nate.com", "kakao.com", "hanmir.com",
-  "korea.com", "dreamwiz.com", "empas.com", "paran.com", "chol.com", "netsgo.com",
+  "naver.com", "naver.net", "naver.co.kr", "hanmail.net", "hanmail.com", "hanmail.co.kr",
+  "daum.net", "daum.com", "nate.com", "nate.co.kr", "kakao.com", "kakaomail.com",
+  "hanmir.com", "korea.com", "dreamwiz.com", "empas.com", "paran.com", "chol.com",
+  "netsgo.com", "lycos.co.kr", "freechal.com", "unitel.co.kr",
   // 글로벌
-  "gmail.com", "googlemail.com", "hotmail.com", "hotmail.co.kr", "outlook.com",
-  "outlook.kr", "live.com", "live.co.kr", "msn.com", "yahoo.com", "yahoo.co.kr",
-  "ymail.com", "rocketmail.com", "icloud.com", "me.com", "mac.com", "aol.com",
-  "proton.me", "protonmail.com", "pm.me", "zoho.com", "mail.com", "gmx.com",
-  "gmx.net", "yandex.com", "yandex.ru", "mail.ru", "qq.com", "163.com", "126.com",
-  "sina.com", "foxmail.com", "fastmail.com", "hushmail.com", "tutanota.com", "tuta.io",
-  // 일회용(임시) 메일
+  "gmail.com", "googlemail.com", "hotmail.com", "hotmail.co.kr", "hotmail.co.jp",
+  "hotmail.co.uk", "hotmail.fr", "hotmail.de", "outlook.com", "outlook.kr", "outlook.co.kr",
+  "outlook.jp", "live.com", "live.co.kr", "live.kr", "live.jp", "msn.com",
+  "yahoo.com", "yahoo.co.kr", "yahoo.co.jp", "yahoo.co.uk", "ymail.com", "rocketmail.com",
+  "icloud.com", "me.com", "mac.com", "aol.com",
+  "proton.me", "protonmail.com", "protonmail.ch", "pm.me",
+  "zoho.com", "mail.com", "email.com", "gmx.com", "gmx.net", "gmx.de", "web.de",
+  "yandex.com", "yandex.ru", "yandex.kz", "mail.ru", "inbox.com", "list.ru", "bk.ru",
+  "qq.com", "163.com", "126.com", "sina.com", "sina.cn", "foxmail.com", "aliyun.com",
+  "fastmail.com", "hushmail.com", "tutanota.com", "tuta.io", "tutamail.com",
+  "rediffmail.com", "seznam.cz",
+  // 일회용(임시) 메일 — 대표적인 것만. 전체 대조는 서버(leadGuard)에서.
   "mailinator.com", "10minutemail.com", "guerrillamail.com", "sharklasers.com",
   "temp-mail.org", "tempmail.com", "yopmail.com", "throwawaymail.com",
   "trashmail.com", "maildrop.cc", "getnada.com", "dispostable.com",
 ]);
+
+/**
+ * 도메인과 그 상위 도메인들 — `mail.naver.com` → ["mail.naver.com", "naver.com", "com"].
+ * 제공자들이 서브도메인을 흩뿌리기 때문에(`x.yopmail.com`) 정확히 일치만 봐선 샌다.
+ */
+export function domainChain(domain: string): string[] {
+  const parts = domain.split(".");
+  const out: string[] = [];
+  for (let i = 0; i < parts.length - 1; i++) out.push(parts.slice(i).join("."));
+  return out;
+}
 
 function emailDomain(v: string): string {
   return v.trim().toLowerCase().split("@")[1] || "";
@@ -32,7 +54,7 @@ export function isValidEmail(v: string): boolean {
 
 /** 개인용·일회용 메일 도메인인지 (회사 이메일이 아님) */
 export function isPersonalEmail(v: string): boolean {
-  return PERSONAL_EMAIL_DOMAINS.has(emailDomain(v));
+  return domainChain(emailDomain(v)).some((d) => PERSONAL_EMAIL_DOMAINS.has(d));
 }
 
 /** 형식이 올바르고 회사 도메인인 이메일만 통과 */
@@ -74,16 +96,38 @@ const PHONE_PATTERNS: RegExp[] = [
   /^1[5-9]\d{2}\d{4}$/,           // 대표번호 1544·1588 등 — 8자리
 ];
 
-/** 자릿수가 전부 같거나(00000000) 오름·내림 연속(12345678)인 더미 번호인지 */
+/** 짧은 조각의 반복으로 이루어졌는지 — 12121212(2자리), 12341234(4자리) */
+function isRepeatingUnit(d: string): boolean {
+  for (let k = 1; k <= d.length / 2; k++) {
+    if (d.length % k) continue;
+    const unit = d.slice(0, k);
+    if (d.match(new RegExp(`.{${k}}`, "g"))!.every((c) => c === unit)) return true;
+  }
+  return false;
+}
+
+/**
+ * 사람이 대충 채워 넣은 더미 번호인지. 아래를 모두 본다.
+ *   00000000 전부 같은 숫자 · 12345678 오름/내림 연속
+ *   12121212·12341234 짧은 조각 반복 · 11112222 앞뒤 네 자리가 각각 한 숫자
+ *
+ * 8자리 기준 여기 걸리는 조합은 약 1만개(전체의 0.01%)뿐이라 진짜 번호를 막을 위험은 사실상 없다.
+ */
 function isDummyDigits(d: string): boolean {
-  if (/^(\d)\1+$/.test(d)) return true;
+  if (isRepeatingUnit(d)) return true; // 전부 같은 숫자도 여기 포함(단위 1자리)
   let asc = true, desc = true;
   for (let i = 1; i < d.length; i++) {
     const diff = d.charCodeAt(i) - d.charCodeAt(i - 1);
     if (diff !== 1) asc = false;
     if (diff !== -1) desc = false;
   }
-  return asc || desc;
+  if (asc || desc) return true;
+  // 1111-2222 처럼 국번·가입자번호가 각각 한 숫자로만 된 경우
+  if (d.length === 8) {
+    const half = (x: string) => /^(\d)\1{3}$/.test(x);
+    if (half(d.slice(0, 4)) && half(d.slice(4))) return true;
+  }
+  return false;
 }
 
 /**
