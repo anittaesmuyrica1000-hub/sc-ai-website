@@ -55,15 +55,47 @@ export const EMAIL_ERROR_MSG: Record<"empty" | "format" | "personal", string> = 
   personal: "naver, gmail 등 개인 메일은 사용할 수 없습니다. 회사 이메일을 입력해 주세요.",
 };
 
-/** 연락처 — 숫자만 9~11자리(02-123-4567 ~ 010-1234-5678). +82는 0으로 환산. */
+/** 연락처 — 숫자만 남긴다. +82는 0으로 환산. */
 export function normalizePhone(v: string): string {
   const s = v.trim().replace(/^\+?82[\s-]?/, "0");
   return s.replace(/\D/g, "");
 }
 
+// 국내 번호 체계 화이트리스트 — 국번(중간자리) 첫 글자는 0이 될 수 없다는 규칙을 함께 건다.
+// 이게 010-0000-0000 같은 대표적 더미 번호를 1차로 걸러준다.
+const PHONE_PATTERNS: RegExp[] = [
+  /^010[1-9]\d{7}$/,              // 휴대폰 010 — 11자리 고정
+  /^01[16789][1-9]\d{6,7}$/,      // 구 휴대폰 011·016~019 — 10~11자리
+  /^02[1-9]\d{6,7}$/,             // 서울 — 9~10자리
+  /^0(3[1-3]|4[1-4]|5[1-5]|6[1-4])[1-9]\d{6,7}$/, // 그 외 지역번호 — 10~11자리
+  /^070[1-9]\d{7}$/,              // 인터넷전화
+  /^050\d[1-9]\d{6,7}$/,          // 안심번호·평생번호
+  /^080[1-9]\d{6,7}$/,            // 수신자부담
+  /^1[5-9]\d{2}\d{4}$/,           // 대표번호 1544·1588 등 — 8자리
+];
+
+/** 자릿수가 전부 같거나(00000000) 오름·내림 연속(12345678)인 더미 번호인지 */
+function isDummyDigits(d: string): boolean {
+  if (/^(\d)\1+$/.test(d)) return true;
+  let asc = true, desc = true;
+  for (let i = 1; i < d.length; i++) {
+    const diff = d.charCodeAt(i) - d.charCodeAt(i - 1);
+    if (diff !== 1) asc = false;
+    if (diff !== -1) desc = false;
+  }
+  return asc || desc;
+}
+
+/**
+ * 실제로 연락 가능한 형태의 번호인지. 자릿수만 세던 예전 규칙으론
+ * 01000000000·010-1234-5678 같은 가짜 번호가 그대로 통과했다(2026-09-12 소개서 리드).
+ */
 export function isValidPhone(v: string): boolean {
   const d = normalizePhone(v);
-  return d.length >= 9 && d.length <= 11;
+  if (!PHONE_PATTERNS.some((re) => re.test(d))) return false;
+  // 접두(010·02 등)를 뺀 국번+가입자번호가 통짜 더미면 차단
+  const body = d.startsWith("02") ? d.slice(2) : d.slice(3);
+  return !isDummyDigits(body) && !isDummyDigits(d);
 }
 
 // 유입 경로(어떻게 알게 되셨나요) — utm·referrer가 안 잡히는 유입(카톡·메일·인앱브라우저)을

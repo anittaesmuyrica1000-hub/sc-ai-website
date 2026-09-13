@@ -2,7 +2,8 @@ import { NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 import { sendMail, mailerConfigured } from "@/lib/mailer";
 import { TRACKING_KEYS } from "@/lib/supabase";
-import { isValidEmail, isPersonalEmail, isValidPhone, isValidHowFound, howFoundText, HOW_FOUND_ETC } from "@/lib/leadForm";
+import { howFoundText } from "@/lib/leadForm";
+import { validateLead } from "@/lib/leadGuard";
 
 // 서비스소개서 발송 API — 회사 이메일로 소개서(현재본) 보안 링크(7일 만료)를 전송.
 // 발송 방식 2가지 지원(우선순위):
@@ -45,12 +46,9 @@ export async function POST(req: Request) {
     if (v) utm[k] = v.slice(0, 300);
   }
 
-  if (!name || !company || !size) return bad("필수 항목을 입력해 주세요.");
-  if (!isValidEmail(email)) return bad("올바른 이메일 형식으로 입력해 주세요.");
-  if (isPersonalEmail(email)) return bad("naver, gmail 등 개인 메일은 사용할 수 없습니다. 회사 이메일을 입력해 주세요.");
-  if (!isValidPhone(phone)) return bad("연락 가능한 번호를 입력해 주세요.");
-  if (!isValidHowFound(howFound)) return bad("유입 경로를 선택해 주세요.");
-  if (howFound === HOW_FOUND_ETC && !howFoundDetail) return bad("유입 경로를 입력해 주세요.");
+  // 검증은 /apply 와 같은 규칙·같은 문구를 쓴다(lib/leadGuard.ts)
+  const invalid = await validateLead({ name, company, email, phone, size, howFound, howFoundDetail });
+  if (invalid) return bad(invalid);
 
   const SUPABASE_URL = process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL;
   const SERVICE_ROLE = process.env.SUPABASE_SERVICE_ROLE_KEY;

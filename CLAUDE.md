@@ -17,8 +17,8 @@ Supercoder AI 웹사이트 — **AIVIEW** 제품 랜딩 + 블로그/도입문의
 
 - **라우트(`app/`):**
   - `app/page.tsx` — 랜딤(index). 서버 컴포넌트. 섹션 CSS는 `app/landing.css`.
-  - `app/apply/` — 도입 문의 폼(고관여). `page.tsx`(서버, metadata) + `ApplyForm.tsx`(클라이언트, Supabase insert).
-  - `app/brochure/` — 서비스소개서 신청(저관여 리드). `page.tsx`(서버) + `BrochureForm.tsx`(클라이언트, `brochure_requests` insert) + `BrochurePreview.tsx`. 두 폼의 공통 검증은 `lib/leadForm.ts`(개인 메일 도메인은 **제출 차단**).
+  - `app/apply/` — 도입 문의 폼(고관여). `page.tsx`(서버, metadata) + `ApplyForm.tsx`(클라이언트 → `/api/submit-signup` 호출; 검증·저장·알림은 서버가 한다).
+  - `app/brochure/` — 서비스소개서 신청(저관여 리드). `page.tsx`(서버) + `BrochureForm.tsx`(클라이언트 → `/api/send-brochure` 호출) + `BrochurePreview.tsx`. 두 폼의 공통 검증은 `lib/leadForm.ts`(개인 메일·국내 전화번호 형식 — 클라이언트 즉시 피드백용)와 **서버 전용** `lib/leadGuard.ts`(`validateLead` — 일회용 메일 8,792개 대조 + 메일 도메인 DNS 확인). 블록리스트 갱신은 `node scripts/sync-disposable-domains.mjs`.
   - `app/blog/` — 블로그 목록. `page.tsx`(서버, Supabase에서 published 글 SSR) + `BlogClient.tsx`(클라이언트, 카테고리 필터).
   - `app/blog/[id]/` — 블로그 상세. 서버 컴포넌트, `generateMetadata`로 글별 OG. 본문은 `lib/postRender.ts`(간이 마크다운)로 렌더.
   - `app/admin/` — 블로그 관리. `page.tsx`(noindex) + `AdminClient.tsx`(**Supabase Auth 로그인 게이트** + CRUD).
@@ -37,9 +37,10 @@ Supercoder AI 웹사이트 — **AIVIEW** 제품 랜딩 + 블로그/도입문의
 - **프로젝트:** `supercoder-aiview` (ref `ymzlcghqamkynuvotzgh`, region ap-northeast-2). org `uwuwftckkxbtbqjlsrav`.
 - **연결:** `lib/supabase.ts` — `NEXT_PUBLIC_SUPABASE_URL` / `NEXT_PUBLIC_SUPABASE_ANON_KEY` 환경변수(.env.local · Vercel)에서 publishable(공개) 키 주입. publishable 키는 RLS로 보호되어 노출 안전. **`.env.example` 참고. service_role 키는 절대 클라이언트/깃에 넣지 않는다.**
 - **테이블 / RLS:**
-  - `signups` — 도입 문의(apply). anon `insert`만 허용.
-  - `brochure_requests` — 서비스소개서 리드(모달). anon `insert`만 허용.
-  - `subscribers` — 뉴스레터(예비). anon `insert`만 허용.
+  - `signups` — 도입 문의(apply). **anon은 읽기·쓰기 모두 불가**(2026-09-13 확인). 저장은 서버 `/api/submit-signup`이 service_role로 한다.
+  - `brochure_requests` — 서비스소개서 리드. anon 불가. 저장은 `/api/send-brochure`가 service_role로.
+  - `subscribers` — 뉴스레터(예비). anon 불가.
+  - ⚠️ 리드 폼을 클라이언트에서 직접 insert 하도록 만들면 **RLS에 막혀 조용히 실패**한다(옛 ApplyForm이 이 상태였다). 새 리드 경로는 반드시 서버 라우트를 거친다 — 스팸 검증(`lib/leadGuard.ts`)도 거기에만 있다.
   - `posts` — 블로그. anon `select` 허용(공개 읽기). **`insert`/`update`/`delete`는 `authenticated` + `admins` 테이블에 이메일이 있는 관리자만**(RLS). → admin 페이지는 **Supabase Auth 로그인 필수**. (anon 키만으로는 쓰기 불가.)
   - `admins` — 관리자 이메일 목록. authenticated self-select.
 - **신규 관리자 추가:** Supabase Auth에 사용자(이메일+비밀번호) 생성 + `admins`에 같은 이메일 INSERT(대시보드/MCP).
