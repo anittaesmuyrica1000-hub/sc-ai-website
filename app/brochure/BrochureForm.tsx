@@ -161,7 +161,7 @@ export default function BrochureForm() {
           <div className={`b-field${invalid.phone ? " invalid" : ""}`}>
             <label htmlFor="bro-phone">연락처 <span className="req">*</span></label>
             <input type="tel" id="bro-phone" placeholder="휴대전화번호 입력" value={fields.phone} onChange={(e) => set("phone", e.target.value)} />
-            <div className="b-err">연락 가능한 번호를 입력해 주세요.</div>
+            <div className="b-err">연락 가능한 번호를 입력해 주세요. (예: 010-1234-5678)</div>
           </div>
         </div>
         <div className={`b-field${invalid.size ? " invalid" : ""}`}>

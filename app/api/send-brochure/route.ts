@@ -3,6 +3,7 @@ import { createClient } from "@supabase/supabase-js";
 import { sendMail, mailerConfigured } from "@/lib/mailer";
 import { TRACKING_KEYS } from "@/lib/supabase";
 import { isValidEmail, isPersonalEmail, isValidPhone, isValidHowFound, howFoundText, HOW_FOUND_ETC } from "@/lib/leadForm";
+import { isDisposableEmail, hasMailExchanger, LEAD_GUARD_MSG } from "@/lib/leadGuard";
 
 // 서비스소개서 발송 API — 회사 이메일로 소개서(현재본) 보안 링크(7일 만료)를 전송.
 // 발송 방식 2가지 지원(우선순위):
@@ -48,9 +49,12 @@ export async function POST(req: Request) {
   if (!name || !company || !size) return bad("필수 항목을 입력해 주세요.");
   if (!isValidEmail(email)) return bad("올바른 이메일 형식으로 입력해 주세요.");
   if (isPersonalEmail(email)) return bad("naver, gmail 등 개인 메일은 사용할 수 없습니다. 회사 이메일을 입력해 주세요.");
-  if (!isValidPhone(phone)) return bad("연락 가능한 번호를 입력해 주세요.");
+  if (isDisposableEmail(email)) return bad(LEAD_GUARD_MSG.disposable);
+  if (!isValidPhone(phone)) return bad(LEAD_GUARD_MSG.phone);
   if (!isValidHowFound(howFound)) return bad("유입 경로를 선택해 주세요.");
   if (howFound === HOW_FOUND_ETC && !howFoundDetail) return bad("유입 경로를 입력해 주세요.");
+  // 메일이 실제로 닿는 도메인인지 — 오타·유령 도메인 차단(DNS 지연 시엔 통과시킨다)
+  if (!(await hasMailExchanger(email))) return bad(LEAD_GUARD_MSG.undeliverable);
 
   const SUPABASE_URL = process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL;
   const SERVICE_ROLE = process.env.SUPABASE_SERVICE_ROLE_KEY;

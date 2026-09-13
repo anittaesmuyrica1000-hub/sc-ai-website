@@ -180,7 +180,7 @@ export default function ApplyForm() {
           <div className={`field${invalid.phone ? " invalid" : ""}`}>
             <label htmlFor="f-phone">연락처 <span className="req">*</span></label>
             <input type="tel" id="f-phone" placeholder="휴대전화번호 입력" value={fields.phone} onChange={(e) => set("phone", e.target.value)} />
-            <div className="err">연락 가능한 번호를 입력해 주세요.</div>
+            <div className="err">연락 가능한 번호를 입력해 주세요. (예: 010-1234-5678)</div>
           </div>
         </div>
 
