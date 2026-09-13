@@ -2,7 +2,6 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { supabase } from "@/lib/supabase";
 import { trackEvent } from "@/lib/track";
 import { getUtm, type Utm } from "@/lib/utm";
 import {
@@ -96,24 +95,19 @@ export default function ApplyForm() {
 
     setLoading(true);
     try {
-      // 마이그레이션(docs/sql/add-how-found.sql·UTM 컬럼)이 아직 안 적용됐을 수 있으므로
-      // 전체 → 유입경로 제외 → UTM까지 제외 순으로 축소 재시도해 접수 유실을 막는다.
-      let res = await supabase.from("signups").insert({ ...payload, ...howFound, ...utm });
-      if (res.error) {
-        console.warn("signup insert with how_found failed, retrying without it:", res.error);
-        res = await supabase.from("signups").insert({ ...payload, ...utm });
-      }
-      if (res.error && Object.keys(utm).length) {
-        console.warn("signup insert with utm failed, retrying without utm:", res.error);
-        res = await supabase.from("signups").insert(payload);
-      }
-      if (res.error) throw res.error;
-      // 관리자 알림 메일(베스트 에포트 — 실패해도 신청 완료에는 영향 없음)
-      fetch("/api/notify-signup", {
+      // 저장·알림은 서버가 맡는다 — 임시메일·유령 도메인 검증(lib/leadGuard)이 서버에만 있어서,
+      // 예전처럼 클라이언트에서 바로 insert 하면 그 검증을 통째로 건너뛴다(2026-09-13).
+      const res = await fetch("/api/submit-signup", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ ...payload, ...howFound, ...utm }),
-      }).catch(() => {});
+      });
+      const j = await res.json().catch(() => null);
+      if (!res.ok || !j?.ok) {
+        setLoading(false);
+        setFormErr(j?.message || "신청 저장 중 문제가 발생했습니다. 잠시 후 다시 시도해 주세요.");
+        return;
+      }
       // GA4 전환 이벤트 — 도입문의 폼 제출 완료(GA4에서 apply_lead를 주요 이벤트로 지정)
       trackEvent("apply_lead", { form_type: "apply", company_size: fields.size, how_found: fields.howFound });
       setDone(true);
@@ -121,7 +115,7 @@ export default function ApplyForm() {
     } catch (err) {
       setLoading(false);
       setFormErr("신청 저장 중 문제가 발생했습니다. 잠시 후 다시 시도해 주세요.");
-      console.error("signup insert failed:", err);
+      console.error("signup submit failed:", err);
     }
   }
 

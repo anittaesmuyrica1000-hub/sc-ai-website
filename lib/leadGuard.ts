@@ -10,6 +10,10 @@
 
 import { promises as dns } from "node:dns";
 import DISPOSABLE from "./disposable-domains.json";
+import {
+  isValidEmail, isPersonalEmail, isValidPhone, isValidHowFound,
+  EMAIL_ERROR_MSG, HOW_FOUND_ETC,
+} from "./leadForm";
 
 const DISPOSABLE_DOMAINS = new Set(DISPOSABLE as string[]);
 
@@ -62,3 +66,33 @@ export const LEAD_GUARD_MSG = {
   undeliverable: "메일을 받을 수 없는 도메인입니다. 이메일 주소를 다시 확인해 주세요.",
   phone: "연락 가능한 번호를 입력해 주세요. (예: 010-1234-5678)",
 } as const;
+
+export type LeadInput = {
+  name: string;
+  company: string;
+  email: string;
+  phone: string;
+  size: string;
+  howFound: string;
+  howFoundDetail: string | null;
+};
+
+/**
+ * 두 리드 폼(/apply · /brochure)의 서버 검증 — 순서·문구가 갈리지 않게 여기 한 곳에만 둔다.
+ * 통과하면 null, 막히면 사용자에게 그대로 보여줄 안내 문구를 돌려준다.
+ *
+ * 클라이언트 폼도 같은 규칙(lib/leadForm.ts)으로 미리 걸러 즉시 피드백을 주지만,
+ * 일회용 메일 대조와 DNS 확인은 무거워서 서버에만 있다 — 여기가 최종 방어선이다.
+ */
+export async function validateLead(v: LeadInput): Promise<string | null> {
+  if (!v.name || !v.company || !v.size) return "필수 항목을 입력해 주세요.";
+  if (!isValidEmail(v.email)) return EMAIL_ERROR_MSG.format;
+  if (isPersonalEmail(v.email)) return EMAIL_ERROR_MSG.personal;
+  if (isDisposableEmail(v.email)) return LEAD_GUARD_MSG.disposable;
+  if (!isValidPhone(v.phone)) return LEAD_GUARD_MSG.phone;
+  if (!isValidHowFound(v.howFound)) return "유입 경로를 선택해 주세요.";
+  if (v.howFound === HOW_FOUND_ETC && !v.howFoundDetail) return "유입 경로를 입력해 주세요.";
+  // 메일이 실제로 닿는 도메인인지 — 오타·유령 도메인 차단(DNS 지연 시엔 통과시킨다)
+  if (!(await hasMailExchanger(v.email))) return LEAD_GUARD_MSG.undeliverable;
+  return null;
+}

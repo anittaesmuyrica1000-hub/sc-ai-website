@@ -3,7 +3,14 @@ import { sendMail, mailerConfigured } from "@/lib/mailer";
 import { TRACKING_KEYS } from "@/lib/supabase";
 import { howFoundText } from "@/lib/leadForm";
 
-// 도입문의(signups) 접수 시 관리자에게 알림 메일 발송. 폼 저장은 클라이언트에서 이미 완료된 뒤 호출(베스트 에포트).
+// ⚠️ **폐기 예정(deprecated)** — 알림만 보내던 옛 경로. 2026-09-13부터 도입문의는
+// /api/submit-signup 이 검증·저장·알림을 함께 처리한다(ApplyForm도 그쪽을 호출).
+//
+// 그런데도 남겨둔 이유: 배포 전에 /apply 를 열어둔 사용자의 브라우저에는 옛 스크립트가
+// 그대로 살아 있다. 그 탭에서 제출하면 클라이언트가 직접 insert 한 뒤 이 경로를 부르는데,
+// 없으면 404 가 조용히 삼켜져 **알림만 유실된다**(2026-07~08에 겪은 그 실패 모드).
+// 운영 반영 후 한 주쯤 지나 호출이 끊기면 이 파일을 지운다.
+//
 // 수신 주소: SALES_NOTIFY_TO 우선, 없으면 GMAIL_FROM. 둘 다 없으면 조용히 종료.
 export const runtime = "nodejs";
 
