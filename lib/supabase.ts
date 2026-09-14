@@ -10,7 +10,36 @@ if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {
   console.warn("[supabase] NEXT_PUBLIC_SUPABASE_URL / ANON_KEY 가 설정되지 않았습니다.");
 }
 
-export const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+// Supabase(postgrest-js) 내장 재시도는 502·504를 커버하지 않는다(520·503만 재시도 대상).
+// 게이트웨이 타임아웃/일시 장애가 502·504로 오면 재시도 없이 그대로 에러가 나서,
+// 블로그 상세 등 호출부가 "글 없음"으로 오판해 진짜 404를 반환했다(2026-09-10~ 간헐 발생, 요청의 약 18%).
+// 읽기(GET/HEAD/OPTIONS)만 재시도한다 — 쓰기까지 재시도하면 응답만 유실된 성공 요청이 중복 처리될 수 있다.
+const RETRYABLE_GATEWAY_STATUS = new Set([502, 503, 504]);
+const RETRYABLE_METHODS = new Set(["GET", "HEAD", "OPTIONS"]);
+const MAX_GATEWAY_RETRIES = 2;
+
+async function fetchWithGatewayRetry(input: RequestInfo | URL, init?: RequestInit): Promise<Response> {
+  const method = (init?.method ?? "GET").toUpperCase();
+  const canRetry = RETRYABLE_METHODS.has(method);
+  let lastError: unknown;
+  for (let attempt = 0; attempt <= MAX_GATEWAY_RETRIES; attempt++) {
+    try {
+      const res = await fetch(input, init);
+      if (!canRetry || !RETRYABLE_GATEWAY_STATUS.has(res.status) || attempt === MAX_GATEWAY_RETRIES) {
+        return res;
+      }
+    } catch (err) {
+      lastError = err;
+      if (!canRetry || attempt === MAX_GATEWAY_RETRIES) throw err;
+    }
+    await new Promise((r) => setTimeout(r, 300 * (attempt + 1)));
+  }
+  throw lastError;
+}
+
+export const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+  global: { fetch: fetchWithGatewayRetry },
+});
 
 // 예약 발행 필터 — .eq("published", true)와 함께 .or(...)에 넣어 사용.
 // publish_at이 NULL(즉시 발행)이거나 이미 지난 글만 공개 노출한다.
