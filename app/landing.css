@@ -59,19 +59,26 @@
 
   /* HERO STRIP — 도입사 로고 (한 줄 무한 루핑 마퀴) */
   /* 로고 루프 — 흰 배경으로 위/아래 섹션과 구분 (multiply가 흰 배경에서 가장 깔끔) */
-  .herostrip{background:#fff;padding:52px 0 60px}
-  .hs-label{font-size:17px;color:var(--slate);font-weight:700;text-align:center;margin-bottom:40px}
+  /* 위아래 여백은 사이트 섹션 리듬(--sec-y)을 따른다 — 로고 스트립이라 섹션의 75%로 */
+  .herostrip{background:#fff;padding:calc(var(--sec-y) * .75) 0}
+  /* text-wrap:balance → 좁은 화면에서 두 줄로 접힐 때 '있습니다'만 홀로 남지 않게 줄 길이를 고르게 */
+  .hs-label{font-size:17px;color:var(--slate);font-weight:500;text-align:center;margin-bottom:40px;text-wrap:balance}
   .marquee{position:relative;overflow:hidden;width:100%;
     -webkit-mask-image:linear-gradient(90deg,transparent 0,#000 10%,#000 90%,transparent 100%);
             mask-image:linear-gradient(90deg,transparent 0,#000 10%,#000 90%,transparent 100%)}
-  .marquee-track{display:flex;align-items:center;width:max-content;animation:hs-scroll 80s linear infinite}
+  /* --logo-h = 기준 로고(NEXON) 높이. 나머지 로고는 globals.css의 보정 배수를 곱해 따라온다. */
+  .marquee-track{display:flex;align-items:center;width:max-content;animation:hs-scroll 80s linear infinite;--logo-h:48px}
   /* 각 로고에 동일한 우측 여백 → 두 세트 폭이 정확히 같아 -50% 이동 시 이음매 없음 */
   /* mix-blend-mode:multiply → PNG 로고의 흰 배경을 밝은 배경 위에서 투명처럼 제거 */
-  .marquee-track img{flex:0 0 auto;margin-right:64px;max-width:150px;max-height:56px;width:auto;height:auto;object-fit:contain;display:block;mix-blend-mode:multiply}
+  .marquee-track img{flex:0 0 auto;margin-right:64px;max-width:none;max-height:var(--logo-h);width:auto;height:auto;object-fit:contain;display:block;mix-blend-mode:multiply}
+  .marquee-track img.logo-woongjin{max-height:calc(var(--logo-h) * var(--logo-woongjin))}
+  .marquee-track img.logo-skonec{max-height:calc(var(--logo-h) * var(--logo-skonec))}
+  .marquee-track img.logo-markany{max-height:calc(var(--logo-h) * var(--logo-markany))}
   @keyframes hs-scroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
   @media(prefers-reduced-motion:reduce){.marquee-track{animation:none}}
-  @media(max-width:760px){.marquee-track img{margin-right:44px;max-width:120px;max-height:46px}}
-  @media(max-width:480px){.marquee-track img{margin-right:32px;max-width:100px;max-height:40px}}
+  /* 좁은 화면 — 기준 높이만 줄이면 네 로고의 비율 관계는 그대로 유지된다 */
+  @media(max-width:760px){.marquee-track{--logo-h:41px}.marquee-track img{margin-right:44px}}
+  @media(max-width:480px){.marquee-track{--logo-h:35px}.marquee-track img{margin-right:32px}}
 
   /* ATS 연동 */
   .ats{margin-top:54px;padding-top:42px;border-top:1px solid var(--line);text-align:center}

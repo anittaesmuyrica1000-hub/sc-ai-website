@@ -18,10 +18,12 @@ const plain = (s: string) => String(s || "").replace(/<[^>]+>/g, " ").replace(/\
 // FAQ가 어드민(DB)에서 바뀌면 일정 주기로 자동 반영(ISR). 그 외엔 정적으로 빠르게 서빙.
 export const revalidate = 120;
 
-const LOGOS = [
-  { src: "/logos/woongjin.webp", alt: "Woongjin" },
-  { src: "/logos/skonec.webp", alt: "SKONEC entertainment" },
-  { src: "/logos/markany.webp", alt: "MarkAny" },
+// 로고별 시각 크기 보정 — 기준은 NEXON. 보정값 산출 근거는 app/landing.css의 .logo-* 주석 참고
+const LOGOS: { src: string; alt: string; className?: string }[] = [
+  { src: "/logos/nexon.svg", alt: "NEXON" },
+  { src: "/logos/woongjin.webp", alt: "Woongjin", className: "logo-woongjin" },
+  { src: "/logos/skonec.webp", alt: "SKONEC entertainment", className: "logo-skonec" },
+  { src: "/logos/markany.webp", alt: "MarkAny", className: "logo-markany" },
 ];
 
 export default async function HomePage() {
@@ -81,7 +83,7 @@ export default async function HomePage() {
 
       {/* SECTION 02 · CLIENTS (도입사 로고 마퀴) */}
       <div className="herostrip" id="clients">
-        <p className="hs-label">지원자 검증에 Supercoder를 활용하고 있습니다</p>
+        <p className="hs-label">이미 500개 이상의 기업이 Supercoder와 함께하고 있습니다</p>
         <div className="marquee">
           <div className="marquee-track">
             {Array.from({ length: 6 }).map((_, block) =>
@@ -91,6 +93,7 @@ export default async function HomePage() {
                   key={`${block}-${i}`}
                   src={l.src}
                   alt={l.alt}
+                  className={l.className}
                   aria-hidden={block === 0 ? undefined : true}
                 />
               ))
