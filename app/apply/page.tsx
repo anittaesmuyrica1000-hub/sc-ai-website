@@ -24,10 +24,13 @@ export function generateMetadata() {
   return buildPageMetadata("/apply", FALLBACK_METADATA);
 }
 
-const APPLY_LOGOS = [
-  { src: "/logos/woongjin-t.webp", alt: "Woongjin" },
-  { src: "/logos/skonec-t.webp", alt: "SKONEC entertainment" },
-  { src: "/logos/markany-t.webp", alt: "MarkAny" },
+// 로고별 시각 크기 보정 — 기준은 NEXON. 보정 배수는 app/globals.css의 --logo-* 주석 참고
+// nexon.svg는 배경이 투명해 랜딩(흰 배경)·이 페이지(-t 세트) 양쪽에 같은 파일을 쓴다
+const APPLY_LOGOS: { src: string; alt: string; className?: string }[] = [
+  { src: "/logos/nexon.svg", alt: "NEXON" },
+  { src: "/logos/woongjin-t.webp", alt: "Woongjin", className: "logo-woongjin" },
+  { src: "/logos/skonec-t.webp", alt: "SKONEC entertainment", className: "logo-skonec" },
+  { src: "/logos/markany-t.webp", alt: "MarkAny", className: "logo-markany" },
 ];
 
 // 신뢰 로고 마퀴 — 데스크톱(인트로 안)·모바일(폼 아래) 두 곳에서 재사용
@@ -43,6 +46,7 @@ function ApplyPartners() {
                 key={`${b}-${i}`}
                 src={l.src}
                 alt={b === 0 ? l.alt : ""}
+                className={l.className}
                 aria-hidden={b === 0 ? undefined : true}
               />
             ))
