@@ -61,11 +61,11 @@
   /* 로고 루프 — 흰 배경으로 위/아래 섹션과 구분 (multiply가 흰 배경에서 가장 깔끔) */
   /* 위아래 여백은 사이트 섹션 리듬(--sec-y)을 따른다 — 로고 스트립이라 섹션의 75%로 */
   .herostrip{background:#fff;padding:calc(var(--sec-y) * .75) 0}
-  /* 한 줄 유지 — 이 문구는 17px에서 폭 411px라 좁은 화면(≲452px)에선 두 줄로 접힌다.
-     .wrap 안쪽 가용폭(100vw - 좌우 거터 32px)에 맞춰 글자를 줄여 항상 한 줄로 앉힌다.
-     계수 .0405 = 17px ÷ 411px + 여유 2%(폰트 로딩·반올림 차이로 접히지 않도록).
-     min()이라 452px 이상에서는 그냥 17px. text-wrap:balance는 계산이 어긋났을 때의 안전망. */
-  .hs-label{font-size:min(17px,calc((100vw - 32px) * .0405));color:var(--slate);font-weight:500;text-align:center;margin-bottom:40px;text-wrap:balance}
+  /* 이 문구는 17px에서 폭 411px라 좁은 화면(≲452px)에선 두 줄이 된다 — 글자 크기를
+     줄여 한 줄에 욱여넣지 않고 두 줄로 둔다(모바일에서 11~14px까지 작아져 읽기 나쁨).
+     대신 부모를 .wrap으로 감싸 좌우 거터를 확보했고(가장자리에 붙어 잘리던 원인),
+     text-wrap:balance로 '있습니다'만 홀로 둘째 줄에 남지 않게 줄 길이를 고르게 나눈다. */
+  .hs-label{font-size:17px;color:var(--slate);font-weight:500;text-align:center;margin-bottom:40px;text-wrap:balance}
   .marquee{position:relative;overflow:hidden;width:100%;
     -webkit-mask-image:linear-gradient(90deg,transparent 0,#000 10%,#000 90%,transparent 100%);
             mask-image:linear-gradient(90deg,transparent 0,#000 10%,#000 90%,transparent 100%)}
