@@ -83,7 +83,10 @@ export default async function HomePage() {
 
       {/* SECTION 02 · CLIENTS (도입사 로고 마퀴) */}
       <div className="herostrip" id="clients">
-        <p className="hs-label">이미 500개 이상의 기업이 Supercoder와 함께하고 있습니다</p>
+        {/* 라벨만 .wrap으로 감싼다 — 마퀴는 화면 끝까지 흘러야 하므로 밖에 둔다 */}
+        <div className="wrap">
+          <p className="hs-label">이미 500개 이상의 기업이 Supercoder와 함께하고 있습니다</p>
+        </div>
         <div className="marquee">
           <div className="marquee-track">
             {Array.from({ length: 6 }).map((_, block) =>
