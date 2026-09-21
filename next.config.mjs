@@ -57,9 +57,31 @@ const nextConfig = {
       { source: "/privacy.html", destination: "/privacy", permanent: true },
       { source: "/terms.html", destination: "/terms", permanent: true },
       { source: "/terms-applicant.html", destination: "/terms-applicant", permanent: true },
-      // 구 사이트의 죽은 경로(구글 색인·외부 링크로 유입돼 404) → 홈으로 흡수 (GA 404 추적 결과)
+      // 구 사이트의 영문 경로(/en/*)는 한국어 대응 페이지로 1:1 매핑한다 (2026-09-21).
+      // 이전엔 전부 홈으로 보냈는데, 대응 페이지가 멀쩡히 있는데도 홈행이라 노출이 회수되지 않았다
+      // (3개월 노출: /en/ 1,162 · /en/guideline 324 · /en/blogs/news-20250421 201 · /en/legal/terms-of-service 148).
+      // ⚠️ Next redirects는 배열 순서대로 평가된다 — 아래 개별 규칙은 반드시 catch-all(/en/:path*)보다 위에 둘 것.
+      { source: "/en/legal/terms-of-service-ai-interviewer-candidates", destination: "/terms-applicant", permanent: true },
+      { source: "/en/legal/terms-of-service-ai-interviewer-customers", destination: "/terms", permanent: true },
+      { source: "/en/legal/terms-of-service", destination: "/terms", permanent: true },
+      { source: "/en/legal/privacy-policy-ai-interviewer", destination: "/privacy", permanent: true },
+      { source: "/en/legal/privacy-policy", destination: "/privacy", permanent: true },
+      { source: "/en/blogs", destination: "/blog", permanent: true },
+      { source: "/en/blogs/:path*", destination: "/blog", permanent: true },
+      { source: "/en/news", destination: "/blog", permanent: true },
+      { source: "/en/announcements", destination: "/blog", permanent: true },
+      { source: "/en/contact", destination: "/apply", permanent: true },
+      { source: "/en/contact-us", destination: "/apply", permanent: true },
+      { source: "/en/download-jd", destination: "/apply", permanent: true },
+      { source: "/en/promotion-ai-recruiter", destination: "/apply", permanent: true },
+      { source: "/en/promotion-ai-interviewer", destination: "/apply", permanent: true },
+      { source: "/en/2-week-trial", destination: "/apply", permanent: true },
+      { source: "/en/download", destination: "/brochure", permanent: true },
+      { source: "/en/download-brochure", destination: "/brochure", permanent: true },
+      // 대응 페이지가 없는 나머지(/en · /en/guideline · /en/global-hiring · /en/ai-interviewer 등)는 홈으로
       { source: "/en", destination: "/", permanent: true },
       { source: "/en/:path*", destination: "/", permanent: true },
+      // 구 사이트의 죽은 경로(구글 색인·외부 링크로 유입돼 404) → 홈으로 흡수 (GA 404 추적 결과)
       { source: "/customer", destination: "/", permanent: true },
       { source: "/guideline", destination: "/", permanent: true },
       // Search Console 404 정리(2026-07-14): 구 사이트 잔재 경로를 대응 페이지로 흡수.
