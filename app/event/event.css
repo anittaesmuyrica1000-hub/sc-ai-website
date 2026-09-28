@@ -65,20 +65,8 @@
    회사 → 공고명 → 고용형태·접수기간 → D-day·직무 태그.
    훑는 사람이 "내 직군인가 / 언제까지인가"를 두 줄 안에 끝내는 게 목적이라
    설명 문장은 카드에 넣지 않는다(상세는 지원 페이지의 공고 화면이 맡는다). */
-/* 상세(.post-content 안)와 목록(/event 하단) 두 곳에서 같은 카드를 쓴다.
-   그래서 기본 규칙은 .post-content 로 감싸지 않는다 — 감싸면 목록에서 스타일이 빠진다. */
-.ev-jobs{margin:0 0 40px}
-.ev-jobs__head{display:flex;align-items:center;gap:9px;margin-bottom:16px}
-/* post.css 의 h2 여백·크기를 상속하지 않도록 값을 직접 지정한다 */
-.ev-jobs__head h2{
-  margin:0;font-size:19px;font-weight:700;line-height:1.4;
-  letter-spacing:-.02em;color:var(--ink)
-}
-.ev-jobs__count{
-  min-width:24px;height:24px;padding:0 7px;border-radius:999px;
-  background:var(--soft-2);color:var(--blue-d);
-  font-size:13px;font-weight:800;display:grid;place-items:center
-}
+/* 공고 카드는 목록(/event)에서만 쓴다. 상세 페이지에서 같은 카드를 다시 보여주면
+   목록에서 카드를 보고 들어온 사람에게 같은 화면을 두 번 주는 꼴이라 걷어냈다. */
 .ev-jobs__list{list-style:none;display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:0;padding:0}
 .ev-jobs__list>li{margin:0}
 .ev-jobs__list>li::before{content:none} /* post.css 의 목록 불릿 제거 */
@@ -123,5 +111,19 @@
   .ev-jobcard__title{font-size:17px}
 }
 
-/* 본문 중간 지원 버튼(.ev-apply)은 공고 카드로 대체돼 제거했다 —
-   카드 자체가 지원 경로이고, 하단 .post-cta 가 마지막 CTA를 맡는다. */
+/* 상세 본문 중간 지원 버튼 — 공고 카드를 목록으로 옮긴 뒤 이 자리를 맡는다.
+   하단 .post-cta 가 마지막으로 한 번 더 받는다. */
+.ev-apply{
+  display:flex;align-items:center;flex-wrap:wrap;gap:14px;margin:0 0 34px
+}
+.ev-apply__note{font-size:14px;font-weight:600;color:var(--slate-2)}
+
+/* .post-content a 가 본문 링크를 파란 밑줄로 만든다. 버튼은 그 규칙에서 빼낸다 */
+.post-content .ev-apply .btn{text-decoration:none}
+.post-content .ev-apply .btn-blue{color:#fff}
+.post-content .ev-apply .btn-blue:hover{color:#fff}
+
+@media(max-width:560px){
+  .ev-apply .btn{width:100%;justify-content:center}
+  .ev-apply__note{width:100%;text-align:center}
+}

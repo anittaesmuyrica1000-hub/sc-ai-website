@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 // 상세 레이아웃은 블로그 글 상세를 그대로 쓴다. post.css 를 고치면 함께 바뀐다.
 import "../../blog/[id]/post.css";
 import "../event.css";
-import { EVENTS, findEvent, statusOf, ddayLabel, STATUS_LABEL, type EventItem } from "@/lib/events";
+import { EVENTS, findEvent, statusOf, STATUS_LABEL, type EventItem } from "@/lib/events";
 import { EVENT_JOBS } from "@/lib/eventApply";
 import { buildPageMetadata } from "@/lib/pageSeo";
 
@@ -89,42 +89,16 @@ const FAQS = [
   ],
 ];
 
-function MockChallengeBody({ e, dday }: { e: EventItem; dday: string }) {
+function MockChallengeBody({ e }: { e: EventItem }) {
   return (
     <>
-      {/* 대문 바로 아래 공고 카드 — 실제 채용 사이트의 공고 목록과 같은 형식으로 읽힌다.
-          회사 → 공고명 → 고용형태·접수기간 → D-day·직무 태그 순으로, 훑기만 해도 판단이 끝나게 둔다.
-          카드 자체가 지원 경로라 본문 중간에 CTA 버튼을 따로 두지 않는다(하단 CTA가 한 번 더 받는다). */}
-      <div className="ev-jobs">
-        <div className="ev-jobs__head">
-          <h2>모집 중인 공고</h2>
-          <span className="ev-jobs__count">{EVENT_JOBS.length}</span>
-        </div>
-        <ul className="ev-jobs__list">
-          {EVENT_JOBS.map((j) => (
-            <li key={j.v}>
-              <Link href={`${e.applyUrl}?job=${j.v}`} className="ev-jobcard">
-                <span className="ev-jobcard__org">슈퍼전자</span>
-                <span className="ev-jobcard__title">{j.l} 신입사원 모집</span>
-                <span className="ev-jobcard__meta">
-                  <span>신입</span>
-                  <span>
-                    {e.applyStart.replace(/-/g, ".")} ~ {e.applyEnd.replace(/-/g, ".")}
-                  </span>
-                </span>
-                <span className="ev-jobcard__tags">
-                  <span className="ev-tag ev-tag--dday">{dday}</span>
-                  {j.tags.map((t) => (
-                    <span key={t} className="ev-tag">
-                      {t}
-                    </span>
-                  ))}
-                </span>
-              </Link>
-            </li>
-          ))}
-        </ul>
-        <p className="ev-jobs__note">한 직군만 선택해 지원합니다. 참가비는 없고 전공·학년 제한도 없습니다.</p>
+      {/* 공고 카드는 목록(/event)에만 둔다 — 거기서 카드를 보고 들어온 사람에게
+          같은 카드를 다시 보여줄 이유가 없다. 여기서는 지원 버튼 하나만 둔다. */}
+      <div className="ev-apply">
+        <Link href={e.applyUrl} className="btn btn-blue">
+          지원하기 <i className="fa-solid fa-arrow-right"></i>
+        </Link>
+        <span className="ev-apply__note">{e.applyTo}까지 접수</span>
       </div>
 
       <h2>어떤 행사인가요</h2>
@@ -340,7 +314,7 @@ function MockChallengeBody({ e, dday }: { e: EventItem; dday: string }) {
   );
 }
 
-const BODIES: Record<string, (p: { e: EventItem; dday: string }) => React.ReactElement> = {
+const BODIES: Record<string, (p: { e: EventItem }) => React.ReactElement> = {
   "ai-mock-challenge-2026": MockChallengeBody,
 };
 
@@ -353,8 +327,6 @@ export default async function EventDetailPage({ params }: { params: Promise<{ sl
   if (!e || !Body) notFound();
 
   const status = statusOf(e);
-  // 공고 카드의 D-day. revalidate 120 이라 하루가 바뀌어도 2분 안에 따라온다.
-  const dday = ddayLabel(e);
 
   const JSON_LD = {
     "@context": "https://schema.org",
@@ -407,7 +379,7 @@ export default async function EventDetailPage({ params }: { params: Promise<{ sl
         </div>
 
         <div className="post-content">
-          <Body e={e} dday={dday} />
+          <Body e={e} />
         </div>
 
         <ul className="post-tags" aria-label="주제 키워드">
