@@ -66,7 +66,10 @@
 /* 컨테이너 폭: 1180 = 본문 740 + 간격 60 + 사이드바 340 + 좌우 여백 */
 .ev-hero{
   background:linear-gradient(135deg,#1B3B8F 0%,var(--blue) 62%,var(--blue-2) 100%);
-  color:#fff;position:relative;overflow:hidden
+  color:#fff;position:relative;overflow:hidden;
+  /* ⚠️ globals.css 의 `section{padding:var(--sec-y) 0}` (랜딩 섹션 리듬, 최대 120px)를 끈다.
+     그대로 두면 아래 .ev-hero__inner 패딩에 120px 이 더해져 히어로가 645px 까지 커진다. */
+  padding:0
 }
 /* 배경 장식 원 — 목록 배너·지원 페이지 배너와 같은 문법 */
 .ev-hero::after{
@@ -75,7 +78,7 @@
 }
 .ev-hero__inner{
   position:relative;max-width:1180px;margin:0 auto;
-  padding:clamp(52px,6vw,84px) 24px clamp(44px,5vw,64px)
+  padding:clamp(40px,4.4vw,60px) 24px clamp(34px,3.6vw,48px)
 }
 .ev-hero__back{
   display:inline-flex;align-items:center;gap:7px;margin-bottom:24px;
