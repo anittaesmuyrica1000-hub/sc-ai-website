@@ -159,7 +159,11 @@
   background:var(--soft-2);color:var(--blue-d);
   font-size:13px;font-weight:800;display:grid;place-items:center
 }
-.ev-jobs__list{list-style:none;display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:0;padding:0}
+/* ⚠️ post.css 의 `.post-content ul:not(.post-list)` 가 padding-left:24px 를 준다.
+   선택자 점수가 더 높아서 .ev-jobs__list 만으로는 이기지 못하고 카드만 24px 안으로 밀렸다 —
+   제목·설명은 왼쪽 끝인데 카드만 들여쓰여 보였다. .post-content 조합을 함께 둔다. */
+.ev-jobs__list,
+.post-content ul.ev-jobs__list{list-style:none;display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:0;padding:0}
 .ev-jobs__list>li{margin:0}
 .ev-jobs__list>li::before{content:none} /* post.css 의 목록 불릿 제거 */
 
@@ -193,7 +197,9 @@
 
 /* 세로로 쌓는 배치 — 읽기 폭(약 720px) 안에서 2열로 두면 제목이 접히고 태그가 넘친다.
    카드를 한 줄씩 full width 로 두고, 오른쪽에 화살표를 붙여 누를 수 있음을 알린다. */
-.ev-jobs__list--stack{grid-template-columns:1fr;gap:12px}
+/* 위 규칙과 같은 점수(0,2,1)라 순서로 이긴다 — 반드시 아래에 둔다 */
+.ev-jobs__list--stack,
+.post-content ul.ev-jobs__list--stack{grid-template-columns:1fr;gap:12px}
 .ev-jobs__list--stack .ev-jobcard{
   flex-direction:row;align-items:center;gap:20px;padding:22px 24px
 }
@@ -207,12 +213,15 @@
 }
 .ev-jobs__list--stack .ev-jobcard:hover .ev-jobcard__go{background:var(--blue);color:#fff}
 .ev-jobs__list--stack .ev-jobcard:hover{transform:none}
+/* 면이 아니라 라인으로 — 카드 안에 색 덩어리가 네 개씩 들어가면 제목보다 태그가 먼저 읽힌다.
+   테두리로 두면 태그는 보조 정보로 물러나고 카드 제목이 먼저 잡힌다. */
 .ev-tag{
-  border-radius:999px;padding:6px 12px;font-size:12.5px;font-weight:600;
-  letter-spacing:-.01em;background:var(--slate-2);color:#fff;white-space:nowrap
+  border-radius:999px;padding:5px 11px;font-size:12.5px;font-weight:600;
+  letter-spacing:-.01em;background:transparent;
+  border:1px solid var(--line);color:var(--slate);white-space:nowrap
 }
-/* D-day 만 파랑 — 카드에서 가장 먼저 읽혀야 하는 값 */
-.ev-tag--dday{background:var(--blue);font-weight:800}
+/* D-day 만 파란 라인 — 카드에서 가장 먼저 읽혀야 하는 값 */
+.ev-tag--dday{border-color:var(--blue);color:var(--blue-d);font-weight:800}
 
 .ev-jobs__note{margin:16px 0 0;font-size:13.5px;line-height:1.6;color:var(--slate-2)}
 
