@@ -127,13 +127,12 @@ export default function EventClient({ events }: { events: Row[] }) {
                         <Link href={`/event/${e.slug}`}>{e.title}</Link>
                       </h2>
                       <p className="ev-banner__excerpt">{e.excerpt}</p>
+                      {/* 상세로 가는 길은 제목 링크 하나면 된다 — 같은 곳으로 가는 링크를
+                          한 박스에 두 개 두면 어디를 눌러야 하는지만 헷갈린다. */}
                       <div className="ev-banner__meta">
                         <span>
                           <i className="fa-solid fa-clock-rotate-left"></i> {e.period}
                         </span>
-                        <Link href={`/event/${e.slug}`} className="ev-banner__more">
-                          행사 안내 자세히 보기 <i className="fa-solid fa-arrow-right"></i>
-                        </Link>
                       </div>
                     </div>
 

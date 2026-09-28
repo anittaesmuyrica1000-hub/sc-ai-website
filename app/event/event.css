@@ -39,8 +39,6 @@
   margin:12px 0 0;font-size:15.5px;line-height:1.66;
   color:rgba(255,255,255,.88);word-break:keep-all;max-width:60ch
 }
-/* 모집 기간과 상세 링크를 나란히 왼쪽에 붙인다 —
-   양끝 정렬(space-between)로 두면 넓은 화면에서 둘이 멀어져 한 줄로 안 읽힌다. */
 .ev-banner__meta{
   display:flex;align-items:center;justify-content:flex-start;gap:22px;flex-wrap:wrap;
   margin-top:22px;padding-top:18px;border-top:1px solid rgba(255,255,255,.22);
@@ -48,12 +46,6 @@
 }
 .ev-banner__meta>span{display:inline-flex;align-items:center;gap:7px}
 .ev-banner__meta i{font-size:12px}
-.ev-banner__more{
-  display:inline-flex;align-items:center;gap:7px;
-  color:#fff;text-decoration:none;white-space:nowrap
-}
-.ev-banner__more:hover{text-decoration:underline}
-.ev-banner__more i{font-size:11px}
 
 @media(max-width:560px){
   .ev-banner{padding:28px 22px 24px}
