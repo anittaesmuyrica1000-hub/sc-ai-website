@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { redirect } from "next/navigation";
 // 목록 레이아웃(히어로·필터·카드 그리드)은 블로그 목록을 그대로 쓴다.
 // 스타일을 복사하지 않고 원본을 import — blog.css를 고치면 두 목록이 함께 바뀐다.
 import "../blog/blog.css";
@@ -27,6 +28,12 @@ export function generateMetadata() {
 }
 
 export default function EventIndexPage() {
+  // 행사가 한 건뿐이면 목록을 건너뛰고 바로 상세로 보낸다.
+  // 배너 하나짜리 목록은 클릭을 한 번 더 요구할 뿐 아무것도 고르게 해주지 않는다.
+  // 두 건 이상이 되면 이 분기가 자동으로 꺼지고 목록이 다시 살아난다.
+  // (307 임시 이동 — 행사 수에 따라 달라지는 조건부 이동이라 영구 이동으로 두면 안 된다)
+  if (EVENTS.length === 1) redirect(`/event/${EVENTS[0].slug}`);
+
   const rows = EVENTS.map((e) => ({ ...e, status: statusOf(e) }));
   // 모집 중 → 모집 예정 → 모집 마감 순
   const order = { open: 0, upcoming: 1, closed: 2 } as const;

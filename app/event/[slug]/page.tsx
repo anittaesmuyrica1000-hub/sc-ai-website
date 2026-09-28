@@ -389,9 +389,13 @@ export default async function EventDetailPage({ params }: { params: Promise<{ sl
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(JSON_LD) }} />
 
       <article className="post-wrap">
-        <Link href="/event" className="post-back">
-          <i className="fa-solid fa-arrow-left"></i> 이벤트 목록
-        </Link>
+        {/* 행사가 한 건뿐이면 /event 가 이 페이지로 되돌려 보내므로(목록 건너뛰기) 링크를 숨긴다 —
+            누르면 제자리로 돌아오는 링크가 된다. 두 건 이상이면 자동으로 다시 나온다. */}
+        {EVENTS.length > 1 && (
+          <Link href="/event" className="post-back">
+            <i className="fa-solid fa-arrow-left"></i> 이벤트 목록
+          </Link>
+        )}
 
         <div className="post-head">
           <span className="cat">{STATUS_LABEL[status]}</span>
