@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 // 상세 레이아웃은 블로그 글 상세를 그대로 쓴다. post.css 를 고치면 함께 바뀐다.
 import "../../blog/[id]/post.css";
 import "../event.css";
-import { EVENTS, findEvent, statusOf, STATUS_LABEL, type EventItem } from "@/lib/events";
+import { EVENTS, findEvent, statusOf, ddayLabel, STATUS_LABEL, type EventItem } from "@/lib/events";
 import { EVENT_JOBS } from "@/lib/eventApply";
 import { buildPageMetadata } from "@/lib/pageSeo";
 
@@ -89,26 +89,42 @@ const FAQS = [
   ],
 ];
 
-function MockChallengeBody({ e }: { e: EventItem }) {
+function MockChallengeBody({ e, dday }: { e: EventItem; dday: string }) {
   return (
     <>
-      <div className="post-tldr">
-        <div className="tldr-head">
-          <i className="fa-solid fa-circle-check"></i> 한눈에 보기
+      {/* 대문 바로 아래 공고 카드 — 실제 채용 사이트의 공고 목록과 같은 형식으로 읽힌다.
+          회사 → 공고명 → 고용형태·접수기간 → D-day·직무 태그 순으로, 훑기만 해도 판단이 끝나게 둔다.
+          카드 자체가 지원 경로라 본문 중간에 CTA 버튼을 따로 두지 않는다(하단 CTA가 한 번 더 받는다). */}
+      <div className="ev-jobs">
+        <div className="ev-jobs__head">
+          <h2>모집 중인 공고</h2>
+          <span className="ev-jobs__count">{EVENT_JOBS.length}</span>
         </div>
-        <ul>
-          <li>가상기업 &lsquo;슈퍼전자&rsquo;의 마케팅·개발 직군에 지원해 실제 채용 전형을 그대로 겪어 봅니다.</li>
-          <li>전공·학년·졸업 시기 제한이 없고, 어학 점수나 자격증도 보지 않습니다.</li>
-          <li>1차 AI 면접을 끝까지 마친 선착순 100명에게 모바일 쿠폰을 드립니다.</li>
-          <li>선발된 Finalist 3인은 11월 20일 오프라인 최종 면접에 참여하고 상장·수료증을 받습니다.</li>
+        <ul className="ev-jobs__list">
+          {EVENT_JOBS.map((j) => (
+            <li key={j.v}>
+              <Link href={`${e.applyUrl}?job=${j.v}`} className="ev-jobcard">
+                <span className="ev-jobcard__org">슈퍼전자</span>
+                <span className="ev-jobcard__title">{j.l} 신입사원 모집</span>
+                <span className="ev-jobcard__meta">
+                  <span>신입</span>
+                  <span>
+                    {e.applyStart.replace(/-/g, ".")} ~ {e.applyEnd.replace(/-/g, ".")}
+                  </span>
+                </span>
+                <span className="ev-jobcard__tags">
+                  <span className="ev-tag ev-tag--dday">{dday}</span>
+                  {j.tags.map((t) => (
+                    <span key={t} className="ev-tag">
+                      {t}
+                    </span>
+                  ))}
+                </span>
+              </Link>
+            </li>
+          ))}
         </ul>
-      </div>
-
-      <div className="ev-apply">
-        <Link href={e.applyUrl} className="btn btn-blue">
-          지원하기 <i className="fa-solid fa-arrow-right"></i>
-        </Link>
-        <span className="ev-apply__note">{e.applyTo}까지 접수</span>
+        <p className="ev-jobs__note">한 직군만 선택해 지원합니다. 참가비는 없고 전공·학년 제한도 없습니다.</p>
       </div>
 
       <h2>어떤 행사인가요</h2>
@@ -189,9 +205,10 @@ function MockChallengeBody({ e }: { e: EventItem }) {
 
       {EVENT_JOBS.map((j) => (
         <div key={j.v}>
-          <h3>
-            {j.team} · {j.l}
-          </h3>
+          {/* 직군명만 쓴다. 소속 팀(j.team)은 지원 페이지의 공고 화면이 메타로 보여준다 —
+              여기서 "소프트웨어개발팀 · 소프트웨어 개발"처럼 같은 말을 두 번 쓰지 않도록. */}
+          <h3>{j.l}</h3>
+          <p className="post-src">{j.team}</p>
           <p>{j.desc}</p>
           <p>이런 것을 봅니다</p>
           <ul className="post-list">
@@ -248,7 +265,7 @@ function MockChallengeBody({ e }: { e: EventItem }) {
             </tr>
             <tr>
               <td>모집 직군</td>
-              <td>제품마케팅, 애플리케이션 개발 (한 직군 선택)</td>
+              <td>제품마케팅, 소프트웨어 개발 (한 직군 선택)</td>
             </tr>
             <tr>
               <td>지원 자격</td>
@@ -323,7 +340,7 @@ function MockChallengeBody({ e }: { e: EventItem }) {
   );
 }
 
-const BODIES: Record<string, (p: { e: EventItem }) => React.ReactElement> = {
+const BODIES: Record<string, (p: { e: EventItem; dday: string }) => React.ReactElement> = {
   "ai-mock-challenge-2026": MockChallengeBody,
 };
 
@@ -336,6 +353,8 @@ export default async function EventDetailPage({ params }: { params: Promise<{ sl
   if (!e || !Body) notFound();
 
   const status = statusOf(e);
+  // 공고 카드의 D-day. revalidate 120 이라 하루가 바뀌어도 2분 안에 따라온다.
+  const dday = ddayLabel(e);
 
   const JSON_LD = {
     "@context": "https://schema.org",
@@ -388,7 +407,7 @@ export default async function EventDetailPage({ params }: { params: Promise<{ sl
         </div>
 
         <div className="post-content">
-          <Body e={e} />
+          <Body e={e} dday={dday} />
         </div>
 
         <ul className="post-tags" aria-label="주제 키워드">

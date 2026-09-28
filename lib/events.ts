@@ -50,12 +50,37 @@ export const EVENTS: EventItem[] = [
   },
 ];
 
+/**
+ * 한국 시간 기준 오늘(YYYY-MM-DD).
+ * 모집 시작·마감은 전부 한국 시간 기준으로 공지한다(마감 11/1 23:59).
+ * 서버는 UTC라 toISOString()을 그대로 쓰면 한국 시간 00:00~08:59 구간에
+ * 하루 전 날짜가 나와서 마감일이 하루 일찍 닫힌다.
+ */
+function kstToday(now: Date): string {
+  return new Date(now.getTime() + 9 * 60 * 60 * 1000).toISOString().slice(0, 10);
+}
+
 /** 오늘 기준 모집 상태. 목록 필터와 카드 뱃지가 같은 값을 쓴다 */
 export function statusOf(e: EventItem, today = new Date()): EventStatus {
-  const d = today.toISOString().slice(0, 10);
+  const d = kstToday(today);
   if (d < e.applyStart) return "upcoming";
   if (d > e.applyEnd) return "closed";
   return "open";
+}
+
+/**
+ * 공고 카드에 붙는 D-day 라벨.
+ * 모집 전이면 시작까지(OPEN D-n), 모집 중이면 마감까지(D-n), 지나면 마감.
+ * 날짜만 비교하므로 시각과 무관하게 같은 날 안에서는 값이 바뀌지 않는다.
+ */
+export function ddayLabel(e: EventItem, today = new Date()): string {
+  const status = statusOf(e, today);
+  if (status === "closed") return "마감";
+  const from = Date.parse(`${kstToday(today)}T00:00:00Z`);
+  const to = Date.parse(`${status === "upcoming" ? e.applyStart : e.applyEnd}T00:00:00Z`);
+  const days = Math.round((to - from) / 86400000);
+  if (days <= 0) return "D-DAY";
+  return status === "upcoming" ? `OPEN D-${days}` : `D-${days}`;
 }
 
 export const STATUS_LABEL: Record<EventStatus, string> = {

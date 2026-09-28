@@ -25,7 +25,7 @@ export async function generateMetadata({
   // 폼만 있는 화면이 검색 결과로 뜨면 맥락 없이 들어와 그대로 이탈한다 → noindex + canonical 은 상세로.
   const fallback: Metadata = {
     title: `${e.title} 지원하기`,
-    description: `${e.title} 참가 신청. 제품마케팅·애플리케이션 개발 중 한 직군을 선택해 지원합니다.`,
+    description: `${e.title} 참가 신청. 제품마케팅·소프트웨어 개발 중 한 직군을 선택해 지원합니다.`,
     robots: { index: false, follow: true },
     alternates: { canonical: `/event/${e.slug}` },
     openGraph: {

@@ -205,7 +205,7 @@ export default function EventApplicants() {
   const STATS: { label: string; v: string | number; sub: string; icon: string }[] = [
     { label: "총 지원자", v: stats.total, sub: stats.test > 0 ? `테스트 ${stats.test}건 제외` : "실제 지원 기준", icon: "fa-users" },
     { label: "제품마케팅", v: stats.marketing, sub: "마케팅 직군 지원", icon: "fa-chart-simple" },
-    { label: "애플리케이션 개발", v: stats.dev, sub: "개발 직군 지원", icon: "fa-diagram-project" },
+    { label: "소프트웨어 개발", v: stats.dev, sub: "개발 직군 지원", icon: "fa-diagram-project" },
     { label: "1차 면접 완료", v: stats.done, sub: `쿠폰 지급 상한 ${COUPON_LIMIT}명`, icon: "fa-user-check" },
     { label: "오프라인 참석 가능", v: stats.attend, sub: "Finalist 후보 모수", icon: "fa-user" },
     { label: "콘텐츠 활용 동의", v: stats.contentOk, sub: "결과 기사에 쓸 수 있는 응답", icon: "fa-file-lines" },

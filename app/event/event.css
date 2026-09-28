@@ -17,18 +17,63 @@
 }
 .ev-card-period i{font-size:12px;color:var(--blue-2)}
 
-/* 상세 본문 중간 지원 버튼 */
-.ev-apply{
-  display:flex;align-items:center;flex-wrap:wrap;gap:14px;margin:0 0 34px
+/* ── 대문 아래 공고 카드 ──────────────────────────────────
+   실제 기업 채용 사이트의 공고 목록과 같은 읽기 순서로 둔다:
+   회사 → 공고명 → 고용형태·접수기간 → D-day·직무 태그.
+   훑는 사람이 "내 직군인가 / 언제까지인가"를 두 줄 안에 끝내는 게 목적이라
+   설명 문장은 카드에 넣지 않는다(상세는 지원 페이지의 공고 화면이 맡는다). */
+.ev-jobs{margin:0 0 40px}
+.ev-jobs__head{display:flex;align-items:center;gap:9px;margin-bottom:16px}
+/* post.css 의 h2 여백·크기는 카드 헤더에서 쓰지 않는다 */
+.post-content .ev-jobs__head h2{margin:0;font-size:19px;letter-spacing:-.02em}
+.ev-jobs__count{
+  min-width:24px;height:24px;padding:0 7px;border-radius:999px;
+  background:var(--soft-2);color:var(--blue-d);
+  font-size:13px;font-weight:800;display:grid;place-items:center
 }
-.ev-apply__note{font-size:14px;font-weight:600;color:var(--slate-2)}
+.ev-jobs__list{list-style:none;display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:0;padding:0}
+.ev-jobs__list>li{margin:0}
+.ev-jobs__list>li::before{content:none} /* post.css 의 목록 불릿 제거 */
 
-/* .post-content a 가 본문 링크를 파란 밑줄로 만든다. 버튼은 그 규칙에서 빼낸다 */
-.post-content .ev-apply .btn{text-decoration:none}
-.post-content .ev-apply .btn-blue{color:#fff}
-.post-content .ev-apply .btn-blue:hover{color:#fff}
-
-@media(max-width:560px){
-  .ev-apply .btn{width:100%;justify-content:center}
-  .ev-apply__note{width:100%;text-align:center}
+.ev-jobcard{
+  display:flex;flex-direction:column;height:100%;
+  border:1px solid var(--line);border-radius:14px;background:#fff;
+  padding:22px 22px 20px;transition:.15s
 }
+/* .post-content a 가 본문 링크를 파란 밑줄로 만든다. 카드는 그 규칙에서 빼낸다 */
+.post-content .ev-jobcard{text-decoration:none;color:inherit}
+.ev-jobcard:hover{border-color:var(--blue-2);box-shadow:0 10px 26px -18px rgba(20,40,90,.35);transform:translateY(-2px)}
+.ev-jobcard:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+
+.ev-jobcard__org{font-size:13px;font-weight:600;color:var(--slate-2);letter-spacing:-.01em}
+.ev-jobcard__title{
+  margin-top:7px;font-size:18px;font-weight:700;line-height:1.42;
+  letter-spacing:-.025em;color:var(--ink);word-break:keep-all
+}
+/* 고용형태 | 접수기간 — 삼성 카드와 같은 구분선 한 줄 */
+.ev-jobcard__meta{
+  display:flex;align-items:center;flex-wrap:wrap;gap:10px;
+  margin-top:12px;font-size:13.5px;font-weight:500;color:var(--slate-2)
+}
+.ev-jobcard__meta>span+span{
+  padding-left:11px;border-left:1px solid var(--line);
+  font-variant-numeric:tabular-nums
+}
+.ev-jobcard__tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:auto;padding-top:18px}
+.ev-tag{
+  border-radius:999px;padding:6px 12px;font-size:12.5px;font-weight:600;
+  letter-spacing:-.01em;background:var(--slate-2);color:#fff;white-space:nowrap
+}
+/* D-day 만 파랑 — 카드에서 가장 먼저 읽혀야 하는 값 */
+.ev-tag--dday{background:var(--blue);font-weight:800}
+
+.ev-jobs__note{margin:16px 0 0;font-size:13.5px;line-height:1.6;color:var(--slate-2)}
+
+@media(max-width:720px){
+  .ev-jobs__list{grid-template-columns:1fr}
+  .ev-jobcard{padding:20px 18px 18px}
+  .ev-jobcard__title{font-size:17px}
+}
+
+/* 본문 중간 지원 버튼(.ev-apply)은 공고 카드로 대체돼 제거했다 —
+   카드 자체가 지원 경로이고, 하단 .post-cta 가 마지막 CTA를 맡는다. */
