@@ -117,12 +117,7 @@ export default function EventClient({ events }: { events: Row[] }) {
                     <span className="ev-banner__title">{e.title}</span>
                     <span className="ev-banner__excerpt">{e.excerpt}</span>
                     <span className="ev-banner__meta">
-                      <span>
-                        <i className="fa-solid fa-clock-rotate-left"></i> {e.period}
-                      </span>
-                      <span className="ev-banner__more">
-                        자세히 보기 <i className="fa-solid fa-arrow-right"></i>
-                      </span>
+                      <span>{e.period}</span>
                     </span>
                   </Link>
                 </article>
