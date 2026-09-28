@@ -12,11 +12,16 @@
 .ev-entry+.ev-entry{margin-top:56px;padding-top:48px;border-top:1px solid var(--line)}
 /* 상단 배너 박스 — 지원 페이지(app/event/[slug]/apply/career.css)의 .career-banner 와 같은 문법.
    이미지 없이 그라데이션으로 만들어, 포스터 디자인이 나오면 background 만 덮으면 된다. */
+/* 배너 전체가 상세로 가는 링크다 — 안에 링크를 또 두지 않는다(어디를 눌러야 하는지 헷갈린다) */
 .ev-banner{
+  display:block;text-decoration:none;
   position:relative;overflow:hidden;border-radius:var(--r);
   background:linear-gradient(135deg,#1B3B8F 0%,var(--blue) 62%,var(--blue-2) 100%);
-  color:#fff;padding:38px 36px 32px;margin-bottom:30px
+  color:#fff;padding:38px 36px 32px;transition:.15s
 }
+.ev-banner:hover{box-shadow:0 18px 40px -22px rgba(20,40,90,.6);transform:translateY(-2px)}
+.ev-banner:focus-visible{outline:2px solid var(--blue);outline-offset:3px}
+.ev-banner__status,.ev-banner__title,.ev-banner__excerpt,.ev-banner__meta{display:block}
 /* 배경 장식 원 — 지원 페이지 배너와 같은 위치 */
 .ev-banner::after{
   content:"";position:absolute;right:-58px;bottom:-84px;width:240px;height:240px;
@@ -31,21 +36,23 @@
 }
 .ev-banner__title{
   margin:14px 0 0;font-size:clamp(24px,3.1vw,32px);font-weight:700;
-  line-height:1.32;letter-spacing:-.025em;word-break:keep-all
+  line-height:1.32;letter-spacing:-.025em;word-break:keep-all;color:#fff
 }
-.ev-banner__title a{color:#fff;text-decoration:none}
-.ev-banner__title a:hover{text-decoration:underline}
 .ev-banner__excerpt{
   margin:12px 0 0;font-size:15.5px;line-height:1.66;
   color:rgba(255,255,255,.88);word-break:keep-all;max-width:60ch
 }
 .ev-banner__meta{
-  display:flex;align-items:center;justify-content:flex-start;gap:22px;flex-wrap:wrap;
+  display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;
   margin-top:22px;padding-top:18px;border-top:1px solid rgba(255,255,255,.22);
   font-size:13.5px;font-weight:600;color:rgba(255,255,255,.92)
 }
 .ev-banner__meta>span{display:inline-flex;align-items:center;gap:7px}
 .ev-banner__meta i{font-size:12px}
+/* 링크가 아니라 배너가 링크임을 알리는 표시 */
+.ev-banner__more{white-space:nowrap}
+.ev-banner__more i{font-size:11px;transition:.15s}
+.ev-banner:hover .ev-banner__more i{transform:translateX(3px)}
 
 @media(max-width:560px){
   .ev-banner{padding:28px 22px 24px}
@@ -57,8 +64,21 @@
    회사 → 공고명 → 고용형태·접수기간 → D-day·직무 태그.
    훑는 사람이 "내 직군인가 / 언제까지인가"를 두 줄 안에 끝내는 게 목적이라
    설명 문장은 카드에 넣지 않는다(상세는 지원 페이지의 공고 화면이 맡는다). */
-/* 공고 카드는 목록(/event)에서만 쓴다. 상세 페이지에서 같은 카드를 다시 보여주면
-   목록에서 카드를 보고 들어온 사람에게 같은 화면을 두 번 주는 꼴이라 걷어냈다. */
+/* ── 공고 카드 ───────────────────────────────────────────
+   상세 페이지에만 둔다(목록은 행사 배너만). 실제 채용 사이트의 공고 목록과 같은
+   읽기 순서: 회사 → 공고명 → 고용형태·접수기간 → D-day·직무 태그. */
+.ev-jobs{margin:0 0 40px}
+.ev-jobs__head{display:flex;align-items:center;gap:9px;margin-bottom:16px}
+/* post.css 의 h2 여백·크기를 상속하지 않도록 값을 직접 지정한다 */
+.post-content .ev-jobs__head h2{
+  margin:0;font-size:19px;font-weight:700;line-height:1.4;
+  letter-spacing:-.02em;color:var(--ink)
+}
+.ev-jobs__count{
+  min-width:24px;height:24px;padding:0 7px;border-radius:999px;
+  background:var(--soft-2);color:var(--blue-d);
+  font-size:13px;font-weight:800;display:grid;place-items:center
+}
 .ev-jobs__list{list-style:none;display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:0;padding:0}
 .ev-jobs__list>li{margin:0}
 .ev-jobs__list>li::before{content:none} /* post.css 의 목록 불릿 제거 */
@@ -68,8 +88,10 @@
   border:1px solid var(--line);border-radius:14px;background:#fff;
   padding:22px 22px 20px;transition:.15s
 }
-/* .post-content a 가 본문 링크를 파란 밑줄로 만든다. 카드는 그 규칙에서 빼낸다 */
-.ev-jobcard{text-decoration:none;color:inherit}
+/* .post-content a 가 본문 링크를 파란 밑줄로 만든다. 카드는 그 규칙에서 빼낸다.
+   ⚠️ .ev-jobcard 만 쓰면 선택자 점수가 낮아 밑줄이 그대로 남는다 — .post-content 조합을 함께 둔다. */
+.ev-jobcard,
+.post-content .ev-jobcard{text-decoration:none;color:inherit}
 .ev-jobcard:hover{border-color:var(--blue-2);box-shadow:0 10px 26px -18px rgba(20,40,90,.35);transform:translateY(-2px)}
 .ev-jobcard:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
 
@@ -88,6 +110,23 @@
   font-variant-numeric:tabular-nums
 }
 .ev-jobcard__tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:auto;padding-top:18px}
+
+/* 세로로 쌓는 배치 — 읽기 폭(약 720px) 안에서 2열로 두면 제목이 접히고 태그가 넘친다.
+   카드를 한 줄씩 full width 로 두고, 오른쪽에 화살표를 붙여 누를 수 있음을 알린다. */
+.ev-jobs__list--stack{grid-template-columns:1fr;gap:12px}
+.ev-jobs__list--stack .ev-jobcard{
+  flex-direction:row;align-items:center;gap:20px;padding:22px 24px
+}
+.ev-jobs__list--stack .ev-jobcard__main{display:flex;flex-direction:column;flex:1;min-width:0}
+/* 가로 배치에서는 태그를 바닥까지 밀 필요가 없다 */
+.ev-jobs__list--stack .ev-jobcard__tags{margin-top:0;padding-top:16px}
+.ev-jobs__list--stack .ev-jobcard__go{
+  flex-shrink:0;width:40px;height:40px;border-radius:50%;
+  background:var(--soft-2);color:var(--blue);
+  display:grid;place-items:center;font-size:14px;transition:.15s
+}
+.ev-jobs__list--stack .ev-jobcard:hover .ev-jobcard__go{background:var(--blue);color:#fff}
+.ev-jobs__list--stack .ev-jobcard:hover{transform:none}
 .ev-tag{
   border-radius:999px;padding:6px 12px;font-size:12.5px;font-weight:600;
   letter-spacing:-.01em;background:var(--slate-2);color:#fff;white-space:nowrap
