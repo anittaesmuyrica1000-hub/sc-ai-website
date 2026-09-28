@@ -392,7 +392,10 @@ export default async function EventDetailPage({ params }: { params: Promise<{ sl
           읽기 폭 하나로만 두면 1440에서 양옆이 비고 지원 버튼이 스크롤 밖으로 밀린다.
           히어로(전체 폭) + 본문·사이드바 2단(1180 컨테이너)으로 잡고,
           사이드바에 일정과 지원 버튼을 붙여 스크롤 내내 따라오게 한다. */}
-      <header className="ev-hero">
+      {/* ⚠️ header 태그로 쓰면 안 된다 — globals.css 의 GNB 규칙이 태그 선택자(header, header:hover)라
+          position:sticky 와 hover 배경(흰색)까지 그대로 먹는다. 마우스를 올리면 흰 배경이 덮여
+          흰 글씨가 통째로 사라졌다(2026-09-28). */}
+      <section className="ev-hero">
         <div className="ev-hero__inner">
           {/* 행사가 한 건뿐이면 /event 가 이 페이지로 되돌려 보내므로(목록 건너뛰기) 링크를 숨긴다 —
               누르면 제자리로 돌아오는 링크가 된다. 두 건 이상이면 자동으로 다시 나온다. */}
@@ -410,7 +413,7 @@ export default async function EventDetailPage({ params }: { params: Promise<{ sl
             <span>참가비 무료</span>
           </div>
         </div>
-      </header>
+      </section>
 
       <article className="ev-detail">
         <div className="ev-detail__main">
