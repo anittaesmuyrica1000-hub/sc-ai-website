@@ -1,0 +1,471 @@
+/* /event/[slug]/apply — 가상기업 '슈퍼전자'의 채용공고 화면.
+   기획안 slide 12 "참가자가 보는 화면"을 실제 기업 채용 사이트처럼 구현한다.
+   지원자가 겪는 것이 '이벤트 신청'이 아니라 '채용 지원'이어야 행사의 전제가 산다.
+
+   폼 카드·입력 필드·동의·완료 화면은 app/apply/apply.css 를 그대로 재사용한다
+   (.apply-card · .field · .agree · .form-err · .apply-done). 여기엔 공고 화면만 둔다.
+   색·라운드·그림자는 app/globals.css 의 토큰을 쓴다 — 하드코딩 금지. */
+
+.career {
+  background: #fff;
+  padding: 40px 0 96px;
+  min-height: calc(100vh - 64px);
+}
+.career-wrap {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+/* ── 상단 바 — 가상기업 워드마크 + 되돌아가는 길 ───────────── */
+.career-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  padding-bottom: 22px;
+  border-bottom: 1px solid var(--line);
+}
+.career-brand {
+  display: flex;
+  align-items: baseline;
+  gap: 11px;
+  min-width: 0;
+}
+.career-brand b {
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  color: var(--ink);
+}
+.career-brand span {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--slate-2);
+  letter-spacing: 0.02em;
+}
+.career-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--slate);
+  text-decoration: none;
+  flex-shrink: 0;
+}
+.career-back:hover { color: var(--blue); }
+.career-back i { font-size: 11px; }
+
+/* ── 가상기업 고지 — 고정 문구. 화면 상단과 폼 양쪽에 둔다 ──
+   기획안 slide 4: 포스터 하단·이벤트 페이지·지원 폼 첫 화면에 같은 문장으로 넣는다. */
+.career-notice {
+  display: flex;
+  gap: 11px;
+  align-items: flex-start;
+  background: var(--soft);
+  border: 1px solid var(--tint);
+  border-radius: 12px;
+  padding: 14px 16px;
+  margin: 22px 0 0;
+  font-size: 13.5px;
+  line-height: 1.65;
+  color: var(--slate);
+  word-break: keep-all;
+}
+.career-notice i {
+  color: var(--blue);
+  font-size: 15px;
+  margin-top: 2px;
+  flex-shrink: 0;
+}
+.career-notice b { color: var(--ink); font-weight: 700; }
+
+/* ── 배너 2컷 ─────────────────────────────────────────────
+   이미지 없이 CSS 그라데이션으로 만든다 — 10/6 OPEN 전까지 디자인 외주를 기다리지 않아도 되고,
+   이미지가 나오면 .career-banner 에 background-image 만 덮으면 된다. */
+.career-banners {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-top: 26px;
+}
+.career-banner {
+  border-radius: var(--r);
+  padding: 34px 30px 30px;
+  min-height: 188px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  position: relative;
+  overflow: hidden;
+}
+.career-banner--main {
+  background: linear-gradient(135deg, #1B3B8F 0%, var(--blue) 62%, var(--blue-2) 100%);
+  color: #fff;
+}
+.career-banner--sub {
+  background: var(--soft);
+  border: 1px solid var(--tint);
+  color: var(--ink);
+}
+/* 배경 장식 원 — 두 배너 모두 오른쪽 아래에 하나씩 */
+.career-banner::after {
+  content: "";
+  position: absolute;
+  right: -46px;
+  bottom: -64px;
+  width: 190px;
+  height: 190px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.11);
+  pointer-events: none;
+}
+.career-banner--sub::after { background: rgba(51, 106, 255, 0.07); }
+
+.career-banner .eyebrow-s {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  opacity: 0.82;
+  margin-bottom: 12px;
+}
+.career-banner h2 {
+  font-size: clamp(21px, 2.4vw, 27px);
+  font-weight: 700;
+  line-height: 1.34;
+  letter-spacing: -0.025em;
+  word-break: keep-all;
+}
+.career-banner p {
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.6;
+  margin-top: 14px;
+  opacity: 0.9;
+  word-break: keep-all;
+}
+.career-banner--main p { opacity: 0.86; }
+
+/* ── 공고 목록 헤더 + 직군 필터 ──────────────────────────── */
+.career-listhead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin: 46px 0 18px;
+}
+.career-listhead h2 {
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+}
+.career-listhead h2 em {
+  font-style: normal;
+  color: var(--blue);
+  margin-left: 6px;
+}
+.career-filters {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.career-chip {
+  border: 1px solid var(--line);
+  background: #fff;
+  border-radius: 999px;
+  padding: 8px 16px;
+  font-size: 13.5px;
+  font-weight: 600;
+  font-family: inherit;
+  color: var(--slate);
+  cursor: pointer;
+  transition: 0.15s;
+}
+.career-chip:hover { border-color: var(--blue-2); color: var(--blue); }
+.career-chip[aria-pressed="true"] {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: #fff;
+}
+
+/* ── 공고 카드 ────────────────────────────────────────────
+   올리브영 채용 목록처럼 제목 + 메타 한 줄. 카드 전체가 버튼이다. */
+.career-jobs {
+  list-style: none;
+  border-top: 1px solid var(--line);
+}
+.career-job {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  text-align: left;
+  background: none;
+  border: none;
+  border-bottom: 1px solid var(--line);
+  padding: 26px 8px;
+  font-family: inherit;
+  cursor: pointer;
+  transition: 0.15s;
+}
+.career-job:hover { background: var(--soft); padding-left: 16px; padding-right: 0; }
+.career-job:focus-visible { outline: 2px solid var(--blue); outline-offset: -2px; }
+.career-job__body { flex: 1; min-width: 0; }
+.career-job__title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  font-size: 18.5px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+  line-height: 1.4;
+}
+.career-job__new {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  color: var(--blue);
+  background: var(--soft-2);
+  border-radius: 5px;
+  padding: 3px 7px;
+}
+.career-job__meta {
+  margin-top: 9px;
+  font-size: 13.5px;
+  font-weight: 500;
+  color: var(--slate-2);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 9px;
+}
+.career-job__meta span::after {
+  content: "|";
+  margin-left: 9px;
+  color: var(--line);
+}
+.career-job__meta span:last-child::after { content: ""; margin: 0; }
+.career-job__desc {
+  margin-top: 11px;
+  font-size: 14.5px;
+  line-height: 1.62;
+  color: var(--slate);
+  word-break: keep-all;
+}
+.career-job__go {
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--soft-2);
+  color: var(--blue);
+  display: grid;
+  place-items: center;
+  font-size: 14px;
+  transition: 0.15s;
+}
+.career-job:hover .career-job__go { background: var(--blue); color: #fff; }
+
+/* ── 모집 예정·마감 안내 (폼 대신 보여 주는 화면) ─────────── */
+.career-closed {
+  border: 1px solid var(--line);
+  border-radius: var(--r);
+  background: #FBFCFD;
+  padding: 44px 32px;
+  text-align: center;
+  margin-top: 26px;
+}
+.career-closed .dot {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: var(--soft-2);
+  color: var(--blue);
+  display: grid;
+  place-items: center;
+  font-size: 26px;
+  margin: 0 auto 20px;
+}
+.career-closed h2 {
+  font-size: 21px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+  margin-bottom: 10px;
+}
+.career-closed p {
+  font-size: 15px;
+  line-height: 1.7;
+  color: var(--slate);
+  word-break: keep-all;
+}
+.career-closed .btn { margin-top: 24px; }
+
+/* ── 지원서 단계 ──────────────────────────────────────────
+   좌: 선택한 공고 요약 / 우: 지원서 카드(.apply-card 재사용) */
+.career-form {
+  display: grid;
+  grid-template-columns: minmax(0, 0.82fr) minmax(0, 1fr);
+  gap: clamp(28px, 4vw, 56px);
+  align-items: start;
+  margin-top: 30px;
+}
+.career-form__back {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: none;
+  border: none;
+  font-family: inherit;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--slate);
+  cursor: pointer;
+  padding: 0;
+  margin-bottom: 18px;
+}
+.career-form__back:hover { color: var(--blue); }
+.career-form__back i { font-size: 11px; }
+
+.career-sum h1 {
+  font-size: clamp(25px, 3vw, 33px);
+  font-weight: 700;
+  line-height: 1.34;
+  letter-spacing: -0.025em;
+  color: var(--ink);
+  word-break: keep-all;
+}
+.career-sum__meta {
+  margin-top: 13px;
+  font-size: 13.5px;
+  font-weight: 500;
+  color: var(--slate-2);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 9px;
+}
+.career-sum__meta span::after { content: "|"; margin-left: 9px; color: var(--line); }
+.career-sum__meta span:last-child::after { content: ""; margin: 0; }
+
+.career-sum dl {
+  margin-top: 28px;
+  border-top: 1px solid var(--line);
+}
+.career-sum dl > div {
+  display: grid;
+  grid-template-columns: 96px minmax(0, 1fr);
+  gap: 14px;
+  padding: 15px 2px;
+  border-bottom: 1px solid var(--line);
+  font-size: 14px;
+  line-height: 1.62;
+}
+.career-sum dt { font-weight: 600; color: var(--slate-2); }
+.career-sum dd { color: var(--ink); word-break: keep-all; }
+.career-sum dd ul { list-style: none; display: grid; gap: 5px; }
+.career-sum dd li { position: relative; padding-left: 13px; }
+.career-sum dd li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 9px;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--blue-2);
+}
+
+/* ── 동의 블록 — .agree 를 여러 줄로 쌓는다 ───────────────
+   .agree 는 한 줄(체크 + 자세히보기)용이라 그대로 여러 개를 쌓으면 간격이 무너진다. */
+.ev-agrees {
+  border-top: 1px solid var(--line);
+  margin-top: 26px;
+  padding-top: 20px;
+}
+.ev-agrees .agree { margin: 0 0 14px; align-items: flex-start; }
+.ev-agrees .agree:last-child { margin-bottom: 24px; }
+.ev-agrees .agree-main { align-items: flex-start; }
+.ev-agrees .agree-main input { margin-top: 3px; }
+.ev-agrees .agree-main span { line-height: 1.55; word-break: keep-all; }
+.ev-agrees .agree-more { margin-top: 2px; }
+.ev-agrees .agree-opt b { color: var(--slate-2); font-weight: 700; }
+/* 필수 동의 항목의 상세 — 수집 항목·목적·보유기간을 접어 둔다 */
+.ev-agree-detail {
+  margin: -6px 0 16px 26px;
+  font-size: 12.5px;
+  line-height: 1.7;
+  color: var(--slate-2);
+  word-break: keep-all;
+}
+.ev-agree-detail summary {
+  cursor: pointer;
+  font-weight: 600;
+  color: var(--slate);
+  margin-bottom: 7px;
+}
+.ev-agree-detail table { border-collapse: collapse; width: 100%; margin-top: 4px; }
+.ev-agree-detail th,
+.ev-agree-detail td {
+  border: 1px solid var(--line);
+  padding: 7px 9px;
+  text-align: left;
+  vertical-align: top;
+}
+.ev-agree-detail th { background: var(--soft); font-weight: 600; color: var(--ink); white-space: nowrap; }
+
+/* 라디오형 선택 — 오프라인 Final 참석 여부처럼 선택지가 길 때 */
+.ev-radios { display: grid; gap: 9px; }
+.ev-radio {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  border: 1px solid var(--line);
+  border-radius: 11px;
+  padding: 13px 15px;
+  font-size: 14.5px;
+  line-height: 1.5;
+  color: var(--ink);
+  cursor: pointer;
+  transition: 0.15s;
+  word-break: keep-all;
+}
+.ev-radio:hover { border-color: var(--blue-2); }
+.ev-radio input { width: auto; accent-color: var(--blue); margin-top: 2px; flex-shrink: 0; }
+.ev-radio:has(input:checked) { border-color: var(--blue); background: var(--soft); }
+.field.invalid .ev-radio { border-color: var(--red); }
+
+/* 지원 완료 화면의 다음 일정 안내 */
+.ev-next {
+  text-align: left;
+  background: var(--soft);
+  border-radius: 12px;
+  padding: 16px 18px;
+  margin: 0 0 26px;
+  font-size: 13.5px;
+  line-height: 1.7;
+  color: var(--slate);
+}
+.ev-next b { display: block; color: var(--ink); font-size: 14px; margin-bottom: 7px; }
+.ev-next ul { list-style: none; display: grid; gap: 4px; }
+
+@media (max-width: 860px) {
+  .career-banners { grid-template-columns: 1fr; }
+  .career-form { grid-template-columns: minmax(0, 1fr); max-width: 560px; margin-left: auto; margin-right: auto; }
+}
+@media (max-width: 560px) {
+  .career { padding: 26px 0 64px; }
+  .career-banner { padding: 26px 22px 24px; min-height: 152px; }
+  .career-job { gap: 12px; padding: 22px 4px; }
+  .career-job:hover { padding-left: 8px; }
+  .career-job__title { font-size: 17px; }
+  .career-job__desc { display: none; }
+  .career-sum dl > div { grid-template-columns: 1fr; gap: 5px; }
+  .ev-agree-detail { margin-left: 0; }
+}

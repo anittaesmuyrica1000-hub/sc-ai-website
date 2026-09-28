@@ -168,6 +168,39 @@ export type BrochureRequest = {
   download_count?: number | null;
 };
 
+// 이벤트 참가 신청(event_applications) 타입 — /event/[slug]/apply 에서 접수.
+// 도입문의(signups)와 달리 지원자 개인 정보이고, 보유기간이 고정 파기일(2027-02-28)이다.
+// 테이블·RLS는 supabase/event-applications-setup.sql 참고.
+export type EventApplication = {
+  id: string;
+  created_at: string;
+  event_slug: string;
+  name: string;
+  phone: string;
+  email: string;
+  job: string;              // marketing | dev (lib/eventApply.ts EVENT_JOBS)
+  applicant_type: string;   // undergrad | grad | graduated | etc
+  final_attend: string;     // yes | no | undecided
+  how_found?: string | null;
+  how_found_detail?: string | null;
+  consent_privacy: boolean;
+  consent_fiction: boolean;
+  consent_content: boolean; // [선택] 비식별 응답의 콘텐츠 활용
+  is_test?: boolean | null;
+  status?: string | null;
+  admin_note?: string | null;
+  coupon_sent_at?: string | null;
+  utm_source?: string | null;
+  utm_medium?: string | null;
+  utm_campaign?: string | null;
+  utm_id?: string | null;
+  utm_term?: string | null;
+  utm_content?: string | null;
+  gclid?: string | null;
+  fbclid?: string | null;
+  referrer?: string | null;
+};
+
 // 약관(법적 문서) 타입 — admin 관리 + 법적 페이지 렌더
 export type LegalDoc = {
   id: string;
@@ -220,6 +253,8 @@ export const SEO_PAGES: { path: string; label: string }[] = [
   { path: "/apply", label: "도입문의" },
   { path: "/brochure", label: "서비스소개서" },
   { path: "/blog", label: "블로그 목록" },
+  { path: "/event", label: "이벤트 목록" },
+  { path: "/event/ai-mock-challenge-2026", label: "이벤트 · 2026 슈퍼전자 AI 면접 챌린지" },
   { path: "/privacy", label: "개인정보처리방침" },
   { path: "/terms", label: "서비스 이용약관(기업)" },
   { path: "/terms-applicant", label: "지원자용 이용약관" },

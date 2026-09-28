@@ -25,15 +25,18 @@ export type EventItem = {
   contact: string;
   /** 커버 이미지가 없으면 블로그와 같은 그라데이션 플레이스홀더를 쓴다 */
   cover?: string;
-  /** 신청 폼 URL. 미확정이면 상세 페이지 유의사항으로 보낸다 */
+  /** 참가 신청 경로. 자체 폼은 /event/<slug>/apply (app/event/[slug]/apply) */
   applyUrl: string;
 };
 
 export const EVENTS: EventItem[] = [
   {
     slug: "ai-mock-challenge-2026",
-    title: "2026 슈퍼코더 AI 모의채용 챌린지",
-    excerpt: "가상기업 '슈퍼전자'에 지원해 실제 채용 전형을 그대로 경험합니다. 참가비 무료, 전공·학년 제한 없음.",
+    // 행사명은 기획안(2026-슈퍼전자-AI면접챌린지-기획안.pptx) 표기를 그대로 쓴다.
+    // 포스터·채용공고문·보도자료·대학 게시물과 같은 이름이어야 검색에서 한 건으로 모인다.
+    title: "2026 슈퍼전자 AI 면접 챌린지",
+    excerpt:
+      "가상기업 '슈퍼전자'에 지원해 지원서부터 최종 면접까지 채용 전형을 그대로 겪어 봅니다. 참가비 무료, 전공·학년 제한 없음.",
     period: "모집 2026.10.06 ~ 11.01",
     applyStart: "2026-10-06",
     applyEnd: "2026-11-01",
@@ -42,10 +45,8 @@ export const EVENTS: EventItem[] = [
     interview: "2026년 11월 4일(수) ~ 11월 8일(일)",
     announce: "2026년 11월 11일(수)",
     final: "2026년 11월 20일(금), 서울",
-    contact: "이벤트 담당자 연락처 준비 중", // TODO(10/02 확정)
-    // TODO(10/02 확정): 신청 폼이 정해지면 여기만 바꾼다. 자체 폼으로 갈 경우
-    // 리드 저장은 반드시 서버 라우트를 거친다(RLS로 클라이언트 insert 차단).
-    applyUrl: "#apply-notice",
+    contact: "이벤트 담당자 연락처 준비 중", // TODO(10/06 OPEN 전 필수): 문의 채널 확정 후 교체
+    applyUrl: "/event/ai-mock-challenge-2026/apply",
   },
 ];
 
