@@ -7,7 +7,7 @@
    블로그는 글이 많아 그리드가 차지만 이벤트는 한두 건인 시기가 길다.
    (:has() 는 blog/[id]/post.css 의 .post-table-wrap 에서도 쓰는 패턴) */
 .blog-list .post-grid:has(> a:only-child){
-  grid-template-columns:minmax(0,600px);justify-content:center
+  grid-template-columns:minmax(0,760px);justify-content:center
 }
 
 /* 목록 카드의 일정 한 줄 — 블로그 카드에는 없는 요소 */
@@ -22,10 +22,17 @@
    회사 → 공고명 → 고용형태·접수기간 → D-day·직무 태그.
    훑는 사람이 "내 직군인가 / 언제까지인가"를 두 줄 안에 끝내는 게 목적이라
    설명 문장은 카드에 넣지 않는다(상세는 지원 페이지의 공고 화면이 맡는다). */
+/* 상세(.post-content 안)와 목록(/event 하단) 두 곳에서 같은 카드를 쓴다.
+   그래서 기본 규칙은 .post-content 로 감싸지 않는다 — 감싸면 목록에서 스타일이 빠진다. */
 .ev-jobs{margin:0 0 40px}
+/* 목록 페이지에서는 행사 카드(600px) 아래에 놓이므로 폭을 맞춰 가운데 정렬 */
+.ev-jobs--list{max-width:760px;margin:36px auto 0}
 .ev-jobs__head{display:flex;align-items:center;gap:9px;margin-bottom:16px}
-/* post.css 의 h2 여백·크기는 카드 헤더에서 쓰지 않는다 */
-.post-content .ev-jobs__head h2{margin:0;font-size:19px;letter-spacing:-.02em}
+/* post.css 의 h2 여백·크기를 상속하지 않도록 값을 직접 지정한다 */
+.ev-jobs__head h2{
+  margin:0;font-size:19px;font-weight:700;line-height:1.4;
+  letter-spacing:-.02em;color:var(--ink)
+}
 .ev-jobs__count{
   min-width:24px;height:24px;padding:0 7px;border-radius:999px;
   background:var(--soft-2);color:var(--blue-d);
@@ -41,7 +48,7 @@
   padding:22px 22px 20px;transition:.15s
 }
 /* .post-content a 가 본문 링크를 파란 밑줄로 만든다. 카드는 그 규칙에서 빼낸다 */
-.post-content .ev-jobcard{text-decoration:none;color:inherit}
+.ev-jobcard{text-decoration:none;color:inherit}
 .ev-jobcard:hover{border-color:var(--blue-2);box-shadow:0 10px 26px -18px rgba(20,40,90,.35);transform:translateY(-2px)}
 .ev-jobcard:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
 

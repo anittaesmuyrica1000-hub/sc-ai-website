@@ -4,7 +4,7 @@ import type { Metadata } from "next";
 import "../blog/blog.css";
 import "./event.css";
 import EventClient from "./EventClient";
-import { EVENTS, statusOf } from "@/lib/events";
+import { EVENTS, statusOf, ddayLabel } from "@/lib/events";
 import { buildPageMetadata } from "@/lib/pageSeo";
 
 // 모집 상태(모집 예정 → 모집 중 → 모집 마감)가 날짜에 따라 바뀌므로 요청 시 계산한다
@@ -27,7 +27,9 @@ export function generateMetadata() {
 }
 
 export default function EventIndexPage() {
-  const rows = EVENTS.map((e) => ({ ...e, status: statusOf(e) }));
+  // D-day는 서버에서 계산해 넘긴다 — 클라이언트에서 new Date()를 쓰면 서버 렌더 결과와
+  // 값이 달라져 하이드레이션 불일치가 난다.
+  const rows = EVENTS.map((e) => ({ ...e, status: statusOf(e), dday: ddayLabel(e) }));
   // 모집 중 → 모집 예정 → 모집 마감 순
   const order = { open: 0, upcoming: 1, closed: 2 } as const;
   rows.sort((a, b) => order[a.status] - order[b.status] || b.applyStart.localeCompare(a.applyStart));
