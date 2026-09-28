@@ -2,7 +2,6 @@
 
 import { useMemo, useState } from "react";
 import Link from "next/link";
-import Image from "next/image";
 import { STATUS_LABEL, type EventItem, type EventStatus } from "@/lib/events";
 import { EVENT_JOBS } from "@/lib/eventApply";
 
@@ -112,74 +111,64 @@ export default function EventClient({ events }: { events: Row[] }) {
                   &lsquo;{query.trim()}&rsquo; 검색 결과 {filtered.length}건
                 </div>
               )}
-              <div className="post-grid">
-                {filtered.map((e) => (
-                  <Link key={e.slug} href={`/event/${e.slug}`} className="post-card">
-                    {e.cover ? (
-                      <Image
-                        src={e.cover}
-                        alt=""
-                        className="post-cover"
-                        width={640}
-                        height={360}
-                        sizes="(max-width:760px) 100vw, 50vw"
-                      />
-                    ) : (
-                      <div className="post-cover ph">
-                        <i className="fa-solid fa-bullhorn"></i>
-                      </div>
-                    )}
-                    <div className="post-body">
-                      <span className="post-cat">{STATUS_LABEL[e.status]}</span>
-                      <h2>{e.title}</h2>
-                      <p className="post-excerpt">{e.excerpt}</p>
-                      <p className="ev-card-period">
-                        <i className="fa-solid fa-clock-rotate-left"></i> {e.period}
-                      </p>
-                    </div>
-                  </Link>
-                ))}
-              </div>
-
-              {/* 행사 카드 아래 모집 공고 — 상세 페이지와 같은 카드(.ev-jobcard)를 그대로 쓴다.
-                  카드를 누르면 해당 직군 지원서로 바로 간다. */}
+              {/* 행사 한 건 = 요약 한 블록 + 그 행사의 채용 카드.
+                  큰 커버 이미지를 쓰던 카드를 걷어냈다 — 이미지가 없는 동안 자리만 차지하고,
+                  정작 지원자가 알아야 할 "어떤 직군을, 언제까지"가 안 보였다.
+                  공고가 없는 행사는 요약 블록만 나오고, 상세 링크로 넘어간다. */}
               {filtered.map((e) => {
                 const jobs = JOBS[e.slug];
-                if (!jobs) return null;
                 return (
-                  <div key={e.slug} className="ev-jobs ev-jobs--list">
-                    <div className="ev-jobs__head">
-                      <h2>모집 중인 공고</h2>
-                      <span className="ev-jobs__count">{jobs.length}</span>
+                  <article key={e.slug} className="ev-entry">
+                    <div className="ev-entry__head">
+                      <span className="post-cat">{STATUS_LABEL[e.status]}</span>
+                      <h2>
+                        <Link href={`/event/${e.slug}`}>{e.title}</Link>
+                      </h2>
+                      <p className="ev-entry__excerpt">{e.excerpt}</p>
+                      <div className="ev-entry__meta">
+                        <span>
+                          <i className="fa-solid fa-clock-rotate-left"></i> {e.period}
+                        </span>
+                        <Link href={`/event/${e.slug}`} className="ev-entry__more">
+                          행사 안내 자세히 보기 <i className="fa-solid fa-arrow-right"></i>
+                        </Link>
+                      </div>
                     </div>
-                    <ul className="ev-jobs__list">
-                      {jobs.map((j) => (
-                        <li key={j.v}>
-                          <Link href={`${e.applyUrl}?job=${j.v}`} className="ev-jobcard">
-                            <span className="ev-jobcard__org">슈퍼전자</span>
-                            <span className="ev-jobcard__title">{j.l} 신입사원 모집</span>
-                            <span className="ev-jobcard__meta">
-                              <span>신입</span>
-                              <span>
-                                {e.applyStart.replace(/-/g, ".")} ~ {e.applyEnd.replace(/-/g, ".")}
-                              </span>
-                            </span>
-                            <span className="ev-jobcard__tags">
-                              <span className="ev-tag ev-tag--dday">{e.dday}</span>
-                              {j.tags.map((t) => (
-                                <span key={t} className="ev-tag">
-                                  {t}
+
+                    {jobs && (
+                      <>
+                        {/* 상세 페이지와 같은 카드(.ev-jobcard)를 그대로 쓴다.
+                            누르면 해당 직군 지원서로 바로 간다. */}
+                        <ul className="ev-jobs__list">
+                          {jobs.map((j) => (
+                            <li key={j.v}>
+                              <Link href={`${e.applyUrl}?job=${j.v}`} className="ev-jobcard">
+                                <span className="ev-jobcard__org">슈퍼전자</span>
+                                <span className="ev-jobcard__title">{j.l} 신입사원 모집</span>
+                                <span className="ev-jobcard__meta">
+                                  <span>신입</span>
+                                  <span>
+                                    {e.applyStart.replace(/-/g, ".")} ~ {e.applyEnd.replace(/-/g, ".")}
+                                  </span>
                                 </span>
-                              ))}
-                            </span>
-                          </Link>
-                        </li>
-                      ))}
-                    </ul>
-                    <p className="ev-jobs__note">
-                      한 직군만 선택해 지원합니다. 참가비는 없고 전공·학년 제한도 없습니다.
-                    </p>
-                  </div>
+                                <span className="ev-jobcard__tags">
+                                  <span className="ev-tag ev-tag--dday">{e.dday}</span>
+                                  {j.tags.map((t) => (
+                                    <span key={t} className="ev-tag">
+                                      {t}
+                                    </span>
+                                  ))}
+                                </span>
+                              </Link>
+                            </li>
+                          ))}
+                        </ul>
+                        <p className="ev-jobs__note">
+                          한 직군만 선택해 지원합니다. 참가비는 없고 전공·학년 제한도 없습니다.
+                        </p>
+                      </>
+                    )}
+                  </article>
                 );
               })}
             </>

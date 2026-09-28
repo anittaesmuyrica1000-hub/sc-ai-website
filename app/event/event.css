@@ -3,19 +3,39 @@
    상세(읽기 폭·타이포·표·태그·하단 CTA)는 app/blog/[id]/post.css 를 그대로 쓴다.
    여기에는 이벤트에만 있는 것만 둔다. */
 
-/* 카드가 하나뿐일 때 2열 그리드 왼쪽에 몰려 보이지 않도록 가운데로.
-   블로그는 글이 많아 그리드가 차지만 이벤트는 한두 건인 시기가 길다.
-   (:has() 는 blog/[id]/post.css 의 .post-table-wrap 에서도 쓰는 패턴) */
-.blog-list .post-grid:has(> a:only-child){
-  grid-template-columns:minmax(0,760px);justify-content:center
+/* ── /event 목록의 행사 한 건 ─────────────────────────────
+   블로그식 커버 카드(.post-card)를 쓰지 않는다. 커버 이미지가 없는 동안
+   빈 그라데이션 박스가 화면 대부분을 차지하고, 정작 지원자가 알아야 할
+   "어떤 직군을, 언제까지"는 안 보였다.
+   요약 한 블록 + 채용 카드로 바꿔 목록에서 바로 지원까지 간다. */
+.ev-entry{max-width:760px;margin:0 auto;padding:0 0 8px}
+.ev-entry+.ev-entry{margin-top:56px;padding-top:48px;border-top:1px solid var(--line)}
+.ev-entry__head{margin-bottom:26px}
+.ev-entry__head h2{
+  margin:12px 0 0;font-size:clamp(24px,3vw,30px);font-weight:700;
+  line-height:1.34;letter-spacing:-.025em;color:var(--ink);word-break:keep-all
 }
+.ev-entry__head h2 a{color:inherit;text-decoration:none}
+.ev-entry__head h2 a:hover{color:var(--blue-d)}
+.ev-entry__excerpt{
+  margin:12px 0 0;font-size:15.5px;line-height:1.66;color:var(--slate);word-break:keep-all
+}
+.ev-entry__meta{
+  display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;
+  margin-top:16px;font-size:13.5px;font-weight:600;color:var(--slate-2)
+}
+.ev-entry__meta>span{display:inline-flex;align-items:center;gap:7px}
+.ev-entry__meta i{font-size:12px;color:var(--blue-2)}
+.ev-entry__more{
+  display:inline-flex;align-items:center;gap:7px;
+  color:var(--blue-d);text-decoration:none;white-space:nowrap
+}
+.ev-entry__more:hover{text-decoration:underline}
+.ev-entry__more i{color:inherit;font-size:11px}
 
-/* 목록 카드의 일정 한 줄 — 블로그 카드에는 없는 요소 */
-.ev-card-period{
-  margin-top:auto;padding-top:12px;font-size:13px;font-weight:600;color:var(--slate-2);
-  display:flex;align-items:center;gap:7px
+@media(max-width:560px){
+  .ev-entry__meta{flex-direction:column;align-items:flex-start;gap:9px}
 }
-.ev-card-period i{font-size:12px;color:var(--blue-2)}
 
 /* ── 대문 아래 공고 카드 ──────────────────────────────────
    실제 기업 채용 사이트의 공고 목록과 같은 읽기 순서로 둔다:
@@ -25,8 +45,6 @@
 /* 상세(.post-content 안)와 목록(/event 하단) 두 곳에서 같은 카드를 쓴다.
    그래서 기본 규칙은 .post-content 로 감싸지 않는다 — 감싸면 목록에서 스타일이 빠진다. */
 .ev-jobs{margin:0 0 40px}
-/* 목록 페이지에서는 행사 카드(600px) 아래에 놓이므로 폭을 맞춰 가운데 정렬 */
-.ev-jobs--list{max-width:760px;margin:36px auto 0}
 .ev-jobs__head{display:flex;align-items:center;gap:9px;margin-bottom:16px}
 /* post.css 의 h2 여백·크기를 상속하지 않도록 값을 직접 지정한다 */
 .ev-jobs__head h2{
