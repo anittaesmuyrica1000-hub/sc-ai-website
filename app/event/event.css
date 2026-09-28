@@ -1,8 +1,23 @@
-/* /event — AI 모의채용 챌린지.
-   읽기 레이아웃·타이포·표·태그·하단 CTA는 블로그 상세(app/blog/[id]/post.css)를 그대로 쓴다.
-   여기에는 이 페이지에만 있는 것(본문 중간 지원 버튼)만 둔다. */
+/* /event — AI 면접 이벤트.
+   목록(히어로·필터·카드 그리드)은 app/blog/blog.css,
+   상세(읽기 폭·타이포·표·태그·하단 CTA)는 app/blog/[id]/post.css 를 그대로 쓴다.
+   여기에는 이벤트에만 있는 것만 둔다. */
 
-/* 본문 상단 지원 버튼 — 블로그에는 없는 요소. 요약 박스 바로 아래에서 전환을 받는다 */
+/* 카드가 하나뿐일 때 2열 그리드 왼쪽에 몰려 보이지 않도록 가운데로.
+   블로그는 글이 많아 그리드가 차지만 이벤트는 한두 건인 시기가 길다.
+   (:has() 는 blog/[id]/post.css 의 .post-table-wrap 에서도 쓰는 패턴) */
+.blog-list .post-grid:has(> a:only-child){
+  grid-template-columns:minmax(0,600px);justify-content:center
+}
+
+/* 목록 카드의 일정 한 줄 — 블로그 카드에는 없는 요소 */
+.ev-card-period{
+  margin-top:auto;padding-top:12px;font-size:13px;font-weight:600;color:var(--slate-2);
+  display:flex;align-items:center;gap:7px
+}
+.ev-card-period i{font-size:12px;color:var(--blue-2)}
+
+/* 상세 본문 중간 지원 버튼 */
 .ev-apply{
   display:flex;align-items:center;flex-wrap:wrap;gap:14px;margin:0 0 34px
 }
