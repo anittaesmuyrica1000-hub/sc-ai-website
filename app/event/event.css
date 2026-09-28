@@ -1,0 +1,187 @@
+/* /event — AI 모의채용 챌린지 이벤트 페이지 전용 CSS.
+   공유 토큰(--blue·--ink·--soft·--r·--shadow)·버튼(.btn*)·.wrap·.eyebrow 는
+   app/globals.css(SSOT)를 그대로 쓴다. 여기에는 이 페이지에만 있는 블록만 둔다. */
+
+/* ── HERO ───────────────────────────────────────────── */
+.ev-hero{
+  position:relative;overflow:hidden;margin-top:-65px;padding:150px 0 92px;
+  background:
+    radial-gradient(1100px 620px at 78% -8%, rgba(51,106,255,.30), transparent 62%),
+    radial-gradient(760px 520px at 12% 108%, rgba(38,208,206,.16), transparent 66%),
+    linear-gradient(168deg,#0B1330 0%,#131E42 52%,#0D1531 100%);
+}
+.ev-hero #event-particles{position:absolute;inset:0;z-index:0;width:100%;height:100%;pointer-events:none}
+@media(prefers-reduced-motion:reduce){.ev-hero #event-particles{display:none}}
+.ev-hero-inner{position:relative;z-index:2;max-width:880px;text-align:center}
+
+.ev-kicker{
+  display:inline-block;font-size:12px;font-weight:700;letter-spacing:.16em;
+  color:#9DB8FF;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.14);
+  padding:7px 16px;border-radius:999px;margin-bottom:26px
+}
+.ev-hero h1{
+  font-size:clamp(32px,4.6vw,56px);font-weight:700;line-height:1.3;letter-spacing:-.02em;color:#fff;margin:0
+}
+.ev-hero h1 #ev-accent{color:#7FA6FF}
+.ev-hero-sub{
+  font-size:clamp(16px,1.6vw,19px);color:#C7D2E8;line-height:1.7;margin:24px auto 0;max-width:620px
+}
+
+.ev-hero-dates{
+  display:flex;flex-wrap:wrap;justify-content:center;gap:12px;margin:38px auto 34px
+}
+.ev-hero-dates>div{
+  min-width:190px;padding:16px 22px;border-radius:14px;
+  background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.13)
+}
+.ev-hero-dates span{display:block;font-size:12px;color:#9DB8FF;margin-bottom:6px}
+.ev-hero-dates strong{display:block;font-size:17px;font-weight:700;color:#fff;letter-spacing:-.01em}
+
+.ev-hero-cta{display:flex;gap:12px;flex-wrap:wrap;justify-content:center}
+.ev-hero-note{margin-top:20px;font-size:13px;color:#9DB8FF}
+
+/* ── 섹션 공통 ──────────────────────────────────────── */
+.ev-sec{padding:var(--sec-y) 0}
+.ev-sec-soft{background:var(--soft)}
+.ev-sec .wrap{text-align:center}
+.ev-h2{
+  font-size:clamp(25px,3vw,36px);font-weight:700;letter-spacing:-.02em;color:var(--ink);
+  line-height:1.35;margin:0 0 18px
+}
+.ev-lead{
+  font-size:16px;line-height:1.75;color:var(--slate);max-width:720px;margin:0 auto 44px;text-align:center
+}
+
+/* ── 전형 절차 ──────────────────────────────────────── */
+.ev-steps{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:18px;margin-top:44px;text-align:left
+}
+.ev-step{
+  background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:26px 22px 22px;
+  display:flex;flex-direction:column
+}
+.ev-step-num{display:flex;align-items:center;gap:10px;margin-bottom:16px}
+.ev-step-num i{
+  width:40px;height:40px;border-radius:12px;background:var(--soft-2);color:var(--blue-d);
+  display:inline-flex;align-items:center;justify-content:center;font-size:16px;flex:0 0 auto
+}
+.ev-step-num span{font-size:13px;font-weight:700;color:var(--slate-2);letter-spacing:.06em}
+.ev-step h3{font-size:17px;font-weight:700;color:var(--ink);margin:0 0 8px;letter-spacing:-.01em}
+.ev-step p{font-size:13.5px;line-height:1.65;color:var(--slate);margin:0 0 16px;flex:1}
+.ev-step-when{
+  display:inline-block;align-self:flex-start;font-size:12.5px;font-weight:700;color:var(--blue-d);
+  background:var(--soft);border-radius:8px;padding:6px 11px
+}
+
+/* ── 모집 직무 ──────────────────────────────────────── */
+.ev-jobs{display:grid;grid-template-columns:repeat(2,1fr);gap:20px;text-align:left}
+.ev-job{
+  background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:30px 28px;box-shadow:var(--shadow)
+}
+.ev-job-tag{
+  display:inline-block;font-size:12px;font-weight:700;letter-spacing:.06em;color:#fff;
+  background:var(--blue);border-radius:999px;padding:5px 13px;margin-bottom:14px
+}
+.ev-job h3{font-size:19px;font-weight:700;color:var(--ink);margin:0 0 20px;letter-spacing:-.01em}
+.ev-job h4{
+  font-size:13px;font-weight:700;color:var(--slate-2);letter-spacing:.04em;margin:0 0 10px
+}
+.ev-job ul{margin:0 0 22px;padding:0;list-style:none}
+.ev-job li{
+  position:relative;padding-left:20px;font-size:14px;line-height:1.7;color:var(--ink);margin-bottom:8px
+}
+.ev-job li::before{
+  content:"";position:absolute;left:5px;top:10px;width:5px;height:5px;border-radius:50%;background:var(--blue-2)
+}
+.ev-job-note{
+  font-size:13px;color:var(--slate);background:var(--soft);border-radius:10px;padding:12px 14px;margin:0;line-height:1.6
+}
+
+/* ── 참가 혜택 ──────────────────────────────────────── */
+.ev-benefits{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:44px;text-align:left}
+.ev-benefit{background:var(--soft);border-radius:var(--r);padding:30px 26px}
+.ev-benefit i{
+  width:46px;height:46px;border-radius:14px;background:#fff;color:var(--blue-d);
+  display:inline-flex;align-items:center;justify-content:center;font-size:18px;margin-bottom:18px
+}
+.ev-benefit h3{font-size:16px;font-weight:700;color:var(--ink);margin:0 0 8px;letter-spacing:-.01em}
+.ev-benefit p{font-size:14.5px;line-height:1.65;color:var(--slate);margin:0}
+
+.ev-fineprint{
+  margin:34px auto 0;padding:0;list-style:none;max-width:860px;text-align:left
+}
+.ev-fineprint li{
+  position:relative;padding-left:16px;font-size:13px;line-height:1.75;color:var(--slate-2);margin-bottom:6px
+}
+.ev-fineprint li::before{content:"·";position:absolute;left:4px;color:var(--slate-2)}
+
+/* ── 모집 요강 표 ───────────────────────────────────── */
+.ev-table-wrap{overflow-x:auto;margin-top:40px;-webkit-overflow-scrolling:touch}
+.ev-table{
+  width:100%;min-width:560px;border-collapse:separate;border-spacing:0;text-align:left;
+  background:#fff;border:1px solid var(--line);border-radius:var(--r);overflow:hidden
+}
+.ev-table th,.ev-table td{padding:16px 22px;font-size:14.5px;line-height:1.65;border-bottom:1px solid var(--line)}
+.ev-table tr:last-child th,.ev-table tr:last-child td{border-bottom:none}
+.ev-table th{
+  width:210px;font-weight:700;color:var(--ink);background:var(--soft);white-space:nowrap;vertical-align:top
+}
+.ev-table td{color:var(--slate)}
+
+/* ── FAQ ────────────────────────────────────────────── */
+.ev-faq{margin-top:40px;text-align:left;max-width:860px;margin-left:auto;margin-right:auto}
+.ev-faq details{
+  background:#fff;border:1px solid var(--line);border-radius:14px;margin-bottom:10px;overflow:hidden
+}
+.ev-faq summary{
+  display:flex;align-items:center;justify-content:space-between;gap:16px;cursor:pointer;
+  padding:19px 22px;font-size:15.5px;font-weight:700;color:var(--ink);list-style:none;letter-spacing:-.01em
+}
+.ev-faq summary::-webkit-details-marker{display:none}
+.ev-faq summary i{color:var(--slate-2);font-size:13px;transition:transform .2s;flex:0 0 auto}
+.ev-faq details[open] summary i{transform:rotate(180deg)}
+.ev-faq details p{margin:0;padding:0 22px 21px;font-size:14.5px;line-height:1.75;color:var(--slate)}
+
+/* ── 유의사항 ───────────────────────────────────────── */
+.ev-notice{
+  background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:30px 32px;text-align:left;
+  max-width:900px;margin:0 auto
+}
+.ev-notice h3{
+  display:flex;align-items:center;gap:9px;font-size:16px;font-weight:700;color:var(--ink);margin:0 0 18px
+}
+.ev-notice h3 i{color:var(--blue-d)}
+.ev-notice ul{margin:0;padding:0;list-style:none}
+.ev-notice li{
+  position:relative;padding-left:18px;font-size:14px;line-height:1.75;color:var(--slate);margin-bottom:11px
+}
+.ev-notice li::before{content:"";position:absolute;left:4px;top:10px;width:5px;height:5px;border-radius:50%;background:var(--tint)}
+.ev-notice li b{color:var(--ink)}
+
+/* ── FINAL CTA ──────────────────────────────────────── */
+.ev-final{
+  padding:var(--sec-y) 0;text-align:center;
+  background:linear-gradient(168deg,#0B1330 0%,#16234C 55%,#0D1531 100%)
+}
+.ev-final .wrap{text-align:center}
+.ev-final h2{
+  font-size:clamp(25px,3vw,38px);font-weight:700;letter-spacing:-.02em;color:#fff;line-height:1.35;margin:0 0 14px
+}
+.ev-final p{font-size:16px;color:#C7D2E8;margin:0 0 32px}
+.ev-btn-ghost{background:transparent;color:#fff;border:1px solid rgba(255,255,255,.28)}
+.ev-btn-ghost:hover{border-color:#fff;color:#fff}
+
+/* ── 반응형 ─────────────────────────────────────────── */
+@media(max-width:980px){
+  .ev-steps{grid-template-columns:repeat(2,1fr)}
+  .ev-benefits{grid-template-columns:1fr}
+  .ev-jobs{grid-template-columns:1fr}
+}
+@media(max-width:700px){
+  .ev-hero{padding:126px 0 72px}
+  .ev-hero-dates>div{min-width:0;width:100%}
+  .ev-hero-cta .btn{width:100%;justify-content:center}
+  .ev-steps{grid-template-columns:1fr}
+  .ev-table th{width:130px;padding:14px 16px}
+  .ev-table td{padding:14px 16px}
+}

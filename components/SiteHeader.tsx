@@ -14,7 +14,7 @@ import { trackEvent } from "@/lib/track";
 const LOGIN_URL = "https://ai.supercoder.co/recruiter";
 
 /**
- * 공유 GNB(헤더) — 페이지 네비 중심(블로그·서비스소개서·로그인) + 도입문의 CTA.
+ * 공유 GNB(헤더) — 페이지 네비 중심(이벤트·블로그·서비스소개서·로그인) + 도입문의 CTA.
  * 섹션 앵커(왜 AI 면접인가/작동 방식/…)는 제거(스크롤 점프 방식 폐기).
  * 데스크톱은 인라인 링크, 모바일은 햄버거 메뉴. 섹션 인지형 색상(nav-invert 등) 유지.
  * '서비스소개서'는 /brochure 페이지로 이동(추적용 — 모달에서 페이지로 전환됨).
@@ -118,6 +118,7 @@ export default function SiteHeader() {
         {/* 우측: 페이지 메뉴 + 로그인 + 도입 문의 + (모바일)햄버거 */}
         <div className="navlinks">
           <div className="nav-center">
+            <Link href="/event">이벤트</Link>
             <Link href="/blog">블로그</Link>
             <Link href="/brochure">서비스소개서</Link>
           </div>
@@ -145,6 +146,7 @@ export default function SiteHeader() {
             </button>
             <div className={`nav-menu${menuOpen ? " open" : ""}`} id="navMenu" aria-hidden={!menuOpen}>
               <div className="nav-menu-links">
+                <Link href="/event" onClick={close}>이벤트</Link>
                 <Link href="/blog" onClick={close}>블로그</Link>
                 <Link href="/brochure" onClick={close}>서비스소개서</Link>
                 <Link href="/apply" className="nav-menu-item-cta" onClick={close}>도입 문의</Link>

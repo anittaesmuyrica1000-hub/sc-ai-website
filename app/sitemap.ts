@@ -15,6 +15,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${SITE_URL}/apply`, changeFrequency: "monthly", priority: 0.8 },
     { url: `${SITE_URL}/brochure`, changeFrequency: "monthly", priority: 0.6 },
     { url: `${SITE_URL}/blog`, changeFrequency: "weekly", priority: 0.7 },
+    // 2026 AI 모의채용 챌린지 — 캠페인 종료(2026-12) 후 제거
+    { url: `${SITE_URL}/event`, changeFrequency: "weekly", priority: 0.8 },
     { url: `${SITE_URL}/privacy`, changeFrequency: "yearly", priority: 0.3 },
     { url: `${SITE_URL}/terms`, changeFrequency: "yearly", priority: 0.3 },
     { url: `${SITE_URL}/terms-applicant`, changeFrequency: "yearly", priority: 0.3 },
