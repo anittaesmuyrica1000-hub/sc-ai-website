@@ -388,61 +388,103 @@ export default async function EventDetailPage({ params }: { params: Promise<{ sl
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(JSON_LD) }} />
 
-      <article className="post-wrap">
-        {/* 행사가 한 건뿐이면 /event 가 이 페이지로 되돌려 보내므로(목록 건너뛰기) 링크를 숨긴다 —
-            누르면 제자리로 돌아오는 링크가 된다. 두 건 이상이면 자동으로 다시 나온다. */}
-        {EVENTS.length > 1 && (
-          <Link href="/event" className="post-back">
-            <i className="fa-solid fa-arrow-left"></i> 이벤트 목록
-          </Link>
-        )}
-
-        <div className="post-head">
-          <span className="cat">{STATUS_LABEL[status]}</span>
-          <h1>{e.title}</h1>
-          <div className="post-meta">
-            <span>
-              <i className="fa-solid fa-bullhorn"></i> 주최 슈퍼코더
-            </span>
-            <span>
-              <i className="fa-solid fa-clock-rotate-left"></i> {e.period}
-            </span>
-            <span>
-              <i className="fa-solid fa-users"></i> 대학·대학원 재학생 및 졸업생
-            </span>
-            <span>
-              <i className="fa-solid fa-gift"></i> 참가비 무료
-            </span>
+      {/* 데스크톱 1440 기준 레이아웃.
+          읽기 폭 하나로만 두면 1440에서 양옆이 비고 지원 버튼이 스크롤 밖으로 밀린다.
+          히어로(전체 폭) + 본문·사이드바 2단(1180 컨테이너)으로 잡고,
+          사이드바에 일정과 지원 버튼을 붙여 스크롤 내내 따라오게 한다. */}
+      <header className="ev-hero">
+        <div className="ev-hero__inner">
+          {/* 행사가 한 건뿐이면 /event 가 이 페이지로 되돌려 보내므로(목록 건너뛰기) 링크를 숨긴다 —
+              누르면 제자리로 돌아오는 링크가 된다. 두 건 이상이면 자동으로 다시 나온다. */}
+          {EVENTS.length > 1 && (
+            <Link href="/event" className="ev-hero__back">
+              <i className="fa-solid fa-arrow-left"></i> 이벤트 목록
+            </Link>
+          )}
+          <span className="ev-hero__status">{STATUS_LABEL[status]}</span>
+          <h1 className="ev-hero__title">{e.title}</h1>
+          <p className="ev-hero__excerpt">{e.excerpt}</p>
+          <div className="ev-hero__meta">
+            <span>주최 슈퍼코더</span>
+            <span>대학·대학원 재학생 및 졸업생</span>
+            <span>참가비 무료</span>
           </div>
         </div>
+      </header>
 
-        <div className="post-content">
-          <Body e={e} dday={dday} />
+      <article className="ev-detail">
+        <div className="ev-detail__main">
+          <div className="post-content">
+            <Body e={e} dday={dday} />
+          </div>
+
+          <ul className="post-tags" aria-label="주제 키워드">
+            {TAGS.map((t) => (
+              <li key={t} className="post-tag">
+                #{t}
+              </li>
+            ))}
+          </ul>
+
+          <aside className="post-cta">
+            <p className="post-cta__label">
+              <i className="fa-solid fa-circle-check"></i> {e.title}
+            </p>
+            <h2 className="post-cta__title">첫 AI 면접을 실전에서 보지 마세요.</h2>
+            <p className="post-cta__desc">
+              참가비는 없고 전공·학년 제한도 없습니다. {e.applyTo}까지 지원할 수 있습니다.
+            </p>
+            <div className="post-cta__actions">
+              <Link href={e.applyUrl} className="btn btn-blue">
+                지원하기 <i className="fa-solid fa-arrow-right"></i>
+              </Link>
+              <Link href="/" className="btn btn-out">
+                슈퍼코더 AI면접 알아보기
+              </Link>
+            </div>
+          </aside>
         </div>
 
-        <ul className="post-tags" aria-label="주제 키워드">
-          {TAGS.map((t) => (
-            <li key={t} className="post-tag">
-              #{t}
-            </li>
-          ))}
-        </ul>
-
-        <aside className="post-cta">
-          <p className="post-cta__label">
-            <i className="fa-solid fa-circle-check"></i> {e.title}
-          </p>
-          <h2 className="post-cta__title">첫 AI 면접을 실전에서 보지 마세요.</h2>
-          <p className="post-cta__desc">
-            참가비는 없고 전공·학년 제한도 없습니다. {e.applyTo}까지 지원할 수 있습니다.
-          </p>
-          <div className="post-cta__actions">
-            <Link href={e.applyUrl} className="btn btn-blue">
+        {/* 스크롤을 따라오는 지원 패널 — 일정과 지원 버튼을 항상 손 닿는 곳에 둔다 */}
+        <aside className="ev-detail__side">
+          <div className="ev-side">
+            <div className="ev-side__head">
+              <span className="ev-tag ev-tag--dday">{dday}</span>
+              <span className="ev-side__status">{STATUS_LABEL[status]}</span>
+            </div>
+            <dl className="ev-side__list">
+              <div>
+                <dt>모집</dt>
+                <dd>
+                  {e.applyFrom}
+                  <br />~ {e.applyTo}
+                </dd>
+              </div>
+              <div>
+                <dt>1차 AI 면접</dt>
+                <dd>{e.interview}</dd>
+              </div>
+              <div>
+                <dt>Finalist 발표</dt>
+                <dd>{e.announce}</dd>
+              </div>
+              <div>
+                <dt>2차 오프라인</dt>
+                <dd>{e.final}</dd>
+              </div>
+              <div>
+                <dt>참가비</dt>
+                <dd>무료</dd>
+              </div>
+              <div>
+                <dt>문의</dt>
+                <dd>{e.contact}</dd>
+              </div>
+            </dl>
+            <Link href={e.applyUrl} className="btn btn-blue ev-side__cta">
               지원하기 <i className="fa-solid fa-arrow-right"></i>
             </Link>
-            <Link href="/" className="btn btn-out">
-              슈퍼코더 AI면접 알아보기
-            </Link>
+            <p className="ev-side__note">한 직군만 선택해 지원합니다.</p>
           </div>
         </aside>
       </article>

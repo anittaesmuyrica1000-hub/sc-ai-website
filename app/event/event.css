@@ -58,6 +58,92 @@
    회사 → 공고명 → 고용형태·접수기간 → D-day·직무 태그.
    훑는 사람이 "내 직군인가 / 언제까지인가"를 두 줄 안에 끝내는 게 목적이라
    설명 문장은 카드에 넣지 않는다(상세는 지원 페이지의 공고 화면이 맡는다). */
+/* ══ 상세 페이지 레이아웃 (데스크톱 1440 기준) ══════════════
+   블로그 상세(.post-wrap, 760px 한 칼럼)를 그대로 쓰면 1440에서 양옆이 비고
+   지원 버튼이 스크롤 밖으로 밀린다. 히어로(전체 폭) + 본문·사이드바 2단으로 잡는다.
+   본문 타이포(.post-content: 표·목록·제목)는 post.css 를 계속 쓴다 — 거기까지 새로 만들 이유가 없다. */
+
+/* 컨테이너 폭: 1180 = 본문 740 + 간격 60 + 사이드바 340 + 좌우 여백 */
+.ev-hero{
+  background:linear-gradient(135deg,#1B3B8F 0%,var(--blue) 62%,var(--blue-2) 100%);
+  color:#fff;position:relative;overflow:hidden
+}
+/* 배경 장식 원 — 목록 배너·지원 페이지 배너와 같은 문법 */
+.ev-hero::after{
+  content:"";position:absolute;right:6%;bottom:-160px;width:420px;height:420px;
+  border-radius:50%;background:rgba(255,255,255,.09);pointer-events:none
+}
+.ev-hero__inner{
+  position:relative;max-width:1180px;margin:0 auto;
+  padding:clamp(52px,6vw,84px) 24px clamp(44px,5vw,64px)
+}
+.ev-hero__back{
+  display:inline-flex;align-items:center;gap:7px;margin-bottom:24px;
+  font-size:14px;font-weight:700;color:rgba(255,255,255,.88);text-decoration:none
+}
+.ev-hero__back:hover{color:#fff}
+.ev-hero__status{
+  display:inline-block;border-radius:999px;padding:6px 14px;
+  background:rgba(255,255,255,.18);color:#fff;font-size:13px;font-weight:700
+}
+.ev-hero__title{
+  margin:18px 0 0;font-size:clamp(30px,4.2vw,48px);font-weight:700;
+  line-height:1.24;letter-spacing:-.03em;word-break:keep-all;max-width:20ch
+}
+.ev-hero__excerpt{
+  margin:16px 0 0;font-size:clamp(16px,1.4vw,18px);line-height:1.68;
+  color:rgba(255,255,255,.88);word-break:keep-all;max-width:62ch
+}
+.ev-hero__meta{
+  display:flex;flex-wrap:wrap;gap:10px 22px;margin-top:26px;padding-top:20px;
+  border-top:1px solid rgba(255,255,255,.22);
+  font-size:14px;font-weight:600;color:rgba(255,255,255,.92)
+}
+
+.ev-detail{
+  display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:60px;align-items:start;
+  max-width:1180px;margin:0 auto;padding:clamp(40px,4vw,56px) 24px 80px
+}
+/* post.css 가 본문 위에 주던 여백은 여기서 레이아웃이 대신 잡는다 */
+.ev-detail .post-content{margin-top:0}
+
+/* ── 스크롤을 따라오는 지원 패널 ────────────────────────── */
+.ev-detail__side{position:sticky;top:88px}
+.ev-side{
+  border:1px solid var(--line);border-radius:var(--r);background:#fff;
+  box-shadow:0 12px 32px -24px rgba(20,40,90,.4);padding:24px 22px
+}
+.ev-side__head{display:flex;align-items:center;gap:9px;margin-bottom:18px}
+.ev-side__status{font-size:13px;font-weight:700;color:var(--slate-2)}
+.ev-side__list{display:grid;gap:0;margin:0}
+.ev-side__list>div{
+  display:grid;grid-template-columns:86px minmax(0,1fr);gap:12px;
+  padding:11px 0;border-top:1px solid var(--line-soft,var(--line));
+  font-size:13.5px;line-height:1.6
+}
+.ev-side__list>div:first-child{border-top:none;padding-top:0}
+.ev-side__list dt{font-weight:600;color:var(--slate-2)}
+.ev-side__list dd{margin:0;color:var(--ink);word-break:keep-all}
+.ev-side__cta{
+  width:100%;justify-content:center;margin-top:20px;
+  font-size:15.5px;padding:14px;text-decoration:none
+}
+.ev-side__cta,.ev-side__cta:hover{color:#fff}
+.ev-side__note{margin:12px 0 0;font-size:12.5px;color:var(--slate-2);text-align:center}
+
+/* 1180 아래에서는 사이드바를 본문 위로 올린다 —
+   아래로 내리면 지원 버튼이 긴 본문 끝에 파묻힌다 */
+@media(max-width:1080px){
+  .ev-detail{grid-template-columns:minmax(0,1fr);gap:32px;max-width:760px}
+  .ev-detail__side{position:static;order:-1}
+  .ev-side{padding:22px 20px}
+}
+@media(max-width:560px){
+  .ev-hero__inner{padding-left:16px;padding-right:16px}
+  .ev-detail{padding-left:16px;padding-right:16px}
+  .ev-side__list>div{grid-template-columns:78px minmax(0,1fr);gap:10px}
+}
+
 /* ── 공고 카드 ───────────────────────────────────────────
    상세 페이지에만 둔다(목록은 행사 배너만). 실제 채용 사이트의 공고 목록과 같은
    읽기 순서: 회사 → 공고명 → 고용형태·접수기간 → D-day·직무 태그. */
