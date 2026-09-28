@@ -10,31 +10,52 @@
    요약 한 블록 + 채용 카드로 바꿔 목록에서 바로 지원까지 간다. */
 .ev-entry{max-width:760px;margin:0 auto;padding:0 0 8px}
 .ev-entry+.ev-entry{margin-top:56px;padding-top:48px;border-top:1px solid var(--line)}
-.ev-entry__head{margin-bottom:26px}
-.ev-entry__head h2{
-  margin:12px 0 0;font-size:clamp(24px,3vw,30px);font-weight:700;
-  line-height:1.34;letter-spacing:-.025em;color:var(--ink);word-break:keep-all
+/* 상단 배너 박스 — 지원 페이지(app/event/[slug]/apply/career.css)의 .career-banner 와 같은 문법.
+   이미지 없이 그라데이션으로 만들어, 포스터 디자인이 나오면 background 만 덮으면 된다. */
+.ev-banner{
+  position:relative;overflow:hidden;border-radius:var(--r);
+  background:linear-gradient(135deg,#1B3B8F 0%,var(--blue) 62%,var(--blue-2) 100%);
+  color:#fff;padding:38px 36px 32px;margin-bottom:30px
 }
-.ev-entry__head h2 a{color:inherit;text-decoration:none}
-.ev-entry__head h2 a:hover{color:var(--blue-d)}
-.ev-entry__excerpt{
-  margin:12px 0 0;font-size:15.5px;line-height:1.66;color:var(--slate);word-break:keep-all
+/* 배경 장식 원 — 지원 페이지 배너와 같은 위치 */
+.ev-banner::after{
+  content:"";position:absolute;right:-58px;bottom:-84px;width:240px;height:240px;
+  border-radius:50%;background:rgba(255,255,255,.1);pointer-events:none
 }
-.ev-entry__meta{
+.ev-banner>*{position:relative}
+
+.ev-banner__status{
+  display:inline-block;border-radius:999px;padding:5px 12px;
+  background:rgba(255,255,255,.18);color:#fff;
+  font-size:12.5px;font-weight:700;letter-spacing:-.01em
+}
+.ev-banner__title{
+  margin:14px 0 0;font-size:clamp(24px,3.1vw,32px);font-weight:700;
+  line-height:1.32;letter-spacing:-.025em;word-break:keep-all
+}
+.ev-banner__title a{color:#fff;text-decoration:none}
+.ev-banner__title a:hover{text-decoration:underline}
+.ev-banner__excerpt{
+  margin:12px 0 0;font-size:15.5px;line-height:1.66;
+  color:rgba(255,255,255,.88);word-break:keep-all;max-width:60ch
+}
+.ev-banner__meta{
   display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;
-  margin-top:16px;font-size:13.5px;font-weight:600;color:var(--slate-2)
+  margin-top:22px;padding-top:18px;border-top:1px solid rgba(255,255,255,.22);
+  font-size:13.5px;font-weight:600;color:rgba(255,255,255,.92)
 }
-.ev-entry__meta>span{display:inline-flex;align-items:center;gap:7px}
-.ev-entry__meta i{font-size:12px;color:var(--blue-2)}
-.ev-entry__more{
+.ev-banner__meta>span{display:inline-flex;align-items:center;gap:7px}
+.ev-banner__meta i{font-size:12px}
+.ev-banner__more{
   display:inline-flex;align-items:center;gap:7px;
-  color:var(--blue-d);text-decoration:none;white-space:nowrap
+  color:#fff;text-decoration:none;white-space:nowrap
 }
-.ev-entry__more:hover{text-decoration:underline}
-.ev-entry__more i{color:inherit;font-size:11px}
+.ev-banner__more:hover{text-decoration:underline}
+.ev-banner__more i{font-size:11px}
 
 @media(max-width:560px){
-  .ev-entry__meta{flex-direction:column;align-items:flex-start;gap:9px}
+  .ev-banner{padding:28px 22px 24px}
+  .ev-banner__meta{flex-direction:column;align-items:flex-start;gap:10px}
 }
 
 /* ── 대문 아래 공고 카드 ──────────────────────────────────

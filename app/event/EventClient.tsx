@@ -119,17 +119,19 @@ export default function EventClient({ events }: { events: Row[] }) {
                 const jobs = JOBS[e.slug];
                 return (
                   <article key={e.slug} className="ev-entry">
-                    <div className="ev-entry__head">
-                      <span className="post-cat">{STATUS_LABEL[e.status]}</span>
-                      <h2>
+                    {/* 상단 배너 — 지원 페이지(career.css)의 배너와 같은 문법.
+                        이미지 없이 그라데이션으로 만들어, 디자인이 나오면 배경만 덮으면 된다. */}
+                    <div className="ev-banner">
+                      <span className="ev-banner__status">{STATUS_LABEL[e.status]}</span>
+                      <h2 className="ev-banner__title">
                         <Link href={`/event/${e.slug}`}>{e.title}</Link>
                       </h2>
-                      <p className="ev-entry__excerpt">{e.excerpt}</p>
-                      <div className="ev-entry__meta">
+                      <p className="ev-banner__excerpt">{e.excerpt}</p>
+                      <div className="ev-banner__meta">
                         <span>
                           <i className="fa-solid fa-clock-rotate-left"></i> {e.period}
                         </span>
-                        <Link href={`/event/${e.slug}`} className="ev-entry__more">
+                        <Link href={`/event/${e.slug}`} className="ev-banner__more">
                           행사 안내 자세히 보기 <i className="fa-solid fa-arrow-right"></i>
                         </Link>
                       </div>
