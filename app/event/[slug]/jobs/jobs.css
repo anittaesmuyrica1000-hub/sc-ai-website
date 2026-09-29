@@ -61,10 +61,13 @@
   color: var(--slate);
 }
 .jd-meta__dates { font-variant-numeric: tabular-nums; }
-.jd-meta > span + span:not(.jd-meta__dates) {
+/* ⚠️ .share-wrap 도 span 이라 제외하지 않으면 공유 버튼 앞에 구분선이 그어진다 */
+.jd-meta > span + span:not(.jd-meta__dates):not(.share-wrap) {
   padding-left: 11px;
   border-left: 1px solid var(--line);
 }
+/* 공유는 사실 항목이 아니라 행동이다 — 조건들과 떼어 오른쪽 끝으로 민다 */
+.jd-meta .share-wrap { margin-left: auto; }
 .jd-meta .ev-tag--dday { font-size: 13px; padding: 5px 12px; }
 
 /* ── 2단 레이아웃 — 본문 + 따라오는 지원 패널 ───────────── */
@@ -115,7 +118,7 @@
 .jd-sec--first { margin-top: 34px; }
 /* 구분선을 낀 마지막 섹션 — 선 위아래를 60 / 56px 으로 거의 같게 둔다.
    아래가 40px 이던 때는 선이 '유의사항' 쪽에 붙어 제목을 누르는 것처럼 보였다. */
-.jd-sec--last { margin-top: 60px; padding-top: 56px; border-top: 1px solid var(--line); }
+.jd-sec--last { margin-top: 60px; padding-top: 80px; border-top: 1px solid var(--line); }
 .jd-sec h2 {
   margin: 0 0 16px;
   font-size: 20px;
@@ -203,7 +206,6 @@
 .jd-other:hover i { background: var(--blue); color: #fff; }
 
 /* ── 사이드 패널 보강 ──────────────────────────────────── */
-.jd-side__share { display: flex; justify-content: center; margin-top: 12px; }
 /* 모집 전·마감에는 누를 것을 주지 않는다. 버튼처럼 생긴 비활성 요소는 계속 눌러 보게 만든다 */
 .jd-cta-off {
   margin: 20px 0 0;

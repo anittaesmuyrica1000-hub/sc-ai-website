@@ -99,7 +99,6 @@ export default async function JobDetailPage({
             <Link href={listUrl} className="jd-back">
               <i className="fa-solid fa-arrow-left"></i> 공고 목록
             </Link>
-            <ShareButton {...share} position="header" variant="icon" label="이 공고 링크 공유하기" />
           </div>
 
           <h1 className="jd-title">{j.l} 신입사원 모집</h1>
@@ -113,6 +112,9 @@ export default async function JobDetailPage({
             <span>신입</span>
             <span>서울</span>
             <span>학력·전공 무관</span>
+            {/* 공유는 제목·조건을 다 읽은 다음 자리다. 사이드 패널 맨 아래에 두면
+                패널을 끝까지 내려야 보이고, 패널이 사라지는 좁은 화면에선 아예 없어진다. */}
+            <ShareButton {...share} position="header" variant="line" label="공고 공유하기" />
           </div>
         </div>
       </section>
@@ -226,7 +228,10 @@ export default async function JobDetailPage({
             </dl>
             {open || upcoming ? (
               <>
-                <Link href={applyUrl} className={`btn ${open ? "btn-blue" : "btn-out"} ev-side__cta`}>
+                {/* 모집 전이라도 파란 버튼으로 둔다 — 흰 버튼이면 패널에서 가장 먼저 눌러야 할 것이
+                    보이지 않고, 행사 안내 상세의 지원 버튼(항상 파랑)과도 어긋난다.
+                    '아직 제출할 수 없다'는 바로 아래 .jd-cta-note 가 말한다. */}
+                <Link href={applyUrl} className="btn btn-blue ev-side__cta">
                   {ctaLabel} <i className="fa-solid fa-arrow-right"></i>
                 </Link>
                 {upcoming && <p className="jd-cta-note">{e.applyFrom}부터 제출할 수 있어요</p>}
@@ -234,9 +239,6 @@ export default async function JobDetailPage({
             ) : (
               <p className="jd-cta-off">접수가 마감되었습니다</p>
             )}
-            <div className="jd-side__share">
-              <ShareButton {...share} position="side" variant="line" label="공고 공유하기" />
-            </div>
           </div>
         </aside>
       </article>
@@ -248,7 +250,7 @@ export default async function JobDetailPage({
           <span>{j.l}</span>
         </div>
         {open || upcoming ? (
-          <Link href={applyUrl} className={`btn ${open ? "btn-blue" : "btn-out"}`}>
+          <Link href={applyUrl} className="btn btn-blue">
             {open ? "지원 신청하기" : "지원서 미리 보기"}
           </Link>
         ) : (
