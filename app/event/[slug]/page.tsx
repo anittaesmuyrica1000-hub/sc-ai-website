@@ -298,9 +298,20 @@ function MockChallengeBody({ e, dday }: { e: EventItem; dday: string }) {
 }
 
 /* 지원 버튼 — 사이드 패널 · 하단 배너 · 좁은 화면 하단 바가 같이 쓴다.
-   모집 전에는 누를 수 없게 두고 여는 날을 적는다. 예전엔 '지원 신청하기'를 눌러 도착한 화면이
-   '아직 접수 전입니다'라 지원자가 막힌 느낌을 받았다(2026-09-30). */
-function ApplyCta({ e, status, className = "" }: { e: EventItem; status: EventStatus; className?: string }) {
+   모집 전에는 여는 날을 적는다. 예전엔 '지원 신청하기'를 눌러 도착한 화면이
+   '아직 접수 전입니다'라 지원자가 막힌 느낌을 받았다(2026-09-30).
+   openBefore — 모집 전에도 누를 수 있게 둔다. 슈퍼전자 공고 목록은 오픈 전에도 볼 수 있어야 해서
+   사이드 패널만 켠다. 하단 배너·하단 바는 비활성 그대로다. */
+function ApplyCta({
+  e, status, className = "", openBefore = false,
+}: { e: EventItem; status: EventStatus; className?: string; openBefore?: boolean }) {
+  if (status === "upcoming" && openBefore) {
+    return (
+      <Link href={e.applyUrl} className={`btn btn-blue ${className}`}>
+        {openLabel(e, "long")} <i className="fa-solid fa-arrow-right"></i>
+      </Link>
+    );
+  }
   if (status === "upcoming") {
     return (
       <span className={`btn ev-btn-off ${className}`} aria-disabled="true">
@@ -473,7 +484,7 @@ export default async function EventDetailPage({ params }: { params: Promise<{ sl
                 <dd>{withoutYear(e.final)}</dd>
               </div>
             </dl>
-            <ApplyCta e={e} status={status} className="ev-side__cta" />
+            <ApplyCta e={e} status={status} className="ev-side__cta" openBefore />
             <p className="ev-side__note">한 직군만 선택해 지원합니다.</p>
           </div>
         </aside>
