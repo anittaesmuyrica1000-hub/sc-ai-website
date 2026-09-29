@@ -77,6 +77,8 @@ export default async function JobDetailPage({
   const applyUrl = `${e.applyUrl}?job=${j.v}`;
   const share = {
     path: `/event/${e.slug}/jobs/${j.v}`,
+    title: `${j.l} 신입사원 모집 · ${e.title}`,
+    text: "가상기업 슈퍼전자의 채용 전형을 그대로. 참가비 무료, 전공·학년 제한 없습니다.",
     campaign: e.slug,
     content: j.v,
   };

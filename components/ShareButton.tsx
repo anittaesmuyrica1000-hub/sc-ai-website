@@ -7,17 +7,24 @@ import { trackEvent } from "@/lib/track";
    취준생이 공고를 옮기는 경로는 대부분 단톡방과 커뮤니티 링크다. 지원 폼 URL 하나만으로는
    그 경로가 끊긴다 — 열자마자 개인정보 입력 화면이 나오기 때문이다.
 
-   동작은 하나다: UTM 을 붙인 URL 을 클립보드에 넣고 토스트로 알린다.
+   동작이 기기에 따라 갈린다(2026-09-29 결정):
+   · 모바일(포인터 coarse) → OS 공유 시트. 카카오톡 단톡방으로 한 번에 넘어간다.
+   · 데스크톱 → 클립보드 복사 + 토스트.
 
-   ⚠️ navigator.share(OS 공유 시트)는 일부러 쓰지 않는다(2026-09-29).
-      macOS 데스크톱에서 열면 AirDrop·메모·일기·미리 알림까지 늘어서서,
-      링크 하나 넘기려는 사람에게 고를 것만 늘린다. 복사 한 동작으로 끝낸다.
-      모바일에서 카카오톡으로 바로 넘기는 경로가 필요해지면, 시트를 되살리되
-      포인터가 coarse 인 환경에서만 쓰도록 분기해야 한다 — 무조건 되살리면 같은 문제로 돌아온다. */
+   ⚠️ 데스크톱에서 시트를 열면 안 된다. macOS 는 AirDrop·메모·일기·미리 알림까지
+      늘어서서, 링크 하나 넘기려는 사람에게 고를 것만 늘린다.
+      navigator.share 존재 여부만으로 분기하면 안 된다 — 사파리·크롬 데스크톱에도 있다.
+      포인터가 coarse 인지(손가락인지)를 함께 본다.
+
+   ⚠️ 공유 시트를 닫는 것은 실패가 아니다(AbortError). 여기서 복사로 되돌리면
+      "취소했는데 복사됨" 토스트가 떠서 무엇이 일어났는지 알 수 없게 된다. */
 
 type Props = {
   /** 공유할 경로(/event/...). origin 은 클릭 시점의 location 에서 붙인다 */
   path: string;
+  /** 공유 시트에 넘길 제목(모바일). 카카오톡 대화방에 이 문구가 보인다 */
+  title: string;
+  text?: string;
   /** utm_campaign — 행사 slug */
   campaign: string;
   /** utm_content — 직군 등 어느 공고에서 나간 링크인지 */
@@ -38,6 +45,8 @@ type Props = {
 
 export default function ShareButton({
   path,
+  title,
+  text,
   campaign,
   content,
   position,
@@ -96,8 +105,26 @@ export default function ShareButton({
     }
   }
 
+  /* 손가락으로 쓰는 기기에서만 공유 시트를 연다 — 위 주석의 이유 */
+  function canUseShareSheet(): boolean {
+    if (typeof navigator === "undefined" || !navigator.share) return false;
+    if (typeof window === "undefined" || !window.matchMedia) return false;
+    return window.matchMedia("(pointer: coarse)").matches;
+  }
+
   async function onClick() {
-    await copy(buildUrl());
+    const url = buildUrl();
+    if (canUseShareSheet()) {
+      try {
+        await navigator.share({ title, text, url });
+        trackEvent("share_click", { method: "web_share", position, content });
+        return;
+      } catch (err) {
+        if ((err as Error)?.name === "AbortError") return;
+        /* 시트가 뜨지 못한 경우에만 복사로 넘어간다 */
+      }
+    }
+    await copy(url);
   }
 
   return (
