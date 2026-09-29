@@ -108,18 +108,6 @@ export default async function JobDetailPage({
 
       <article className="jd">
         <div className="jd__main">
-          {/* 고지는 본문 맨 위에 둔다 — 접히거나 아래로 밀리면 고지가 아니다.
-              이 화면은 단톡방으로 받은 링크의 착지점이라, 행사 맥락을 전혀 모르는 사람이
-              바로 들어온다. 유의사항(맨 아래)까지 내려가야 알 수 있으면 늦다.
-              같은 문장이 유의사항 첫 줄에도 있다 — 중복이지만 고지는 중복이 안전한 쪽이다. */}
-          <div className="jd-notice">
-            <i className="fa-solid fa-circle-info"></i>
-            <span>
-              <b>안내</b> {FICTION_NOTICE} 본 행사는 <strong>슈퍼코더</strong>가 주최하는{" "}
-              <Link href={`/event/${e.slug}`}>{e.title}</Link>입니다.
-            </span>
-          </div>
-
           {/* 이 화면은 '이 직군이 무슨 일을 하는가'만 맡는다. 채용절차·회사소개·인재상·참가 혜택은
               행사 안내(/event/[slug])에 있고, 두 곳에 같은 내용을 두면 반드시 한쪽이 먼저 낡는다.
               섹션 제목은 실제 기업 채용공고의 라벨을 쓴다 — 공고소개 · 주요업무 · 자격요건.

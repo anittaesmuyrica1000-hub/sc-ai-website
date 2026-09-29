@@ -85,25 +85,6 @@
 }
 .jd__side { position: sticky; top: 88px; }
 
-/* ── 가상기업 고지 — 본문 첫 블록. 접지 않는다 ───────────── */
-.jd-notice {
-  display: flex;
-  gap: 11px;
-  align-items: flex-start;
-  background: var(--soft);
-  border: 1px solid var(--tint);
-  border-radius: 12px;
-  padding: 14px 16px;
-  font-size: 15px;
-  line-height: 1.65;
-  color: var(--slate);
-  word-break: keep-all;
-}
-.jd-notice i { color: var(--blue); font-size: 15px; margin-top: 2px; flex-shrink: 0; }
-.jd-notice b { color: var(--ink); font-weight: 700; margin-right: 4px; }
-.jd-notice strong { color: var(--ink); font-weight: 700; }
-.jd-notice a { color: var(--blue-d); font-weight: 600; }
-
 /* 공고소개 본문 — 다른 섹션 본문보다 한 단계 크게 읽힌다.
    ⚠️ `.jd-sec p` 가 더 높은 점수(0,1,1)라 `.jd-intro` 단독으로는 크기·여백을 이기지 못한다. */
 .jd-sec .jd-intro {
@@ -118,8 +99,8 @@
    섹션 간격 60px 은 행사 안내 상세(.ev-detail .post-content > h2)와 같은 값이다.
    두 페이지를 오가며 읽는 화면이라 끊기는 리듬이 같아야 한다. 한쪽을 바꾸면 같이 바꾼다. */
 .jd-sec { margin-top: 60px; }
-/* 본문 첫 섹션 — 위가 가상기업 고지 박스라 섹션 사이가 아니다. 60px 을 따르지 않고,
-   고지와 붙어 보이지 않을 만큼만 띄운다. */
+/* 본문 첫 섹션 — 위가 헤더라 섹션 사이가 아니다. 60px 을 따르지 않는다.
+   가상기업 고지는 유의사항 첫 줄이 맡는다(2026-09-29: 상단 배너는 두지 않기로) */
 .jd-sec--first { margin-top: 34px; }
 /* 구분선을 낀 마지막 섹션 — 선 위아래를 60 / 56px 으로 거의 같게 둔다.
    ⚠️ 셀렉터 앞의 .jd-page 는 장식이 아니다. 위 `.jd-page section{padding:0}` 을
