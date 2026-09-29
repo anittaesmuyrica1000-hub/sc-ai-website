@@ -94,6 +94,16 @@ export function ddayLabel(e: EventItem, today = new Date()): string {
   return status === "upcoming" ? `OPEN D-${days}` : `D-${days}`;
 }
 
+/**
+ * 사이드 패널의 일정 표기에서 연도를 뺀다.
+ * 행사명("2026 슈퍼전자 AI 면접 챌린지")과 히어로에 이미 연도가 있어
+ * 항목마다 "2026년"을 반복하면 다섯 줄이 같은 말로 시작해 날짜가 눈에 안 들어온다.
+ * 본문 문장과 지원 폼 안내는 연도를 그대로 쓴다 — 거기서는 문장 하나가 독립적으로 읽혀야 한다.
+ */
+export function withoutYear(s: string): string {
+  return s.replace(/\d{4}년\s*/g, "");
+}
+
 export const STATUS_LABEL: Record<EventStatus, string> = {
   upcoming: "모집 예정",
   open: "모집 중",

@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 // 상세 레이아웃은 블로그 글 상세를 그대로 쓴다. post.css 를 고치면 함께 바뀐다.
 import "../../blog/[id]/post.css";
 import "../event.css";
-import { EVENTS, findEvent, statusOf, ddayLabel, STATUS_LABEL, type EventItem } from "@/lib/events";
+import { EVENTS, findEvent, statusOf, ddayLabel, withoutYear, STATUS_LABEL, type EventItem } from "@/lib/events";
 import { EVENT_JOBS, EVENT_STEPS, EVENT_VALUES, COMPANY_INTRO, FICTION_NOTICE } from "@/lib/eventApply";
 import ShareButton from "@/components/ShareButton";
 import { buildPageMetadata } from "@/lib/pageSeo";
@@ -77,6 +77,18 @@ const FAQS = [
 function MockChallengeBody({ e, dday }: { e: EventItem; dday: string }) {
   return (
     <>
+      {/* 제목은 전부 명사형으로 맞춘다(행사 소개 · 전형 절차 · 참가 혜택 …) */}
+      <h2>행사 소개</h2>
+      <p>
+        실제 채용에서 AI 면접을 처음 만나는 경우가 많습니다. 무엇을 어떻게 말해야 할지 모른 채로 첫 전형을 치르면,
+        답변 내용과 무관한 이유로 실력을 보이지 못하게 됩니다.
+      </p>
+      <p>
+        슈퍼코더는 취업 전에 AI 면접을 실전처럼 겪어 볼 자리를 만들었습니다. 이 행사를 위해 만든 가상기업{" "}
+        <strong>슈퍼전자</strong>의 채용 전형을 지원서부터 최종 면접까지 그대로 진행합니다.
+      </p>
+      <blockquote>결과는 어떠한 기업의 채용에도 영향을 주지 않습니다. 연습용으로 편하게 보셔도 됩니다.</blockquote>
+
       {/* 공고 카드는 여기(상세)에만 둔다. 목록(/event)은 행사 배너만 보여주고,
           "어떤 직군을 뽑는지"는 들어와서 확인하는 구조다.
           카드 자체가 지원 경로라 본문 중간에 CTA 버튼을 따로 두지 않는다. */}
@@ -117,18 +129,6 @@ function MockChallengeBody({ e, dday }: { e: EventItem; dday: string }) {
         <p className="ev-jobs__note">한 직군만 선택해 지원합니다. 참가비는 없고 전공·학년 제한도 없습니다.</p>
       </div>
 
-      {/* 제목은 전부 명사형으로 맞춘다(행사 소개 · 전형 절차 · 참가 혜택 …) */}
-      <h2>행사 소개</h2>
-      <p>
-        실제 채용에서 AI 면접을 처음 만나는 경우가 많습니다. 무엇을 어떻게 말해야 할지 모른 채로 첫 전형을 치르면,
-        답변 내용과 무관한 이유로 실력을 보이지 못하게 됩니다.
-      </p>
-      <p>
-        슈퍼코더는 취업 전에 AI 면접을 실전처럼 겪어 볼 자리를 만들었습니다. 이 행사를 위해 만든 가상기업{" "}
-        <strong>슈퍼전자</strong>의 채용 전형을 지원서부터 최종 면접까지 그대로 진행합니다.
-      </p>
-      <blockquote>결과는 어떠한 기업의 채용에도 영향을 주지 않습니다. 연습용으로 편하게 보셔도 됩니다.</blockquote>
-
       <h2>전형 절차</h2>
       <ol className="ev-steps">
         {EVENT_STEPS.map(([name, desc, when]) => (
@@ -142,8 +142,24 @@ function MockChallengeBody({ e, dday }: { e: EventItem; dday: string }) {
         ))}
       </ol>
 
-      {/* 혜택을 전형 바로 뒤로 올렸다. 쿠폰과 상장은 지원 여부를 정하는 재료인데
-          예전 자리(7번째)에서는 대부분 보지 못하고 나갔다. */}
+      <h2>슈퍼전자와 인재상</h2>
+      <p>{COMPANY_INTRO}</p>
+      <p className="post-src">
+        기업을 상대로 파는 회사라 &lsquo;고객이 누구인가&rsquo;를 묻는 질문이 자연스럽게 나옵니다. 다만 반도체 지식은
+        묻지 않습니다. 2차 오프라인 면접은 아래 네 가지를 기준으로 진행합니다.
+      </p>
+      <ul className="ev-values">
+        {EVENT_VALUES.map(([en, ko, def]) => (
+          <li key={en}>
+            <b>{en}</b>
+            <span>{ko}</span>
+            <p>{def}</p>
+          </li>
+        ))}
+      </ul>
+
+      {/* 혜택은 인재상 뒤, FAQ 앞에 둔다. 앞쪽(전형 바로 뒤)에 두면 혜택이 먼저 읽혀
+          '쿠폰 받는 행사'로 보이고, 더 뒤로 밀면 지원 여부를 정할 때 보지 못한다. */}
       <h2>참가 혜택</h2>
       <div className="post-table-wrap">
         <table className="post-table">
@@ -172,22 +188,6 @@ function MockChallengeBody({ e, dday }: { e: EventItem; dday: string }) {
       <ul className="post-list">
         <li>쿠폰 선착순은 1차 AI 면접을 끝까지 마친 시각을 기준으로 합니다.</li>
         <li>쿠폰은 면접 종료 후 일괄 발송하며, 발송 예정일은 2026년 11월 13일입니다.</li>
-      </ul>
-
-      <h2>슈퍼전자와 인재상</h2>
-      <p>{COMPANY_INTRO}</p>
-      <p className="post-src">
-        기업을 상대로 파는 회사라 &lsquo;고객이 누구인가&rsquo;를 묻는 질문이 자연스럽게 나옵니다. 다만 반도체 지식은
-        묻지 않습니다. 2차 오프라인 면접은 아래 네 가지를 기준으로 진행합니다.
-      </p>
-      <ul className="ev-values">
-        {EVENT_VALUES.map(([en, ko, def]) => (
-          <li key={en}>
-            <b>{en}</b>
-            <span>{ko}</span>
-            <p>{def}</p>
-          </li>
-        ))}
       </ul>
 
       <h2>자주 묻는 질문</h2>
@@ -367,21 +367,21 @@ export default async function EventDetailPage({ params }: { params: Promise<{ sl
               <div>
                 <dt>모집</dt>
                 <dd>
-                  {e.applyFrom}
-                  <br />~ {e.applyTo}
+                  {withoutYear(e.applyFrom)}
+                  <br />~ {withoutYear(e.applyTo)}
                 </dd>
               </div>
               <div>
                 <dt>1차 AI 면접</dt>
-                <dd>{e.interview}</dd>
+                <dd>{withoutYear(e.interview)}</dd>
               </div>
               <div>
                 <dt>Finalist 발표</dt>
-                <dd>{e.announce}</dd>
+                <dd>{withoutYear(e.announce)}</dd>
               </div>
               <div>
                 <dt>2차 오프라인</dt>
-                <dd>{e.final}</dd>
+                <dd>{withoutYear(e.final)}</dd>
               </div>
               <div>
                 <dt>참가비</dt>

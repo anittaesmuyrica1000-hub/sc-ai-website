@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 import "../../../event.css";
 import "../jobs.css";
 import ShareButton from "@/components/ShareButton";
-import { EVENTS, findEvent, statusOf, ddayLabel, STATUS_LABEL } from "@/lib/events";
+import { EVENTS, findEvent, statusOf, ddayLabel, withoutYear, STATUS_LABEL } from "@/lib/events";
 import {
   EVENT_JOBS,
   EVENT_STEPS,
@@ -265,21 +265,21 @@ export default async function JobDetailPage({
               <div>
                 <dt>모집</dt>
                 <dd>
-                  {e.applyFrom}
-                  <br />~ {e.applyTo}
+                  {withoutYear(e.applyFrom)}
+                  <br />~ {withoutYear(e.applyTo)}
                 </dd>
               </div>
               <div>
                 <dt>1차 AI 면접</dt>
-                <dd>{e.interview}</dd>
+                <dd>{withoutYear(e.interview)}</dd>
               </div>
               <div>
                 <dt>Finalist 발표</dt>
-                <dd>{e.announce}</dd>
+                <dd>{withoutYear(e.announce)}</dd>
               </div>
               <div>
                 <dt>2차 오프라인</dt>
-                <dd>{e.final}</dd>
+                <dd>{withoutYear(e.final)}</dd>
               </div>
               <div>
                 <dt>참가비</dt>
