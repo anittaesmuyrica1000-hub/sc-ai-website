@@ -327,31 +327,36 @@ export default async function EventDetailPage({ params }: { params: Promise<{ sl
       >
         <div className="ev-hero__inner">
           {/* 행사가 한 건뿐이면 /event 가 이 페이지로 되돌려 보내므로(목록 건너뛰기) 링크를 숨긴다 —
-              누르면 제자리로 돌아오는 링크가 된다. 두 건 이상이면 자동으로 다시 나온다. */}
-          <div className="ev-hero__top">
-            {EVENTS.length > 1 && (
+              누르면 제자리로 돌아오는 링크가 된다. 두 건 이상이면 자동으로 다시 나온다.
+              div 자체를 조건부로 둔다 — 비어 있어도 margin-bottom 24px 이 그대로 남는다. */}
+          {EVENTS.length > 1 && (
+            <div className="ev-hero__top">
               <Link href="/event" className="ev-hero__back">
                 <i className="fa-solid fa-arrow-left"></i> 이벤트 목록
               </Link>
-            )}
-            <ShareButton
-              path={`/event/${e.slug}`}
-              title={`${e.title} 참가자 모집`}
-              text={e.excerpt}
-              campaign={e.slug}
-              position="hero"
-              variant="icon"
-              label="이 행사 링크 공유하기"
-            />
-          </div>
+            </div>
+          )}
           <div className="ev-hero__body">
             <span className="ev-hero__status">{STATUS_LABEL[status]}</span>
             <h1 className="ev-hero__title">{e.title}</h1>
             <p className="ev-hero__excerpt">{e.excerpt}</p>
+            {/* 공유 버튼은 메타 줄 끝에 둔다. 히어로 오른쪽 위에 얹으면 제목으로 내려가는
+                시선을 먼저 가로채고, 마미톡처럼 오른쪽 끝으로 밀면 밝은 그래픽 위에 놓여
+                흰 아이콘이 보이지 않는다. 읽는 순서(제목 → 요약 → 메타)의 끝이자
+                배경이 짙은 자리가 여기다. */}
             <div className="ev-hero__meta">
               <span>주최 슈퍼코더</span>
               <span>대학·대학원 재학생 및 졸업생</span>
               <span>참가비 무료</span>
+              <ShareButton
+                path={`/event/${e.slug}`}
+                title={`${e.title} 참가자 모집`}
+                text={e.excerpt}
+                campaign={e.slug}
+                position="hero"
+                variant="icon"
+                label="이 행사 링크 공유하기"
+              />
             </div>
           </div>
         </div>
