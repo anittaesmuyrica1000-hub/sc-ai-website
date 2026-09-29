@@ -116,6 +116,17 @@
 /* post.css 가 본문 위에 주던 여백은 여기서 레이아웃이 대신 잡는다 */
 .ev-detail .post-content{margin-top:0}
 
+/* ── 섹션 간격 ────────────────────────────────────────
+   행사 안내는 성격이 다른 블록(소개·공고·절차·인재상·혜택·FAQ·유의사항)이 잇달아
+   나와서 블로그 글의 38px 리듬으로는 어디서 끊기는지 잘 보이지 않는다.
+   post.css 를 고치면 블로그 글 전체가 따라 움직이므로 .ev-detail 안으로 가둔다.
+   ⚠️ 자식 선택자(>)인 이유 — 공고 카드 블록 안의 h2(.ev-jobs__head h2)는
+      여백을 0 으로 죽여 뒀는데, 후손 선택자로 쓰면 점수가 같아 순서로 이기고 져서
+      그 h2 까지 60px 이 붙는다. */
+.ev-detail .post-content > h2{margin-top:60px}
+/* 첫 섹션 위는 히어로다 — 그 간격은 .ev-detail 의 padding 이 이미 잡는다 */
+.ev-detail .post-content > h2:first-child{margin-top:0}
+
 /* ── 스크롤을 따라오는 지원 패널 ────────────────────────── */
 .ev-detail__side{position:sticky;top:88px}
 .ev-side{
@@ -198,11 +209,10 @@
 /* ── 공고 카드 ───────────────────────────────────────────
    상세 페이지에만 둔다(목록은 행사 배너만). 실제 채용 사이트의 공고 목록과 같은
    읽기 순서: 회사 → 공고명 → 고용형태·접수기간 → D-day·직무 태그. */
-/* 위 여백 38px 은 post.css 의 h2 margin-top 과 같은 값이다 — 이 블록의 h2 는
-   .ev-jobs__head h2{margin:0} 으로 여백을 죽여 뒀으므로, 블록 바깥에서 같은 값을 줘야
-   앞의 행사 소개와 벌어지는 간격이 다른 섹션 사이 간격과 같아진다.
-   앞 문단의 margin-bottom(22px)과는 마진 상쇄로 합쳐져 38px 하나로 잡힌다. */
-.ev-jobs{margin:38px 0 40px}
+/* 이 블록의 h2 는 .ev-jobs__head h2{margin:0} 으로 여백을 죽여 뒀으므로,
+   섹션 간격은 블록 바깥에서 준다 — 값은 위 `.ev-detail .post-content > h2` 와 같은 60px.
+   앞 문단의 margin-bottom(22px), 뒤 h2 의 margin-top(60px)과는 마진 상쇄로 합쳐진다. */
+.ev-jobs{margin:60px 0 0}
 .ev-jobs__head{display:flex;align-items:center;gap:9px;margin-bottom:16px}
 /* post.css 의 h2 여백·크기를 상속하지 않도록 값을 직접 지정한다 */
 .post-content .ev-jobs__head h2{
