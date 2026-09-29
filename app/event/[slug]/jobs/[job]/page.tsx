@@ -5,15 +5,7 @@ import "../../../event.css";
 import "../jobs.css";
 import ShareButton from "@/components/ShareButton";
 import { EVENTS, findEvent, statusOf, ddayLabel, withoutYear, applyRange, STATUS_LABEL } from "@/lib/events";
-import {
-  EVENT_JOBS,
-  EVENT_STEPS,
-  EVENT_VALUES,
-  FICTION_NOTICE,
-  COMPANY_INTRO,
-  JOB_DETAIL_EVENT,
-  findJob,
-} from "@/lib/eventApply";
+import { EVENT_JOBS, FICTION_NOTICE, JOB_DETAIL_EVENT, findJob } from "@/lib/eventApply";
 import { buildPageMetadata } from "@/lib/pageSeo";
 
 /* 가상기업 슈퍼전자의 채용공고 상세.
@@ -127,16 +119,10 @@ export default async function JobDetailPage({
 
       <article className="jd">
         <div className="jd__main">
-          {/* 고지는 본문 맨 위에 둔다 — 접히거나 아래로 밀리면 고지가 아니다 */}
-          <div className="jd-notice">
-            <i className="fa-solid fa-circle-info"></i>
-            <span>
-              <b>안내</b> {FICTION_NOTICE}
-            </span>
-          </div>
-
-          {/* 섹션 제목은 실제 기업 채용공고의 라벨을 쓴다 — 공고소개 · 주요업무 · 자격요건 · 우대사항 · 채용절차.
-              지원자가 이미 다른 공고에서 읽어 본 순서라 어디에 무엇이 있는지 찾지 않아도 된다. */}
+          {/* 이 화면은 '이 직군이 무슨 일을 하는가'만 맡는다. 채용절차·회사소개·인재상·참가 혜택은
+              행사 안내(/event/[slug])에 있고, 두 곳에 같은 내용을 두면 반드시 한쪽이 먼저 낡는다.
+              섹션 제목은 실제 기업 채용공고의 라벨을 쓴다 — 공고소개 · 주요업무 · 자격요건.
+              읽고 나면 바로 지원서로 넘어가도록 중간에 다른 읽을거리를 두지 않는다. */}
           <section className="jd-sec jd-sec--first">
             <h2>공고소개</h2>
             <p className="jd-intro">{j.intro}</p>
@@ -166,57 +152,6 @@ export default async function JobDetailPage({
               <li>취업을 준비하고 있는 대학·대학원 재학생 및 졸업생</li>
               <li>전공, 학년, 졸업 시기 제한 없음</li>
               <li>두 직군 중 한 곳에만 지원할 수 있습니다</li>
-            </ul>
-          </section>
-
-          <section className="jd-sec">
-            <h2>우대사항</h2>
-            <p>
-              <b>없습니다.</b> {j.notFor} 무엇을 갖췄는지가 아니라 무엇을 해 봤는지를 묻고, 답변으로 판단합니다.
-            </p>
-          </section>
-
-          <section className="jd-sec">
-            <h2>채용절차</h2>
-            <ol className="ev-flow">
-              {EVENT_STEPS.map(([name, desc, when]) => (
-                <li key={name}>
-                  <span className="ev-flow__dot">{name}</span>
-                  <span className="ev-flow__when">{when}</span>
-                  <p>{desc}</p>
-                </li>
-              ))}
-            </ol>
-            <p className="jd-note">
-              1차 직무 AI 면접은 응시 기간 안에서 원하는 시간을 골라 응시합니다. 자격증이나 스펙을 직접 묻지 않고 직무
-              역량에 연결된 본인의 경험을 질문하며, 답변에 따라 후속 질문이 이어집니다. 답변 시간에 제한은 없습니다.
-            </p>
-          </section>
-
-          <section className="jd-sec">
-            <h2>회사소개</h2>
-            <p>{COMPANY_INTRO}</p>
-            <h3>인재상</h3>
-            <p className="jd-note">2차 인재상 AI 면접은 아래 네 가지를 기준으로 진행합니다.</p>
-            <ul className="ev-values">
-              {EVENT_VALUES.map(([en, ko, def]) => (
-                <li key={en}>
-                  <b>{en}</b>
-                  <span>{ko}</span>
-                  <p>{def}</p>
-                </li>
-              ))}
-            </ul>
-            <p className="jd-note">
-              <Link href={`/event/${e.slug}`}>행사 안내에서 인재상 정의와 FAQ 보기</Link>
-            </p>
-          </section>
-
-          <section className="jd-sec">
-            <h2>참가 혜택</h2>
-            <ul className="jd-list">
-              <li>1차 직무 AI 면접 완료 선착순 100명 · 스타벅스 모바일 쿠폰 5,000원권</li>
-              <li>Finalist 3인 · 슈퍼코더 주최 상장과 수료증, 2차 인재상 AI 면접 참여, 교통 실비 3만원</li>
             </ul>
           </section>
 
