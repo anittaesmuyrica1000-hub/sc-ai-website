@@ -295,25 +295,42 @@
 
 /* ── 히어로 배경 이미지 ──────────────────────────────────
    lib/events.ts 의 cover 가 있을 때만 붙는다. 없으면 파란 그라데이션 그대로.
-   이미지 위에 흰 글자가 얹히므로 왼쪽을 짙게 덮는 그라데이션을 한 겹 깐다 —
-   사진에 따라 제목이 읽히지 않는 일을 막는 건 이 레이어다. 사진 자체를 밝게 받아도 된다.
-   이미지 크기: 데스크톱 2560×920, 모바일 1080×760 (표시 크기의 2배). */
+
+   지금 쓰는 그래픽은 왼쪽이 투명한 알파 페이드라, 그라데이션을 덮지 않고 그 위에 얹는다.
+   레이어 순서(위 → 아래): 그래픽 · 글자 보호용 막 · 브랜드 그라데이션.
+   막을 그래픽 아래에 두는 이유는, 글자가 놓이는 왼쪽은 그래픽이 비어 있어서
+   막이 그대로 비치고 그래픽이 진한 오른쪽은 손대지 않기 때문이다.
+
+   이미지 크기: 데스크톱 1440×460(현재 1배), 모바일 560×440. */
 .ev-hero--img{
+  /* 투명한 부분 뒤를 받친다 — 없으면 흰 바탕이 비친다 */
+  background-color:#1B3B8F;
   background-image:
-    linear-gradient(90deg,rgba(11,26,66,.94) 0%,rgba(11,26,66,.82) 42%,rgba(11,26,66,.42) 100%),
-    var(--ev-hero-img);
-  background-size:cover;background-position:center right;background-repeat:no-repeat
+    var(--ev-hero-img),
+    linear-gradient(90deg,rgba(8,18,52,.58) 0%,rgba(8,18,52,.36) 44%,rgba(8,18,52,0) 74%),
+    linear-gradient(135deg,#1B3B8F 0%,var(--blue) 62%,var(--blue-2) 100%);
+  /* 세로를 자르지 않는다. cover 로 두면 1440 보다 넓은 화면에서 로고 윗부분이 잘린다.
+     높이에 맞춰 오른쪽에 붙이면 1440 에서 원본 그대로, 더 넓으면 왼쪽에 그라데이션이 남는다 */
+  background-size:auto 100%,cover,cover;
+  background-position:right center,center,center;
+  background-repeat:no-repeat
 }
-/* 장식 원은 사진과 겹치면 얼룩처럼 보인다 */
+/* 장식 원은 그래픽과 겹치면 얼룩처럼 보인다 */
 .ev-hero--img::after{display:none}
+
 @media(max-width:768px){
+  /* 모바일 이미지는 로고 둘레를 잘라 쓴 것이라 전체가 불투명하다.
+     그래서 여기서는 막을 그래픽 '위'에 올려야 흰 글자가 살아남는다. */
   .ev-hero--img{
     background-image:
-      linear-gradient(180deg,rgba(11,26,66,.78) 0%,rgba(11,26,66,.9) 58%,rgba(11,26,66,.96) 100%),
-      var(--ev-hero-img-m);
-    background-position:center top
+      linear-gradient(180deg,rgba(8,18,52,.2) 0%,rgba(8,18,52,.64) 44%,rgba(8,18,52,.92) 100%),
+      var(--ev-hero-img-m),
+      linear-gradient(160deg,#1B3B8F 0%,var(--blue) 100%);
+    background-size:cover,cover,cover;
+    background-position:center,center top,center
   }
 }
+
 /* 사진이 밝은 쪽에 걸리면 흰 아이콘이 사라진다 — 이미지가 있을 때만 옅은 막을 깐다 */
 .ev-hero--img .share-btn--icon{background:rgba(9,20,52,.42)}
 .ev-hero--img .share-btn--icon:hover{background:rgba(9,20,52,.66)}

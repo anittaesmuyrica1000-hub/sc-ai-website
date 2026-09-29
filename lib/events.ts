@@ -54,6 +54,8 @@ export const EVENTS: EventItem[] = [
     interview: "2026년 11월 4일(수) ~ 11월 8일(일)",
     announce: "2026년 11월 11일(수)",
     final: "2026년 11월 20일(금), 서울",
+    cover: "/event-hero.webp",
+    coverMobile: "/event-hero-m.webp",
     contact: "이벤트 담당자 연락처 준비 중", // TODO(10/06 OPEN 전 필수): 문의 채널 확정 후 교체
     applyUrl: "/event/ai-mock-challenge-2026/apply",
   },
