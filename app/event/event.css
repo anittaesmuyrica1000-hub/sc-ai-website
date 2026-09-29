@@ -482,6 +482,20 @@
 .ev-values li b{font-size:15px;font-weight:800;color:var(--ink);letter-spacing:-.01em}
 .ev-values li span{margin-left:7px;font-size:13px;font-weight:600;color:var(--slate-2)}
 .ev-values li p{margin:7px 0 0;font-size:14.5px;line-height:1.6;color:var(--slate)}
+/* 한 줄 정의 아래 '이런 사람' 두 줄. 정의보다 한 단계 작게, 점으로 시작.
+   셀렉터는 (0,2,1) — 위 `.ev-values li p` (0,1,2) 를 이기려면 이 정도가 필요하다 */
+.ev-values .ev-values__dos{margin-top:12px;padding-top:12px;border-top:1px solid var(--line)}
+.ev-values .ev-values__dos p{position:relative;margin:0;padding-left:12px;font-size:13.5px;line-height:1.6;color:var(--slate-2);word-break:keep-all}
+.ev-values .ev-values__dos p + p{margin-top:4px}
+.ev-values .ev-values__dos p::before{content:"";position:absolute;left:1px;top:9px;width:4px;height:4px;border-radius:50%;background:var(--blue-2)}
+
+/* 회사 개요 — 설립·임직원·본사·사업 4칸. 실제 채용 공고의 기업 정보 줄처럼 선으로만 나눈다.
+   값은 굵기를 쓰지 않는다(지원 패널과 같은 원칙) — 라벨과는 크기·색으로 구분한다 */
+.ev-facts{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));margin:8px 0 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.ev-facts>div{padding:14px 16px;border-left:1px solid var(--line)}
+.ev-facts>div:first-child{border-left:0;padding-left:0}
+.ev-facts dt{margin:0 0 4px;font-size:12.5px;color:var(--slate-2)}
+.ev-facts dd{margin:0;font-size:15px;line-height:1.5;color:var(--ink);word-break:keep-all}
 
 /* FAQ — 펼쳐 두면 스크롤의 4분의 1을 차지한다. 질문만 보이고 필요한 것만 연다 */
 .ev-faq{border-top:1px solid var(--line);margin:0 0 22px}
@@ -511,4 +525,8 @@
 }
 @media(max-width:560px){
   .ev-values{grid-template-columns:1fr}
+  /* 4칸이 좁아지면 2x2 로. 왼쪽 열은 세로선 없이 시작한다 */
+  .ev-facts{grid-template-columns:1fr 1fr}
+  .ev-facts>div:nth-child(odd){border-left:0;padding-left:0}
+  .ev-facts>div:nth-child(n+3){border-top:1px solid var(--line)}
 }

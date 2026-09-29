@@ -14,7 +14,7 @@ import {
   STATUS_LABEL,
   type EventItem,
 } from "@/lib/events";
-import { EVENT_JOBS, EVENT_STEPS, EVENT_VALUES, COMPANY_INTRO, FICTION_NOTICE } from "@/lib/eventApply";
+import { EVENT_JOBS, EVENT_STEPS, EVENT_VALUES, COMPANY_PROFILE, COMPANY_FACTS, FICTION_NOTICE } from "@/lib/eventApply";
 import ShareButton from "@/components/ShareButton";
 import { buildPageMetadata } from "@/lib/pageSeo";
 
@@ -171,17 +171,33 @@ function MockChallengeBody({ e, dday }: { e: EventItem; dday: string }) {
       </ol>
 
       <h2>슈퍼전자와 인재상</h2>
-      <p>{COMPANY_INTRO}</p>
-      <p className="post-src">
-        기업을 상대로 파는 회사라 &lsquo;고객이 누구인가&rsquo;를 묻는 질문이 자연스럽게 나옵니다. 다만 반도체 지식은
-        묻지 않습니다. 2차 인재상 AI 면접은 아래 네 가지를 기준으로 진행합니다.
-      </p>
+      {COMPANY_PROFILE.map((para) => (
+        <p key={para}>{para}</p>
+      ))}
+      {/* 회사 개요 — 실제 채용 공고의 기업 정보 줄. 선만 쓰고 면을 깔지 않는다 */}
+      <dl className="ev-facts">
+        {COMPANY_FACTS.map(([k, v]) => (
+          <div key={k}>
+            <dt>{k}</dt>
+            <dd>{v}</dd>
+          </div>
+        ))}
+      </dl>
+
+      <h3>인재상</h3>
+      <p className="post-src">반도체 지식은 묻지 않습니다. 2차 인재상 AI 면접은 아래 네 가지를 기준으로 진행합니다.</p>
       <ul className="ev-values">
-        {EVENT_VALUES.map(([en, ko, def]) => (
+        {EVENT_VALUES.map(([en, ko, def, dos]) => (
           <li key={en}>
             <b>{en}</b>
             <span>{ko}</span>
             <p>{def}</p>
+            {/* ⚠️ 중첩 ul 로 두지 않는다 — `.ev-values li` 가 안쪽 li 에도 카드 테두리를 씌운다 */}
+            <div className="ev-values__dos">
+              {dos.map((d) => (
+                <p key={d}>{d}</p>
+              ))}
+            </div>
           </li>
         ))}
       </ul>
