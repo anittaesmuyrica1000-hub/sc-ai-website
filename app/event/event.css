@@ -145,8 +145,10 @@
 /* 표 아래 보조 설명 — 본문 17px·표 15px 보다 작은 14px 로 둬서 표가 먼저 읽히게 한다.
    불릿 점은 post.css 가 top:13px 으로 17px/1.85 줄에 맞춰 둔 값이라, 줄 높이가
    23.8px(14 × 1.7)로 줄면 점이 글자보다 아래로 내려간다. 함께 올린다. */
-.ev-detail .post-content ul.post-list.ev-notes{font-size:14px;line-height:1.7;gap:8px}
-.ev-detail .post-content ul.post-list.ev-notes li::before{top:9px;width:6px;height:6px}
+/* 2026-09-30 14 → 15px. 카드·목록 안 글씨는 15px 을 하한으로 둔다(메인 페이지 카드 설명과 같다).
+   줄 높이 25.5px(15 × 1.7)에 맞춰 불릿 점도 10px 로 내린다 */
+.ev-detail .post-content ul.post-list.ev-notes{font-size:15px;line-height:1.7;gap:8px}
+.ev-detail .post-content ul.post-list.ev-notes li::before{top:10px;width:6px;height:6px}
 
 /* ── 섹션 간격 ────────────────────────────────────────
    행사 안내는 성격이 다른 블록(소개·공고·절차·인재상·혜택·FAQ·유의사항)이 잇달아
@@ -155,7 +157,9 @@
    ⚠️ 자식 선택자(>)인 이유 — 공고 카드 블록 안의 h2(.ev-jobs__head h2)는
       여백을 0 으로 죽여 뒀는데, 후손 선택자로 쓰면 점수가 같아 순서로 이기고 져서
       그 h2 까지 60px 이 붙는다. */
-.ev-detail .post-content > h2{margin-top:60px}
+/* 섹션 제목 크기 — post.css 의 22px(블로그 글 기준)은 48px 히어로 바로 아래에서 너무 떨어진다.
+   메인 페이지 섹션 제목(44px)과 블로그(22px) 사이인 28px 로 둔다(2026-09-30). 좁은 화면은 23px 까지 */
+.ev-detail .post-content > h2{margin-top:60px;font-size:clamp(23px,3vw,28px);letter-spacing:-.02em}
 /* 첫 섹션 위는 히어로다 — 그 간격은 .ev-detail 의 padding 이 이미 잡는다 */
 .ev-detail .post-content > h2:first-child{margin-top:0}
 /* 유의사항 앞 구분선 — post.css 기본은 위 34px 이라 섹션 리듬(60px)보다 붙어 보였다.
@@ -174,18 +178,19 @@
    선을 지우면 '표'가 아니라 '한 덩어리 정보'로 읽혀서 훑는 속도가 빨라진다. */
 .ev-side__list{display:grid;gap:0;margin:0}
 .ev-side__list>div{
-  /* 라벨 116px · 간격 12px — 가장 긴 라벨 '2차 인재상 AI 면접'(13.5px 기준 약 111px)이
-     한 줄에 들어가는 폭이다. 패널 안쪽 폭 296px(340 - 좌우 패딩 22) 에서 값 칸에
-     168px 이 남고, 가장 긴 값 'support@supercoder.co'(14.5px 기준 약 152px)가 들어간다.
-     라벨을 더 줄이면 두 줄이 되고, 더 늘리면 문의 메일이 접힌다. */
-  display:grid;grid-template-columns:116px minmax(0,1fr);gap:12px;
+  /* 라벨 108px · 간격 12px (2026-09-30 116 → 108).
+     가장 긴 라벨 '2차 인재상 AI 면접'은 13.5px 에서 실측 100px 이다. 값 칸은 174px 이 남고,
+     가장 긴 값 '11월 4일(수) ~ 11월 8일(일)'이 15px 에서 실측 168px 이라 한 줄에 든다.
+     116px 이던 때(값 칸 166px)는 값을 15px 로 올리자 '(일)'만 둘째 줄로 떨어졌다.
+     (116px 은 문의 메일 행이 있던 때의 값이다 — 그 행은 뺐다) */
+  display:grid;grid-template-columns:108px minmax(0,1fr);gap:12px;
   padding:0 0 14px;line-height:1.55
 }
 .ev-side__list>div:last-child{padding-bottom:0}
 .ev-side__list dt{font-size:13.5px;font-weight:400;color:var(--slate-2);padding-top:2px}
 /* 값은 굵기를 쓰지 않는다 — 700 → 500 → 400. 여섯 줄이 이어지면 굵기가 곧 무게가 된다.
-   라벨과의 구분은 크기(13.5 → 14.5)와 색(--slate-2 → --ink)이 맡는다. */
-.ev-side__list dd{margin:0;font-size:14.5px;font-weight:400;color:var(--ink);word-break:keep-all;overflow-wrap:anywhere}
+   라벨과의 구분은 크기(13.5 → 15)와 색(--slate-2 → --ink)이 맡는다. */
+.ev-side__list dd{margin:0;font-size:15px;font-weight:400;color:var(--ink);word-break:keep-all;overflow-wrap:anywhere}
 .ev-side__cta{
   width:100%;justify-content:center;margin-top:20px;
   font-size:15.5px;padding:14px;text-decoration:none
@@ -258,9 +263,10 @@
    앞 문단의 margin-bottom(22px), 뒤 h2 의 margin-top(60px)과는 마진 상쇄로 합쳐진다. */
 .ev-jobs{margin:60px 0 0}
 .ev-jobs__head{display:flex;align-items:center;gap:9px;margin-bottom:16px}
-/* post.css 의 h2 여백·크기를 상속하지 않도록 값을 직접 지정한다 */
+/* post.css 의 h2 여백·크기를 상속하지 않도록 값을 직접 지정한다.
+   크기는 다른 섹션 제목(.ev-detail .post-content > h2)과 같다 — 이 블록도 섹션 하나다 */
 .post-content .ev-jobs__head h2{
-  margin:0;font-size:19px;font-weight:700;line-height:1.4;
+  margin:0;font-size:clamp(23px,3vw,28px);font-weight:700;line-height:1.4;
   letter-spacing:-.02em;color:var(--ink)
 }
 .ev-jobs__count{
@@ -477,7 +483,7 @@
   margin-top:13px;font-size:13.5px;font-weight:700;color:var(--ink);
   font-variant-numeric:tabular-nums
 }
-.ev-flow li p{margin:6px 0 0;font-size:13px;line-height:1.65;color:var(--slate);word-break:keep-all}
+.ev-flow li p{margin:6px 0 0;font-size:15px;line-height:1.65;color:var(--slate);word-break:keep-all}
 
 .ev-values{list-style:none;display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:0;padding:0}
 .post-content ul.ev-values{margin:0 0 4px;padding-left:0}
@@ -486,13 +492,14 @@
 .post-content ul.ev-values li::before{content:none}
 .ev-values li b{font-size:15px;font-weight:800;color:var(--ink);letter-spacing:-.01em}
 .ev-values li span{margin-left:7px;font-size:13px;font-weight:600;color:var(--slate-2)}
-.ev-values li p{margin:7px 0 0;font-size:14.5px;line-height:1.6;color:var(--slate)}
-/* 한 줄 정의 아래 '이런 사람' 두 줄. 정의보다 한 단계 작게, 점으로 시작.
+.ev-values li p{margin:7px 0 0;font-size:15px;line-height:1.6;color:var(--slate)}
+/* 한 줄 정의 아래 '이런 사람' 두 줄. 점으로 시작하고, 정의와는 색(--slate → --slate-2)으로 가른다.
+   크기는 2026-09-30 13.5 → 15px — 카드 안 글씨 하한(15px)에 맞췄다. 점은 줄 높이 24px 에 맞춰 10px.
    셀렉터는 (0,2,1) — 위 `.ev-values li p` (0,1,2) 를 이기려면 이 정도가 필요하다 */
 .ev-values .ev-values__dos{margin-top:12px;padding-top:12px;border-top:1px solid var(--line)}
-.ev-values .ev-values__dos p{position:relative;margin:0;padding-left:12px;font-size:13.5px;line-height:1.6;color:var(--slate-2);word-break:keep-all}
+.ev-values .ev-values__dos p{position:relative;margin:0;padding-left:12px;font-size:15px;line-height:1.6;color:var(--slate-2);word-break:keep-all}
 .ev-values .ev-values__dos p + p{margin-top:4px}
-.ev-values .ev-values__dos p::before{content:"";position:absolute;left:1px;top:9px;width:4px;height:4px;border-radius:50%;background:var(--blue-2)}
+.ev-values .ev-values__dos p::before{content:"";position:absolute;left:1px;top:10px;width:4px;height:4px;border-radius:50%;background:var(--blue-2)}
 
 /* 회사 개요 — 설립·임직원·본사·사업 4칸. 실제 채용 공고의 기업 정보 줄처럼 선으로만 나눈다.
    값은 굵기를 쓰지 않는다(지원 패널과 같은 원칙) — 라벨과는 크기·색으로 구분한다 */
