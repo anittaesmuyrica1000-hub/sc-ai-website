@@ -45,19 +45,6 @@
   color: var(--slate-2);
   letter-spacing: 0.02em;
 }
-.career-back {
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
-  font-size: 14.5px;
-  font-weight: 600;
-  color: var(--slate);
-  text-decoration: none;
-  flex-shrink: 0;
-}
-.career-back:hover { color: var(--blue); }
-.career-back i { font-size: 11px; }
-
 /* ── 가상기업 고지 — 고정 문구. 화면 상단과 폼 양쪽에 둔다 ──
    기획안 slide 4: 포스터 하단·이벤트 페이지·지원 폼 첫 화면에 같은 문장으로 넣는다. */
 .career-notice {

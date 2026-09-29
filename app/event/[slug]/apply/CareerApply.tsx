@@ -61,9 +61,6 @@ export default function CareerApply({ event, status }: { event: EventItem; statu
             <b>슈퍼전자</b>
             <span>SUPER ELECTRONICS · 채용</span>
           </div>
-          <Link href={`/event/${event.slug}`} className="career-back">
-            <i className="fa-solid fa-arrow-left"></i> 행사 안내로 돌아가기
-          </Link>
         </div>
 
         {job ? (
