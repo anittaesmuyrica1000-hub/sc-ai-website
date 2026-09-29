@@ -160,7 +160,8 @@
    선을 지우면 '표'가 아니라 '한 덩어리 정보'로 읽혀서 훑는 속도가 빨라진다. */
 .ev-side__list{display:grid;gap:0;margin:0}
 .ev-side__list>div{
-  /* 라벨 84px — '1차 직무 / AI 면접' 이 두 줄로 떨어지는 폭. 76px 이면 세 줄이 된다 */
+  /* 라벨 84px — 줄바꿈 위치는 <br> 로 고정했고(브라우저에 맡기면 '1차 직무 AI / 면접'
+     으로 끊는다), 이 폭은 고정한 두 줄이 각각 한 줄에 들어가는 최소값이다 */
   display:grid;grid-template-columns:84px minmax(0,1fr);gap:14px;
   padding:0 0 14px;line-height:1.55
 }

@@ -268,7 +268,11 @@ export default async function JobDetailPage({
                 </dd>
               </div>
               <div>
-                <dt>1차 직무 AI 면접</dt>
+                <dt>
+                  1차 직무
+                  <br />
+                  AI 면접
+                </dt>
                 <dd>{withoutYear(e.interview)}</dd>
               </div>
               <div>
@@ -276,7 +280,11 @@ export default async function JobDetailPage({
                 <dd>{withoutYear(e.announce)}</dd>
               </div>
               <div>
-                <dt>2차 인재상 AI 면접</dt>
+                <dt>
+                  2차 인재상
+                  <br />
+                  AI 면접
+                </dt>
                 <dd>{withoutYear(e.final)}</dd>
               </div>
               <div>
