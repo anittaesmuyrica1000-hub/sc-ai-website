@@ -218,20 +218,12 @@
 
 @media (max-width: 1080px) {
   .jd { grid-template-columns: minmax(0, 1fr); gap: 32px; max-width: 760px; }
-  /* 사이드를 아래로 내리면 긴 본문 끝에 파묻힌다. 본문 위로 올린다 */
-  .jd__side { position: static; order: -1; }
-}
-
-@media (max-width: 768px) {
-  .jd-head__inner { padding: 20px 16px 24px; }
-  .jd-head__top { margin-bottom: 20px; }
-  .jd { padding: 28px 16px 40px; }
-  .jd-values { grid-template-columns: 1fr; }
-  /* 모바일에는 하단 고정 바가 있어 지원 버튼이 늘 손에 닿는다.
-     그래서 일정 패널을 본문 위에 둘 이유가 없다 — 열자마자 일정표부터 읽히면 공고가 뒤로 밀린다. */
-  .jd__side { order: 1; }
-  .jd-steps li { grid-template-columns: 1fr; gap: 6px; }
-  .jd-sec--last { margin-bottom: 0; }
+  /* 한 단이 되면 패널을 어디에 둬도 방해가 된다 — 위로 올리면 공고를 열자마자
+     일정표부터 읽히고, 아래로 내리면 긴 본문 끝에 파묻힌다. 통째로 숨기고
+     지원 버튼은 하단 고정 바(.jd-bar)가 스크롤 내내 대신 받는다.
+     행사 안내 상세(.ev-detail__side)와 같은 분기·같은 처리다 — 두 화면의 손 위치가 같아야 한다.
+     ⚠️ 패널의 공유 버튼도 함께 사라지지만 헤더의 공유(position="header")가 남는다. */
+  .jd__side { display: none; }
 
   /* 고정 바가 유의사항 마지막 줄을 가리지 않도록 본문 끝에 자리를 비운다 */
   .jd-page { padding-bottom: calc(76px + env(safe-area-inset-bottom)); }
@@ -266,6 +258,15 @@
      바를 FAB 위로 올리면 채팅을 못 열게 되므로, 이 페이지에서만 FAB 을 바 위로 띄운다.
      :has 미지원 브라우저에서는 지금과 같은 겹침으로 남는다(기능은 유지). */
   body:has(.jd-page) .cbot { bottom: calc(80px + env(safe-area-inset-bottom)); }
+}
+
+@media (max-width: 768px) {
+  .jd-head__inner { padding: 20px 16px 24px; }
+  .jd-head__top { margin-bottom: 20px; }
+  .jd { padding: 28px 16px 40px; }
+  .jd-values { grid-template-columns: 1fr; }
+  .jd-steps li { grid-template-columns: 1fr; gap: 6px; }
+  .jd-sec--last { margin-bottom: 0; }
 }
 
 /* 모집 전 버튼 아래 한 줄 — 눌러서 폼을 볼 수는 있지만 제출은 안 된다는 것을 미리 말한다 */
