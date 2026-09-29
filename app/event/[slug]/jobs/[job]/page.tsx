@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 import "../../../event.css";
 import "../jobs.css";
 import ShareButton from "@/components/ShareButton";
-import { EVENTS, findEvent, statusOf, ddayLabel, withoutYear, STATUS_LABEL } from "@/lib/events";
+import { EVENTS, findEvent, statusOf, ddayLabel, withoutYear, applyRange, STATUS_LABEL } from "@/lib/events";
 import {
   EVENT_JOBS,
   EVENT_STEPS,
@@ -116,7 +116,7 @@ export default async function JobDetailPage({
           <div className="jd-meta">
             <span className="ev-tag ev-tag--dday">{dday}</span>
             <span className="jd-meta__dates">
-              {e.applyStart.replace(/-/g, ".")} ~ {e.applyEnd.replace(/-/g, ".")}
+              {applyRange(e)}
             </span>
             <span>신입</span>
             <span>서울</span>
@@ -178,14 +178,12 @@ export default async function JobDetailPage({
 
           <section className="jd-sec">
             <h2>채용절차</h2>
-            <ol className="ev-steps">
+            <ol className="ev-flow">
               {EVENT_STEPS.map(([name, desc, when]) => (
                 <li key={name}>
-                  <div className="ev-steps__when">{when}</div>
-                  <div>
-                    <b>{name}</b>
-                    <p>{desc}</p>
-                  </div>
+                  <span className="ev-flow__dot">{name}</span>
+                  <span className="ev-flow__when">{when}</span>
+                  <p>{desc}</p>
                 </li>
               ))}
             </ol>
@@ -265,7 +263,7 @@ export default async function JobDetailPage({
               <div>
                 <dt>모집</dt>
                 <dd>
-                  {withoutYear(e.applyFrom)}
+                  {e.applyFrom}
                   <br />~ {withoutYear(e.applyTo)}
                 </dd>
               </div>

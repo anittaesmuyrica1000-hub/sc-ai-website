@@ -4,7 +4,16 @@ import { notFound } from "next/navigation";
 // 상세 레이아웃은 블로그 글 상세를 그대로 쓴다. post.css 를 고치면 함께 바뀐다.
 import "../../blog/[id]/post.css";
 import "../event.css";
-import { EVENTS, findEvent, statusOf, ddayLabel, withoutYear, STATUS_LABEL, type EventItem } from "@/lib/events";
+import {
+  EVENTS,
+  findEvent,
+  statusOf,
+  ddayLabel,
+  withoutYear,
+  applyRange,
+  STATUS_LABEL,
+  type EventItem,
+} from "@/lib/events";
 import { EVENT_JOBS, EVENT_STEPS, EVENT_VALUES, COMPANY_INTRO, FICTION_NOTICE } from "@/lib/eventApply";
 import ShareButton from "@/components/ShareButton";
 import { buildPageMetadata } from "@/lib/pageSeo";
@@ -84,8 +93,8 @@ function MockChallengeBody({ e, dday }: { e: EventItem; dday: string }) {
         답변 내용과 무관한 이유로 실력을 보이지 못하게 됩니다.
       </p>
       <p>
-        슈퍼코더는 취업 전에 AI 면접을 실전처럼 겪어 볼 자리를 만들었습니다. 이 행사를 위해 만든 가상기업{" "}
-        <strong>슈퍼전자</strong>의 채용 전형을 지원서부터 최종 면접까지 그대로 진행합니다.
+        슈퍼코더는 취업 전에 AI 면접을 실전처럼 겪어 볼 자리를 만들었습니다. 이 행사를 위해 만든 가상기업 슈퍼전자의
+        채용 전형을 지원서부터 최종 면접까지 그대로 진행합니다.
       </p>
       <p>결과는 어떠한 기업의 채용에도 영향을 주지 않습니다. 연습용으로 편하게 보셔도 됩니다.</p>
 
@@ -107,7 +116,7 @@ function MockChallengeBody({ e, dday }: { e: EventItem; dday: string }) {
                   <span className="ev-jobcard__meta">
                     <span>신입</span>
                     <span>
-                      {e.applyStart.replace(/-/g, ".")} ~ {e.applyEnd.replace(/-/g, ".")}
+                      {applyRange(e)}
                     </span>
                   </span>
                   <span className="ev-jobcard__tags">
@@ -129,14 +138,12 @@ function MockChallengeBody({ e, dday }: { e: EventItem; dday: string }) {
       </div>
 
       <h2>전형 절차</h2>
-      <ol className="ev-steps">
+      <ol className="ev-flow">
         {EVENT_STEPS.map(([name, desc, when]) => (
           <li key={name}>
-            <div className="ev-steps__when">{when}</div>
-            <div>
-              <b>{name}</b>
-              <p>{desc}</p>
-            </div>
+            <span className="ev-flow__dot">{name}</span>
+            <span className="ev-flow__when">{when}</span>
+            <p>{desc}</p>
           </li>
         ))}
       </ol>
@@ -366,7 +373,7 @@ export default async function EventDetailPage({ params }: { params: Promise<{ sl
               <div>
                 <dt>모집</dt>
                 <dd>
-                  {withoutYear(e.applyFrom)}
+                  {e.applyFrom}
                   <br />~ {withoutYear(e.applyTo)}
                 </dd>
               </div>

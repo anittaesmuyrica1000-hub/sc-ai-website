@@ -104,6 +104,18 @@ export function withoutYear(s: string): string {
   return s.replace(/\d{4}년\s*/g, "");
 }
 
+/**
+ * 접수 기간 한 줄 표기 — "2026.10.06 ~ 11.01".
+ * 연도는 시작일에 한 번만 붙인다. 같은 해 안에서 끝나는 행사라 마감일에까지
+ * 연도를 반복하면 읽는 사람이 두 연도를 비교하게 된다.
+ * 해를 넘기는 행사가 생기면 끝 연도가 다를 때만 붙이도록 여기만 고치면 된다.
+ */
+export function applyRange(e: EventItem): string {
+  const from = e.applyStart.replace(/-/g, ".");
+  const to = e.applyEnd.replace(/-/g, ".").replace(/^\d{4}\./, "");
+  return `${from} ~ ${to}`;
+}
+
 export const STATUS_LABEL: Record<EventStatus, string> = {
   upcoming: "모집 예정",
   open: "모집 중",

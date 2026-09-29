@@ -248,7 +248,7 @@
   padding-left:11px;border-left:1px solid var(--line);
   font-variant-numeric:tabular-nums
 }
-.ev-jobcard__tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:auto;padding-top:18px}
+.ev-jobcard__tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:auto;padding-top:18px}
 
 /* 세로로 쌓는 배치 — 읽기 폭(약 720px) 안에서 2열로 두면 제목이 접히고 태그가 넘친다.
    카드를 한 줄씩 full width 로 두고, 오른쪽에 화살표를 붙여 누를 수 있음을 알린다. */
@@ -271,7 +271,7 @@
 /* 면이 아니라 라인으로 — 카드 안에 색 덩어리가 네 개씩 들어가면 제목보다 태그가 먼저 읽힌다.
    테두리로 두면 태그는 보조 정보로 물러나고 카드 제목이 먼저 잡힌다. */
 .ev-tag{
-  border-radius:999px;padding:5px 11px;font-size:12.5px;font-weight:600;
+  border-radius:999px;padding:5px 15px;font-size:12.5px;font-weight:600;
   letter-spacing:-.01em;background:transparent;
   border:1px solid var(--line);color:var(--slate);white-space:nowrap
 }
@@ -383,25 +383,38 @@
 .ev-hero--img .share-btn--icon:hover{background:rgba(9,20,52,.66)}
 .ev-hero--img .ev-hero__back{text-shadow:0 1px 6px rgba(9,20,52,.55)}
 
-/* ── 전형 절차 타임라인 · 인재상 · FAQ ───────────────────
-   행사 안내(.post-content 안)와 공고 상세가 같이 쓴다.
+/* ── 전형 절차 · 인재상 · FAQ ────────────────────────────
+   행사 안내(.post-content 안)와 공고 상세가 같이 쓴다. 두 페이지 모두
+   본문 단 폭이 732px(1180 - 좌우 24 - 패널 340 - 간격 60)이라 한 벌로 맞춘다.
    ⚠️ post.css 의 `.post-content ol:not(.post-list)` 가 여백을 잡으므로
       같은 점수(0,2,1)로 덮는다 — event.css 가 post.css 뒤에 실리는 것을 이용한다. */
-.ev-steps{list-style:none;margin:0;padding:0;display:grid;gap:2px}
-.post-content ol.ev-steps{margin:0 0 4px;padding-left:0}
-.ev-steps li{
-  display:grid;grid-template-columns:116px minmax(0,1fr);gap:18px;
-  padding:16px 0;border-top:1px solid var(--line)
+
+/* 원 안에 단계 이름, 원 아래에 기간.
+   연결선은 원을 덮지 않고 원과 원 사이 구간만 긋는다 — 겹쳐 그린 뒤 z-index 로
+   가리면 원 배경색을 바꿀 때마다 선까지 따라 고쳐야 한다.
+   앞 원의 오른쪽 끝(-50%+dot/2)부터 이 원의 왼쪽 끝(50%-dot/2)까지라 길이는 100%-dot. */
+.ev-flow{--dot:116px;list-style:none;display:grid;grid-template-columns:repeat(4,1fr);margin:0;padding:0}
+.post-content ol.ev-flow{margin:0 0 4px;padding-left:0}
+.ev-flow li{position:relative;display:flex;flex-direction:column;align-items:center;text-align:center}
+.post-content ol.ev-flow li{padding-left:0}
+.post-content ol.ev-flow li::before{content:none} /* post.css 의 번호 불릿 제거 */
+.ev-flow li:not(:first-child)::after{
+  content:"";position:absolute;top:calc(var(--dot)/2);
+  right:calc(50% + var(--dot)/2);width:calc(100% - var(--dot));
+  height:1px;background:var(--line)
 }
-.post-content ol.ev-steps li{padding-left:0}
-.post-content ol.ev-steps li::before{content:none}
-.ev-steps li:first-child{border-top:none;padding-top:0}
-.ev-steps__when{
-  font-size:13.5px;font-weight:700;color:var(--blue-d);
-  font-variant-numeric:tabular-nums;padding-top:2px
+.ev-flow__dot{
+  width:var(--dot);height:var(--dot);border-radius:50%;box-sizing:border-box;
+  display:grid;place-items:center;padding:0 12px;
+  background:var(--soft-2);border:1px solid var(--tint);
+  font-size:14.5px;font-weight:700;line-height:1.4;letter-spacing:-.02em;
+  color:var(--blue-d);word-break:keep-all
 }
-.ev-steps li b{display:block;font-size:16px;font-weight:700;color:var(--ink);letter-spacing:-.02em}
-.ev-steps li p{margin:5px 0 0;font-size:15px;line-height:1.7;color:var(--slate);word-break:keep-all}
+.ev-flow__when{
+  margin-top:13px;font-size:13.5px;font-weight:700;color:var(--ink);
+  font-variant-numeric:tabular-nums
+}
+.ev-flow li p{margin:6px 0 0;font-size:13px;line-height:1.65;color:var(--slate);word-break:keep-all}
 
 .ev-values{list-style:none;display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:0;padding:0}
 .post-content ul.ev-values{margin:0 0 4px;padding-left:0}
@@ -430,7 +443,12 @@
 .ev-faq details[open] summary::after{transform:rotate(225deg);top:26px;border-color:var(--blue)}
 .ev-faq details p{margin:0 0 18px;font-size:15.5px;line-height:1.78;color:var(--slate)}
 
+@media(max-width:640px){
+  /* 원 네 개가 한 줄에 들어가지 않는다. 2열로 접고, 줄이 바뀌는 3번째 칸의
+     연결선은 지운다(왼쪽 바깥으로 선이 삐져나간다). */
+  .ev-flow{--dot:104px;grid-template-columns:1fr 1fr;row-gap:28px}
+  .ev-flow li:nth-child(odd)::after{content:none}
+}
 @media(max-width:560px){
-  .ev-steps li{grid-template-columns:1fr;gap:6px}
   .ev-values{grid-template-columns:1fr}
 }
