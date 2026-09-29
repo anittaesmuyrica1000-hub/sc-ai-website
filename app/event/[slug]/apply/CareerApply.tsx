@@ -330,7 +330,7 @@ function ApplyStep({
           </div>
           <div>
             <dt>채용절차</dt>
-            <dd>지원서 접수 → 1차 AI 면접(온라인) → 2차 인재상 면접(오프라인) → 최종 발표</dd>
+            <dd>지원서 접수 → 1차 직무 AI 면접(온라인) → Finalist 발표 → 2차 인재상 AI 면접(오프라인)</dd>
           </div>
           <div>
             <dt>공고 전문</dt>
@@ -361,7 +361,7 @@ function ApplyStep({
               <b>다음 일정</b>
               <ul>
                 <li>11월 2일~3일 · 입력하신 메일로 응시 안내와 면접 링크를 보내드립니다</li>
-                <li>11월 4일~8일 · 1차 AI 면접 (기간 안에서 원하는 시간에 응시)</li>
+                <li>11월 4일~8일 · 1차 직무 AI 면접 (기간 안에서 원하는 시간에 응시)</li>
                 <li>11월 11일 · Finalist 발표 (개별 안내)</li>
               </ul>
             </div>
@@ -483,10 +483,10 @@ function ApplyStep({
 
               <div className={`field${invalid.finalAttend ? " invalid" : ""}`}>
                 <label>
-                  2차 오프라인 면접 참석 가능 여부 <span className="req">*</span>
+                  2차 인재상 AI 면접 참석 가능 여부 <span className="req">*</span>
                 </label>
                 <div className="hint" style={{ marginTop: 0, marginBottom: 9 }}>
-                  {event.final} · Finalist 3인만 참여합니다. 1차 AI 면접까지만 참여하셔도 됩니다.
+                  {event.final} · Finalist 3인만 참여합니다. 1차 직무 AI 면접까지만 참여하셔도 됩니다.
                 </div>
                 <div className="ev-radios">
                   {FINAL_ATTEND_OPTIONS.map((o) => (
@@ -613,7 +613,7 @@ function ApplyStep({
                       onChange={(e) => setAgree((a) => ({ ...a, content: e.target.checked }))}
                     />
                     <span>
-                      <b>[선택]</b> 1차 AI 면접 응답을 개인을 식별할 수 없도록 처리한 뒤 보도자료·블로그 등 콘텐츠에
+                      <b>[선택]</b> 1차 직무 AI 면접 응답을 개인을 식별할 수 없도록 처리한 뒤 보도자료·블로그 등 콘텐츠에
                       활용하는 것에 동의합니다. 동의하지 않으셔도 참가에는 영향이 없습니다.
                     </span>
                   </label>

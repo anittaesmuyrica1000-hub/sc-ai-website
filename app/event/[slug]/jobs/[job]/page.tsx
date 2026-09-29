@@ -50,7 +50,7 @@ export async function generateMetadata({
   const title = `${j.l} 신입사원 모집 · ${e.title}`;
   // ⚠️ 카톡 공유 카드에 "슈퍼전자 채용"만 보이면 실제 채용으로 오인된다.
   //    제목과 설명 양쪽에 행사명과 주최 표기를 함께 둔다.
-  const description = `가상기업 슈퍼전자의 채용 전형을 지원서부터 최종 면접까지. 참가비 무료, 전공·학년 제한 없음. ${e.applyTo}까지 접수. 주최 슈퍼코더`;
+  const description = `가상기업 슈퍼전자의 채용 전형을 지원서부터 2차 면접까지. 참가비 무료, 전공·학년 제한 없음. ${e.applyTo}까지 접수. 주최 슈퍼코더`;
   const url = `/event/${e.slug}/jobs/${j.v}`;
   const fallback: Metadata = {
     title,
@@ -188,7 +188,7 @@ export default async function JobDetailPage({
               ))}
             </ol>
             <p className="jd-note">
-              1차 AI 면접은 응시 기간 안에서 원하는 시간을 골라 응시합니다. 자격증이나 스펙을 직접 묻지 않고 직무
+              1차 직무 AI 면접은 응시 기간 안에서 원하는 시간을 골라 응시합니다. 자격증이나 스펙을 직접 묻지 않고 직무
               역량에 연결된 본인의 경험을 질문하며, 답변에 따라 후속 질문이 이어집니다. 답변 시간에 제한은 없습니다.
             </p>
           </section>
@@ -197,7 +197,7 @@ export default async function JobDetailPage({
             <h2>회사소개</h2>
             <p>{COMPANY_INTRO}</p>
             <h3>인재상</h3>
-            <p className="jd-note">2차 오프라인 면접은 아래 네 가지를 기준으로 진행합니다.</p>
+            <p className="jd-note">2차 인재상 AI 면접은 아래 네 가지를 기준으로 진행합니다.</p>
             <ul className="ev-values">
               {EVENT_VALUES.map(([en, ko, def]) => (
                 <li key={en}>
@@ -215,8 +215,8 @@ export default async function JobDetailPage({
           <section className="jd-sec">
             <h2>참가 혜택</h2>
             <ul className="jd-list">
-              <li>1차 AI 면접 완료 선착순 100명 · 스타벅스 모바일 쿠폰 5,000원권</li>
-              <li>Finalist 3인 · 슈퍼코더 주최 상장과 수료증, 2차 오프라인 면접 참여, 교통 실비 3만원</li>
+              <li>1차 직무 AI 면접 완료 선착순 100명 · 스타벅스 모바일 쿠폰 5,000원권</li>
+              <li>Finalist 3인 · 슈퍼코더 주최 상장과 수료증, 2차 인재상 AI 면접 참여, 교통 실비 3만원</li>
             </ul>
           </section>
 
@@ -268,7 +268,7 @@ export default async function JobDetailPage({
                 </dd>
               </div>
               <div>
-                <dt>1차 AI 면접</dt>
+                <dt>1차 직무 AI 면접</dt>
                 <dd>{withoutYear(e.interview)}</dd>
               </div>
               <div>
@@ -276,7 +276,7 @@ export default async function JobDetailPage({
                 <dd>{withoutYear(e.announce)}</dd>
               </div>
               <div>
-                <dt>2차 오프라인</dt>
+                <dt>2차 인재상 AI 면접</dt>
                 <dd>{withoutYear(e.final)}</dd>
               </div>
               <div>

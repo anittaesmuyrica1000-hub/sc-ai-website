@@ -69,12 +69,12 @@ const FAQS = [
   ],
   [
     "AI 면접은 어떻게 진행되나요?",
-    "온라인으로 진행하며, 응시 기간 안에서 원하는 시간을 골라 응시합니다. 자격증이나 스펙을 직접 묻는 대신 직무 역량에 연결된 본인의 경험을 질문하고, 답변에 따라 후속 질문이 이어집니다. 답변 시간에 제한은 없습니다.",
+    "1차 직무 AI 면접은 온라인으로 진행하며, 응시 기간 안에서 원하는 시간을 골라 응시합니다. 자격증이나 스펙을 직접 묻는 대신 직무 역량에 연결된 본인의 경험을 질문하고, 답변에 따라 후속 질문이 이어집니다. 답변 시간에 제한은 없습니다.",
   ],
   ["두 직군에 모두 지원할 수 있나요?", "한 직군만 선택해 지원할 수 있습니다."],
   [
-    "오프라인 최종 면접에 꼭 참석해야 하나요?",
-    "1차 AI 면접까지만 참여하셔도 괜찮습니다. 오프라인 최종 면접은 선발된 Finalist 3인을 대상으로 진행하며, 지원서에서 참석 가능 여부를 미리 확인합니다.",
+    "2차 인재상 AI 면접에 꼭 참석해야 하나요?",
+    "1차 직무 AI 면접까지만 참여하셔도 괜찮습니다. 2차 인재상 AI 면접은 선발된 Finalist 3인을 대상으로 오프라인에서 진행하며, 지원서에서 참석 가능 여부를 미리 확인합니다.",
   ],
 ];
 
@@ -94,7 +94,7 @@ function MockChallengeBody({ e, dday }: { e: EventItem; dday: string }) {
       </p>
       <p>
         슈퍼코더는 취업 전에 AI 면접을 실전처럼 겪어 볼 자리를 만들었습니다. 이 행사를 위해 만든 가상기업 슈퍼전자의
-        채용 전형을 지원서부터 최종 면접까지 그대로 진행합니다.
+        채용 전형을 지원서부터 2차 면접까지 그대로 진행합니다.
       </p>
       <p>결과는 어떠한 기업의 채용에도 영향을 주지 않습니다. 연습용으로 편하게 보셔도 됩니다.</p>
 
@@ -152,7 +152,7 @@ function MockChallengeBody({ e, dday }: { e: EventItem; dday: string }) {
       <p>{COMPANY_INTRO}</p>
       <p className="post-src">
         기업을 상대로 파는 회사라 &lsquo;고객이 누구인가&rsquo;를 묻는 질문이 자연스럽게 나옵니다. 다만 반도체 지식은
-        묻지 않습니다. 2차 오프라인 면접은 아래 네 가지를 기준으로 진행합니다.
+        묻지 않습니다. 2차 인재상 AI 면접은 아래 네 가지를 기준으로 진행합니다.
       </p>
       <ul className="ev-values">
         {EVENT_VALUES.map(([en, ko, def]) => (
@@ -177,12 +177,12 @@ function MockChallengeBody({ e, dday }: { e: EventItem; dday: string }) {
           </thead>
           <tbody>
             <tr>
-              <td>1차 AI 면접 완료 선착순 100명</td>
+              <td>1차 직무 AI 면접 완료 선착순 100명</td>
               <td>스타벅스 모바일 쿠폰 5,000원권</td>
             </tr>
             <tr>
               <td>Finalist 3인</td>
-              <td>슈퍼코더 주최 상장·수료증, 2차 오프라인 면접 참여, 교통 실비 3만원</td>
+              <td>슈퍼코더 주최 상장·수료증, 2차 인재상 AI 면접 참여, 교통 실비 3만원</td>
             </tr>
           </tbody>
         </table>
@@ -192,7 +192,7 @@ function MockChallengeBody({ e, dday }: { e: EventItem; dday: string }) {
         있습니다 — <strong>2026 슈퍼전자 AI 면접 챌린지 (주최 슈퍼코더) · 마케팅 부문 최우수</strong>.
       </p>
       <ul className="post-list">
-        <li>쿠폰 선착순은 1차 AI 면접을 끝까지 마친 시각을 기준으로 합니다.</li>
+        <li>쿠폰 선착순은 1차 직무 AI 면접을 끝까지 마친 시각을 기준으로 합니다.</li>
         <li>쿠폰은 면접 종료 후 일괄 발송하며, 발송 예정일은 2026년 11월 13일입니다.</li>
       </ul>
 
@@ -218,11 +218,11 @@ function MockChallengeBody({ e, dday }: { e: EventItem; dday: string }) {
           행사 운영 통계 작성에만 사용하며 2027년 2월 28일까지 전량 파기합니다.
         </li>
         <li>
-          1차 AI 면접의 응답은 면접 결과 검토와 행사 결과 집계에 사용합니다. 개인을 식별할 수 없도록 처리한 뒤
+          1차 직무 AI 면접의 응답은 면접 결과 검토와 행사 결과 집계에 사용합니다. 개인을 식별할 수 없도록 처리한 뒤
           콘텐츠에 활용하는 것은 지원서에서 별도로 동의를 받으며, 동의하지 않으셔도 참가에는 영향이 없습니다.
         </li>
         <li>
-          오프라인 최종 면접의 촬영·홍보 활용은 Finalist 확정 후 별도로 동의를 받습니다. 동의하지 않으셔도 최종
+          2차 인재상 AI 면접의 촬영·홍보 활용은 Finalist 확정 후 별도로 동의를 받습니다. 동의하지 않으셔도
           면접에는 참여하실 수 있습니다.
         </li>
         <li>
@@ -378,7 +378,7 @@ export default async function EventDetailPage({ params }: { params: Promise<{ sl
                 </dd>
               </div>
               <div>
-                <dt>1차 AI 면접</dt>
+                <dt>1차 직무 AI 면접</dt>
                 <dd>{withoutYear(e.interview)}</dd>
               </div>
               <div>
@@ -386,7 +386,7 @@ export default async function EventDetailPage({ params }: { params: Promise<{ sl
                 <dd>{withoutYear(e.announce)}</dd>
               </div>
               <div>
-                <dt>2차 오프라인</dt>
+                <dt>2차 인재상 AI 면접</dt>
                 <dd>{withoutYear(e.final)}</dd>
               </div>
               <div>

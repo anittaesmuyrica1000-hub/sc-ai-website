@@ -68,7 +68,7 @@ export async function POST(req: Request) {
   if (!isValidPhone(phoneRaw)) return bad("연락 가능한 휴대폰 번호를 입력해 주세요.");
   if (!isValidJob(job)) return bad("지원 직군을 선택해 주세요.");
   if (!isValidApplicantType(applicantType)) return bad("현재 상태를 선택해 주세요.");
-  if (!isValidFinalAttend(finalAttend)) return bad("2차 오프라인 면접 참석 가능 여부를 선택해 주세요.");
+  if (!isValidFinalAttend(finalAttend)) return bad("2차 인재상 AI 면접 참석 가능 여부를 선택해 주세요.");
   if (!isValidEvHowFound(howFound)) return bad("유입 경로를 선택해 주세요.");
   if (howFound === EV_HOW_FOUND_ETC && !howFoundDetail) return bad("유입 경로를 입력해 주세요.");
 
