@@ -301,14 +301,15 @@ function MockChallengeBody({ e, dday }: { e: EventItem; dday: string }) {
    모집 전에는 여는 날을 적는다. 예전엔 '지원 신청하기'를 눌러 도착한 화면이
    '아직 접수 전입니다'라 지원자가 막힌 느낌을 받았다(2026-09-30).
    openBefore — 모집 전에도 누를 수 있게 둔다. 슈퍼전자 공고 목록은 오픈 전에도 볼 수 있어야 해서
-   사이드 패널만 켠다. 하단 배너·하단 바는 비활성 그대로다. */
+   사이드 패널만 켠다. 하단 배너·하단 바는 비활성 그대로다.
+   문구는 '공고 미리 보기' — 날짜만 적어 두면 누르면 무엇이 나오는지 알 수 없다. */
 function ApplyCta({
   e, status, className = "", openBefore = false,
 }: { e: EventItem; status: EventStatus; className?: string; openBefore?: boolean }) {
   if (status === "upcoming" && openBefore) {
     return (
       <Link href={e.applyUrl} className={`btn btn-blue ${className}`}>
-        {openLabel(e, "long")} <i className="fa-solid fa-arrow-right"></i>
+        공고 미리 보기 <i className="fa-solid fa-arrow-right"></i>
       </Link>
     );
   }
