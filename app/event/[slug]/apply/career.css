@@ -23,6 +23,11 @@
   box-shadow: none;
   padding: 0;
 }
+/* 제출 버튼 — apply.css 는 width:100% 다. 680px 을 가로지르면 버튼 하나가 문단처럼
+   보인다. 글자 폭에 맞추고 폼과 같은 왼쪽 기준선에 세운다(실제 채용 지원서가 쓰는 형태).
+   좁은 화면에서는 아래 미디어쿼리가 다시 전체 폭으로 돌린다 — 손가락으로 누르는
+   화면에서는 넓은 버튼이 유리하다. */
+.career--form .apply-card .btn { width: auto; padding: 15px 34px; }
 .career-wrap {
   max-width: 1000px;
   margin: 0 auto;
@@ -343,10 +348,15 @@
 
 /* 라디오형 선택 — 오프라인 Final 참석 여부처럼 선택지가 길 때 */
 .ev-radios { display: grid; gap: 9px; }
-.ev-radio {
+/* ⚠️ 셀렉터 앞의 .ev-radios 는 장식이 아니다. .ev-radio 는 .field 안의 <label> 이라
+   apply.css 의 `.field label{display:block}` (0,1,1) 이 `.ev-radio` (0,1,0) 를 이긴다.
+   display 가 block 이 되면 gap 이 통째로 무시돼 동그라미와 글자가 붙는다.
+   (0,2,0) 으로 올려서 이긴다. */
+.ev-radios .ev-radio {
   display: flex;
   align-items: flex-start;
   gap: 12px;
+  margin: 0; /* .field label 의 margin-bottom:9px 이 grid gap 위에 또 얹힌다 */
   border: 1px solid var(--line);
   border-radius: 11px;
   padding: 13px 15px;
@@ -393,6 +403,7 @@
 }
 @media (max-width: 560px) {
   .career { padding: 26px 0 64px; }
+  .career--form .apply-card .btn { width: 100%; }
   .career-banner { padding: 26px 22px 24px; min-height: 152px; }
   .career-job { gap: 12px; padding: 22px 4px; }
   .career-job:hover { padding-left: 8px; }

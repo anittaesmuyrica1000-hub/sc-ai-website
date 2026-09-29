@@ -70,9 +70,9 @@
   padding-left: 11px;
   border-left: 1px solid var(--line);
 }
-/* 공유는 조건들과 다른 맥락이라(사실이 아니라 행동) 간격을 크게 벌린다.
+/* 공유는 조건들과 다른 맥락이라(사실이 아니라 행동) 줄 오른쪽 끝으로 민다.
    구분선은 긋지 않는다 — 선을 그으면 조건 목록의 다음 항목처럼 읽힌다. */
-.jd-meta .share-wrap { margin-left: 22px; }
+.jd-meta .share-wrap { margin-left: auto; }
 /* 40px 원이 14.5px 짜리 메타 줄 높이를 밀지 않도록 줄이고 위아래 여백을 상쇄한다 */
 .jd-meta .share-btn--icon { width: 32px; height: 32px; font-size: 15px; margin: -5px 0; }
 .jd-meta .ev-tag--dday { font-size: 13px; padding: 5px 12px; }
