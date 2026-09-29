@@ -413,10 +413,14 @@
   right:calc(50% + var(--dot)/2);width:calc(100% - var(--dot));
   height:1px;background:var(--line)
 }
+/* 원 색은 #3A6FFF(58,111,255) 하나를 투명도로 옅게 깐다 — 면과 테두리를 각각
+   고정 톤으로 만들어 두면 브랜드 블루가 바뀔 때 두 군데를 따로 맞춰야 한다.
+   ⚠️ 글자색만 --blue-d 로 남긴다. 8% 면 위에 #3A6FFF 를 그대로 쓰면 대비가
+      3.9:1 이라 본문 크기 기준(4.5:1)에 못 미친다(--blue-d 는 7.8:1). */
 .ev-flow__dot{
   width:var(--dot);height:var(--dot);border-radius:50%;box-sizing:border-box;
   display:grid;place-items:center;padding:0 12px;
-  background:var(--soft-2);border:1px solid var(--tint);
+  background:rgba(58,111,255,.08);border:1px solid rgba(58,111,255,.22);
   font-size:14.5px;font-weight:700;line-height:1.4;letter-spacing:-.02em;
   color:var(--blue-d);word-break:keep-all
 }
