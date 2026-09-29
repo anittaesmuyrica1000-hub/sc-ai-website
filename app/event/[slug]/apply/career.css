@@ -14,15 +14,19 @@
 /* 지원서 단계 — 폼을 카드로 묶지 않는다. 이 화면에 있는 것이 폼뿐이라 테두리가
    구분할 대상이 없고, 상자 안쪽 여백(40px)만큼 글이 페이지 왼쪽 기준선에서 밀려난다.
    상자를 벗기고 워드마크와 같은 기준선에 세운다.
-   ⚠️ :not(.apply-done) — 제출 완료 화면은 가운데 정렬 카드가 맞다. 거기까지 벗기면
-      체크 아이콘과 문구가 허공에 뜬다. */
-.career--form .apply-card:not(.apply-done) {
+   제출 완료 화면(.apply-done)도 같이 벗긴다 — 폼과 완료 화면이 같은 자리에서
+   바뀌는데 한쪽만 상자면 제출 순간 화면이 튄다. */
+.career--form .apply-card {
   background: none;
   border: 0;
   border-radius: 0;
   box-shadow: none;
   padding: 0;
 }
+/* apply.css 는 완료 화면을 가운데 정렬로 둔다(도입문의 폼 기준).
+   여기서는 폼이 왼쪽 기준선에 서 있으므로 완료 화면도 같은 선에서 시작해야 한다. */
+.career--form .apply-done { text-align: left; }
+.career--form .apply-done .dot { margin: 0 0 22px; }
 /* 제출 버튼 — apply.css 는 width:100% 다. 680px 을 가로지르면 버튼 하나가 문단처럼
    보인다. 글자 폭에 맞추고 폼과 같은 왼쪽 기준선에 세운다(실제 채용 지원서가 쓰는 형태).
    좁은 화면에서는 아래 미디어쿼리가 다시 전체 폭으로 돌린다 — 손가락으로 누르는
