@@ -3,7 +3,6 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import "../../../event.css";
 import "../jobs.css";
-import ShareButton from "@/components/ShareButton";
 import { EVENTS, findEvent, statusOf, ddayLabel, withoutYear, applyRange, STATUS_LABEL } from "@/lib/events";
 import { EVENT_JOBS, FICTION_NOTICE, JOB_DETAIL_EVENT, findJob } from "@/lib/eventApply";
 import { buildPageMetadata } from "@/lib/pageSeo";
@@ -75,14 +74,6 @@ export default async function JobDetailPage({
   const other = EVENT_JOBS.find((x) => x.v !== j.v);
   const listUrl = `/event/${e.slug}/apply`;
   const applyUrl = `${e.applyUrl}?job=${j.v}`;
-  const share = {
-    path: `/event/${e.slug}/jobs/${j.v}`,
-    title: `${j.l} 신입사원 모집 · ${e.title}`,
-    text: "가상기업 슈퍼전자의 채용 전형을 그대로. 참가비 무료, 전공·학년 제한 없습니다.",
-    campaign: e.slug,
-    content: j.v,
-  };
-
   // 상태별 지원 버튼.
   // 모집 전에도 지원서로 보낸다 — 입력이 잠긴 폼을 미리 볼 수 있게 열어 뒀다.
   // 마감 뒤에만 누를 것을 주지 않고 이유를 쓴다.
@@ -111,9 +102,6 @@ export default async function JobDetailPage({
             </span>
             <span>신입</span>
             <span>학력·전공 무관</span>
-            {/* 공유는 제목·조건을 다 읽은 다음 자리다. 사이드 패널 맨 아래에 두면
-                패널을 끝까지 내려야 보이고, 패널이 사라지는 좁은 화면에선 아예 없어진다. */}
-            <ShareButton {...share} position="header" variant="icon" icon="nodes" label="공고 공유하기" />
           </div>
         </div>
       </section>

@@ -65,16 +65,12 @@
   color: var(--slate);
 }
 .jd-meta__dates { font-variant-numeric: tabular-nums; }
-/* ⚠️ .share-wrap 도 span 이라 제외하지 않으면 공유 버튼 앞에 구분선이 그어진다 */
-.jd-meta > span + span:not(.jd-meta__dates):not(.share-wrap) {
+/* 공유 버튼은 이 화면에 두지 않는다 — 행사 안내(이벤트 대문)에만 둔다.
+   공고마다 공유 버튼을 달면 어느 링크를 퍼뜨려야 하는지 흩어진다. */
+.jd-meta > span + span:not(.jd-meta__dates) {
   padding-left: 11px;
   border-left: 1px solid var(--line);
 }
-/* 공유는 조건들과 다른 맥락이라(사실이 아니라 행동) 줄 오른쪽 끝으로 민다.
-   구분선은 긋지 않는다 — 선을 그으면 조건 목록의 다음 항목처럼 읽힌다. */
-.jd-meta .share-wrap { margin-left: auto; }
-/* 40px 원이 14.5px 짜리 메타 줄 높이를 밀지 않도록 줄이고 위아래 여백을 상쇄한다 */
-.jd-meta .share-btn--icon { width: 32px; height: 32px; font-size: 15px; margin: -5px 0; }
 .jd-meta .ev-tag--dday { font-size: 13px; padding: 5px 12px; }
 
 /* ── 2단 레이아웃 — 본문 + 따라오는 지원 패널 ───────────── */
