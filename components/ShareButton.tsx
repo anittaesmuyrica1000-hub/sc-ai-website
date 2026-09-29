@@ -26,9 +26,16 @@ type Props = {
   content?: string;
   /** GA4 에서 어느 자리의 버튼인지 구분한다 */
   position: "header" | "side" | "hero" | "bottom";
-  /** icon: 아이콘만(공고 헤더) · line: 아이콘+글자(사이드 패널) · text: 글자만(히어로 메타 줄) */
+  /** icon: 아이콘만 · line: 테두리 알약 · text: 테두리 없이 아이콘+글자 */
   variant?: "icon" | "line" | "text";
   label?: string;
+  /**
+   * 아이콘 글리프. 기본은 공유 아이콘(iOS 공유 모양).
+   * ⚠️ app/fontawesome.css 의 클래스 목록에 있어도 public/fonts/fa-solid-900.woff2
+   *    서브셋에 글리프가 없으면 빈 네모가 나온다. 바꾸기 전에 woff2 의 cmap 을 확인할 것.
+   *    확인된 것: fa-arrow-up-from-bracket(e09a) · fa-link(f0c1)
+   */
+  iconClass?: string;
 };
 
 export default function ShareButton({
@@ -40,6 +47,7 @@ export default function ShareButton({
   position,
   variant = "icon",
   label = "공고 공유하기",
+  iconClass = "fa-arrow-up-from-bracket",
 }: Props) {
   const [toast, setToast] = useState("");
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -116,10 +124,9 @@ export default function ShareButton({
         aria-label={label}
         title={label}
       >
-        {/* ⚠️ fa-share-nodes 를 쓰면 안 된다 — app/fontawesome.css 는 사용 아이콘만 담은 서브셋이고
-            public/fonts 의 woff2 에도 그 글리프가 없어서 빈 네모로 나온다.
-            arrow-up-from-bracket 은 이미 서브셋에 들어 있고, iOS 공유 아이콘과 같은 모양이다. */}
-        {variant !== "text" && <i className="fa-solid fa-arrow-up-from-bracket" aria-hidden="true"></i>}
+        {/* ⚠️ fa-share-nodes 를 쓰면 안 된다 — 서브셋 woff2 에 글리프가 없어 빈 네모가 나온다.
+            기본값 arrow-up-from-bracket 과 fa-link 는 서브셋에 들어 있는 것을 확인했다. */}
+        <i className={`fa-solid ${iconClass}`} aria-hidden="true"></i>
         {variant !== "icon" && <span>{label}</span>}
       </button>
       {/* 화면 낭독기도 결과를 듣도록 role="status". 토스트가 없을 때도 노드를 유지한다 */}
