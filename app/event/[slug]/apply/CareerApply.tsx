@@ -301,52 +301,6 @@ function ApplyStep({
 
   return (
     <div className="career-form">
-      <div className="career-sum">
-        <Link href={`/event/${event.slug}/jobs/${job}`} className="career-form__back">
-          <i className="fa-solid fa-arrow-left"></i> 공고 상세
-        </Link>
-        <h1>{meta.l} 신입사원 모집</h1>
-        <div className="career-sum__meta">
-          <span>{meta.team}</span>
-          <span>신입</span>
-          <span>서울</span>
-          <span>학력·전공 무관</span>
-        </div>
-
-        {/* 공고 전문은 상세 화면(/jobs/[job])이 맡는다. 여기서는 무엇에 지원 중인지만 확인시킨다 */}
-        <dl>
-          <div>
-            <dt>지원 직군</dt>
-            <dd>{meta.l}</dd>
-          </div>
-          <div>
-            <dt>접수 기간</dt>
-            <dd>
-              {event.applyFrom} ~ {event.applyTo}
-            </dd>
-          </div>
-          <div>
-            <dt>채용절차</dt>
-            <dd>지원서 접수 → 1차 직무 AI 면접(온라인) → Finalist 발표 → 2차 인재상 AI 면접(오프라인)</dd>
-          </div>
-          <div>
-            <dt>공고 전문</dt>
-            <dd>
-              <Link href={`/event/${event.slug}/jobs/${job}`} style={{ color: "var(--blue-d)" }}>
-                {meta.l} 공고 다시 보기
-              </Link>
-            </dd>
-          </div>
-        </dl>
-
-        <div className="career-notice">
-          <i className="fa-solid fa-circle-info"></i>
-          <span>
-            <b>안내</b> — {FICTION_NOTICE}
-          </span>
-        </div>
-      </div>
-
       <div>
         {done ? (
           <div className="apply-card apply-done" style={{ display: "block" }}>
@@ -379,7 +333,7 @@ function ApplyStep({
              "아직 접수 전입니다" 한 장으로 막으면 지원자가 무엇을 적어야 하는지 알 수 없어
              OPEN 첫날 다시 들어올 이유가 생기지 않는다. 제출은 서버도 한 번 더 막는다. */
           <div className="apply-card">
-            <div className="ct">지원서 작성</div>
+            <h1 className="ct">지원서 작성</h1>
             <div className="cs">
               {meta.l} 직군에 지원합니다. 이력서나 자기소개서는 받지 않습니다.
               {preview && status !== "open" && " (내부 테스트 모드 — 집계에서 제외됩니다)"}

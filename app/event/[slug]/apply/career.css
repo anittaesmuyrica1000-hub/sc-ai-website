@@ -298,78 +298,15 @@
 .career-closed .btn { margin-top: 24px; }
 
 /* ── 지원서 단계 ──────────────────────────────────────────
-   좌: 선택한 공고 요약 / 우: 지원서 카드(.apply-card 재사용) */
+   지원서 카드(.apply-card 재사용) 한 장만 둔다. 공고 요약을 옆에 세워 두면
+   작성 중에 읽을 것이 생기고, 그 내용은 이미 공고 상세(/jobs/[job])에 있다.
+   680px 은 입력 칸이 지나치게 늘어나지 않는 폭 — .career-wrap(1000px) 안에서 가운데로 모은다. */
 .career-form {
-  display: grid;
-  grid-template-columns: minmax(0, 0.82fr) minmax(0, 1fr);
-  gap: clamp(28px, 4vw, 56px);
-  align-items: start;
-  margin-top: 30px;
+  max-width: 680px;
+  margin: 30px auto 0;
 }
-.career-form__back {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  background: none;
-  border: none;
-  font-family: inherit;
-  font-size: 14.5px;
-  font-weight: 600;
-  color: var(--slate);
-  cursor: pointer;
-  padding: 0;
-  margin-bottom: 18px;
-}
-.career-form__back:hover { color: var(--blue); }
-.career-form__back i { font-size: 11px; }
-
-.career-sum h1 {
-  font-size: clamp(25px, 3vw, 33px);
-  font-weight: 700;
-  line-height: 1.34;
-  letter-spacing: -0.025em;
-  color: var(--ink);
-  word-break: keep-all;
-}
-.career-sum__meta {
-  margin-top: 13px;
-  font-size: 14.5px;
-  font-weight: 500;
-  color: var(--slate-2);
-  display: flex;
-  flex-wrap: wrap;
-  gap: 9px;
-}
-.career-sum__meta span::after { content: "|"; margin-left: 9px; color: var(--line); }
-.career-sum__meta span:last-child::after { content: ""; margin: 0; }
-
-.career-sum dl {
-  margin-top: 28px;
-  border-top: 1px solid var(--line);
-}
-.career-sum dl > div {
-  display: grid;
-  grid-template-columns: 96px minmax(0, 1fr);
-  gap: 14px;
-  padding: 15px 2px;
-  border-bottom: 1px solid var(--line);
-  font-size: 15.5px;
-  line-height: 1.62;
-}
-.career-sum dt { font-weight: 600; color: var(--slate-2); }
-.career-sum dd { color: var(--ink); word-break: keep-all; }
-.career-sum dd ul { list-style: none; display: grid; gap: 5px; }
-.career-sum dd li { position: relative; padding-left: 13px; }
-.career-sum dd li::before {
-  content: "";
-  position: absolute;
-  left: 0;
-  top: 9px;
-  width: 4px;
-  height: 4px;
-  border-radius: 50%;
-  background: var(--blue-2);
-}
+/* 카드 제목이 이 화면의 h1 이다 — 브라우저 기본 위 여백만 지운다 */
+.career .apply-card h1.ct { margin-top: 0; }
 
 /* ── 동의 블록 — .agree 를 여러 줄로 쌓는다 ───────────────
    .agree 는 한 줄(체크 + 자세히보기)용이라 그대로 여러 개를 쌓으면 간격이 무너진다. */
@@ -446,7 +383,7 @@
 
 @media (max-width: 860px) {
   .career-banners { grid-template-columns: 1fr; }
-  .career-form { grid-template-columns: minmax(0, 1fr); max-width: 560px; margin-left: auto; margin-right: auto; }
+  .career-form { max-width: 560px; }
 }
 @media (max-width: 560px) {
   .career { padding: 26px 0 64px; }
@@ -455,7 +392,6 @@
   .career-job:hover { padding-left: 8px; }
   .career-job__title { font-size: 18px; }
   .career-job__desc { display: none; }
-  .career-sum dl > div { grid-template-columns: 1fr; gap: 5px; }
   .ev-agree-detail { margin-left: 0; }
 }
 
