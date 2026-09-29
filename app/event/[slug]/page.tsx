@@ -5,7 +5,8 @@ import { notFound } from "next/navigation";
 import "../../blog/[id]/post.css";
 import "../event.css";
 import { EVENTS, findEvent, statusOf, ddayLabel, STATUS_LABEL, type EventItem } from "@/lib/events";
-import { EVENT_JOBS } from "@/lib/eventApply";
+import { EVENT_JOBS, EVENT_STEPS, EVENT_VALUES } from "@/lib/eventApply";
+import ShareButton from "@/components/ShareButton";
 import { buildPageMetadata } from "@/lib/pageSeo";
 
 export const revalidate = 120;
@@ -44,22 +45,6 @@ export async function generateMetadata({
       1) 문항 수·소요시간을 쓰지 않는다 — "5문항", "약 O분" 금지(slide 14).
       2) 모델 직무의 설계 근거가 된 실존 기업명을 쓰지 않는다(slide 13).
       3) 가상기업 고지는 고정 문구다. 포스터·지원 폼·보도자료와 같은 문장을 쓴다(slide 4). */
-
-const STEPS = [
-  ["1. 지원서 접수", "마케팅·개발 중 한 직군을 골라 지원서를 냅니다", "10.06 ~ 11.01"],
-  ["2. 1차 AI 면접 (온라인)", "응시 기간 안에서 원하는 시간을 골라 응시합니다", "11.04 ~ 11.08"],
-  ["3. Finalist 발표", "면접 결과를 검토해 3인을 선발하고 개별 안내드립니다", "11.11"],
-  ["4. 2차 인재상 면접 (오프라인)", "슈퍼전자 인재상 면접과 참가자 인터뷰, 시상식에 참여합니다", "11.20"],
-];
-
-/* 인재상 4 — 채용공고문이 "자세한 정의는 이벤트 페이지 참조"로 이 표를 가리킨다(slide 12).
-   2차가 인재상 면접이므로 지원자가 미리 읽고 준비할 수 있어야 한다. */
-const VALUES = [
-  ["Challenge", "도전", "해보지 않은 방식을 먼저 시도한다"],
-  ["Ownership", "주도", "맡은 일의 결과까지 책임진다"],
-  ["Collaboration", "협업", "다른 직군의 언어로 말한다"],
-  ["Growth", "성장", "어제의 자기 방식을 의심한다"],
-];
 
 const FAQS = [
   [
@@ -104,7 +89,7 @@ function MockChallengeBody({ e, dday }: { e: EventItem; dday: string }) {
         <ul className="ev-jobs__list ev-jobs__list--stack">
           {EVENT_JOBS.map((j) => (
             <li key={j.v}>
-              <Link href={`${e.applyUrl}?job=${j.v}`} className="ev-jobcard">
+              <Link href={`/event/${e.slug}/jobs/${j.v}`} className="ev-jobcard">
                 <span className="ev-jobcard__main">
                   <span className="ev-jobcard__org">슈퍼전자</span>
                   <span className="ev-jobcard__title">{j.l} 신입사원 모집</span>
@@ -156,7 +141,7 @@ function MockChallengeBody({ e, dday }: { e: EventItem; dday: string }) {
             </tr>
           </thead>
           <tbody>
-            {STEPS.map((s) => (
+            {EVENT_STEPS.map((s) => (
               <tr key={s[0]}>
                 <td>{s[0]}</td>
                 <td>{s[1]}</td>
@@ -190,7 +175,7 @@ function MockChallengeBody({ e, dday }: { e: EventItem; dday: string }) {
             </tr>
           </thead>
           <tbody>
-            {VALUES.map((v) => (
+            {EVENT_VALUES.map((v) => (
               <tr key={v[0]}>
                 <td>
                   <strong>{v[0]}</strong>
@@ -211,17 +196,20 @@ function MockChallengeBody({ e, dday }: { e: EventItem; dday: string }) {
 
       {EVENT_JOBS.map((j) => (
         <div key={j.v}>
-          {/* 직군명만 쓴다. 소속 팀(j.team)은 지원 페이지의 공고 화면이 메타로 보여준다 —
-              여기서 "소프트웨어개발팀 · 소프트웨어 개발"처럼 같은 말을 두 번 쓰지 않도록. */}
+          {/* 직군명만 쓴다. 소속 팀(j.team)은 공고 상세가 메타로 보여준다 —
+              여기서 "소프트웨어개발팀 · 소프트웨어 개발"처럼 같은 말을 두 번 쓰지 않도록.
+              평가 항목(evaluates)과 자격·전형은 공고 상세가 맡는다. 두 곳에 같은 문장을 두지 않는다. */}
           <h3>{j.l}</h3>
           <p className="post-src">{j.team}</p>
           <p>{j.desc}</p>
-          <p>이런 것을 봅니다</p>
           <ul className="post-list">
-            {j.skills.map((s) => (
-              <li key={s}>{s}</li>
+            {j.duties.map((d) => (
+              <li key={d}>{d}</li>
             ))}
           </ul>
+          <p>
+            <Link href={`/event/${e.slug}/jobs/${j.v}`}>{j.l} 공고 자세히 보기</Link>
+          </p>
         </div>
       ))}
       <p className="post-src">
@@ -399,11 +387,22 @@ export default async function EventDetailPage({ params }: { params: Promise<{ sl
         <div className="ev-hero__inner">
           {/* 행사가 한 건뿐이면 /event 가 이 페이지로 되돌려 보내므로(목록 건너뛰기) 링크를 숨긴다 —
               누르면 제자리로 돌아오는 링크가 된다. 두 건 이상이면 자동으로 다시 나온다. */}
-          {EVENTS.length > 1 && (
-            <Link href="/event" className="ev-hero__back">
-              <i className="fa-solid fa-arrow-left"></i> 이벤트 목록
-            </Link>
-          )}
+          <div className="ev-hero__top">
+            {EVENTS.length > 1 && (
+              <Link href="/event" className="ev-hero__back">
+                <i className="fa-solid fa-arrow-left"></i> 이벤트 목록
+              </Link>
+            )}
+            <ShareButton
+              path={`/event/${e.slug}`}
+              title={`${e.title} 참가자 모집`}
+              text={e.excerpt}
+              campaign={e.slug}
+              position="hero"
+              variant="icon"
+              label="이 행사 링크 공유하기"
+            />
+          </div>
           <span className="ev-hero__status">{STATUS_LABEL[status]}</span>
           <h1 className="ev-hero__title">{e.title}</h1>
           <p className="ev-hero__excerpt">{e.excerpt}</p>

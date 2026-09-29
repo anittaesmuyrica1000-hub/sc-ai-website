@@ -10,7 +10,7 @@ import {
   APPLICANT_TYPES, FINAL_ATTEND_OPTIONS,
   EV_HOW_FOUND_OPTIONS, EV_HOW_FOUND_ETC,
   eventEmailError, EVENT_EMAIL_ERROR_MSG,
-  isValidName, isValidPhone,
+  isValidName, isValidPhone, FICTION_NOTICE,
 } from "@/lib/eventApply";
 
 /* 가상기업 슈퍼전자의 채용공고 화면.
@@ -22,10 +22,6 @@ import {
       · 문항 수·소요시간 — "5문항", "약 O분" (slide 14)
       · 모델 직무의 설계 근거가 된 실존 기업명 (slide 13)
       · 실존 기업 로고를 떠올리게 하는 형태 (slide 12) */
-
-// 가상기업 고지 — 포스터·이벤트 페이지·보도자료와 같은 문장을 쓴다(slide 4 고정 문구).
-const FICTION_NOTICE =
-  "슈퍼전자는 본 행사를 위한 가상 기업입니다. 실제 채용 절차나 입사 자격과 관계가 없으며, 본 행사 참가와 결과는 어떠한 기업의 채용에도 영향을 주지 않습니다.";
 
 type Fields = {
   name: string; phone: string; email: string;
@@ -57,12 +53,6 @@ export default function CareerApply({ event, status }: { event: EventItem; statu
   const open = status === "open" || preview;
   const jobs = EVENT_JOBS.filter((j) => filter === "all" || j.v === filter);
 
-  function pick(v: EventJob) {
-    setJob(v);
-    trackEvent("event_job_select", { event_slug: event.slug, job: v });
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  }
-
   return (
     <section className="career">
       <div className="career-wrap">
@@ -77,14 +67,7 @@ export default function CareerApply({ event, status }: { event: EventItem; statu
         </div>
 
         {job ? (
-          <ApplyStep
-            event={event}
-            job={job}
-            open={open}
-            status={status}
-            preview={preview}
-            onBack={() => setJob(null)}
-          />
+          <ApplyStep event={event} job={job} open={open} status={status} preview={preview} />
         ) : (
           <>
             <div className="career-banners">
@@ -151,7 +134,11 @@ export default function CareerApply({ event, status }: { event: EventItem; statu
             <ul className="career-jobs">
               {jobs.map((j) => (
                 <li key={j.v}>
-                  <button type="button" className="career-job" onClick={() => pick(j.v)}>
+                  <Link
+                    href={`/event/${event.slug}/jobs/${j.v}`}
+                    className="career-job"
+                    onClick={() => trackEvent("event_job_select", { event_slug: event.slug, job: j.v })}
+                  >
                     <div className="career-job__body">
                       <div className="career-job__title">
                         {j.l} 신입사원 모집
@@ -168,7 +155,7 @@ export default function CareerApply({ event, status }: { event: EventItem; statu
                     <span className="career-job__go" aria-hidden="true">
                       <i className="fa-solid fa-arrow-right"></i>
                     </span>
-                  </button>
+                  </Link>
                 </li>
               ))}
             </ul>
@@ -209,14 +196,13 @@ export default function CareerApply({ event, status }: { event: EventItem; statu
 /* ── 지원서 단계 ───────────────────────────────────────── */
 
 function ApplyStep({
-  event, job, open, status, preview, onBack,
+  event, job, open, status, preview,
 }: {
   event: EventItem;
   job: EventJob;
   open: boolean;
   status: EventStatus;
   preview: boolean;
-  onBack: () => void;
 }) {
   const meta = EVENT_JOBS.find((j) => j.v === job)!;
 
@@ -319,9 +305,9 @@ function ApplyStep({
   return (
     <div className="career-form">
       <div className="career-sum">
-        <button type="button" className="career-form__back" onClick={onBack}>
-          <i className="fa-solid fa-arrow-left"></i> 공고 목록
-        </button>
+        <Link href={`/event/${event.slug}/jobs/${job}`} className="career-form__back">
+          <i className="fa-solid fa-arrow-left"></i> 공고 상세
+        </Link>
         <h1>{meta.l} 신입사원 모집</h1>
         <div className="career-sum__meta">
           <span>{meta.team}</span>
@@ -330,32 +316,11 @@ function ApplyStep({
           <span>학력·전공 무관</span>
         </div>
 
+        {/* 공고 전문은 상세 화면(/jobs/[job])이 맡는다. 여기서는 무엇에 지원 중인지만 확인시킨다 */}
         <dl>
           <div>
-            <dt>하는 일</dt>
-            <dd>{meta.desc}</dd>
-          </div>
-          <div>
-            <dt>보는 것</dt>
-            <dd>
-              <ul>
-                {meta.skills.map((s) => (
-                  <li key={s}>{s}</li>
-                ))}
-              </ul>
-            </dd>
-          </div>
-          <div>
-            <dt>지원 자격</dt>
-            <dd>전공·학년·졸업 시기 제한 없음. 어학 점수·자격증·수상 경력 미반영</dd>
-          </div>
-          <div>
-            <dt>우대 사항</dt>
-            <dd>없습니다. 해 본 경험을 묻고 답변으로 판단합니다</dd>
-          </div>
-          <div>
-            <dt>전형 절차</dt>
-            <dd>지원서 접수 → 1차 AI 면접(온라인) → 2차 인재상 면접(오프라인) → 최종 발표</dd>
+            <dt>지원 직군</dt>
+            <dd>{meta.l}</dd>
           </div>
           <div>
             <dt>접수 기간</dt>
@@ -364,12 +329,14 @@ function ApplyStep({
             </dd>
           </div>
           <div>
-            <dt>인재상</dt>
+            <dt>채용절차</dt>
+            <dd>지원서 접수 → 1차 AI 면접(온라인) → 2차 인재상 면접(오프라인) → 최종 발표</dd>
+          </div>
+          <div>
+            <dt>공고 전문</dt>
             <dd>
-              Challenge · Ownership · Collaboration · Growth
-              <br />
-              <Link href={`/event/${event.slug}`} style={{ color: "var(--blue-d)" }}>
-                자세한 정의는 행사 안내 참조
+              <Link href={`/event/${event.slug}/jobs/${job}`} style={{ color: "var(--blue-d)" }}>
+                {meta.l} 공고 다시 보기
               </Link>
             </dd>
           </div>

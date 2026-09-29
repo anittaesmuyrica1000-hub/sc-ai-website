@@ -1,6 +1,7 @@
 import type { MetadataRoute } from "next";
 import { supabase, publishAtVisibleOr } from "@/lib/supabase";
 import { EVENTS } from "@/lib/events";
+import { EVENT_JOBS, JOB_DETAIL_EVENT } from "@/lib/eventApply";
 
 // 동적 사이트맵 — 고정 페이지 + Supabase의 published 블로그 글을 자동 포함.
 // /sitemap.xml 로 제공된다(기존 정적 public/sitemap.xml 대체). 글을 추가하면 자동 반영.
@@ -22,6 +23,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: "weekly" as const,
       priority: 0.8,
     })),
+    ...EVENTS.filter((e) => e.slug === JOB_DETAIL_EVENT).flatMap((e) =>
+      EVENT_JOBS.map((j) => ({
+        url: `${SITE_URL}/event/${e.slug}/jobs/${j.v}`,
+        changeFrequency: "weekly" as const,
+        priority: 0.7,
+      }))
+    ),
     { url: `${SITE_URL}/privacy`, changeFrequency: "yearly", priority: 0.3 },
     { url: `${SITE_URL}/terms`, changeFrequency: "yearly", priority: 0.3 },
     { url: `${SITE_URL}/terms-applicant`, changeFrequency: "yearly", priority: 0.3 },

@@ -40,7 +40,7 @@
   color: var(--ink);
 }
 .career-brand span {
-  font-size: 13px;
+  font-size: 13.5px;
   font-weight: 500;
   color: var(--slate-2);
   letter-spacing: 0.02em;
@@ -49,7 +49,7 @@
   display: inline-flex;
   align-items: center;
   gap: 7px;
-  font-size: 13.5px;
+  font-size: 14.5px;
   font-weight: 600;
   color: var(--slate);
   text-decoration: none;
@@ -69,7 +69,7 @@
   border-radius: 12px;
   padding: 14px 16px;
   margin: 22px 0 0;
-  font-size: 13.5px;
+  font-size: 15px;
   line-height: 1.65;
   color: var(--slate);
   word-break: keep-all;
@@ -140,7 +140,7 @@
   word-break: keep-all;
 }
 .career-banner p {
-  font-size: 14px;
+  font-size: 15.5px;
   font-weight: 500;
   line-height: 1.6;
   margin-top: 14px;
@@ -179,7 +179,7 @@
   background: #fff;
   border-radius: 999px;
   padding: 8px 16px;
-  font-size: 13.5px;
+  font-size: 14.5px;
   font-weight: 600;
   font-family: inherit;
   color: var(--slate);
@@ -214,6 +214,8 @@
   transition: 0.15s;
 }
 .career-job:hover { background: var(--soft); padding-left: 16px; padding-right: 0; }
+/* 카드는 button 이 아니라 공고 상세로 가는 링크다 — 기본 링크 밑줄·색을 끈다 */
+.career-job { text-decoration: none; color: inherit; }
 .career-job:focus-visible { outline: 2px solid var(--blue); outline-offset: -2px; }
 .career-job__body { flex: 1; min-width: 0; }
 .career-job__title {
@@ -221,7 +223,7 @@
   align-items: center;
   gap: 10px;
   flex-wrap: wrap;
-  font-size: 18.5px;
+  font-size: 19.5px;
   font-weight: 700;
   letter-spacing: -0.02em;
   color: var(--ink);
@@ -238,7 +240,7 @@
 }
 .career-job__meta {
   margin-top: 9px;
-  font-size: 13.5px;
+  font-size: 14.5px;
   font-weight: 500;
   color: var(--slate-2);
   display: flex;
@@ -254,7 +256,7 @@
 .career-job__meta span:last-child::after { content: ""; margin: 0; }
 .career-job__desc {
   margin-top: 11px;
-  font-size: 14.5px;
+  font-size: 16px;
   line-height: 1.62;
   color: var(--slate);
   word-break: keep-all;
@@ -301,7 +303,7 @@
   margin-bottom: 10px;
 }
 .career-closed p {
-  font-size: 15px;
+  font-size: 16px;
   line-height: 1.7;
   color: var(--slate);
   word-break: keep-all;
@@ -324,7 +326,7 @@
   background: none;
   border: none;
   font-family: inherit;
-  font-size: 13.5px;
+  font-size: 14.5px;
   font-weight: 600;
   color: var(--slate);
   cursor: pointer;
@@ -344,7 +346,7 @@
 }
 .career-sum__meta {
   margin-top: 13px;
-  font-size: 13.5px;
+  font-size: 14.5px;
   font-weight: 500;
   color: var(--slate-2);
   display: flex;
@@ -364,7 +366,7 @@
   gap: 14px;
   padding: 15px 2px;
   border-bottom: 1px solid var(--line);
-  font-size: 14px;
+  font-size: 15.5px;
   line-height: 1.62;
 }
 .career-sum dt { font-weight: 600; color: var(--slate-2); }
@@ -399,7 +401,7 @@
 /* 필수 동의 항목의 상세 — 수집 항목·목적·보유기간을 접어 둔다 */
 .ev-agree-detail {
   margin: -6px 0 16px 26px;
-  font-size: 12.5px;
+  font-size: 13.5px;
   line-height: 1.7;
   color: var(--slate-2);
   word-break: keep-all;
@@ -429,7 +431,7 @@
   border: 1px solid var(--line);
   border-radius: 11px;
   padding: 13px 15px;
-  font-size: 14.5px;
+  font-size: 15.5px;
   line-height: 1.5;
   color: var(--ink);
   cursor: pointer;
@@ -448,11 +450,11 @@
   border-radius: 12px;
   padding: 16px 18px;
   margin: 0 0 26px;
-  font-size: 13.5px;
+  font-size: 15px;
   line-height: 1.7;
   color: var(--slate);
 }
-.ev-next b { display: block; color: var(--ink); font-size: 14px; margin-bottom: 7px; }
+.ev-next b { display: block; color: var(--ink); font-size: 15.5px; margin-bottom: 7px; }
 .ev-next ul { list-style: none; display: grid; gap: 4px; }
 
 @media (max-width: 860px) {
@@ -464,8 +466,25 @@
   .career-banner { padding: 26px 22px 24px; min-height: 152px; }
   .career-job { gap: 12px; padding: 22px 4px; }
   .career-job:hover { padding-left: 8px; }
-  .career-job__title { font-size: 17px; }
+  .career-job__title { font-size: 18px; }
   .career-job__desc { display: none; }
   .career-sum dl > div { grid-template-columns: 1fr; gap: 5px; }
   .ev-agree-detail { margin-left: 0; }
 }
+
+/* ── 폼 타이포 ────────────────────────────────────────────
+   입력 폼은 도입문의와 같은 app/apply/apply.css 를 쓴다. 그런데 이 화면의 지원자는
+   공고 본문(15.5~16px)을 읽다가 그대로 입력으로 넘어오는데, 라벨 13.5 · 힌트 12.5 라
+   한 화면 안에서 글씨가 두 단 떨어져 보였다. 이 화면 안에서만 키운다 —
+   apply.css 를 고치면 도입문의·소개서 폼까지 함께 바뀐다.
+   입력 글씨 16px 은 iOS 사파리가 포커스 때 화면을 확대하지 않는 하한이기도 하다. */
+.career .apply-card .cs { font-size: 15.5px; }
+.career .field label { font-size: 15px; }
+.career .field .hint { font-size: 13.5px; }
+.career .field .err { font-size: 13.5px; }
+.career .field input,
+.career .field select,
+.career .field textarea { font-size: 16px; }
+.career .agree { font-size: 14.5px; }
+.career .agree .agree-more { font-size: 14px; }
+.career .apply-done p { font-size: 16px; }

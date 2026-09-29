@@ -250,3 +250,39 @@
   .ev-apply .btn{width:100%;justify-content:center}
   .ev-apply__note{width:100%;text-align:center}
 }
+
+/* ── 공유 버튼 (components/ShareButton) ──────────────────
+   행사 안내 히어로(파란 배경)와 공고 헤더(흰 배경) 양쪽이 같은 컴포넌트를 쓴다.
+   취준생이 공고를 옮기는 경로가 단톡방·커뮤니티 링크라, 읽기 전과 다 읽은 뒤 두 지점에 둔다. */
+.share-wrap{position:relative;display:inline-flex;flex-shrink:0}
+.share-btn{
+  display:inline-flex;align-items:center;gap:8px;border:0;background:transparent;
+  color:var(--slate);cursor:pointer;transition:.15s;font-family:inherit
+}
+.share-btn--icon{width:40px;height:40px;border-radius:50%;justify-content:center;font-size:16px}
+.share-btn--icon:hover{background:var(--soft-2);color:var(--blue)}
+.share-btn--line{
+  border:1px solid var(--line);border-radius:999px;padding:9px 16px;
+  font-size:13.5px;font-weight:600
+}
+.share-btn--line:hover{border-color:var(--blue-2);color:var(--blue-d)}
+.share-btn:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+
+/* 복사 결과를 눈으로도 확인시킨다 — 복사는 화면에 아무 변화를 남기지 않는 동작이라
+   피드백이 없으면 계속 다시 누르게 된다 */
+.share-toast{
+  position:absolute;right:0;top:calc(100% + 8px);z-index:20;
+  background:var(--ink);color:#fff;border-radius:9px;padding:8px 12px;
+  font-size:12.5px;font-weight:600;white-space:nowrap;
+  opacity:0;transform:translateY(-4px);pointer-events:none;transition:.16s
+}
+.share-toast[data-show="1"]{opacity:1;transform:none}
+
+/* 파란 히어로 위 */
+.ev-hero__top{display:flex;align-items:center;gap:16px;margin-bottom:24px}
+.ev-hero__top .ev-hero__back{margin-bottom:0}
+/* 뒤로가기 링크가 없는 경우(행사 1건)에도 공유는 오른쪽 끝에 붙는다 */
+.ev-hero__top .share-wrap{margin-left:auto}
+.ev-hero .share-btn{color:rgba(255,255,255,.9)}
+.ev-hero .share-btn--icon:hover{background:rgba(255,255,255,.16);color:#fff}
+.ev-hero .share-btn:focus-visible{outline-color:#fff}

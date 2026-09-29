@@ -1,0 +1,303 @@
+/* /event/[slug]/jobs/[job] — 가상기업 슈퍼전자의 채용공고 상세.
+   행사 안내(파란 히어로)와 달리 흰 배경 채용사이트 톤으로 둔다.
+   여기서 지원자가 하는 일은 훑는 것이 아니라 읽고 결정하는 것이라, 색면보다 글이 먼저 와야 한다.
+   색·라운드·그림자는 globals.css 토큰을 쓴다. 사이드 패널(.ev-side)과 태그(.ev-tag)는 event.css 재사용. */
+
+/* ⚠️ globals.css 의 `section{padding:var(--sec-y) 0}` (최대 120px)를 끈다.
+   그대로 두면 공고 헤더와 본문 섹션마다 120px 이 얹혀 화면이 늘어진다. */
+.jd-page section { padding: 0; }
+.jd-page { padding-bottom: 0; }
+
+/* ── 공고 헤더 ─────────────────────────────────────────── */
+.jd-head { border-bottom: 1px solid var(--line); background: #fff; }
+.jd-head__inner {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 28px 24px 30px;
+}
+.jd-head__top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 26px;
+}
+.jd-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--slate);
+  text-decoration: none;
+}
+.jd-back:hover { color: var(--blue); }
+.jd-back i { font-size: 11px; }
+
+.jd-title {
+  margin: 0;
+  font-size: clamp(27px, 3.4vw, 40px);
+  font-weight: 800;
+  line-height: 1.26;
+  letter-spacing: -0.035em;
+  color: var(--ink);
+  word-break: keep-all;
+}
+.jd-org {
+  margin: 10px 0 0;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--blue-d);
+}
+/* D-day → 접수기간 → 고용형태 순. 실제 채용 공고가 읽히는 순서다 */
+.jd-meta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 22px;
+  font-size: 14.5px;
+  font-weight: 500;
+  color: var(--slate);
+}
+.jd-meta__dates { font-variant-numeric: tabular-nums; }
+.jd-meta > span + span:not(.jd-meta__dates) {
+  padding-left: 11px;
+  border-left: 1px solid var(--line);
+}
+.jd-meta .ev-tag--dday { font-size: 13px; padding: 5px 12px; }
+
+/* ── 2단 레이아웃 — 본문 + 따라오는 지원 패널 ───────────── */
+.jd {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 340px;
+  gap: 60px;
+  align-items: start;
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 40px 24px 96px;
+}
+.jd__side { position: sticky; top: 88px; }
+
+/* ── 가상기업 고지 — 본문 첫 블록. 접지 않는다 ───────────── */
+.jd-notice {
+  display: flex;
+  gap: 11px;
+  align-items: flex-start;
+  background: var(--soft);
+  border: 1px solid var(--tint);
+  border-radius: 12px;
+  padding: 14px 16px;
+  font-size: 15px;
+  line-height: 1.65;
+  color: var(--slate);
+  word-break: keep-all;
+}
+.jd-notice i { color: var(--blue); font-size: 15px; margin-top: 2px; flex-shrink: 0; }
+.jd-notice b { color: var(--ink); font-weight: 700; margin-right: 4px; }
+
+/* 공고소개 본문 — 다른 섹션 본문보다 한 단계 크게 읽힌다.
+   ⚠️ `.jd-sec p` 가 더 높은 점수(0,1,1)라 `.jd-intro` 단독으로는 크기·여백을 이기지 못한다. */
+.jd-sec .jd-intro {
+  margin: 0;
+  font-size: 17.5px;
+  line-height: 1.75;
+  color: var(--ink);
+  word-break: keep-all;
+}
+
+/* ── 본문 섹션 ─────────────────────────────────────────── */
+.jd-sec { margin-top: 44px; }
+/* 가상기업 고지 바로 아래 오는 첫 섹션 — 고지와 붙어 보이지 않을 만큼만 띄운다 */
+.jd-sec--first { margin-top: 34px; }
+.jd-sec--last { margin-top: 52px; padding-top: 40px; border-top: 1px solid var(--line); }
+.jd-sec h2 {
+  margin: 0 0 16px;
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  color: var(--ink);
+}
+.jd-sec h3 {
+  margin: 28px 0 10px;
+  font-size: 16.5px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+}
+.jd-sec p {
+  margin: 0;
+  font-size: 16px;
+  line-height: 1.78;
+  color: var(--slate);
+  word-break: keep-all;
+}
+.jd-sec p b { color: var(--ink); }
+.jd-sec a { color: var(--blue-d); font-weight: 600; }
+.jd-note { margin-top: 14px !important; font-size: 14.5px !important; color: var(--slate-2) !important; }
+
+.jd-list { list-style: none; display: grid; gap: 11px; margin: 0; padding: 0; }
+.jd-list li {
+  position: relative;
+  padding-left: 17px;
+  font-size: 16px;
+  line-height: 1.75;
+  color: var(--slate);
+  word-break: keep-all;
+}
+.jd-list li::before {
+  content: "";
+  position: absolute;
+  left: 2px;
+  top: 11px;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--blue-2);
+}
+.jd-list li b { color: var(--ink); font-weight: 700; }
+
+/* ── 전형 절차 — 일정을 왼쪽에 고정해 세로로 읽히게 ──────── */
+.jd-steps { list-style: none; margin: 0; padding: 0; display: grid; gap: 2px; }
+.jd-steps li {
+  display: grid;
+  grid-template-columns: 116px minmax(0, 1fr);
+  gap: 18px;
+  padding: 16px 0;
+  border-top: 1px solid var(--line);
+}
+.jd-steps li:first-child { border-top: none; padding-top: 0; }
+.jd-steps__when {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: var(--blue-d);
+  font-variant-numeric: tabular-nums;
+  padding-top: 2px;
+}
+.jd-steps b { display: block; font-size: 16px; font-weight: 700; color: var(--ink); letter-spacing: -0.02em; }
+.jd-steps p { margin-top: 5px !important; font-size: 15px !important; }
+
+/* ── 인재상 4 ──────────────────────────────────────────── */
+.jd-values {
+  list-style: none;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+}
+.jd-values li {
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 16px 18px;
+}
+.jd-values b { font-size: 15px; font-weight: 800; color: var(--ink); letter-spacing: -0.01em; }
+.jd-values span { margin-left: 7px; font-size: 13px; font-weight: 600; color: var(--slate-2); }
+.jd-values p { margin-top: 7px !important; font-size: 14.5px !important; line-height: 1.6 !important; }
+
+/* ── 다른 공고 ─────────────────────────────────────────── */
+.jd-other {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 20px 22px;
+  text-decoration: none;
+  transition: 0.15s;
+}
+.jd-other:hover { border-color: var(--blue-2); box-shadow: 0 10px 26px -18px rgba(20, 40, 90, 0.35); }
+.jd-other b { display: block; font-size: 16.5px; font-weight: 700; color: var(--ink); letter-spacing: -0.02em; }
+.jd-other em {
+  display: block;
+  margin-top: 6px;
+  font-style: normal;
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--slate-2);
+  word-break: keep-all;
+}
+.jd-other i {
+  flex-shrink: 0;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: var(--soft-2);
+  color: var(--blue);
+  display: grid;
+  place-items: center;
+  font-size: 13px;
+}
+.jd-other:hover i { background: var(--blue); color: #fff; }
+
+/* ── 사이드 패널 보강 ──────────────────────────────────── */
+.jd-side__share { display: flex; justify-content: center; margin-top: 12px; }
+/* 모집 전·마감에는 누를 것을 주지 않는다. 버튼처럼 생긴 비활성 요소는 계속 눌러 보게 만든다 */
+.jd-cta-off {
+  margin: 20px 0 0;
+  border-radius: 12px;
+  background: var(--soft);
+  border: 1px solid var(--tint);
+  padding: 13px 14px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--slate);
+  text-align: center;
+  word-break: keep-all;
+}
+
+/* ── 모바일 하단 고정 바 ───────────────────────────────── */
+.jd-bar { display: none; }
+
+@media (max-width: 1080px) {
+  .jd { grid-template-columns: minmax(0, 1fr); gap: 32px; max-width: 760px; }
+  /* 사이드를 아래로 내리면 긴 본문 끝에 파묻힌다. 본문 위로 올린다 */
+  .jd__side { position: static; order: -1; }
+}
+
+@media (max-width: 768px) {
+  .jd-head__inner { padding: 20px 16px 24px; }
+  .jd-head__top { margin-bottom: 20px; }
+  .jd { padding: 28px 16px 40px; }
+  .jd-values { grid-template-columns: 1fr; }
+  /* 모바일에는 하단 고정 바가 있어 지원 버튼이 늘 손에 닿는다.
+     그래서 일정 패널을 본문 위에 둘 이유가 없다 — 열자마자 일정표부터 읽히면 공고가 뒤로 밀린다. */
+  .jd__side { order: 1; }
+  .jd-steps li { grid-template-columns: 1fr; gap: 6px; }
+  .jd-sec--last { margin-bottom: 0; }
+
+  /* 고정 바가 유의사항 마지막 줄을 가리지 않도록 본문 끝에 자리를 비운다 */
+  .jd-page { padding-bottom: calc(76px + env(safe-area-inset-bottom)); }
+  .jd-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 60;
+    background: rgba(255, 255, 255, 0.96);
+    backdrop-filter: blur(10px);
+    border-top: 1px solid var(--line);
+    padding: 12px 16px calc(12px + env(safe-area-inset-bottom));
+  }
+  .jd-bar__info { display: flex; align-items: baseline; gap: 9px; min-width: 0; }
+  .jd-bar__info b { font-size: 14px; font-weight: 800; color: var(--blue-d); }
+  .jd-bar__info span {
+    font-size: 13.5px;
+    color: var(--slate-2);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .jd-bar .btn { padding: 12px 22px; font-size: 15px; }
+  .jd-bar__off { font-size: 13.5px; font-weight: 600; color: var(--slate-2); }
+
+  /* 챗봇 FAB(.cbot, z-index 120)이 고정 바 오른쪽 끝에 겹쳐 지원 버튼을 가린다.
+     바를 FAB 위로 올리면 채팅을 못 열게 되므로, 이 페이지에서만 FAB 을 바 위로 띄운다.
+     :has 미지원 브라우저에서는 지금과 같은 겹침으로 남는다(기능은 유지). */
+  body:has(.jd-page) .cbot { bottom: calc(80px + env(safe-area-inset-bottom)); }
+}
