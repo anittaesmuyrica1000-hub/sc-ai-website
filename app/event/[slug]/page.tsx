@@ -219,10 +219,6 @@ function MockChallengeBody({ e, dday }: { e: EventItem; dday: string }) {
       {/* 표 아래 보조 설명 — 표 본문보다 작게 둔다(.ev-notes). 유의사항의 post-list 는 그대로다 */}
       <ul className="post-list ev-notes">
         <li>Finalist 3인은 마케팅 부문 1인, 개발 부문 1인, 전체 부문 1인으로 선발합니다.</li>
-        <li>
-          상장은 이력서에 이렇게 적을 수 있습니다 —{" "}
-          <strong>2026 슈퍼전자 AI 면접 챌린지 (주최 슈퍼코더) · 마케팅 부문 최우수</strong>
-        </li>
         <li>선착순은 1차 직무 AI 면접을 끝까지 마친 시각을 기준으로 합니다.</li>
       </ul>
 
