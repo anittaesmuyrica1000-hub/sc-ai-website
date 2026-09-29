@@ -71,11 +71,7 @@ export default function CareerApply({ event, status }: { event: EventItem; statu
               <div className="career-banner career-banner--main">
                 <div>
                   <div className="eyebrow-s">2026 RECRUIT</div>
-                  <h2>
-                    2026 슈퍼전자 신입사원 채용
-                    <br />
-                    2026 슈퍼전자 AI 면접 챌린지
-                  </h2>
+                  <h2>2026 슈퍼전자 신입사원 채용</h2>
                 </div>
                 <p>
                   접수 {event.applyFrom} ~ {event.applyTo}
