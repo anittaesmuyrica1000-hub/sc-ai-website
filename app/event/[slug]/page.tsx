@@ -103,7 +103,7 @@ const FAQS = [
 /* ⚠️ 이 페이지는 '행사 전체', 공고 상세(/jobs/[job])는 '직군 하나'를 맡는다.
    직군별 하는 일·자격·우대사항은 공고 상세에만 둔다 — 두 곳에 같은 문장을 두면 반드시 어긋난다.
    그래서 여기서 뺀 것: 모집 직군(931px), 모집 요강 표(586px).
-   모집 요강의 항목은 전부 다른 자리에 있다 — 일정·참가비·문의는 사이드 패널,
+   모집 요강의 항목은 전부 다른 자리에 있다 — 일정·참가비는 사이드 패널, 문의는 유의사항,
    참가 대상·주최는 히어로 메타, 전형은 아래 전형 절차, 지원 자격은 공고 상세 자격요건. */
 function MockChallengeBody({ e, dday }: { e: EventItem; dday: string }) {
   return (
@@ -255,6 +255,8 @@ function MockChallengeBody({ e, dday }: { e: EventItem; dday: string }) {
           중복 지원, 사실과 다르게 적은 지원서, 참가 대상이 아닌 신청은 취소되고 다음 순서로 넘어갑니다. 쿠폰은
           지원서에 적은 휴대폰 번호로 보냅니다. 번호를 잘못 적어 못 받으셨다면 11월 27일까지 알려 주세요.
         </li>
+        {/* 사이드 패널에서 문의 행을 뺐으므로 연락처는 여기가 유일하다 — 지우면 페이지에서 사라진다 */}
+        <li>문의 · {e.contact}</li>
       </ul>
     </>
   );
@@ -415,10 +417,6 @@ export default async function EventDetailPage({ params }: { params: Promise<{ sl
               <div>
                 <dt>참가비</dt>
                 <dd>무료</dd>
-              </div>
-              <div>
-                <dt>문의</dt>
-                <dd>{e.contact}</dd>
               </div>
             </dl>
             <Link href={e.applyUrl} className="btn btn-blue ev-side__cta">

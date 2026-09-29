@@ -208,10 +208,6 @@ export default async function JobDetailPage({
                 <dt>참가비</dt>
                 <dd>무료</dd>
               </div>
-              <div>
-                <dt>문의</dt>
-                <dd>{e.contact}</dd>
-              </div>
             </dl>
             {open || upcoming ? (
               <>
