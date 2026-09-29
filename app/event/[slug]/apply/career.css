@@ -193,7 +193,12 @@
   background: var(--soft-2);
   border-radius: 5px;
   padding: 3px 7px;
+  white-space: nowrap;
 }
+/* 모집 예정은 아직 누를 수 없는 상태다 — 파랑으로 두면 '지금 지원 가능'으로 읽힌다 */
+.career-job__new--upcoming { color: var(--slate); background: var(--soft); }
+/* 마감은 더 물러난다. 공고를 남겨 두는 이유는 기록이지 유입이 아니다 */
+.career-job__new--closed { color: var(--slate-2); background: var(--soft); }
 .career-job__meta {
   margin-top: 9px;
   font-size: 14.5px;

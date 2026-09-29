@@ -34,6 +34,15 @@ const EMPTY: Fields = {
   howFound: "", howFoundEtc: "",
 };
 
+/* 공고 카드 뱃지 — 값의 출처는 목록·상세와 같은 statusOf() 다.
+   말은 STATUS_LABEL('모집 중'·'모집 마감') 대신 실제 채용사이트가 쓰는 쪽으로 쓴다 —
+   이 화면은 슈퍼전자 채용사이트 말투를 유지하는 자리다. */
+const JOB_BADGE: Record<EventStatus, string> = {
+  upcoming: "모집 예정",
+  open: "채용중",
+  closed: "마감",
+};
+
 export default function CareerApply({ event, status }: { event: EventItem; status: EventStatus }) {
   const [job, setJob] = useState<EventJob | null>(null);
   const [filter, setFilter] = useState<EventJob | "all">("all");
@@ -117,7 +126,9 @@ export default function CareerApply({ event, status }: { event: EventItem; statu
                     <div className="career-job__body">
                       <div className="career-job__title">
                         {j.l} 신입사원 모집
-                        <span className="career-job__new">채용중</span>
+                        <span className={`career-job__new career-job__new--${status}`}>
+                          {JOB_BADGE[status]}
+                        </span>
                       </div>
                       <div className="career-job__meta">
                         <span>{j.team}</span>
