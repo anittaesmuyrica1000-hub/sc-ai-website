@@ -125,17 +125,19 @@
 .ev-detail,
 .jd{--ev-accent:58,111,255}
 
-/* 참가 혜택 표 — 전형 절차의 원과 같은 색을 쓰되 면이 아니라 라인으로만 그린다.
-   머리행에 면을 깔고 짝수 행에 줄무늬까지 넣으면 색 덩어리가 세 겹이 되어
-   표가 본문보다 먼저 읽힌다(.ev-tag 를 라인으로 둔 것과 같은 이유).
-   위계는 선의 진하기로만 준다 — 머리행 28% · 본문 행 14% · 바깥 테두리 22%.
+/* 참가 혜택 표 — 전형 절차의 원과 같은 색. 면은 머리행 한 줄에만 깐다.
+   본문 행까지 줄무늬를 넣으면 색 덩어리가 겹겹이 되어 표가 본문보다 먼저 읽힌다.
+   머리행만 채우면 '여기부터 표'라는 신호는 주면서 무게는 한 줄에서 끝난다.
+   나머지 위계는 선의 진하기로 — 머리행 아래 28% · 본문 행 14% · 바깥 테두리 22%.
+   ⚠️ 머리행 면이 둥근 위 모서리를 넘지 않는 것은 .post-table-wrap 의
+      overflow-x:auto 덕이다(overflow 가 visible 이 아니면 잘라 낸다). 이 값을 지우면 각이 진다.
    ⚠️ 마지막 행의 `border-bottom:none` 은 건드리지 않는다 — 여기서 색만 바꾸고
       style 은 손대지 않으므로 마지막 행은 그대로 선이 없다. */
 .ev-detail .post-content .post-table-wrap{border-color:rgba(var(--ev-accent),.22)}
 .ev-detail .post-content .post-table th,
 .ev-detail .post-content .post-table td{border-bottom-color:rgba(var(--ev-accent),.14)}
 .ev-detail .post-content .post-table thead th{
-  background:transparent;color:var(--blue-d);
+  background:rgba(var(--ev-accent),.08);color:var(--blue-d);
   border-bottom-color:rgba(var(--ev-accent),.28)
 }
 .ev-detail .post-content .post-table tbody tr:nth-child(even){background:transparent}
