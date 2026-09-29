@@ -326,12 +326,14 @@
   .set-row span{color:var(--slate)}
   .set-row b{color:var(--ink);word-break:break-all}
 
-  /* 필터 바 */
-  .adm-filters{display:flex;gap:12px;flex-wrap:wrap;align-items:flex-end;margin-bottom:20px}
-  .filt{display:flex;flex-direction:column;gap:5px}
+  /* 필터 바 — 항목이 8개까지 늘어나는 화면(이벤트 지원자)이 기준이다.
+     gap 12px·label 간격 5px 에서는 어디까지가 한 항목인지 눈으로 끊기지 않았다.
+     가로 간격을 세로보다 넓게 둬서 줄바꿈이 생겨도 열이 섞여 보이지 않는다. */
+  .adm-filters{display:flex;gap:18px 22px;flex-wrap:wrap;align-items:flex-end;margin-bottom:28px}
+  .filt{display:flex;flex-direction:column;gap:8px}
   .filt.grow{flex:1;min-width:180px}
   .filt label{font-size:12px;font-weight:700;color:var(--slate)}
-  .filt select,.filt input{padding:9px 11px;border:1px solid var(--line);border-radius:9px;font-size:13.5px;font-family:inherit;background:#fff;color:var(--ink)}
+  .filt select,.filt input{padding:10px 13px;border:1px solid var(--line);border-radius:9px;font-size:13.5px;font-family:inherit;background:#fff;color:var(--ink)}
   .filt input{width:100%}
 
   /* 상태 배지/셀렉트 */
@@ -483,7 +485,7 @@
     .adm-bar{padding:16px 18px}
   }
   @media(max-width:640px){
-    .adm-filters{gap:8px}
+    .adm-filters{gap:14px}
     .filt{width:100%}
     .filt select,.filt input{width:100%}
     .adm-body{padding:16px 14px 48px}
