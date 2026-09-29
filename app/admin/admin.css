@@ -7,7 +7,9 @@
   /* 이벤트 지원자 통계 카드 6장. 1fr 1.1fr · gap 36px 은 2단 불균등 패널용 값이라,
      카드 6장이 두 칸으로 갈라져 한 장이 화면 절반을 먹었다. 대시보드 통계(.dash-stats)와
      같은 밀도로 맞춘다 — 넓으면 한 줄, 좁아지면 알아서 접히므로 분기가 따로 필요 없다. */
-  .admin-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px;align-items:start}
+  .admin-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px;align-items:start;margin-bottom:28px}
+  /* margin-bottom 28px — 아래 필터 바(.adm-filters)의 라벨이 카드 밑변에 바로 붙어 있었다.
+     필터 바 쪽에 margin-top 을 주지 않는 이유는 그 클래스를 다른 탭도 쓰기 때문이다. */
 
   /* 폼 카드 */
   .card{background:#fff;border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow);padding:28px}
