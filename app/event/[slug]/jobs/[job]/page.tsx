@@ -113,7 +113,7 @@ export default async function JobDetailPage({
             <span>학력·전공 무관</span>
             {/* 공유는 제목·조건을 다 읽은 다음 자리다. 사이드 패널 맨 아래에 두면
                 패널을 끝까지 내려야 보이고, 패널이 사라지는 좁은 화면에선 아예 없어진다. */}
-            <ShareButton {...share} position="header" variant="text" iconClass="fa-link" label="공고 공유하기" />
+            <ShareButton {...share} position="header" variant="icon" icon="nodes" label="공고 공유하기" />
           </div>
         </div>
       </section>

@@ -70,10 +70,11 @@
   padding-left: 11px;
   border-left: 1px solid var(--line);
 }
-/* 공유는 조건들 바로 옆에 붙인다. 오른쪽 끝으로 밀면 긴 빈칸을 건너뛰어야 보이고,
-   화면 폭에 따라 위치가 계속 달라진다. 구분선은 긋지 않는다 —
-   사실 항목이 아니라 행동이라 링크 아이콘이 이미 구분해 준다. */
-.jd-meta .share-wrap { margin-left: 4px; }
+/* 공유는 조건들과 다른 맥락이라(사실이 아니라 행동) 간격을 크게 벌린다.
+   구분선은 긋지 않는다 — 선을 그으면 조건 목록의 다음 항목처럼 읽힌다. */
+.jd-meta .share-wrap { margin-left: 22px; }
+/* 40px 원이 14.5px 짜리 메타 줄 높이를 밀지 않도록 줄이고 위아래 여백을 상쇄한다 */
+.jd-meta .share-btn--icon { width: 32px; height: 32px; font-size: 15px; margin: -5px 0; }
 .jd-meta .ev-tag--dday { font-size: 13px; padding: 5px 12px; }
 
 /* ── 2단 레이아웃 — 본문 + 따라오는 지원 패널 ───────────── */

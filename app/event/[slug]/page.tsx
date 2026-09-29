@@ -351,7 +351,7 @@ export default async function EventDetailPage({ params }: { params: Promise<{ sl
                 campaign={e.slug}
                 position="hero"
                 variant="text"
-                iconClass="fa-link"
+                icon="link"
                 label="공유하기"
               />
             </div>

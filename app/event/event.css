@@ -360,6 +360,8 @@
   color:var(--slate);cursor:pointer;transition:.15s;font-family:inherit
 }
 .share-btn--icon{width:40px;height:40px;border-radius:50%;justify-content:center;font-size:16px}
+/* 인라인 SVG 아이콘 — FontAwesome 글리프가 없는 모양(공유 노드)에 쓴다. 글자 크기를 따라간다 */
+.share-btn__svg{width:1em;height:1em;display:block;flex-shrink:0}
 .share-btn--icon:hover{background:var(--soft-2);color:var(--blue)}
 .share-btn--line{
   border:1px solid var(--line);border-radius:999px;padding:9px 16px;

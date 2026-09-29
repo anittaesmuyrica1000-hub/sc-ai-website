@@ -35,12 +35,17 @@ type Props = {
   variant?: "icon" | "line" | "text";
   label?: string;
   /**
-   * 아이콘 글리프. 기본은 공유 아이콘(iOS 공유 모양).
-   * ⚠️ app/fontawesome.css 의 클래스 목록에 있어도 public/fonts/fa-solid-900.woff2
-   *    서브셋에 글리프가 없으면 빈 네모가 나온다. 바꾸기 전에 woff2 의 cmap 을 확인할 것.
-   *    확인된 것: fa-arrow-up-from-bracket(e09a) · fa-link(f0c1)
+   * 아이콘 모양.
+   * · upload — iOS 공유 모양 (fa-arrow-up-from-bracket)
+   * · link   — 링크 (fa-link)
+   * · nodes  — 점 세 개를 이은 공유 기호. 인라인 SVG 다.
+   *
+   * ⚠️ nodes 를 FontAwesome 으로 못 쓰는 이유: fa-share-nodes(\f1e0) 글리프가
+   *    public/fonts/fa-solid-900.woff2 서브셋에 없고 app/fontawesome.css 클래스 목록에도 없다.
+   *    클래스를 써도 ::before content 가 비어 아무것도 안 나온다.
+   *    FontAwesome 아이콘을 새로 쓸 때는 반드시 woff2 의 cmap 을 먼저 확인할 것.
    */
-  iconClass?: string;
+  icon?: "upload" | "link" | "nodes";
 };
 
 export default function ShareButton({
@@ -52,7 +57,7 @@ export default function ShareButton({
   position,
   variant = "icon",
   label = "공고 공유하기",
-  iconClass = "fa-arrow-up-from-bracket",
+  icon = "upload",
 }: Props) {
   const [toast, setToast] = useState("");
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -136,9 +141,21 @@ export default function ShareButton({
         aria-label={label}
         title={label}
       >
-        {/* ⚠️ fa-share-nodes 를 쓰면 안 된다 — 서브셋 woff2 에 글리프가 없어 빈 네모가 나온다.
-            기본값 arrow-up-from-bracket 과 fa-link 는 서브셋에 들어 있는 것을 확인했다. */}
-        <i className={`fa-solid ${iconClass}`} aria-hidden="true"></i>
+        {icon === "nodes" ? (
+          <svg className="share-btn__svg" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+            <circle cx="12.4" cy="3.4" r="2.2" stroke="currentColor" strokeWidth="1.4" />
+            <circle cx="3.6" cy="8" r="2.2" stroke="currentColor" strokeWidth="1.4" />
+            <circle cx="12.4" cy="12.6" r="2.2" stroke="currentColor" strokeWidth="1.4" />
+            <path
+              d="M5.7 6.9 10.4 4.5M5.7 9.1 10.4 11.5"
+              stroke="currentColor"
+              strokeWidth="1.4"
+              strokeLinecap="round"
+            />
+          </svg>
+        ) : (
+          <i className={`fa-solid ${icon === "link" ? "fa-link" : "fa-arrow-up-from-bracket"}`} aria-hidden="true"></i>
+        )}
         {variant !== "icon" && <span>{label}</span>}
       </button>
       {/* 화면 낭독기도 결과를 듣도록 role="status". 토스트가 없을 때도 노드를 유지한다 */}
