@@ -158,6 +158,9 @@
 .ev-detail .post-content > h2{margin-top:60px}
 /* 첫 섹션 위는 히어로다 — 그 간격은 .ev-detail 의 padding 이 이미 잡는다 */
 .ev-detail .post-content > h2:first-child{margin-top:0}
+/* 유의사항 앞 구분선 — post.css 기본은 위 34px 이라 섹션 리듬(60px)보다 붙어 보였다.
+   위도 60px 으로 맞춘다(아래 34px 은 h2 의 margin-top 60px 과 상쇄되어 60px 이 된다). */
+.ev-detail .post-content .post-hr{margin-top:60px}
 
 /* ── 스크롤을 따라오는 지원 패널 ────────────────────────── */
 .ev-detail__side{position:sticky;top:88px}

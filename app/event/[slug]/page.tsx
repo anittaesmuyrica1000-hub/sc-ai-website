@@ -374,7 +374,7 @@ export default async function EventDetailPage({ params }: { params: Promise<{ sl
             </p>
             <div className="post-cta__actions">
               <Link href={e.applyUrl} className="btn btn-blue">
-                지원하기 <i className="fa-solid fa-arrow-right"></i>
+                지원 신청하기 <i className="fa-solid fa-arrow-right"></i>
               </Link>
               <Link href="/" className="btn btn-out">
                 슈퍼코더 AI면접 알아보기
@@ -421,7 +421,7 @@ export default async function EventDetailPage({ params }: { params: Promise<{ sl
               </div>
             </dl>
             <Link href={e.applyUrl} className="btn btn-blue ev-side__cta">
-              지원하기 <i className="fa-solid fa-arrow-right"></i>
+              지원 신청하기 <i className="fa-solid fa-arrow-right"></i>
             </Link>
             <p className="ev-side__note">한 직군만 선택해 지원합니다.</p>
           </div>
@@ -439,7 +439,7 @@ export default async function EventDetailPage({ params }: { params: Promise<{ sl
           <span className="ev-bar__off">접수 마감</span>
         ) : (
           <Link href={e.applyUrl} className="btn btn-blue">
-            지원하기 <i className="fa-solid fa-arrow-right"></i>
+            지원 신청하기 <i className="fa-solid fa-arrow-right"></i>
           </Link>
         )}
       </div>

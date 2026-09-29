@@ -87,7 +87,7 @@ export default async function JobDetailPage({
   // 모집 전에도 지원서로 보낸다 — 입력이 잠긴 폼을 미리 볼 수 있게 열어 뒀다.
   // 마감 뒤에만 누를 것을 주지 않고 이유를 쓴다.
   const upcoming = status === "upcoming";
-  const ctaLabel = open ? "지원하기" : "지원서 미리 보기";
+  const ctaLabel = open ? "지원 신청하기" : "지원서 미리 보기";
 
   return (
     <div className="jd-page">
@@ -171,17 +171,18 @@ export default async function JobDetailPage({
           <section className="jd-sec jd-sec--last">
             <h2>유의사항</h2>
             <ul className="jd-list">
+              <li>{FICTION_NOTICE} 본 행사는 슈퍼코더가 주최합니다.</li>
+              {/* 행사 안내(/event/[slug])의 유의사항과 같은 문장을 쓴다 — 한쪽만 고치면 어긋난다 */}
               <li>
-                <b>{FICTION_NOTICE}</b> 본 행사는 슈퍼코더가 주최합니다.
-              </li>
-              <li>
-                지원서에 적어 주신 정보는 참가 자격 확인, 행사 안내와 면접 링크 발송, 참가 혜택 발송, Finalist
-                선발과 안내, 행사 운영 통계 작성에만 사용하며 2027년 2월 28일까지 전량 파기합니다.
+                지원서에 적어 주신 정보는 참가 자격 확인, 안내 발송, Finalist 선발, 행사 결과 정리에만 씁니다.
+                2027년 2월 28일까지 모두 지웁니다.
               </li>
               <li>문의 · {e.contact}</li>
             </ul>
             <p className="jd-note">
-              <Link href={`/event/${e.slug}#apply-notice`}>유의사항 전문 보기</Link>
+              <Link href={`/event/${e.slug}#apply-notice`} className="jd-more">
+                유의사항 전문 보기 <i className="fa-solid fa-chevron-right" aria-hidden="true"></i>
+              </Link>
             </p>
           </section>
         </div>
@@ -248,7 +249,7 @@ export default async function JobDetailPage({
         </div>
         {open || upcoming ? (
           <Link href={applyUrl} className={`btn ${open ? "btn-blue" : "btn-out"}`}>
-            {open ? "지원하기" : "지원서 미리 보기"}
+            {open ? "지원 신청하기" : "지원서 미리 보기"}
           </Link>
         ) : (
           <span className="jd-bar__off">접수 마감</span>

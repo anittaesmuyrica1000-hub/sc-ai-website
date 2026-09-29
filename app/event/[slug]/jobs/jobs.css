@@ -113,8 +113,9 @@
 /* 본문 첫 섹션 — 위가 헤더라 섹션 사이가 아니다. 60px 을 따르지 않는다.
    (2026-09-29 이전에는 위에 가상기업 고지 박스가 있었다. 고지는 유의사항으로 합쳤다.) */
 .jd-sec--first { margin-top: 34px; }
-/* 구분선을 낀 마지막 섹션 — 60px + 선 + 40px 으로 보통 섹션보다 세게 끊는다 */
-.jd-sec--last { margin-top: 60px; padding-top: 40px; border-top: 1px solid var(--line); }
+/* 구분선을 낀 마지막 섹션 — 선 위아래를 60 / 56px 으로 거의 같게 둔다.
+   아래가 40px 이던 때는 선이 '유의사항' 쪽에 붙어 제목을 누르는 것처럼 보였다. */
+.jd-sec--last { margin-top: 60px; padding-top: 56px; border-top: 1px solid var(--line); }
 .jd-sec h2 {
   margin: 0 0 16px;
   font-size: 20px;
@@ -139,6 +140,10 @@
 .jd-sec p b { color: var(--ink); }
 .jd-sec a { color: var(--blue-d); font-weight: 600; }
 .jd-note { margin-top: 14px !important; font-size: 14.5px !important; color: var(--slate-2) !important; }
+/* 전문 보기 — 링크 끝의 꺽쇠가 '여기서 더 이어진다'를 말한다. 글자만 두면 본문과 구분되지 않는다 */
+.jd-more { display: inline-flex; align-items: center; gap: 6px; text-decoration: none; }
+.jd-more i { font-size: 10px; transition: transform 0.15s; }
+.jd-more:hover i { transform: translateX(2px); }
 
 .jd-list { list-style: none; display: grid; gap: 11px; margin: 0; padding: 0; }
 .jd-list li {
