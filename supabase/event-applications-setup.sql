@@ -51,6 +51,8 @@ create table if not exists public.event_applications (
 
 -- 이미 테이블이 있던 경우 대비(중복 실행 안전)
 alter table public.event_applications add column if not exists coupon_sent_at timestamptz;
+-- 쿠폰 선착순 판정 기준. 자세한 배경은 supabase/event-applications-interview-done-at.sql
+alter table public.event_applications add column if not exists interview_done_at timestamptz;
 alter table public.event_applications add column if not exists consent_content boolean not null default false;
 
 -- 2) 중복 지원 차단 ---------------------------------------------

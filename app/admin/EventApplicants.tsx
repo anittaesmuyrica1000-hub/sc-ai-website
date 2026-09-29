@@ -30,6 +30,21 @@ function fmtDateTime(s?: string | null) {
   return `${d.getFullYear()}.${p(d.getMonth() + 1)}.${p(d.getDate())} ${p(d.getHours())}:${p(d.getMinutes())}`;
 }
 
+/* <input type="datetime-local"> 는 'YYYY-MM-DDTHH:mm' 만 받는다(로컬 시각, 오프셋 없음).
+   DB 는 timestamptz 라 왕복 변환이 필요하다. */
+function toLocalInput(s?: string | null) {
+  if (!s) return "";
+  const d = new Date(s);
+  if (isNaN(d.getTime())) return "";
+  const p = (n: number) => String(n).padStart(2, "0");
+  return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())}T${p(d.getHours())}:${p(d.getMinutes())}`;
+}
+function fromLocalInput(v: string) {
+  if (!v) return null;
+  const d = new Date(v);
+  return isNaN(d.getTime()) ? null : d.toISOString();
+}
+
 function fmtPhone(phone: string): string {
   const d = (phone || "").replace(/\D/g, "");
   if (d.length === 11) return `${d.slice(0, 3)}-${d.slice(3, 7)}-${d.slice(7)}`;
@@ -82,6 +97,17 @@ export default function EventApplicants() {
     load();
   }, [load]);
 
+  /* 진행 상태를 '면접 완료' 로 바꾸는 순간 완료 시각을 찍는다.
+     ⚠️ 이미 값이 있으면 덮어쓰지 않는다 — 상태를 오갔다고 선착순 순번이 뒤로 밀리면 안 된다.
+        상태를 되돌려도 지우지 않는다. 실수로 바꿨다가 되돌렸을 때 원래 시각이 사라지면
+        되살릴 방법이 없다(실제 시각과 다르면 표에서 직접 고친다). */
+  function withDoneStamp(row: EventApplication, patch: Partial<EventApplication>) {
+    if (patch.status === "면접 완료" && !row.interview_done_at) {
+      return { ...patch, interview_done_at: new Date().toISOString() };
+    }
+    return patch;
+  }
+
   async function updateRow(id: string, patch: Partial<EventApplication>) {
     setRows((rs) => rs.map((r) => (r.id === id ? { ...r, ...patch } : r)));
     const res = await supabase.from("event_applications").update(patch).eq("id", id).select().single();
@@ -123,6 +149,17 @@ export default function EventApplicants() {
     return m;
   }, [rows]);
 
+  /* 쿠폰 순번 — 면접 완료 시각 순. 위의 seq(지원 순서)와 다른 값이다.
+     먼저 지원한 사람이 면접을 늦게 볼 수 있어서, 쿠폰 대상은 이 순번으로만 판정한다. */
+  const couponSeq = useMemo(() => {
+    const m = new Map<string, number>();
+    const done = rows
+      .filter((r) => !r.is_test && r.interview_done_at)
+      .sort((a, b) => Date.parse(a.interview_done_at!) - Date.parse(b.interview_done_at!));
+    done.forEach((r, i) => m.set(r.id, i + 1));
+    return m;
+  }, [rows]);
+
   const scoped = useMemo(() => rows.filter((r) => fEvent === "all" || r.event_slug === fEvent), [rows, fEvent]);
 
   const stats = useMemo(() => {
@@ -134,7 +171,8 @@ export default function EventApplicants() {
       marketing: by("marketing"),
       dev: by("dev"),
       attend: real.filter((r) => r.final_attend === "yes").length,
-      done: real.filter((r) => r.status === "면접 완료").length,
+      // 상태가 아니라 '완료 시각이 찍힌' 행으로 센다 — 쿠폰 판정이 시각 기준이라 둘이 어긋나면 안 된다
+      done: real.filter((r) => r.interview_done_at).length,
       contentOk: real.filter((r) => r.consent_content).length,
     };
   }, [scoped]);
@@ -165,14 +203,15 @@ export default function EventApplicants() {
 
   function exportCsv() {
     const head = [
-      "순번", "접수일시", "이름", "지원직군", "연락처", "이메일", "현재상태", "오프라인참석",
-      "알게된경로", "알게된경로(기타)", "진행상태", "콘텐츠활용동의", "쿠폰발송일", "내부메모", "테스트여부",
+      "순번", "쿠폰순번", "접수일시", "이름", "지원직군", "연락처", "이메일", "현재상태", "오프라인참석",
+      "알게된경로", "알게된경로(기타)", "진행상태", "면접완료일시", "콘텐츠활용동의", "쿠폰발송일", "내부메모", "테스트여부",
       ...TRACKING_KEYS,
     ];
     const esc = (v: unknown) => `"${String(v ?? "").replace(/"/g, '""')}"`;
     const lines = filtered.map((r) =>
       [
         seq.get(r.id) ?? "",
+        couponSeq.get(r.id) ?? "",
         fmtDateTime(r.created_at),
         r.name,
         EVENT_JOB_LABEL[r.job] || r.job,
@@ -183,6 +222,7 @@ export default function EventApplicants() {
         evHowFoundText(r.how_found, r.how_found_detail) ?? "",
         r.how_found_detail ?? "",
         r.status || "신규",
+        r.interview_done_at ? fmtDateTime(r.interview_done_at) : "",
         r.consent_content ? "동의" : "미동의",
         r.coupon_sent_at ? fmtDateTime(r.coupon_sent_at) : "",
         r.admin_note ?? "",
@@ -206,7 +246,15 @@ export default function EventApplicants() {
     { label: "총 지원자", v: stats.total, sub: stats.test > 0 ? `테스트 ${stats.test}건 제외` : "실제 지원 기준", icon: "fa-users" },
     { label: "제품마케팅", v: stats.marketing, sub: "마케팅 직군 지원", icon: "fa-chart-simple" },
     { label: "소프트웨어 개발", v: stats.dev, sub: "개발 직군 지원", icon: "fa-diagram-project" },
-    { label: "1차 면접 완료", v: stats.done, sub: `쿠폰 지급 상한 ${COUPON_LIMIT}명`, icon: "fa-user-check" },
+    {
+      label: "1차 면접 완료",
+      v: stats.done,
+      sub:
+        stats.done >= COUPON_LIMIT
+          ? `쿠폰 ${COUPON_LIMIT}명 마감 (초과 ${stats.done - COUPON_LIMIT}명)`
+          : `쿠폰 ${COUPON_LIMIT}명 중 ${COUPON_LIMIT - stats.done}자리 남음`,
+      icon: "fa-user-check",
+    },
     { label: "오프라인 참석 가능", v: stats.attend, sub: "Finalist 후보 모수", icon: "fa-user" },
     { label: "콘텐츠 활용 동의", v: stats.contentOk, sub: "결과 기사에 쓸 수 있는 응답", icon: "fa-file-lines" },
   ];
@@ -348,6 +396,8 @@ export default function EventApplicants() {
               <thead>
                 <tr>
                   <th>순번</th>
+                  {/* 쿠폰 순번은 지원 순번과 다른 값이다 — 면접 완료 시각 순 */}
+                  <th>쿠폰</th>
                   <th>접수일</th>
                   <th>이름</th>
                   <th>지원 직군</th>
@@ -358,6 +408,7 @@ export default function EventApplicants() {
                   <th>유입</th>
                   <th>콘텐츠</th>
                   <th>진행 상태</th>
+                  <th>면접 완료</th>
                   <th>관리</th>
                 </tr>
               </thead>
@@ -365,6 +416,21 @@ export default function EventApplicants() {
                 {filtered.map((r) => (
                   <tr key={r.id}>
                     <td className="nowrap">{r.is_test ? "—" : seq.get(r.id)}</td>
+                    <td className="nowrap">
+                      {(() => {
+                        const n = couponSeq.get(r.id);
+                        if (!n) return "—";
+                        const inLimit = n <= COUPON_LIMIT;
+                        return (
+                          <b
+                            style={{ color: inLimit ? "var(--blue)" : "var(--slate-2)" }}
+                            title={inLimit ? "쿠폰 지급 대상" : `상한 ${COUPON_LIMIT}명 초과`}
+                          >
+                            {n}
+                          </b>
+                        );
+                      })()}
+                    </td>
                     <td className="nowrap">{fmtDateTime(r.created_at)}</td>
                     <td className="nowrap">
                       {r.name}
@@ -387,7 +453,7 @@ export default function EventApplicants() {
                       <select
                         className="status-sel"
                         value={r.status || "신규"}
-                        onChange={(e) => updateRow(r.id, { status: e.target.value })}
+                        onChange={(e) => updateRow(r.id, withDoneStamp(r, { status: e.target.value }))}
                       >
                         {APPLICANT_STATUSES.map((s) => (
                           <option key={s} value={s}>
@@ -395,6 +461,17 @@ export default function EventApplicants() {
                           </option>
                         ))}
                       </select>
+                    </td>
+                    <td className="nowrap">
+                      {/* 자동으로 찍히지만 실제 응시 시각과 다를 수 있어 직접 고칠 수 있게 둔다.
+                          이 값이 쿠폰 선착순을 정하므로 고치면 순번이 바로 다시 계산된다. */}
+                      <input
+                        type="datetime-local"
+                        className="dt-sel"
+                        value={toLocalInput(r.interview_done_at)}
+                        disabled={busy}
+                        onChange={(e) => updateRow(r.id, { interview_done_at: fromLocalInput(e.target.value) })}
+                      />
                     </td>
                     <td className="nowrap">
                       <div className="row-actions">

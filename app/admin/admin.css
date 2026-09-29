@@ -342,6 +342,9 @@
   .pill-amber{background:#FFF3DC;color:#9A6A12}
   .pill-gray{background:#EEF1F6;color:#6B7689}
   .status-sel{padding:6px 8px;border:1px solid var(--line);border-radius:8px;font-size:12.5px;font-family:inherit;background:#fff;color:var(--ink);font-weight:600}
+  /* 면접 완료 시각 — 쿠폰 선착순을 정하는 값이라 표에서 바로 고칠 수 있게 둔다 */
+  .dt-sel{padding:6px 8px;border:1px solid var(--line);border-radius:8px;font-size:12.5px;font-family:inherit;background:#fff;color:var(--ink)}
+  .dt-sel:disabled{opacity:.5}
 
   /* 셀 보조 */
   .cell-title{font-weight:700;color:var(--ink)}
