@@ -4,7 +4,11 @@
    색·라운드·그림자는 globals.css 토큰을 쓴다. 사이드 패널(.ev-side)과 태그(.ev-tag)는 event.css 재사용. */
 
 /* ⚠️ globals.css 의 `section{padding:var(--sec-y) 0}` (최대 120px)를 끈다.
-   그대로 두면 공고 헤더와 본문 섹션마다 120px 이 얹혀 화면이 늘어진다. */
+   그대로 두면 공고 헤더와 본문 섹션마다 120px 이 얹혀 화면이 늘어진다.
+   ⚠️⚠️ 이 규칙은 `padding` 단축이라 섹션에 준 padding-top 까지 0 으로 덮는다.
+        특이도도 (0,1,1) 이라 `.jd-sec--last` (0,1,0) 를 이긴다 — 섹션에 안쪽 여백을
+        주려면 `.jd-page` 를 앞에 붙여 (0,2,1) 로 올려야 한다(2026-09-29에 이걸로
+        유의사항 위 여백이 계속 먹히지 않았다). */
 .jd-page section { padding: 0; }
 .jd-page { padding-bottom: 0; }
 
@@ -119,8 +123,9 @@
    (2026-09-29 이전에는 위에 가상기업 고지 박스가 있었다. 고지는 유의사항으로 합쳤다.) */
 .jd-sec--first { margin-top: 34px; }
 /* 구분선을 낀 마지막 섹션 — 선 위아래를 60 / 56px 으로 거의 같게 둔다.
-   아래가 40px 이던 때는 선이 '유의사항' 쪽에 붙어 제목을 누르는 것처럼 보였다. */
-.jd-sec--last { margin-top: 60px; padding-top: 80px; border-top: 1px solid var(--line); }
+   ⚠️ 셀렉터 앞의 .jd-page 는 장식이 아니다. 위 `.jd-page section{padding:0}` 을
+      이기기 위한 것이다(특이도 0,2,1 > 0,1,1). 빼면 padding-top 이 통째로 무시된다. */
+.jd-page .jd-sec--last { margin-top: 60px; padding-top: 56px; border-top: 1px solid var(--line); }
 .jd-sec h2 {
   margin: 0 0 16px;
   font-size: 20px;
