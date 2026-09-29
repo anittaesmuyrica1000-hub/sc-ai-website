@@ -179,7 +179,10 @@
 .jd-list li b { color: var(--ink); font-weight: 700; }
 
 /* ── 다른 공고 ─────────────────────────────────────────── */
-.jd-other-note { margin: 0 0 14px; font-size: 14.5px; color: var(--slate-2); word-break: keep-all; }
+/* 문장과 카드 사이 22px — 붙어 있으면 문장이 카드 제목처럼 읽힌다(2026-09-30).
+   ⚠️ `.jd-sec p`(0,1,1)가 margin:0 · 16px 을 걸어 `.jd-other-note` 단독(0,1,0)으로는 여백·크기가
+      하나도 먹지 않았다. `.jd-sec` 를 앞에 붙여 (0,2,0) 으로 이긴다 */
+.jd-sec .jd-other-note { margin: 0 0 22px; font-size: 14.5px; color: var(--slate-2); word-break: keep-all; }
 .jd-other {
   display: flex;
   align-items: center;
