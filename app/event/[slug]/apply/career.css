@@ -338,7 +338,7 @@
 .ev-radio {
   display: flex;
   align-items: flex-start;
-  gap: 10px;
+  gap: 12px;
   border: 1px solid var(--line);
   border-radius: 11px;
   padding: 13px 15px;
@@ -350,7 +350,19 @@
   word-break: keep-all;
 }
 .ev-radio:hover { border-color: var(--blue-2); }
-.ev-radio input { width: auto; accent-color: var(--blue); margin-top: 2px; flex-shrink: 0; }
+/* ⚠️ apply.css 의 `.field input` 이 padding 15px 16px · border · radius · background 를
+   라디오에도 씌운다. 그대로 두면 동그라미가 네모 상자 안에 갇혀 글자와 붙어 보이고
+   네이티브 라디오처럼 보이지도 않는다. 상자 속성을 전부 되돌린다(예전엔 width 만 덮었다). */
+.ev-radio input {
+  width: auto;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: none;
+  accent-color: var(--blue);
+  margin: 3px 0 0;
+  flex-shrink: 0;
+}
 .ev-radio:has(input:checked) { border-color: var(--blue); background: var(--soft); }
 .field.invalid .ev-radio { border-color: var(--red); }
 
@@ -422,3 +434,17 @@
 .apply-card fieldset { border: 0; margin: 0; padding: 0; min-width: 0; }
 .apply-card fieldset[disabled] { opacity: 0.68; }
 .apply-card fieldset[disabled] .btn { cursor: default; }
+
+/* ── select 화살표 ────────────────────────────────────────
+   네이티브 화살표는 테두리 오른쪽 끝에 붙어, 글자가 쓰는 안쪽 여백(16px)과 어긋난다.
+   appearance 를 끄고 직접 그려서 좌우 여백을 같은 값으로 맞춘다.
+   padding-right 는 화살표(12px) + 여백(16px) + 글자와의 간격(14px) = 42px. */
+.career .field select {
+  appearance: none;
+  -webkit-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8' fill='none'%3E%3Cpath d='M1 1.5L6 6.5L11 1.5' stroke='%236D7689' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 16px center;
+  background-size: 12px 8px;
+  padding-right: 42px;
+}
