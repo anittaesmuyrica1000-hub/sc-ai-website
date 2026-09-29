@@ -45,6 +45,28 @@ function fromLocalInput(v: string) {
   return isNaN(d.getTime()) ? null : d.toISOString();
 }
 
+/* 저장·삭제 실패를 '무엇을 고쳐야 하는지' 까지 알려 주는 문구로 바꾼다.
+   예전에는 원인과 무관하게 "관리자 권한을 확인해 주세요" 하나만 띄웠다.
+   실제로는 컬럼 누락(PGRST204)이 더 잦아서, 그 문구만 보고 RLS 설정을 뒤지게 된다
+   (2026-09-29: interview_done_at 을 넣기 전 상태 변경이 그렇게 막혔다).
+   원문 메시지를 항상 함께 보여 준다 — 우리가 못 짚는 오류도 그대로 옮길 수 있어야 한다. */
+function errorText(err: unknown, what: string) {
+  const e = (err ?? {}) as { message?: string; code?: string; hint?: string | null };
+  const code = e.code ?? "";
+  const msg = e.message ?? "알 수 없는 오류";
+  const guide =
+    code === "PGRST204" || /column/i.test(msg)
+      ? "DB에 컬럼이 없습니다. supabase/ 폴더의 최신 .sql 을 Supabase SQL Editor 에서 실행해 주세요."
+      : code === "42501" || code === "PGRST301" || /permission|policy|row-level/i.test(msg)
+        ? "관리자 권한(admins RLS)을 확인해 주세요."
+        : code === "23505"
+          ? "이미 같은 값으로 접수된 행이 있습니다(중복 지원 차단)."
+          : "";
+  return [`${what}에 실패했습니다.`, guide, `\n[${code || "error"}] ${msg}`, e.hint ? `\n힌트: ${e.hint}` : ""]
+    .filter(Boolean)
+    .join(" ");
+}
+
 function fmtPhone(phone: string): string {
   const d = (phone || "").replace(/\D/g, "");
   if (d.length === 11) return `${d.slice(0, 3)}-${d.slice(3, 7)}-${d.slice(7)}`;
@@ -113,7 +135,7 @@ export default function EventApplicants() {
     const res = await supabase.from("event_applications").update(patch).eq("id", id).select().single();
     if (res.error) {
       console.error("update failed:", res.error);
-      alert("저장에 실패했습니다. 관리자 권한을 확인해 주세요.");
+      alert(errorText(res.error, "저장"));
       await load();
       return;
     }
@@ -130,7 +152,7 @@ export default function EventApplicants() {
       await load();
     } catch (err) {
       console.error("purge failed:", err);
-      alert("삭제에 실패했습니다. 관리자 권한을 확인해 주세요.");
+      alert(errorText(err, "삭제"));
     } finally {
       setBusy(false);
     }
