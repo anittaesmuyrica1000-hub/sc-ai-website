@@ -116,6 +116,26 @@
 /* post.css 가 본문 위에 주던 여백은 여기서 레이아웃이 대신 잡는다 */
 .ev-detail .post-content{margin-top:0}
 
+/* ── 이벤트 액센트 원색 ────────────────────────────────
+   #3A6FFF. rgba() 에 넣을 수 있도록 채널값 세 개로 둔다.
+   전형 절차의 원과 참가 혜택 표가 이 한 값에서 파생한다.
+   .jd 도 같이 선언하는 이유 — 공고 상세가 .ev-flow 를 함께 쓰는데
+   그쪽은 .ev-detail 바깥이라 변수를 상속받지 못한다. */
+.ev-detail,
+.jd{--ev-accent:58,111,255}
+
+/* 참가 혜택 표 — 전형 절차의 원과 같은 팔레트로 맞춘다.
+   post.css 의 회색 토큰(--soft-2 / --soft / --line)을 이벤트 화면에서만 덮는다.
+   ⚠️ 마지막 행의 `border-bottom:none` 은 건드리지 않는다 — 여기서 색만 바꾸고
+      style 은 손대지 않으므로 마지막 행은 그대로 선이 없다. */
+.ev-detail .post-content .post-table-wrap{border-color:rgba(var(--ev-accent),.22)}
+.ev-detail .post-content .post-table thead th{
+  background:rgba(var(--ev-accent),.08);color:var(--blue-d)
+}
+.ev-detail .post-content .post-table th,
+.ev-detail .post-content .post-table td{border-bottom-color:rgba(var(--ev-accent),.14)}
+.ev-detail .post-content .post-table tbody tr:nth-child(even){background:rgba(var(--ev-accent),.04)}
+
 /* ── 섹션 간격 ────────────────────────────────────────
    행사 안내는 성격이 다른 블록(소개·공고·절차·인재상·혜택·FAQ·유의사항)이 잇달아
    나와서 블로그 글의 38px 리듬으로는 어디서 끊기는지 잘 보이지 않는다.
@@ -414,14 +434,14 @@
   right:calc(50% + var(--dot)/2);width:calc(100% - var(--dot));
   height:1px;background:var(--line)
 }
-/* 원 색은 #3A6FFF(58,111,255) 하나를 투명도로 옅게 깐다 — 면과 테두리를 각각
-   고정 톤으로 만들어 두면 브랜드 블루가 바뀔 때 두 군데를 따로 맞춰야 한다.
+/* 원 색은 --ev-accent(#3A6FFF) 하나를 투명도로 옅게 깐다 — 면과 테두리를 각각
+   고정 톤으로 만들어 두면 브랜드 블루가 바뀔 때 여러 군데를 따로 맞춰야 한다.
    ⚠️ 글자색만 --blue-d 로 남긴다. 8% 면 위에 #3A6FFF 를 그대로 쓰면 대비가
       3.9:1 이라 본문 크기 기준(4.5:1)에 못 미친다(--blue-d 는 7.8:1). */
 .ev-flow__dot{
   width:var(--dot);height:var(--dot);border-radius:50%;box-sizing:border-box;
   display:grid;place-items:center;padding:0 12px;
-  background:rgba(58,111,255,.08);border:1px solid rgba(58,111,255,.22);
+  background:rgba(var(--ev-accent),.08);border:1px solid rgba(var(--ev-accent),.22);
   font-size:14.5px;font-weight:700;line-height:1.4;letter-spacing:-.02em;
   color:var(--blue-d);word-break:keep-all;white-space:pre-line
 }

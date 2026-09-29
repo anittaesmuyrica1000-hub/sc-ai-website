@@ -487,6 +487,8 @@ function ApplyStep({
                 </label>
                 <div className="hint" style={{ marginTop: 0, marginBottom: 9 }}>
                   {event.final} · Finalist 3인만 참여합니다. 1차 직무 AI 면접까지만 참여하셔도 됩니다.
+                  현장에서는 면접·인터뷰와 시상식의 상장 수여 장면을 촬영하며, 촬영물의 홍보 활용은
+                  Finalist 확정 후 따로 동의를 받습니다.
                 </div>
                 <div className="ev-radios">
                   {FINAL_ATTEND_OPTIONS.map((o) => (
