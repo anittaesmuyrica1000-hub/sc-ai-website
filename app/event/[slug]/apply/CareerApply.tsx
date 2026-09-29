@@ -61,6 +61,14 @@ export default function CareerApply({ event, status }: { event: EventItem; statu
             <b>슈퍼전자</b>
             <span>SUPER ELECTRONICS · 채용</span>
           </div>
+          {/* 행사명·주최를 워드마크 반대편에 둔다. 이 줄이 없으면 화면 전체가 슈퍼전자
+              브랜드라 '슈퍼코더가 슈퍼전자 채용을 대행한다'로 읽힌다 — 행사명에 가상기업이
+              들어가는 이상 대외물마다 주최 표기가 따라붙어야 한다.
+              링크로 둬서 행사 안내로 되돌아가는 길도 겸한다(상단 '행사 안내로 돌아가기'를 대신한다). */}
+          <Link href={`/event/${event.slug}`} className="career-host">
+            <b>{event.title}</b>
+            <span>주최 슈퍼코더</span>
+          </Link>
         </div>
 
         {job ? (
