@@ -74,7 +74,8 @@
   margin-top: 26px;
 }
 /* justify-content 를 space-between 으로 두면 제목이 한 줄이 된 지금 접수 일자가
-   배너 맨 아래로 떨어져 제목과 따로 논다. 위에서부터 쌓고 간격은 p 가 직접 잡는다. */
+   배너 맨 아래로 떨어져 제목과 따로 논다. 위에서부터 쌓고 간격은 p 가 직접 잡는다.
+   (장식 원은 2026-09-29에 뺐다 — 그래서 position/overflow 도 더는 필요 없다) */
 .career-banner {
   border-radius: var(--r);
   padding: 34px 30px 30px;
@@ -82,26 +83,11 @@
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
-  position: relative;
-  overflow: hidden;
 }
 .career-banner--main {
   background: linear-gradient(135deg, #1B3B8F 0%, var(--blue) 62%, var(--blue-2) 100%);
   color: #fff;
 }
-/* 배경 장식 원 — 오른쪽 아래 */
-.career-banner::after {
-  content: "";
-  position: absolute;
-  right: -70px;
-  bottom: -110px;
-  width: 300px;
-  height: 300px;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.11);
-  pointer-events: none;
-}
-
 .career-banner .eyebrow-s {
   font-size: 12px;
   font-weight: 700;
