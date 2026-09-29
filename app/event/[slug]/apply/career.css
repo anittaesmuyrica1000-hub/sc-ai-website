@@ -38,9 +38,11 @@
 .career-host {
   display: flex;
   flex-direction: column;
-  align-items: flex-end;
+  /* 두 줄 다 왼쪽 기준. 오른쪽 정렬이면 짧은 '주최 슈퍼코더'가 오른쪽 끝에 붙어
+     왼쪽 변이 들쭉날쭉해진다. 블록 자체는 상단 바 오른쪽에 그대로 있다. */
+  align-items: flex-start;
   gap: 2px;
-  text-align: right;
+  text-align: left;
   text-decoration: none;
   flex-shrink: 0;
 }
@@ -401,8 +403,6 @@
 }
 @media (max-width: 560px) {
   .career { padding: 26px 0 64px; }
-  /* 상단 바가 두 줄로 접히면 오른쪽 정렬이 어색하다 — 워드마크와 같은 왼쪽 기준으로 */
-  .career-host { align-items: flex-start; text-align: left; }
   .career-banner { padding: 26px 22px 24px; min-height: 152px; }
   .career-job { gap: 12px; padding: 22px 4px; }
   .career-job:hover { padding-left: 8px; }
