@@ -300,6 +300,8 @@ function ApplyStep({
               <i className="fa-solid fa-check"></i>
             </div>
             <h2>지원서가 접수되었습니다.</h2>
+            {/* 다음 일정 — 박스 없이 본문 위 불릿. 폼과 완료 화면 모두 카드를 벗겼는데
+                이것만 면을 깔면 혼자 떠 보인다 */}
             <div className="ev-next">
               <b>다음 일정</b>
               <ul>
@@ -308,8 +310,9 @@ function ApplyStep({
                 <li>11월 11일 · Finalist 발표 (개별 안내)</li>
               </ul>
             </div>
+            {/* 공고 목록 화면의 같은 링크와 문구를 맞춘다 */}
             <Link href={`/event/${event.slug}`} className="btn btn-out">
-              행사 안내로 돌아가기
+              행사 안내 보기
             </Link>
           </div>
         ) : status === "closed" && !preview ? (

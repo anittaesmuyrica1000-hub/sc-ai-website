@@ -26,7 +26,10 @@
 /* apply.css 는 완료 화면을 가운데 정렬로 둔다(도입문의 폼 기준).
    여기서는 폼이 왼쪽 기준선에 서 있으므로 완료 화면도 같은 선에서 시작해야 한다. */
 .career--form .apply-done { text-align: left; }
-.career--form .apply-done .dot { margin: 0 0 22px; }
+/* 완료 아이콘 — apply.css 의 76px 은 가운데 정렬 기준이다. 왼쪽 기준선에서는 제목보다
+   먼저 눈에 걸려 크기를 줄인다. */
+.career--form .apply-done .dot { width: 56px; height: 56px; font-size: 24px; margin: 0 0 18px; }
+.career--form .apply-done h2 { margin-bottom: 18px; }
 /* 제출 버튼 — apply.css 는 width:100% 다. 680px 을 가로지르면 버튼 하나가 문단처럼
    보인다. 글자 폭에 맞추고 폼과 같은 왼쪽 기준선에 세운다(실제 채용 지원서가 쓰는 형태).
    좁은 화면에서는 아래 미디어쿼리가 다시 전체 폭으로 돌린다 — 손가락으로 누르는
@@ -374,19 +377,21 @@
 .ev-radio:has(input:checked) { border-color: var(--blue); background: var(--soft); }
 .field.invalid .ev-radio { border-color: var(--red); }
 
-/* 지원 완료 화면의 다음 일정 안내 */
-.ev-next {
-  text-align: left;
-  background: var(--soft);
-  border-radius: 12px;
-  padding: 16px 18px;
-  margin: 0 0 26px;
-  font-size: 15px;
-  line-height: 1.7;
-  color: var(--slate);
+/* 지원 완료 화면의 다음 일정 — 박스 없이 불릿. 면을 깔지 않는다 */
+.ev-next { margin: 0 0 28px; font-size: 15px; line-height: 1.7; color: var(--slate); }
+.ev-next b { display: block; margin-bottom: 8px; font-size: 15.5px; font-weight: 700; color: var(--ink); }
+.ev-next ul { list-style: none; display: grid; gap: 6px; margin: 0; padding: 0; }
+.ev-next li { position: relative; padding-left: 14px; word-break: keep-all; }
+.ev-next li::before {
+  content: "";
+  position: absolute;
+  left: 2px;
+  top: 11px;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--blue-2);
 }
-.ev-next b { display: block; color: var(--ink); font-size: 15.5px; margin-bottom: 7px; }
-.ev-next ul { list-style: none; display: grid; gap: 4px; }
 
 @media (max-width: 860px) {
   .career-form { max-width: 560px; }
