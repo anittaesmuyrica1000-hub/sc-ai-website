@@ -72,9 +72,9 @@ export default function CareerApply({ event, status }: { event: EventItem; statu
                 <div>
                   <div className="eyebrow-s">2026 RECRUIT</div>
                   <h2>
-                    슈퍼전자 2026년
+                    2026 슈퍼전자 신입사원 채용
                     <br />
-                    하반기 신입사원 채용
+                    2026 슈퍼전자 AI 면접 챌린지
                   </h2>
                 </div>
                 <p>
