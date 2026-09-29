@@ -337,14 +337,16 @@ export default async function EventDetailPage({ params }: { params: Promise<{ sl
           <div className="ev-hero__body">
             <span className="ev-hero__status">{STATUS_LABEL[status]}</span>
             <h1 className="ev-hero__title">{e.title}</h1>
-            <p className="ev-hero__excerpt">{e.excerpt}</p>
+            <p className="ev-hero__excerpt">{e.lead ?? e.excerpt}</p>
             {/* 공유 버튼은 메타 줄 끝에 둔다. 히어로 오른쪽 위에 얹으면 제목으로 내려가는
                 시선을 먼저 가로채고, 마미톡처럼 오른쪽 끝으로 밀면 밝은 그래픽 위에 놓여
                 흰 아이콘이 보이지 않는다. 읽는 순서(제목 → 요약 → 메타)의 끝이자
                 배경이 짙은 자리가 여기다. */}
             <div className="ev-hero__meta">
               <span>주최 슈퍼코더</span>
+              {/* 대상과 제한 없음을 붙여 둔다 — 둘 다 '누가 지원할 수 있나' 에 대한 답이다 */}
               <span>대학·대학원 재학생 및 졸업생</span>
+              <span>전공·학년 제한 없음</span>
               <span>참가비 무료</span>
               <ShareButton
                 path={`/event/${e.slug}`}

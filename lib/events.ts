@@ -9,8 +9,14 @@ export type EventStatus = "upcoming" | "open" | "closed";
 export type EventItem = {
   slug: string;
   title: string;
-  /** 목록 카드 한 줄 요약 */
+  /** 한 줄 요약 — 메타 description · og/twitter 설명 · 공유 시트 문구에 쓴다 */
   excerpt: string;
+  /**
+   * 히어로에 보이는 문장. 없으면 excerpt 를 그대로 쓴다.
+   * excerpt 와 따로 두는 이유 — '참가비 무료, 전공·학년 제한 없음' 은 카톡 미리보기·검색 결과에서는
+   * 클릭을 부르는 문구지만, 히어로에서는 바로 아래 메타 줄과 겹친다.
+   */
+  lead?: string;
   /** 목록 카드 아래 일정 한 줄 */
   period: string;
   /** 모집 시작·마감 (ISO). 상태 계산에 쓴다 */
@@ -46,6 +52,7 @@ export const EVENTS: EventItem[] = [
     title: "2026 슈퍼전자 AI 면접 챌린지",
     excerpt:
       "가상기업 '슈퍼전자'에 지원해 지원서부터 2차 면접까지 채용 전형을 그대로 겪어 봅니다. 참가비 무료, 전공·학년 제한 없음.",
+    lead: "가상기업 '슈퍼전자'에 지원해 지원서부터 2차 면접까지 채용 전형을 그대로 겪어 봅니다.",
     period: "모집 2026.10.06 ~ 11.01",
     applyStart: "2026-10-06",
     applyEnd: "2026-11-01",
