@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { trackEvent } from "@/lib/track";
 import { getUtm, type Utm } from "@/lib/utm";
-import type { EventItem, EventStatus } from "@/lib/events";
+import { openLabel, type EventItem, type EventStatus } from "@/lib/events";
 import {
   EVENT_JOBS, type EventJob,
   APPLICANT_TYPES, FINAL_ATTEND_OPTIONS,
@@ -36,16 +36,15 @@ const EMPTY: Fields = {
 
 /* 공고 카드 뱃지 — 값의 출처는 목록·상세와 같은 statusOf() 다.
    말은 STATUS_LABEL('모집 중'·'모집 마감') 대신 실제 채용사이트가 쓰는 쪽으로 쓴다 —
-   이 화면은 슈퍼전자 채용사이트 말투를 유지하는 자리다. */
-const JOB_BADGE: Record<EventStatus, string> = {
-  upcoming: "모집 예정",
-  open: "채용중",
-  closed: "마감",
-};
+   이 화면은 슈퍼전자 채용사이트 말투를 유지하는 자리다.
+   모집 전은 이벤트 페이지 공고 카드와 같은 '10.06 오픈'을 쓴다 — '모집 예정'은 언제 여는지 말하지 않는다. */
+function jobBadge(event: EventItem, status: EventStatus): string {
+  if (status === "upcoming") return openLabel(event);
+  return status === "open" ? "채용중" : "마감";
+}
 
 export default function CareerApply({ event, status }: { event: EventItem; status: EventStatus }) {
   const [job, setJob] = useState<EventJob | null>(null);
-  const [filter, setFilter] = useState<EventJob | "all">("all");
   // 10/2 제출 테스트용(?preview=1) — 모집 시작 전에도 폼을 열어 끝까지 넣어 볼 수 있다.
   // 이때 저장되는 행은 is_test=true 라 선착순·집계에서 빠진다(기획안 slide 20 "지원 폼 제출 테스트").
   const [preview, setPreview] = useState(false);
@@ -60,11 +59,17 @@ export default function CareerApply({ event, status }: { event: EventItem; statu
   }, []);
 
   const open = status === "open" || preview;
-  const jobs = EVENT_JOBS.filter((j) => filter === "all" || j.v === filter);
 
   return (
     <section className={`career${job ? " career--form" : ""}`}>
       <div className="career-wrap">
+        {/* 슈퍼전자 채용 화면에서 행사로 나가는 길. 공고 목록에만 둔다 —
+            지원서 단계에서 누르면 적던 내용이 사라지고, 거기엔 워드마크(목록으로)가 이미 있다 */}
+        {!job && (
+          <Link href={`/event/${event.slug}`} className="career-back">
+            <i className="fa-solid fa-arrow-left"></i> 이벤트 안내로 돌아가기
+          </Link>
+        )}
         <div className="career-top">
           {/* 워드마크는 실제 채용사이트처럼 홈(공고 목록)으로 돌아가는 링크다.
               지원서 단계(?job=…)에서 누르면 목록으로 되돌아온다 — setJob(null) 을 함께 부르는
@@ -83,7 +88,8 @@ export default function CareerApply({ event, status }: { event: EventItem; statu
               <div className="career-banner career-banner--main">
                 <div>
                   <div className="eyebrow-s">2026 RECRUIT</div>
-                  <h2>2026 슈퍼전자 신입사원 채용</h2>
+                  {/* 행사명을 그대로 쓴다 — '신입사원 채용'만 두면 실제 채용으로 읽힌다 */}
+                  <h2>{event.title} · 신입 모의채용</h2>
                 </div>
                 <p>
                   접수 {event.applyFrom} ~ {event.applyTo}
@@ -91,35 +97,15 @@ export default function CareerApply({ event, status }: { event: EventItem; statu
               </div>
             </div>
 
+            {/* 직군 필터는 뺐다 — 공고가 두 개뿐이라 걸러 볼 것이 없다 */}
             <div className="career-listhead">
               <h2>
                 모집 중인 공고 <em>{EVENT_JOBS.length}</em>
               </h2>
-              <div className="career-filters">
-                <button
-                  type="button"
-                  className="career-chip"
-                  aria-pressed={filter === "all"}
-                  onClick={() => setFilter("all")}
-                >
-                  전체
-                </button>
-                {EVENT_JOBS.map((j) => (
-                  <button
-                    key={j.v}
-                    type="button"
-                    className="career-chip"
-                    aria-pressed={filter === j.v}
-                    onClick={() => setFilter(j.v)}
-                  >
-                    {j.l}
-                  </button>
-                ))}
-              </div>
             </div>
 
             <ul className="career-jobs">
-              {jobs.map((j) => (
+              {EVENT_JOBS.map((j) => (
                 <li key={j.v}>
                   <Link
                     href={`/event/${event.slug}/jobs/${j.v}`}
@@ -130,7 +116,7 @@ export default function CareerApply({ event, status }: { event: EventItem; statu
                       <div className="career-job__title">
                         {j.l} 신입사원 모집
                         <span className={`career-job__new career-job__new--${status}`}>
-                          {JOB_BADGE[status]}
+                          {jobBadge(event, status)}
                         </span>
                       </div>
                       <div className="career-job__meta">

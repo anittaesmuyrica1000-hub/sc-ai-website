@@ -3,7 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import "../../../event.css";
 import "../jobs.css";
-import { EVENTS, findEvent, statusOf, ddayLabel, withoutYear, applyRange, STATUS_LABEL } from "@/lib/events";
+import { EVENTS, findEvent, statusOf, ddayLabel, withoutYear, applyRange } from "@/lib/events";
 import { EVENT_JOBS, FICTION_NOTICE, JOB_DETAIL_EVENT, findJob } from "@/lib/eventApply";
 import { buildPageMetadata } from "@/lib/pageSeo";
 
@@ -69,7 +69,9 @@ export default async function JobDetailPage({
   if (!e || !j || e.slug !== JOB_DETAIL_EVENT) notFound();
 
   const status = statusOf(e);
+  // 제목 아래 칩은 short("10.06 오픈"), 지원 패널·하단 바는 long("10월 6일 모집 시작") — 행사 안내와 같다
   const dday = ddayLabel(e);
+  const ddayLong = ddayLabel(e, "long");
   const open = status === "open";
   const other = EVENT_JOBS.find((x) => x.v !== j.v);
   const listUrl = `/event/${e.slug}/apply`;
@@ -91,6 +93,16 @@ export default async function JobDetailPage({
               <i className="fa-solid fa-arrow-left"></i> 공고 목록
             </Link>
           </div>
+
+          {/* 모의채용 고지 — 제목보다 먼저 둔다. 공고소개·팀 소개가 실제 공고처럼 구체적이라
+              유의사항까지 내려가야 가상 기업인 걸 알던 문제를 막는다(2026-09-30) */}
+          <p className="jd-mock">
+            <i className="fa-solid fa-circle-info" aria-hidden="true"></i>
+            <span>
+              이 공고는 모의채용 행사 <Link href={`/event/${e.slug}`}>{e.title}</Link>의 가상 공고입니다. 슈퍼전자는 실제
+              회사가 아닙니다.
+            </span>
+          </p>
 
           <h1 className="jd-title">{j.l} 신입사원 모집</h1>
           <p className="jd-org">슈퍼전자</p>
@@ -140,6 +152,9 @@ export default async function JobDetailPage({
                 <li key={s}>{s}</li>
               ))}
             </ul>
+            {/* 이 목록은 1차 면접 채점의 직무 역량 기준과 짝이다(lib/eventApply.ts evaluates 주석).
+                지원자에게도 그 연결을 말해 준다. 문항 수는 쓰지 않는다 */}
+            <p className="jd-note">1차 직무 AI 면접에서 이 경험을 중심으로 질문합니다.</p>
           </section>
 
           <section className="jd-sec">
@@ -156,6 +171,8 @@ export default async function JobDetailPage({
           {other && (
             <section className="jd-sec">
               <h2>다른 공고</h2>
+              {/* 두 공고를 다 열어 본 사람이 둘 다 낼 수 있다고 읽지 않게 카드 바로 위에서 한 번 더 말한다 */}
+              <p className="jd-other-note">두 직군 중 한 곳에만 지원할 수 있고, 지원 후에는 직군을 바꿀 수 없습니다.</p>
               <Link href={`/event/${e.slug}/jobs/${other.v}`} className="jd-other">
                 <span>
                   <b>{other.l} 신입사원 모집</b>
@@ -189,9 +206,9 @@ export default async function JobDetailPage({
             .ev-side 는 행사 안내 페이지와 같은 컴포넌트다(event.css). */}
         <aside className="jd__side">
           <div className="ev-side">
+            {/* 상태 글자('모집 예정')는 뺐다 — 칩 하나가 상태와 날짜를 함께 말한다. 행사 안내 패널과 같다 */}
             <div className="ev-side__head">
-              <span className="ev-tag ev-tag--dday">{dday}</span>
-              <span className="ev-side__status">{STATUS_LABEL[status]}</span>
+              <span className="ev-tag ev-tag--dday">{ddayLong}</span>
             </div>
             <dl className="ev-side__list">
               <div>
@@ -209,13 +226,10 @@ export default async function JobDetailPage({
                 <dt>Finalist 발표</dt>
                 <dd>{withoutYear(e.announce)}</dd>
               </div>
+              {/* 참가비 행은 행사 안내 패널과 함께 뺐다 — 이 목록은 일정이다 */}
               <div>
                 <dt>2차 인재상 AI 면접</dt>
                 <dd>{withoutYear(e.final)}</dd>
-              </div>
-              <div>
-                <dt>참가비</dt>
-                <dd>무료</dd>
               </div>
             </dl>
             {open || upcoming ? (
@@ -238,7 +252,7 @@ export default async function JobDetailPage({
       {/* 모바일 하단 고정 바 — 본문이 길어 사이드 패널이 화면 밖으로 나간 뒤를 받는다 */}
       <div className="jd-bar">
         <div className="jd-bar__info">
-          <b>{dday}</b>
+          <b>{ddayLong}</b>
           <span>{j.l}</span>
         </div>
         {open || upcoming ? (

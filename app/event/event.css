@@ -169,7 +169,6 @@
   box-shadow:0 12px 32px -24px rgba(20,40,90,.4);padding:24px 22px
 }
 .ev-side__head{display:flex;align-items:center;gap:9px;margin-bottom:18px}
-.ev-side__status{font-size:13px;font-weight:700;color:var(--slate-2)}
 /* 실제 채용 공고의 요약 카드와 같은 위계로 둔다:
    줄마다 선을 긋지 않고, 라벨은 흐리고 작게 · 값은 진하고 굵게.
    선을 지우면 '표'가 아니라 '한 덩어리 정보'로 읽혀서 훑는 속도가 빨라진다. */
@@ -194,6 +193,12 @@
 /* ⚠️ 흰 글자는 파란 버튼일 때만. 모집 전 CTA 는 btn-out(흰 배경)이라
    여기에 color:#fff 를 걸면 글자가 통째로 사라진다(2026-09-29). */
 .ev-side__cta.btn-blue,.ev-side__cta.btn-blue:hover{color:#fff}
+/* 모집 전 지원 버튼(ApplyCta) — 버튼 자리는 지키되 누를 수 없음을 색으로 알린다.
+   hover 에 떠오르거나 손가락 커서가 뜨면 다시 눌러 보게 된다 */
+.btn.ev-btn-off,.btn.ev-btn-off:hover{
+  background:var(--soft);color:var(--slate-2);border:1px solid var(--line);
+  cursor:default;transform:none
+}
 .ev-side__note{margin:12px 0 0;font-size:12.5px;color:var(--slate-2);text-align:center}
 
 /* ── 좁은 화면 하단 고정 지원 바 ──────────────────────────

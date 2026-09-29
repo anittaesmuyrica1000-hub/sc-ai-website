@@ -86,19 +86,45 @@ export function statusOf(e: EventItem, today = new Date()): EventStatus {
   return "open";
 }
 
+/** ISO 날짜 → "10월 6일" */
+function monthDay(iso: string): string {
+  const [, m, d] = iso.split("-").map(Number);
+  return `${m}월 ${d}일`;
+}
+
 /**
- * 공고 카드에 붙는 D-day 라벨.
- * 모집 전이면 시작까지(OPEN D-n), 모집 중이면 마감까지(D-n), 지나면 마감.
+ * 모집 시작 표기 — short "10.06 오픈"(공고 카드 칩·뱃지), long "10월 6일 오픈"(모집 전 지원 버튼).
+ * 이벤트 페이지와 슈퍼전자 채용 화면이 같은 말을 쓰도록 여기 하나에 둔다.
+ */
+export function openLabel(e: EventItem, style: "short" | "long" = "short"): string {
+  return style === "long" ? `${monthDay(e.applyStart)} 오픈` : `${e.applyStart.slice(5).replace("-", ".")} 오픈`;
+}
+
+/**
+ * 공고 카드·지원 패널에 붙는 D-day 라벨.
+ * 모집 전이면 시작일(OPEN D-n 을 쓰지 않는다 — 숫자만 보고는 무엇까지 남았는지 알 수 없다),
+ * 모집 중이면 마감까지(D-n), 지나면 마감.
+ * short 는 공고 카드 칩("10.06 오픈"), long 은 지원 패널("10월 6일 모집 시작")이다.
  * 날짜만 비교하므로 시각과 무관하게 같은 날 안에서는 값이 바뀌지 않는다.
  */
-export function ddayLabel(e: EventItem, today = new Date()): string {
+export function ddayLabel(e: EventItem, style: "short" | "long" = "short", today = new Date()): string {
   const status = statusOf(e, today);
   if (status === "closed") return "마감";
+  if (status === "upcoming") {
+    return style === "long" ? `${monthDay(e.applyStart)} 모집 시작` : openLabel(e);
+  }
   const from = Date.parse(`${kstToday(today)}T00:00:00Z`);
-  const to = Date.parse(`${status === "upcoming" ? e.applyStart : e.applyEnd}T00:00:00Z`);
+  const to = Date.parse(`${e.applyEnd}T00:00:00Z`);
   const days = Math.round((to - from) / 86400000);
-  if (days <= 0) return "D-DAY";
-  return status === "upcoming" ? `OPEN D-${days}` : `D-${days}`;
+  return days <= 0 ? "D-DAY" : `D-${days}`;
+}
+
+/**
+ * 접수 기간 문장형 — "10월 6일 오픈 · 11월 1일 마감".
+ * 마감일만 쓰면 모집 전에 읽는 사람이 지금 지원할 수 있는지 알 수 없다.
+ */
+export function applyPeriodLabel(e: EventItem): string {
+  return `${openLabel(e, "long")} · ${monthDay(e.applyEnd)} 마감`;
 }
 
 /**

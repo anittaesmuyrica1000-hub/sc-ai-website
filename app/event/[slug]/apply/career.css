@@ -41,6 +41,20 @@
   padding: 0 20px;
 }
 
+/* ── 이벤트 안내로 돌아가기 — 공고 상세의 '공고 목록'(.jd-back)과 같은 모양 ── */
+.career-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  margin-bottom: 18px;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--slate);
+  text-decoration: none;
+}
+.career-back:hover { color: var(--blue); }
+.career-back i { font-size: 11px; }
+
 /* ── 상단 바 — 가상기업 워드마크 ─────────────────────────── */
 .career-top {
   display: flex;
@@ -120,7 +134,7 @@
 }
 .career-banner--main p { opacity: 0.86; }
 
-/* ── 공고 목록 헤더 + 직군 필터 ──────────────────────────── */
+/* ── 공고 목록 헤더 ──────────────────────────────────────── */
 .career-listhead {
   display: flex;
   align-items: center;
@@ -139,29 +153,6 @@
   font-style: normal;
   color: var(--blue);
   margin-left: 6px;
-}
-.career-filters {
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
-}
-.career-chip {
-  border: 1px solid var(--line);
-  background: #fff;
-  border-radius: 999px;
-  padding: 8px 16px;
-  font-size: 14.5px;
-  font-weight: 600;
-  font-family: inherit;
-  color: var(--slate);
-  cursor: pointer;
-  transition: 0.15s;
-}
-.career-chip:hover { border-color: var(--blue-2); color: var(--blue); }
-.career-chip[aria-pressed="true"] {
-  background: var(--ink);
-  border-color: var(--ink);
-  color: #fff;
 }
 
 /* ── 공고 카드 ────────────────────────────────────────────

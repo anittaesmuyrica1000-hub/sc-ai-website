@@ -38,6 +38,25 @@
 .jd-back:hover { color: var(--blue); }
 .jd-back i { font-size: 11px; }
 
+/* 모의채용 고지 — 제목 위 한 줄. 공고 본문과 다른 목소리(행사 주최 측)라 연한 면으로 떼어 둔다 */
+.jd-mock {
+  display: flex;
+  align-items: flex-start;
+  gap: 9px;
+  margin: 0 0 22px;
+  padding: 11px 14px;
+  border-radius: 10px;
+  background: var(--soft);
+  border: 1px solid var(--tint);
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--slate);
+  word-break: keep-all;
+}
+.jd-mock i { color: var(--blue); font-size: 14px; margin-top: 3px; flex-shrink: 0; }
+.jd-mock a { color: var(--ink); font-weight: 700; text-decoration: underline; text-underline-offset: 3px; }
+.jd-mock a:hover { color: var(--blue); }
+
 .jd-title {
   margin: 0;
   font-size: clamp(27px, 3.4vw, 40px);
@@ -160,6 +179,7 @@
 .jd-list li b { color: var(--ink); font-weight: 700; }
 
 /* ── 다른 공고 ─────────────────────────────────────────── */
+.jd-other-note { margin: 0 0 14px; font-size: 14.5px; color: var(--slate-2); word-break: keep-all; }
 .jd-other {
   display: flex;
   align-items: center;

@@ -11,8 +11,11 @@ import {
   ddayLabel,
   withoutYear,
   applyRange,
+  applyPeriodLabel,
+  openLabel,
   STATUS_LABEL,
   type EventItem,
+  type EventStatus,
 } from "@/lib/events";
 import { EVENT_JOBS, EVENT_STEPS, EVENT_VALUES, COMPANY_PROFILE, COMPANY_FACTS, FICTION_NOTICE } from "@/lib/eventApply";
 import ShareButton from "@/components/ShareButton";
@@ -77,10 +80,19 @@ export async function generateMetadata({
       2) 모델 직무의 설계 근거가 된 실존 기업명을 쓰지 않는다(slide 13).
       3) 가상기업 고지는 고정 문구다. 포스터·지원 폼·보도자료와 같은 문장을 쓴다(slide 4). */
 
-/* 자주 묻는 질문 — 7문에서 5문으로 줄였다.
-   뺀 것: "참가비가 있나요"(히어로 메타·사이드 패널·하단 지원 배너에 이미 나온다),
-         "전공·학년 제한"(반도체 문항에 합쳤다). */
-const FAQS = [
+/* Finalist 선발 기준 — 참가 혜택의 보조 설명과 FAQ 가 같은 문장을 쓴다. 한쪽만 고치면 어긋난다.
+   출처는 03_회의자료/1002-회의진행자료.md §4-2(승인): 부문 1인은 직무 평가 전 항목,
+   전체 부문은 두 직군 공통 항목으로 순위를 매긴다. 3인은 서로 다른 사람이라 전체 부문은 부문 선발자를 뺀다.
+   ⚠️ 채점 항목 이름·배점은 쓰지 않는다 — 채점 틀은 아직 '논의' 단계다(10/30 내부 테스트까지 확정). */
+const FINALIST_RULE =
+  "Finalist 3인은 제품마케팅 부문 1인, 소프트웨어 개발 부문 1인, 전체 부문 1인입니다. 부문 1인은 각 직군에서 1차 직무 AI 면접 점수가 가장 높은 1인이고, 전체 부문 1인은 두 부문 선발자를 뺀 나머지 가운데 직군과 관계없이 같은 기준으로 비교한 점수가 가장 높은 1인입니다.";
+
+/* 자주 묻는 질문.
+   2026-09-30 쿠폰·Finalist·문의처 세 문항을 더했다 — 지원자가 가장 먼저 물을 내용인데 표와 유의사항에만 있었다.
+   뺀 것: "참가비가 있나요"(히어로 메타·하단 지원 배너에 이미 나온다),
+         "전공·학년 제한"(반도체 문항에 합쳤다).
+   문의처는 e.contact 를 써야 해서 행사 값을 받는 함수로 둔다. */
+const faqs = (e: EventItem) => [
   [
     "슈퍼전자는 실제로 있는 회사인가요?",
     "아닙니다. 이 행사를 위해 만든 가상 기업입니다. 실제 채용 절차나 입사 자격과 관계가 없으며, 참가와 결과는 어떠한 기업의 채용에도 영향을 주지 않습니다.",
@@ -93,11 +105,17 @@ const FAQS = [
     "AI 면접은 어떻게 진행되나요?",
     "1차 직무 AI 면접은 온라인으로 진행하며, 응시 기간 안에서 원하는 시간을 골라 응시합니다. 자격증이나 스펙을 직접 묻는 대신 직무 역량에 연결된 본인의 경험을 질문하고, 답변에 따라 후속 질문이 이어집니다. 답변 시간에 제한은 없습니다.",
   ],
-  ["두 직군에 모두 지원할 수 있나요?", "한 직군만 선택해 지원할 수 있습니다."],
+  ["두 직군에 모두 지원할 수 있나요?", "한 직군만 선택해 지원할 수 있습니다. 지원 후에는 직군을 바꿀 수 없습니다."],
   [
     "2차 인재상 AI 면접에 꼭 참석해야 하나요?",
-    "1차 직무 AI 면접까지만 참여하셔도 괜찮습니다. 2차 인재상 AI 면접은 선발된 Finalist 3인을 대상으로 오프라인에서 진행하며, 지원서에서 참석 가능 여부를 미리 확인합니다.",
+    "1차 직무 AI 면접까지만 마쳐도 선착순 쿠폰 대상이 됩니다. 2차 인재상 AI 면접은 Finalist 3인만 오프라인으로 진행하며, 지원서에서 참석 가능 여부를 미리 확인합니다.",
   ],
+  [
+    "선착순 쿠폰은 언제 받나요?",
+    "1차 직무 AI 면접을 끝까지 마친 순서로 100명에게 스타벅스 모바일 쿠폰 5,000원권을 드립니다. 11월 13일에 지원서에 적은 휴대폰 번호로 문자를 보냅니다.",
+  ],
+  ["Finalist는 어떻게 뽑나요?", `${FINALIST_RULE} 결과는 11월 11일에 개별로 안내드립니다.`],
+  ["문의는 어디로 하면 되나요?", `${e.contact}로 메일을 보내 주세요.`],
 ];
 
 /* ⚠️ 이 페이지는 '행사 전체', 공고 상세(/jobs/[job])는 '직군 하나'를 맡는다.
@@ -220,7 +238,7 @@ function MockChallengeBody({ e, dday }: { e: EventItem; dday: string }) {
           </thead>
           <tbody>
             <tr>
-              <td>1차 직무 AI 면접 완료 선착순 100명</td>
+              <td>1차 직무 AI 면접까지 완료한 선착순 100명</td>
               <td>스타벅스 모바일 쿠폰 5,000원권</td>
               <td>11월 13일 · 문자</td>
             </tr>
@@ -233,14 +251,15 @@ function MockChallengeBody({ e, dday }: { e: EventItem; dday: string }) {
         </table>
       </div>
       {/* 표 아래 보조 설명 — 표 본문보다 작게 둔다(.ev-notes). 유의사항의 post-list 는 그대로다 */}
+      {/* 표의 행 순서(쿠폰 → Finalist)를 따른다 */}
       <ul className="post-list ev-notes">
-        <li>Finalist 3인은 마케팅 부문 1인, 개발 부문 1인, 전체 부문 1인으로 선발합니다.</li>
-        <li>선착순은 1차 직무 AI 면접을 끝까지 마친 시각을 기준으로 합니다.</li>
+        <li>선착순은 지원서를 낸 순서가 아니라 1차 직무 AI 면접을 끝까지 마친 시각을 기준으로 합니다.</li>
+        <li>{FINALIST_RULE}</li>
       </ul>
 
       <h2>자주 묻는 질문</h2>
       <div className="ev-faq">
-        {FAQS.map(([q, a]) => (
+        {faqs(e).map(([q, a]) => (
           <details key={q}>
             <summary>{q}</summary>
             <p>{a}</p>
@@ -278,6 +297,24 @@ function MockChallengeBody({ e, dday }: { e: EventItem; dday: string }) {
   );
 }
 
+/* 지원 버튼 — 사이드 패널 · 하단 배너 · 좁은 화면 하단 바가 같이 쓴다.
+   모집 전에는 누를 수 없게 두고 여는 날을 적는다. 예전엔 '지원 신청하기'를 눌러 도착한 화면이
+   '아직 접수 전입니다'라 지원자가 막힌 느낌을 받았다(2026-09-30). */
+function ApplyCta({ e, status, className = "" }: { e: EventItem; status: EventStatus; className?: string }) {
+  if (status === "upcoming") {
+    return (
+      <span className={`btn ev-btn-off ${className}`} aria-disabled="true">
+        {openLabel(e, "long")}
+      </span>
+    );
+  }
+  return (
+    <Link href={e.applyUrl} className={`btn btn-blue ${className}`}>
+      지원 신청하기 <i className="fa-solid fa-arrow-right"></i>
+    </Link>
+  );
+}
+
 const BODIES: Record<string, (p: { e: EventItem; dday: string }) => React.ReactElement> = {
   "ai-mock-challenge-2026": MockChallengeBody,
 };
@@ -290,8 +327,9 @@ export default async function EventDetailPage({ params }: { params: Promise<{ sl
   if (!e || !Body) notFound();
 
   const status = statusOf(e);
-  // 공고 카드의 D-day. revalidate 120 이라 날짜가 바뀌어도 2분 안에 따라온다.
+  // 공고 카드 칩(short)과 지원 패널·하단 바(long). revalidate 120 이라 날짜가 바뀌어도 2분 안에 따라온다.
   const dday = ddayLabel(e);
+  const ddayLong = ddayLabel(e, "long");
 
   const JSON_LD = {
     "@context": "https://schema.org",
@@ -390,13 +428,14 @@ export default async function EventDetailPage({ params }: { params: Promise<{ sl
               <i className="fa-solid fa-circle-check"></i> {e.title}
             </p>
             <h2 className="post-cta__title">첫 AI 면접을 실전에서 보지 마세요.</h2>
+            {/* 기간은 시작·마감을 함께 쓴다 — 마감만 쓰면 모집 전에 읽는 사람이 지금 지원할 수 있는지 모른다 */}
             <p className="post-cta__desc">
-              참가비는 없고 전공·학년 제한도 없습니다. {e.applyTo}까지 지원할 수 있습니다.
+              참가비는 없고 전공·학년 제한도 없습니다.
+              <br />
+              {applyPeriodLabel(e)}
             </p>
             <div className="post-cta__actions">
-              <Link href={e.applyUrl} className="btn btn-blue">
-                지원 신청하기 <i className="fa-solid fa-arrow-right"></i>
-              </Link>
+              <ApplyCta e={e} status={status} />
               <Link href="/" className="btn btn-out">
                 슈퍼코더 AI면접 알아보기
               </Link>
@@ -408,9 +447,9 @@ export default async function EventDetailPage({ params }: { params: Promise<{ sl
             1080 아래에서는 통째로 사라지고 아래 .ev-bar 가 지원 버튼을 대신 받는다. */}
         <aside className="ev-detail__side">
           <div className="ev-side">
+            {/* 상태 글자('모집 예정')는 뺐다 — 옆 칩이 이미 '10월 6일 모집 시작'·'D-n'·'마감'으로 상태를 말한다 */}
             <div className="ev-side__head">
-              <span className="ev-tag ev-tag--dday">{dday}</span>
-              <span className="ev-side__status">{STATUS_LABEL[status]}</span>
+              <span className="ev-tag ev-tag--dday">{ddayLong}</span>
             </div>
             <dl className="ev-side__list">
               <div>
@@ -428,18 +467,13 @@ export default async function EventDetailPage({ params }: { params: Promise<{ sl
                 <dt>Finalist 발표</dt>
                 <dd>{withoutYear(e.announce)}</dd>
               </div>
+              {/* 참가비 행은 뺐다 — 이 목록은 일정이고, 무료라는 말은 히어로 메타와 하단 배너에 있다 */}
               <div>
                 <dt>2차 인재상 AI 면접</dt>
                 <dd>{withoutYear(e.final)}</dd>
               </div>
-              <div>
-                <dt>참가비</dt>
-                <dd>무료</dd>
-              </div>
             </dl>
-            <Link href={e.applyUrl} className="btn btn-blue ev-side__cta">
-              지원 신청하기 <i className="fa-solid fa-arrow-right"></i>
-            </Link>
+            <ApplyCta e={e} status={status} className="ev-side__cta" />
             <p className="ev-side__note">한 직군만 선택해 지원합니다.</p>
           </div>
         </aside>
@@ -449,15 +483,13 @@ export default async function EventDetailPage({ params }: { params: Promise<{ sl
           공고 상세(.jd-bar)와 같은 구조·높이로 둬서 두 페이지의 손 위치가 같다. */}
       <div className="ev-bar">
         <div className="ev-bar__info">
-          <b>{dday}</b>
+          <b>{ddayLong}</b>
           <span>{STATUS_LABEL[status]} · 참가비 무료</span>
         </div>
         {status === "closed" ? (
           <span className="ev-bar__off">접수 마감</span>
         ) : (
-          <Link href={e.applyUrl} className="btn btn-blue">
-            지원 신청하기 <i className="fa-solid fa-arrow-right"></i>
-          </Link>
+          <ApplyCta e={e} status={status} />
         )}
       </div>
     </>
