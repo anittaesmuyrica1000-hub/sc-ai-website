@@ -297,22 +297,24 @@
    lib/events.ts 의 cover 가 있을 때만 붙는다. 없으면 파란 그라데이션 그대로.
 
    지금 쓰는 그래픽은 왼쪽이 투명한 알파 페이드라, 그라데이션을 덮지 않고 그 위에 얹는다.
-   레이어 순서(위 → 아래): 그래픽 · 글자 보호용 막 · 브랜드 그라데이션.
-   막을 그래픽 아래에 두는 이유는, 글자가 놓이는 왼쪽은 그래픽이 비어 있어서
-   막이 그대로 비치고 그래픽이 진한 오른쪽은 손대지 않기 때문이다.
+   레이어 순서(위 → 아래): 글자 보호용 막 · 그래픽 · 브랜드 그라데이션.
+   막은 왼쪽에서만 진하고 76% 지점에서 0이 된다 — 글자가 놓이는 왼쪽만 누르고
+   그래픽이 살아야 하는 오른쪽은 건드리지 않는다.
+   ⚠️ 막을 그래픽 아래에 두면 안 된다. 그러면 그래픽이 불투명한 구간에서 막이 가려져,
+      밝은 이미지가 들어왔을 때 흰 글자의 대비가 그대로 무너진다(2026-09-29 교체본이 그랬다).
 
    이미지 크기: 데스크톱 1440×460(현재 1배), 모바일 560×440. */
 .ev-hero--img{
   /* 투명한 부분 뒤를 받친다 — 없으면 흰 바탕이 비친다 */
   background-color:#1B3B8F;
   background-image:
+    linear-gradient(90deg,rgba(6,16,48,.58) 0%,rgba(6,16,48,.42) 34%,rgba(6,16,48,.18) 58%,rgba(6,16,48,0) 76%),
     var(--ev-hero-img),
-    linear-gradient(90deg,rgba(8,18,52,.58) 0%,rgba(8,18,52,.36) 44%,rgba(8,18,52,0) 74%),
     linear-gradient(135deg,#1B3B8F 0%,var(--blue) 62%,var(--blue-2) 100%);
-  /* 세로를 자르지 않는다. cover 로 두면 1440 보다 넓은 화면에서 로고 윗부분이 잘린다.
+  /* 세로를 자르지 않는다. cover 로 두면 1440 보다 넓은 화면에서 세로가 잘려 로고 윗부분이 날아간다.
      높이에 맞춰 오른쪽에 붙이면 1440 에서 원본 그대로, 더 넓으면 왼쪽에 그라데이션이 남는다 */
-  background-size:auto 100%,cover,cover;
-  background-position:right center,center,center;
+  background-size:cover,auto 100%,cover;
+  background-position:center,right center,center;
   background-repeat:no-repeat
 }
 /* 장식 원은 그래픽과 겹치면 얼룩처럼 보인다 */
