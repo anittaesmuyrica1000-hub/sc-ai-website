@@ -11,12 +11,14 @@
   padding: 40px 0 96px;
   min-height: calc(100vh - 64px);
 }
-/* 지원서 단계 — 바탕은 #3A6FFF 를 10% 로 깔고 카드는 흰색으로 띄운다.
-   둘 다 흰색에 가까우면 카드가 배경에 묻혀 어디까지가 입력 영역인지 보이지 않는다.
-   공고 목록 화면(.career 만)은 흰 바탕 그대로다 — .career-job:hover 가 --soft 배경을
-   쓰는데 페이지를 물들이면 호버가 페이지보다 밝아져 뒤집힌다. */
-.career--form { background: rgba(58, 111, 255, 0.1); }
-.career--form .apply-card { background: #fff; }
+/* 지원서 단계 — 바탕은 흰색 그대로 두고, 카드를 그림자로 띄워 경계를 만든다.
+   카드 기본값(#FBFCFD)과 페이지(#fff)가 둘 다 흰색에 가까워 어디까지가 입력 영역인지
+   보이지 않던 문제를, 배경색이 아니라 높이로 푼다.
+   그림자 값은 지원 패널(.ev-side)과 같은 계열이되 면적이 큰 카드라 한 단계 깊게 준다. */
+.career--form .apply-card {
+  background: #fff;
+  box-shadow: 0 18px 44px -28px rgba(20, 40, 90, 0.4);
+}
 .career-wrap {
   max-width: 1000px;
   margin: 0 auto;
