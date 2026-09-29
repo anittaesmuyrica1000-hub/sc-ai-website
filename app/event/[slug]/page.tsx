@@ -354,8 +354,8 @@ export default async function EventDetailPage({ params }: { params: Promise<{ sl
                 text={e.excerpt}
                 campaign={e.slug}
                 position="hero"
-                variant="icon"
-                label="이 행사 링크 공유하기"
+                variant="text"
+                label="공유하기"
               />
             </div>
           </div>

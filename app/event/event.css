@@ -108,9 +108,7 @@
   border-top:1px solid rgba(255,255,255,.22);
   font-size:14px;font-weight:600;color:rgba(255,255,255,.92)
 }
-/* 공유 버튼은 사실 항목이 아니라 행동이다 — 앞의 텍스트와 살짝 더 떼고,
-   40px 원이 줄 높이를 밀지 않도록 위아래 여백을 상쇄한다 */
-.ev-hero__meta .share-wrap{margin:-8px 0 -8px 4px}
+/* 글자 변형이라 줄 높이를 밀지 않는다 — 메타 줄의 gap(22px)을 그대로 쓴다 */
 
 .ev-detail{
   display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:60px;align-items:start;
@@ -363,6 +361,12 @@
   font-size:13.5px;font-weight:600
 }
 .share-btn--line:hover{border-color:var(--blue-2);color:var(--blue-d)}
+/* 글자만 — 사실 항목들 사이에 놓이므로 밑줄로 '누를 수 있는 것'임을 표시한다.
+   밑줄이 없으면 '참가비 무료' 옆의 네 번째 사실처럼 읽힌다. */
+.share-btn--text{
+  font-size:14px;font-weight:600;padding:0;
+  text-decoration:underline;text-underline-offset:3px;text-decoration-thickness:1px
+}
 .share-btn:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
 
 /* 복사 결과를 눈으로도 확인시킨다 — 복사는 화면에 아무 변화를 남기지 않는 동작이라
@@ -379,7 +383,7 @@
 .ev-hero__top{display:flex;align-items:center;gap:16px;margin-bottom:24px}
 .ev-hero__top .ev-hero__back{margin-bottom:0}
 .ev-hero .share-btn{color:rgba(255,255,255,.9)}
-.ev-hero .share-btn--icon:hover{background:rgba(255,255,255,.16);color:#fff}
+.ev-hero .share-btn--text:hover{color:#fff;text-decoration-thickness:2px}
 .ev-hero .share-btn:focus-visible{outline-color:#fff}
 
 /* ── 히어로 배경 이미지 ──────────────────────────────────

@@ -26,8 +26,8 @@ type Props = {
   content?: string;
   /** GA4 에서 어느 자리의 버튼인지 구분한다 */
   position: "header" | "side" | "hero" | "bottom";
-  /** icon: 아이콘만(공고 헤더) · line: 아이콘+글자(사이드 패널) */
-  variant?: "icon" | "line";
+  /** icon: 아이콘만(공고 헤더) · line: 아이콘+글자(사이드 패널) · text: 글자만(히어로 메타 줄) */
+  variant?: "icon" | "line" | "text";
   label?: string;
 };
 
@@ -119,8 +119,8 @@ export default function ShareButton({
         {/* ⚠️ fa-share-nodes 를 쓰면 안 된다 — app/fontawesome.css 는 사용 아이콘만 담은 서브셋이고
             public/fonts 의 woff2 에도 그 글리프가 없어서 빈 네모로 나온다.
             arrow-up-from-bracket 은 이미 서브셋에 들어 있고, iOS 공유 아이콘과 같은 모양이다. */}
-        <i className="fa-solid fa-arrow-up-from-bracket" aria-hidden="true"></i>
-        {variant === "line" && <span>{label}</span>}
+        {variant !== "text" && <i className="fa-solid fa-arrow-up-from-bracket" aria-hidden="true"></i>}
+        {variant !== "icon" && <span>{label}</span>}
       </button>
       {/* 화면 낭독기도 결과를 듣도록 role="status". 토스트가 없을 때도 노드를 유지한다 */}
       <span className="share-toast" role="status" aria-live="polite" data-show={toast ? "1" : "0"}>
