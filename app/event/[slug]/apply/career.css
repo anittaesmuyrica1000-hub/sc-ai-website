@@ -307,7 +307,10 @@
   margin-top: 26px;
   padding-top: 20px;
 }
-.ev-agrees .agree { margin: 0 0 14px; align-items: flex-start; }
+/* justify-content 를 flex-start 로 — apply.css 의 .agree 는 space-between 이라
+   '방침 ›' 이 폼 오른쪽 끝까지 밀린다. 동의 문구와 폼 폭만큼 떨어져 있으면
+   어느 항목의 방침인지 눈으로 이어 붙여야 한다. 문구 바로 뒤에 붙인다. */
+.ev-agrees .agree { margin: 0 0 14px; align-items: flex-start; justify-content: flex-start; }
 .ev-agrees .agree:last-child { margin-bottom: 24px; }
 .ev-agrees .agree-main { align-items: flex-start; }
 .ev-agrees .agree-main input { margin-top: 3px; }
