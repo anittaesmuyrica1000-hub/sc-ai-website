@@ -91,8 +91,11 @@ export default async function JobDetailPage({
     content: j.v,
   };
 
-  // 상태별 지원 버튼 — 모집 전·마감에는 누를 것을 주지 않고 이유를 쓴다
-  const ctaLabel = open ? "지원하기" : status === "upcoming" ? `${e.applyFrom}부터 지원할 수 있어요` : "접수가 마감되었습니다";
+  // 상태별 지원 버튼.
+  // 모집 전에도 지원서로 보낸다 — 입력이 잠긴 폼을 미리 볼 수 있게 열어 뒀다.
+  // 마감 뒤에만 누를 것을 주지 않고 이유를 쓴다.
+  const upcoming = status === "upcoming";
+  const ctaLabel = open ? "지원하기" : "지원서 미리 보기";
 
   return (
     <div className="jd-page">
@@ -287,12 +290,15 @@ export default async function JobDetailPage({
                 <dd>{e.contact}</dd>
               </div>
             </dl>
-            {open ? (
-              <Link href={applyUrl} className="btn btn-blue ev-side__cta">
-                {ctaLabel} <i className="fa-solid fa-arrow-right"></i>
-              </Link>
+            {open || upcoming ? (
+              <>
+                <Link href={applyUrl} className={`btn ${open ? "btn-blue" : "btn-out"} ev-side__cta`}>
+                  {ctaLabel} <i className="fa-solid fa-arrow-right"></i>
+                </Link>
+                {upcoming && <p className="jd-cta-note">{e.applyFrom}부터 제출할 수 있어요</p>}
+              </>
             ) : (
-              <p className="jd-cta-off">{ctaLabel}</p>
+              <p className="jd-cta-off">접수가 마감되었습니다</p>
             )}
             <div className="jd-side__share">
               <ShareButton {...share} position="side" variant="line" label="공고 공유하기" />
@@ -307,12 +313,12 @@ export default async function JobDetailPage({
           <b>{dday}</b>
           <span>{j.l}</span>
         </div>
-        {open ? (
-          <Link href={applyUrl} className="btn btn-blue">
-            지원하기
+        {open || upcoming ? (
+          <Link href={applyUrl} className={`btn ${open ? "btn-blue" : "btn-out"}`}>
+            {open ? "지원하기" : "지원서 미리 보기"}
           </Link>
         ) : (
-          <span className="jd-bar__off">{status === "upcoming" ? "10월 6일 접수 시작" : "접수 마감"}</span>
+          <span className="jd-bar__off">접수 마감</span>
         )}
       </div>
     </div>

@@ -488,3 +488,28 @@
 .career .agree { font-size: 14.5px; }
 .career .agree .agree-more { font-size: 14px; }
 .career .apply-done p { font-size: 16px; }
+
+/* ── 모집 전 폼 미리보기 ──────────────────────────────────
+   OPEN 전에도 폼을 그대로 보여주고 입력만 잠근다. 지원자가 무엇을 적어야 하는지
+   미리 알아야 10/6 에 다시 들어올 이유가 생긴다. */
+.career-preopen {
+  display: flex;
+  gap: 11px;
+  align-items: flex-start;
+  background: var(--soft);
+  border: 1px solid var(--tint);
+  border-radius: 12px;
+  padding: 13px 15px;
+  margin: -14px 0 24px;
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--slate);
+  word-break: keep-all;
+}
+.career-preopen i { color: var(--blue); font-size: 15px; margin-top: 3px; flex-shrink: 0; }
+.career-preopen b { display: block; color: var(--ink); font-weight: 700; margin-bottom: 2px; }
+
+/* fieldset 기본 여백·테두리를 지운다. 이게 없으면 폼 전체가 한 칸 들어가 보인다 */
+.apply-card fieldset { border: 0; margin: 0; padding: 0; min-width: 0; }
+.apply-card fieldset[disabled] { opacity: 0.68; }
+.apply-card fieldset[disabled] .btn { cursor: default; }

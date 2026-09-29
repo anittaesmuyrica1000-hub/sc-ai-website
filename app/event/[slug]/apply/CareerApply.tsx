@@ -171,7 +171,7 @@ export default function CareerApply({ event, status }: { event: EventItem; statu
                     <>
                       {event.applyFrom}부터 지원할 수 있습니다.
                       <br />
-                      공고를 먼저 살펴보시고 그때 다시 찾아와 주세요.
+                      공고를 눌러 지원서를 미리 볼 수 있습니다.
                     </>
                   ) : (
                     <>
@@ -369,26 +369,39 @@ function ApplyStep({
               행사 안내로 돌아가기
             </Link>
           </div>
-        ) : !open ? (
+        ) : status === "closed" && !preview ? (
           <div className="career-closed" style={{ marginTop: 0 }}>
             <div className="dot">
               <i className="fa-solid fa-clock-rotate-left"></i>
             </div>
-            <h2>{status === "upcoming" ? "아직 접수 전입니다" : "접수가 마감되었습니다"}</h2>
-            <p>
-              {status === "upcoming"
-                ? `${event.applyFrom}부터 지원할 수 있습니다.`
-                : `${event.applyTo}로 접수가 끝났습니다.`}
-            </p>
+            <h2>접수가 마감되었습니다</h2>
+            <p>{event.applyTo}로 접수가 끝났습니다.</p>
           </div>
         ) : (
+          /* 모집 전에도 폼을 그대로 보여주고 입력만 잠근다(fieldset disabled).
+             "아직 접수 전입니다" 한 장으로 막으면 지원자가 무엇을 적어야 하는지 알 수 없어
+             OPEN 첫날 다시 들어올 이유가 생기지 않는다. 제출은 서버도 한 번 더 막는다. */
           <div className="apply-card">
             <div className="ct">지원서 작성</div>
             <div className="cs">
               {meta.l} 직군에 지원합니다. 이력서나 자기소개서는 받지 않습니다.
               {preview && status !== "open" && " (내부 테스트 모드 — 집계에서 제외됩니다)"}
             </div>
+
+            {!open && (
+              <div className="career-preopen">
+                <i className="fa-solid fa-clock-rotate-left"></i>
+                <span>
+                  <b>{event.applyFrom} 접수 시작</b>
+                  아직 제출할 수 없습니다. 어떤 항목을 묻는지 미리 확인해 보세요.
+                </span>
+              </div>
+            )}
+
             <form onSubmit={onSubmit} noValidate>
+              {/* fieldset 하나로 내부 입력·버튼을 한꺼번에 잠근다 — 필드마다 disabled 를 달면
+                  새 항목이 생길 때 빠뜨린다 */}
+              <fieldset disabled={!open}>
               <input
                 type="text"
                 name="website"
@@ -613,12 +626,15 @@ function ApplyStep({
                   <>
                     접수 중… <i className="fa-solid fa-spinner fa-spin"></i>
                   </>
+                ) : !open ? (
+                  <>{event.applyFrom} 접수 시작</>
                 ) : (
                   <>
                     지원서 제출하기 <i className="fa-solid fa-arrow-right"></i>
                   </>
                 )}
               </button>
+              </fieldset>
             </form>
           </div>
         )}

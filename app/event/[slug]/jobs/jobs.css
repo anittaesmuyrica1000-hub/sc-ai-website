@@ -301,3 +301,12 @@
      :has 미지원 브라우저에서는 지금과 같은 겹침으로 남는다(기능은 유지). */
   body:has(.jd-page) .cbot { bottom: calc(80px + env(safe-area-inset-bottom)); }
 }
+
+/* 모집 전 버튼 아래 한 줄 — 눌러서 폼을 볼 수는 있지만 제출은 안 된다는 것을 미리 말한다 */
+.jd-cta-note {
+  margin: 10px 0 0;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--slate-2);
+  text-align: center;
+}
