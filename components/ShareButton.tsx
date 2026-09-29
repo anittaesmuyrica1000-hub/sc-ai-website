@@ -3,23 +3,21 @@
 import { useEffect, useRef, useState } from "react";
 import { trackEvent } from "@/lib/track";
 
-/* 공고·행사 페이지를 공유하는 버튼.
+/* 공고·행사 페이지의 링크를 복사하는 버튼.
    취준생이 공고를 옮기는 경로는 대부분 단톡방과 커뮤니티 링크다. 지원 폼 URL 하나만으로는
    그 경로가 끊긴다 — 열자마자 개인정보 입력 화면이 나오기 때문이다.
 
-   동작 두 갈래:
-   · navigator.share 지원(모바일 대부분) → OS 공유 시트
-   · 미지원(데스크톱 크롬·파이어폭스) → 클립보드 복사 + 토스트
-   navigator.share 는 https 와 localhost 에서만 있으므로, 폴백이 실제로 자주 쓰인다.
+   동작은 하나다: UTM 을 붙인 URL 을 클립보드에 넣고 토스트로 알린다.
 
-   ⚠️ 공유 시트를 닫는 것은 실패가 아니다(AbortError). 여기서 복사로 되돌리면
-      "취소했는데 복사됨" 토스트가 떠서 무엇이 일어났는지 알 수 없게 된다. */
+   ⚠️ navigator.share(OS 공유 시트)는 일부러 쓰지 않는다(2026-09-29).
+      macOS 데스크톱에서 열면 AirDrop·메모·일기·미리 알림까지 늘어서서,
+      링크 하나 넘기려는 사람에게 고를 것만 늘린다. 복사 한 동작으로 끝낸다.
+      모바일에서 카카오톡으로 바로 넘기는 경로가 필요해지면, 시트를 되살리되
+      포인터가 coarse 인 환경에서만 쓰도록 분기해야 한다 — 무조건 되살리면 같은 문제로 돌아온다. */
 
 type Props = {
   /** 공유할 경로(/event/...). origin 은 클릭 시점의 location 에서 붙인다 */
   path: string;
-  title: string;
-  text?: string;
   /** utm_campaign — 행사 slug */
   campaign: string;
   /** utm_content — 직군 등 어느 공고에서 나간 링크인지 */
@@ -40,8 +38,6 @@ type Props = {
 
 export default function ShareButton({
   path,
-  title,
-  text,
   campaign,
   content,
   position,
@@ -101,18 +97,7 @@ export default function ShareButton({
   }
 
   async function onClick() {
-    const url = buildUrl();
-    if (typeof navigator !== "undefined" && navigator.share) {
-      try {
-        await navigator.share({ title, text, url });
-        trackEvent("share_click", { method: "web_share", position, content });
-        return;
-      } catch (err) {
-        if ((err as Error)?.name === "AbortError") return;
-        /* 공유 시트가 뜨지 못한 경우에만 복사로 넘어간다 */
-      }
-    }
-    await copy(url);
+    await copy(buildUrl());
   }
 
   return (

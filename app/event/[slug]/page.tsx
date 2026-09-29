@@ -346,8 +346,6 @@ export default async function EventDetailPage({ params }: { params: Promise<{ sl
               <span>참가비 무료</span>
               <ShareButton
                 path={`/event/${e.slug}`}
-                title={`${e.title} 참가자 모집`}
-                text={e.excerpt}
                 campaign={e.slug}
                 position="hero"
                 variant="text"
