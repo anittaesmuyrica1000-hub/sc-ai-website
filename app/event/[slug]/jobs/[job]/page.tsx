@@ -215,8 +215,9 @@ export default async function JobDetailPage({
           <section className="jd-sec">
             <h2>참가 혜택</h2>
             <ul className="jd-list">
+              <li>1차 직무 AI 면접 완료자 전원 · 슈퍼코더 주최 수료증 (11월 13일 이메일 발급)</li>
               <li>1차 직무 AI 면접 완료 선착순 100명 · 스타벅스 모바일 쿠폰 5,000원권</li>
-              <li>Finalist 3인 · 슈퍼코더 주최 상장과 수료증, 2차 인재상 AI 면접 참여, 교통 실비 3만원</li>
+              <li>Finalist 3인 · 슈퍼코더 주최 상장, 2차 인재상 AI 면접 참여, 교통 실비 3만원</li>
             </ul>
           </section>
 
@@ -268,11 +269,7 @@ export default async function JobDetailPage({
                 </dd>
               </div>
               <div>
-                <dt>
-                  1차 직무
-                  <br />
-                  AI 면접
-                </dt>
+                <dt>1차 직무 AI 면접</dt>
                 <dd>{withoutYear(e.interview)}</dd>
               </div>
               <div>
@@ -280,11 +277,7 @@ export default async function JobDetailPage({
                 <dd>{withoutYear(e.announce)}</dd>
               </div>
               <div>
-                <dt>
-                  2차 인재상
-                  <br />
-                  AI 면접
-                </dt>
+                <dt>2차 인재상 AI 면접</dt>
                 <dd>{withoutYear(e.final)}</dd>
               </div>
               <div>

@@ -160,16 +160,18 @@
    선을 지우면 '표'가 아니라 '한 덩어리 정보'로 읽혀서 훑는 속도가 빨라진다. */
 .ev-side__list{display:grid;gap:0;margin:0}
 .ev-side__list>div{
-  /* 라벨 84px — 줄바꿈 위치는 <br> 로 고정했고(브라우저에 맡기면 '1차 직무 AI / 면접'
-     으로 끊는다), 이 폭은 고정한 두 줄이 각각 한 줄에 들어가는 최소값이다 */
-  display:grid;grid-template-columns:84px minmax(0,1fr);gap:14px;
+  /* 라벨 116px · 간격 12px — 가장 긴 라벨 '2차 인재상 AI 면접'(13.5px 기준 약 111px)이
+     한 줄에 들어가는 폭이다. 패널 안쪽 폭 296px(340 - 좌우 패딩 22) 에서 값 칸에
+     168px 이 남고, 가장 긴 값 'support@supercoder.co'(14.5px 기준 약 152px)가 들어간다.
+     라벨을 더 줄이면 두 줄이 되고, 더 늘리면 문의 메일이 접힌다. */
+  display:grid;grid-template-columns:116px minmax(0,1fr);gap:12px;
   padding:0 0 14px;line-height:1.55
 }
 .ev-side__list>div:last-child{padding-bottom:0}
 .ev-side__list dt{font-size:13.5px;font-weight:400;color:var(--slate-2);padding-top:2px}
 /* 값은 굵기를 쓰지 않는다 — 700 → 500 → 400. 여섯 줄이 이어지면 굵기가 곧 무게가 된다.
    라벨과의 구분은 크기(13.5 → 14.5)와 색(--slate-2 → --ink)이 맡는다. */
-.ev-side__list dd{margin:0;font-size:14.5px;font-weight:400;color:var(--ink);word-break:keep-all}
+.ev-side__list dd{margin:0;font-size:14.5px;font-weight:400;color:var(--ink);word-break:keep-all;overflow-wrap:anywhere}
 .ev-side__cta{
   width:100%;justify-content:center;margin-top:20px;
   font-size:15.5px;padding:14px;text-decoration:none

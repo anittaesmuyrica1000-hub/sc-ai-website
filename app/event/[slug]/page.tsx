@@ -18,6 +18,11 @@ import { EVENT_JOBS, EVENT_STEPS, EVENT_VALUES, COMPANY_INTRO, FICTION_NOTICE } 
 import ShareButton from "@/components/ShareButton";
 import { buildPageMetadata } from "@/lib/pageSeo";
 
+/* 주제 키워드. 화면에 해시태그로 늘어놓지 않고 meta keywords 와 og:article:tag 로만 내보낸다 —
+   본문 끝의 해시태그 줄은 읽는 사람에게 주는 정보가 없고 지원 배너 앞을 가로막는다.
+   블로그 상세(app/blog/[id]/page.tsx)가 posts.tags 로 쓰는 방식과 같다. */
+const TAGS = ["AI면접", "모의채용", "취업준비", "마케팅직무", "개발직무", "대외활동"];
+
 export const revalidate = 120;
 
 export function generateStaticParams() {
@@ -35,12 +40,29 @@ export async function generateMetadata({
   const fallback: Metadata = {
     title: `${e.title} 참가자 모집`,
     description: e.excerpt,
+    keywords: TAGS,
     alternates: { canonical: `/event/${e.slug}` },
     openGraph: {
+      type: "article",
+      /* ⚠️ siteName·locale 을 여기에 다시 적는 이유 — Next 는 페이지에 openGraph 가 있으면
+         layout 의 openGraph 를 통째로 갈아끼운다. lib/pageSeo.ts 의 OG_DEFAULTS 가 받아 주지만
+         그건 page_seo 초안이 있을 때만이고(mergeSeo 는 seo 가 null 이면 fallback 을 그대로 반환),
+         이 경로는 초안이 없어 og:site_name·og:locale 이 통째로 빠져 있었다. */
+      siteName: "AI면접",
+      locale: "ko_KR",
       title: `${e.title} 참가자 모집`,
       description: e.excerpt,
       url: `/event/${e.slug}`,
       images: [{ url: "/og-image.png?v=3", width: 1200, height: 630 }],
+      tags: TAGS,
+    },
+    /* layout 의 twitter 는 홈 문구("AI 면접으로 검증된 인재만 만나세요")라 이 페이지를
+       X 에 공유하면 행사와 상관없는 카드가 떴다. 페이지 값으로 덮는다. */
+    twitter: {
+      card: "summary_large_image",
+      title: `${e.title} 참가자 모집`,
+      description: e.excerpt,
+      images: ["/og-image.png?v=3"],
     },
   };
   return buildPageMetadata(`/event/${e.slug}`, fallback);
@@ -167,33 +189,46 @@ function MockChallengeBody({ e, dday }: { e: EventItem; dday: string }) {
       {/* 혜택은 인재상 뒤, FAQ 앞에 둔다. 앞쪽(전형 바로 뒤)에 두면 혜택이 먼저 읽혀
           '쿠폰 받는 행사'로 보이고, 더 뒤로 밀면 지원 여부를 정할 때 보지 못한다. */}
       <h2>참가 혜택</h2>
+      {/* 대상이 셋이라 세 줄로 나눈다 — 수료증은 완료자 전원, 쿠폰은 그중 선착순 100명,
+          상장은 Finalist 3인. 전원과 선착순을 한 칸에 묶으면 같은 대상으로 읽힌다.
+          '지급' 열을 둔 이유 — 받는 시점과 경로를 표 밖 문장으로 빼면 표를 읽고도 다시 찾아야 한다.
+          ⚠️ 수료증은 Finalist 전용이 아니다. 출처는 05_시상물/상장-수료증-문구.md §2-A —
+             "1차 직무 AI 면접을 완료한 참가자 전원", PDF 이메일 발급. 고칠 때 그 문서와 함께 본다. */}
       <div className="post-table-wrap">
         <table className="post-table">
           <thead>
             <tr>
               <th>대상</th>
               <th>혜택</th>
+              <th>지급</th>
             </tr>
           </thead>
           <tbody>
             <tr>
+              <td>1차 직무 AI 면접 완료자 전원</td>
+              <td>슈퍼코더 주최 수료증 (PDF)</td>
+              <td>11월 13일 · 이메일</td>
+            </tr>
+            <tr>
               <td>1차 직무 AI 면접 완료 선착순 100명</td>
               <td>스타벅스 모바일 쿠폰 5,000원권</td>
+              <td>11월 13일 · 문자</td>
             </tr>
             <tr>
               <td>Finalist 3인</td>
-              <td>슈퍼코더 주최 상장·수료증, 2차 인재상 AI 면접 참여, 교통 실비 3만원</td>
+              <td>슈퍼코더 주최 상장, 2차 인재상 AI 면접 참여, 교통 실비 3만원</td>
+              <td>11월 20일 · 현장</td>
             </tr>
           </tbody>
         </table>
       </div>
-      <p>
-        Finalist는 마케팅 부문 1인, 개발 부문 1인, 전체 부문 1인으로 선발합니다. 상장은 이력서에 이렇게 적을 수
-        있습니다 — <strong>2026 슈퍼전자 AI 면접 챌린지 (주최 슈퍼코더) · 마케팅 부문 최우수</strong>.
-      </p>
       <ul className="post-list">
-        <li>쿠폰 선착순은 1차 직무 AI 면접을 끝까지 마친 시각을 기준으로 합니다.</li>
-        <li>쿠폰은 면접 종료 후 일괄 발송하며, 발송 예정일은 2026년 11월 13일입니다.</li>
+        <li>Finalist 3인은 마케팅 부문 1인, 개발 부문 1인, 전체 부문 1인으로 선발합니다.</li>
+        <li>
+          상장과 수료증은 이력서에 이렇게 적을 수 있습니다 —{" "}
+          <strong>2026 슈퍼전자 AI 면접 챌린지 (주최 슈퍼코더) · 마케팅 부문 최우수</strong>
+        </li>
+        <li>선착순은 1차 직무 AI 면접을 끝까지 마친 시각을 기준으로 합니다.</li>
       </ul>
 
       <h2>자주 묻는 질문</h2>
@@ -239,7 +274,6 @@ const BODIES: Record<string, (p: { e: EventItem; dday: string }) => React.ReactE
   "ai-mock-challenge-2026": MockChallengeBody,
 };
 
-const TAGS = ["AI면접", "모의채용", "취업준비", "마케팅직무", "개발직무", "대외활동"];
 
 export default async function EventDetailPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
@@ -335,14 +369,6 @@ export default async function EventDetailPage({ params }: { params: Promise<{ sl
             <Body e={e} dday={dday} />
           </div>
 
-          <ul className="post-tags" aria-label="주제 키워드">
-            {TAGS.map((t) => (
-              <li key={t} className="post-tag">
-                #{t}
-              </li>
-            ))}
-          </ul>
-
           <aside className="post-cta">
             <p className="post-cta__label">
               <i className="fa-solid fa-circle-check"></i> {e.title}
@@ -379,11 +405,7 @@ export default async function EventDetailPage({ params }: { params: Promise<{ sl
                 </dd>
               </div>
               <div>
-                <dt>
-                  1차 직무
-                  <br />
-                  AI 면접
-                </dt>
+                <dt>1차 직무 AI 면접</dt>
                 <dd>{withoutYear(e.interview)}</dd>
               </div>
               <div>
@@ -391,11 +413,7 @@ export default async function EventDetailPage({ params }: { params: Promise<{ sl
                 <dd>{withoutYear(e.announce)}</dd>
               </div>
               <div>
-                <dt>
-                  2차 인재상
-                  <br />
-                  AI 면접
-                </dt>
+                <dt>2차 인재상 AI 면접</dt>
                 <dd>{withoutYear(e.final)}</dd>
               </div>
               <div>
