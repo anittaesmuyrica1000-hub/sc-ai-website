@@ -139,6 +139,12 @@
 }
 .ev-detail .post-content .post-table tbody tr:nth-child(even){background:transparent}
 
+/* 표 아래 보조 설명 — 본문 17px·표 15px 보다 작은 14px 로 둬서 표가 먼저 읽히게 한다.
+   불릿 점은 post.css 가 top:13px 으로 17px/1.85 줄에 맞춰 둔 값이라, 줄 높이가
+   23.8px(14 × 1.7)로 줄면 점이 글자보다 아래로 내려간다. 함께 올린다. */
+.ev-detail .post-content ul.post-list.ev-notes{font-size:14px;line-height:1.7;gap:8px}
+.ev-detail .post-content ul.post-list.ev-notes li::before{top:9px;width:6px;height:6px}
+
 /* ── 섹션 간격 ────────────────────────────────────────
    행사 안내는 성격이 다른 블록(소개·공고·절차·인재상·혜택·FAQ·유의사항)이 잇달아
    나와서 블로그 글의 38px 리듬으로는 어디서 끊기는지 잘 보이지 않는다.
