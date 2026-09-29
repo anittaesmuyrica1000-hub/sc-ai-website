@@ -117,6 +117,13 @@ export default async function JobDetailPage({
             <p className="jd-intro">{j.intro}</p>
           </section>
 
+          <section className="jd-sec jd-team">
+            <h2>팀 소개</h2>
+            {j.teamIntro.map((para) => (
+              <p key={para}>{para}</p>
+            ))}
+          </section>
+
           <section className="jd-sec">
             <h2>주요업무</h2>
             <ul className="jd-list">
@@ -142,6 +149,8 @@ export default async function JobDetailPage({
               <li>전공, 학년, 졸업 시기 제한 없음</li>
               <li>두 직군 중 한 곳에만 지원할 수 있습니다</li>
             </ul>
+            {/* 목록은 '되는 조건', 이 문장은 '보지 않는 것'. 반도체 회사 공고라 물러서기 쉬운 자리에 둔다 */}
+            <p className="jd-note">{j.notFor}</p>
           </section>
 
           {other && (
