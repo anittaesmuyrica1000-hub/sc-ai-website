@@ -370,6 +370,7 @@
    밑줄은 쓰지 않는다 — 밑줄과 아이콘을 같이 두면 장식이 두 겹이 된다. */
 .share-btn--text{font-size:14px;font-weight:600;padding:0;gap:7px}
 .share-btn--text i{font-size:13px}
+.share-btn--text:hover{color:var(--blue-d)}
 .share-btn:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
 
 /* 복사 결과를 눈으로도 확인시킨다 — 복사는 화면에 아무 변화를 남기지 않는 동작이라
