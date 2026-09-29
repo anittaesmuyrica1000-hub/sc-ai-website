@@ -5,7 +5,7 @@ import { notFound } from "next/navigation";
 import "../../blog/[id]/post.css";
 import "../event.css";
 import { EVENTS, findEvent, statusOf, ddayLabel, STATUS_LABEL, type EventItem } from "@/lib/events";
-import { EVENT_JOBS, EVENT_STEPS, EVENT_VALUES } from "@/lib/eventApply";
+import { EVENT_JOBS, EVENT_STEPS, EVENT_VALUES, COMPANY_INTRO, FICTION_NOTICE } from "@/lib/eventApply";
 import ShareButton from "@/components/ShareButton";
 import { buildPageMetadata } from "@/lib/pageSeo";
 
@@ -46,40 +46,39 @@ export async function generateMetadata({
       2) 모델 직무의 설계 근거가 된 실존 기업명을 쓰지 않는다(slide 13).
       3) 가상기업 고지는 고정 문구다. 포스터·지원 폼·보도자료와 같은 문장을 쓴다(slide 4). */
 
+/* 자주 묻는 질문 — 7문에서 5문으로 줄였다.
+   뺀 것: "참가비가 있나요"(히어로·사이드 패널·공고 카드에 이미 세 번 나온다),
+         "전공·학년 제한"(반도체 문항에 합쳤다). */
 const FAQS = [
   [
     "슈퍼전자는 실제로 있는 회사인가요?",
-    "아닙니다. 슈퍼전자는 이 행사를 위해 만든 가상 기업입니다. 실제 채용 절차나 입사 자격과 관계가 없으며, 참가와 결과는 어떠한 기업의 채용에도 영향을 주지 않습니다.",
+    "아닙니다. 이 행사를 위해 만든 가상 기업입니다. 실제 채용 절차나 입사 자격과 관계가 없으며, 참가와 결과는 어떠한 기업의 채용에도 영향을 주지 않습니다.",
   ],
   [
     "반도체를 몰라도 지원할 수 있나요?",
-    "네. 반도체 지식은 묻지 않습니다. 면접의 상황 질문은 전공과 상관없이 답할 수 있게 만들었습니다. 회사를 반도체 기업으로 둔 것은 '이 제품을 누가 사는가'를 묻는 질문이 자연스럽게 나오기 때문입니다.",
+    "네. 반도체 지식은 묻지 않고 전공·학년·졸업 시기도 보지 않습니다. 어학 점수와 자격증, 수상 경력도 반영하지 않습니다. 면접의 상황 질문은 전공과 상관없이 답할 수 있게 만들었습니다.",
   ],
-  [
-    "전공이나 학년 제한이 있나요?",
-    "없습니다. 전공, 학년, 졸업 시기를 보지 않습니다. 어학 점수나 자격증, 수상 경력도 반영하지 않습니다.",
-  ],
-  ["참가비가 있나요?", "없습니다. 모든 전형은 무료로 진행됩니다."],
   [
     "AI 면접은 어떻게 진행되나요?",
-    "온라인으로 진행되며, 응시 기간 안에서 원하는 시간을 골라 응시할 수 있습니다. 자격증이나 스펙을 직접 묻는 대신 직무 역량에 연결된 본인의 경험을 질문하고, 답변에 따라 후속 질문이 이어집니다. 답변 시간에 제한은 없습니다.",
+    "온라인으로 진행하며, 응시 기간 안에서 원하는 시간을 골라 응시합니다. 자격증이나 스펙을 직접 묻는 대신 직무 역량에 연결된 본인의 경험을 질문하고, 답변에 따라 후속 질문이 이어집니다. 답변 시간에 제한은 없습니다.",
   ],
-  [
-    "두 직군에 모두 지원할 수 있나요?",
-    "한 직군만 선택해 지원할 수 있습니다. 지원서 제출 시 마케팅과 개발 중 하나를 고르시면 됩니다.",
-  ],
+  ["두 직군에 모두 지원할 수 있나요?", "한 직군만 선택해 지원할 수 있습니다."],
   [
     "오프라인 최종 면접에 꼭 참석해야 하나요?",
     "1차 AI 면접까지만 참여하셔도 괜찮습니다. 오프라인 최종 면접은 선발된 Finalist 3인을 대상으로 진행하며, 지원서에서 참석 가능 여부를 미리 확인합니다.",
   ],
 ];
 
+/* ⚠️ 이 페이지는 '행사 전체', 공고 상세(/jobs/[job])는 '직군 하나'를 맡는다.
+   직군별 하는 일·자격·우대사항은 공고 상세에만 둔다 — 두 곳에 같은 문장을 두면 반드시 어긋난다.
+   그래서 여기서 뺀 것: 모집 직군(931px), 모집 요강 표(586px).
+   모집 요강의 항목은 전부 다른 자리에 있다 — 일정·참가비·문의는 사이드 패널,
+   참가 대상·주최는 히어로 메타, 전형은 아래 전형 절차, 지원 자격은 공고 상세 자격요건. */
 function MockChallengeBody({ e, dday }: { e: EventItem; dday: string }) {
   return (
     <>
       {/* 공고 카드는 여기(상세)에만 둔다. 목록(/event)은 행사 배너만 보여주고,
           "어떤 직군을 뽑는지"는 들어와서 확인하는 구조다.
-          읽기 폭 안에서는 2열로 두면 제목이 접히고 태그가 넘쳐서 세로로 쌓는다.
           카드 자체가 지원 경로라 본문 중간에 CTA 버튼을 따로 두지 않는다. */}
       <div className="ev-jobs">
         <div className="ev-jobs__head">
@@ -118,105 +117,33 @@ function MockChallengeBody({ e, dday }: { e: EventItem; dday: string }) {
         <p className="ev-jobs__note">한 직군만 선택해 지원합니다. 참가비는 없고 전공·학년 제한도 없습니다.</p>
       </div>
 
-      <h2>어떤 행사인가요</h2>
+      {/* 제목은 전부 명사형으로 맞춘다(행사 소개 · 전형 절차 · 참가 혜택 …) */}
+      <h2>행사 소개</h2>
       <p>
-        실제 채용에서 AI 면접을 처음 만나는 경우가 많습니다. 화면 앞에 앉아 무엇을 어떻게 말해야 할지 모른 채로 첫
-        전형을 치르면, 답변 내용과 무관한 이유로 실력을 보이지 못하게 됩니다.
+        실제 채용에서 AI 면접을 처음 만나는 경우가 많습니다. 무엇을 어떻게 말해야 할지 모른 채로 첫 전형을 치르면,
+        답변 내용과 무관한 이유로 실력을 보이지 못하게 됩니다.
       </p>
       <p>
-        슈퍼코더는 취업 전에 AI 면접을 실전처럼 겪어 볼 수 있는 자리를 만들었습니다. 이 행사를 위해 만든 가상기업{" "}
-        <strong>슈퍼전자</strong>의 채용 전형을 지원서부터 최종 면접까지 그대로 진행합니다. 지원서를 내고, 온라인 AI
-        면접을 보고, 선발되면 오프라인 인재상 면접과 시상식에 참여합니다.
+        슈퍼코더는 취업 전에 AI 면접을 실전처럼 겪어 볼 자리를 만들었습니다. 이 행사를 위해 만든 가상기업{" "}
+        <strong>슈퍼전자</strong>의 채용 전형을 지원서부터 최종 면접까지 그대로 진행합니다.
       </p>
       <blockquote>결과는 어떠한 기업의 채용에도 영향을 주지 않습니다. 연습용으로 편하게 보셔도 됩니다.</blockquote>
 
       <h2>전형 절차</h2>
-      <div className="post-table-wrap">
-        <table className="post-table">
-          <thead>
-            <tr>
-              <th>단계</th>
-              <th>내용</th>
-              <th>일정</th>
-            </tr>
-          </thead>
-          <tbody>
-            {EVENT_STEPS.map((s) => (
-              <tr key={s[0]}>
-                <td>{s[0]}</td>
-                <td>{s[1]}</td>
-                <td>{s[2]}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+      <ol className="ev-steps">
+        {EVENT_STEPS.map(([name, desc, when]) => (
+          <li key={name}>
+            <div className="ev-steps__when">{when}</div>
+            <div>
+              <b>{name}</b>
+              <p>{desc}</p>
+            </div>
+          </li>
+        ))}
+      </ol>
 
-      <h2>가상기업 슈퍼전자</h2>
-      <p>
-        2018년에 설립한 반도체 기업입니다. 메모리 반도체와 이미지 센서를 만들어 스마트폰·자동차·데이터센터 고객사에
-        공급하고, 2026년 하반기에는 AI 서버용 고대역폭 메모리 신제품 양산을 준비하고 있습니다. 임직원 1,200명, 본사는
-        서울입니다.
-      </p>
-      <p className="post-src">
-        기업을 상대로 파는 회사라 &lsquo;고객이 누구인가&rsquo;를 묻는 질문이 자연스럽게 나옵니다. 다만 반도체 지식은
-        묻지 않습니다. 면접의 상황 질문은 전공과 상관없이 답할 수 있게 만들었습니다.
-      </p>
-
-      <h3>인재상</h3>
-      <p>2차 오프라인 면접은 아래 네 가지를 기준으로 진행합니다.</p>
-      <div className="post-table-wrap">
-        <table className="post-table">
-          <thead>
-            <tr>
-              <th>인재상</th>
-              <th>뜻</th>
-              <th>정의</th>
-            </tr>
-          </thead>
-          <tbody>
-            {EVENT_VALUES.map((v) => (
-              <tr key={v[0]}>
-                <td>
-                  <strong>{v[0]}</strong>
-                </td>
-                <td>{v[1]}</td>
-                <td>{v[2]}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-
-      <h2>모집 직군</h2>
-      <p>
-        두 직군 중 <strong>하나를 선택</strong>해 지원합니다. 두 직군 모두 전공·자격 요건이 없고, 다른 회사와 산업에도
-        거의 같은 직무가 있어 여기서 해 본 것이 실제 취업 준비로 이어집니다.
-      </p>
-
-      {EVENT_JOBS.map((j) => (
-        <div key={j.v}>
-          {/* 직군명만 쓴다. 소속 팀(j.team)은 공고 상세가 메타로 보여준다 —
-              여기서 "소프트웨어개발팀 · 소프트웨어 개발"처럼 같은 말을 두 번 쓰지 않도록.
-              평가 항목(evaluates)과 자격·전형은 공고 상세가 맡는다. 두 곳에 같은 문장을 두지 않는다. */}
-          <h3>{j.l}</h3>
-          <p className="post-src">{j.team}</p>
-          <p>{j.desc}</p>
-          <ul className="post-list">
-            {j.duties.map((d) => (
-              <li key={d}>{d}</li>
-            ))}
-          </ul>
-          <p>
-            <Link href={`/event/${e.slug}/jobs/${j.v}`}>{j.l} 공고 자세히 보기</Link>
-          </p>
-        </div>
-      ))}
-      <p className="post-src">
-        전공, 어학 점수, 자격증, 수상 경력은 보지 않습니다. 우대 사항도 없습니다. 해 본 경험을 묻고 답변으로
-        판단합니다.
-      </p>
-
+      {/* 혜택을 전형 바로 뒤로 올렸다. 쿠폰과 상장은 지원 여부를 정하는 재료인데
+          예전 자리(7번째)에서는 대부분 보지 못하고 나갔다. */}
       <h2>참가 혜택</h2>
       <div className="post-table-wrap">
         <table className="post-table">
@@ -239,95 +166,62 @@ function MockChallengeBody({ e, dday }: { e: EventItem; dday: string }) {
         </table>
       </div>
       <p>
-        Finalist는 마케팅 부문 1인, 개발 부문 1인, 전체 부문 1인으로 선발합니다. 상장은 이력서에 이렇게 적을 수 있습니다
-        — <strong>2026 슈퍼전자 AI 면접 챌린지 (주최 슈퍼코더) · 마케팅 부문 최우수</strong>.
+        Finalist는 마케팅 부문 1인, 개발 부문 1인, 전체 부문 1인으로 선발합니다. 상장은 이력서에 이렇게 적을 수
+        있습니다 — <strong>2026 슈퍼전자 AI 면접 챌린지 (주최 슈퍼코더) · 마케팅 부문 최우수</strong>.
       </p>
       <ul className="post-list">
         <li>쿠폰 선착순은 1차 AI 면접을 끝까지 마친 시각을 기준으로 합니다.</li>
-        <li>중복 지원, 허위 기재, 참가 대상 미충족 신청은 집계에서 제외하며 다음 순번으로 승계합니다.</li>
         <li>쿠폰은 면접 종료 후 일괄 발송하며, 발송 예정일은 2026년 11월 13일입니다.</li>
-        <li>지원서에 적어 주신 휴대폰 번호로 발송합니다. 번호 오기로 받지 못하신 경우 11월 27일까지 문의해 주세요.</li>
       </ul>
 
-      <h2>모집 요강</h2>
-      <div className="post-table-wrap">
-        <table className="post-table">
-          <tbody>
-            <tr>
-              <td>참가 대상</td>
-              <td>취업을 준비하고 있는 대학·대학원 재학생 및 졸업생 (학년·전공·졸업 시기 제한 없음)</td>
-            </tr>
-            <tr>
-              <td>모집 직군</td>
-              <td>제품마케팅, 소프트웨어 개발 (한 직군 선택)</td>
-            </tr>
-            <tr>
-              <td>지원 자격</td>
-              <td>어학 점수·자격증·수상 경력 미반영. 우대 사항 없음</td>
-            </tr>
-            <tr>
-              <td>모집 기간</td>
-              <td>
-                {e.applyFrom} ~ {e.applyTo}
-              </td>
-            </tr>
-            <tr>
-              <td>1차 AI 면접 (온라인)</td>
-              <td>{e.interview}</td>
-            </tr>
-            <tr>
-              <td>Finalist 발표</td>
-              <td>{e.announce} · 개별 안내</td>
-            </tr>
-            <tr>
-              <td>2차 인재상 면접 (오프라인)</td>
-              <td>{e.final}</td>
-            </tr>
-            <tr>
-              <td>참가비</td>
-              <td>무료</td>
-            </tr>
-            <tr>
-              <td>주최</td>
-              <td>슈퍼코더</td>
-            </tr>
-            <tr>
-              <td>문의</td>
-              <td>{e.contact}</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+      <h2>슈퍼전자와 인재상</h2>
+      <p>{COMPANY_INTRO}</p>
+      <p className="post-src">
+        기업을 상대로 파는 회사라 &lsquo;고객이 누구인가&rsquo;를 묻는 질문이 자연스럽게 나옵니다. 다만 반도체 지식은
+        묻지 않습니다. 2차 오프라인 면접은 아래 네 가지를 기준으로 진행합니다.
+      </p>
+      <ul className="ev-values">
+        {EVENT_VALUES.map(([en, ko, def]) => (
+          <li key={en}>
+            <b>{en}</b>
+            <span>{ko}</span>
+            <p>{def}</p>
+          </li>
+        ))}
+      </ul>
 
       <h2>자주 묻는 질문</h2>
-      {FAQS.map(([q, a]) => (
-        <div key={q}>
-          <h3>{q}</h3>
-          <p>{a}</p>
-        </div>
-      ))}
+      <div className="ev-faq">
+        {FAQS.map(([q, a]) => (
+          <details key={q}>
+            <summary>{q}</summary>
+            <p>{a}</p>
+          </details>
+        ))}
+      </div>
 
       <hr className="post-hr" />
 
       <h2 id="apply-notice">유의사항</h2>
       <ul className="post-list">
         <li>
-          <strong>슈퍼전자는 본 행사를 위한 가상 기업입니다.</strong> 실제 채용 절차나 입사 자격과 관계가 없으며, 본
-          행사 참가와 결과는 어떠한 기업의 채용에도 영향을 주지 않습니다.
+          <strong>{FICTION_NOTICE}</strong> 본 행사는 슈퍼코더가 주최합니다.
         </li>
         <li>
           지원서에 적어 주신 정보는 참가 자격 확인, 행사 안내와 면접 링크 발송, 참가 혜택 발송, Finalist 선발과 안내,
-          행사 운영 통계 작성에만 사용합니다.
+          행사 운영 통계 작성에만 사용하며 2027년 2월 28일까지 전량 파기합니다.
         </li>
-        <li>수집한 정보는 행사 종료 후 3개월까지 보관하며 2027년 2월 28일까지 전량 파기합니다.</li>
         <li>
           1차 AI 면접의 응답은 면접 결과 검토와 행사 결과 집계에 사용합니다. 개인을 식별할 수 없도록 처리한 뒤
-          보도자료·블로그 등 콘텐츠에 활용하는 것은 지원서에서 별도로 동의를 받으며, 동의하지 않으셔도 참가에는 영향이
-          없습니다.
+          콘텐츠에 활용하는 것은 지원서에서 별도로 동의를 받으며, 동의하지 않으셔도 참가에는 영향이 없습니다.
         </li>
         <li>
           오프라인 최종 면접의 촬영·홍보 활용은 Finalist 확정 후 별도로 동의를 받습니다. 동의하지 않으셔도 최종
           면접에는 참여하실 수 있습니다.
+        </li>
+        <li>
+          중복 지원, 허위 기재, 참가 대상 미충족 신청은 집계에서 제외하며 다음 순번으로 승계합니다. 쿠폰은 지원서의
+          휴대폰 번호로 발송하며, 번호 오기로 받지 못하신 경우 11월 27일까지 문의해 주세요.
         </li>
       </ul>
     </>
@@ -461,7 +355,8 @@ export default async function EventDetailPage({ params }: { params: Promise<{ sl
           </aside>
         </div>
 
-        {/* 스크롤을 따라오는 지원 패널 — 일정과 지원 버튼을 항상 손 닿는 곳에 둔다 */}
+        {/* 스크롤을 따라오는 지원 패널 — 일정과 지원 버튼을 항상 손 닿는 곳에 둔다.
+            1080 아래에서는 통째로 사라지고 아래 .ev-bar 가 지원 버튼을 대신 받는다. */}
         <aside className="ev-detail__side">
           <div className="ev-side">
             <div className="ev-side__head">
@@ -504,6 +399,22 @@ export default async function EventDetailPage({ params }: { params: Promise<{ sl
           </div>
         </aside>
       </article>
+
+      {/* 좁은 화면 하단 고정 바 — 오른쪽 패널이 사라진 자리를 받는다.
+          공고 상세(.jd-bar)와 같은 구조·높이로 둬서 두 페이지의 손 위치가 같다. */}
+      <div className="ev-bar">
+        <div className="ev-bar__info">
+          <b>{dday}</b>
+          <span>{STATUS_LABEL[status]} · 참가비 무료</span>
+        </div>
+        {status === "closed" ? (
+          <span className="ev-bar__off">접수 마감</span>
+        ) : (
+          <Link href={e.applyUrl} className="btn btn-blue">
+            지원하기 <i className="fa-solid fa-arrow-right"></i>
+          </Link>
+        )}
+      </div>
     </>
   );
 }

@@ -178,10 +178,10 @@ export default async function JobDetailPage({
 
           <section className="jd-sec">
             <h2>채용절차</h2>
-            <ol className="jd-steps">
+            <ol className="ev-steps">
               {EVENT_STEPS.map(([name, desc, when]) => (
                 <li key={name}>
-                  <div className="jd-steps__when">{when}</div>
+                  <div className="ev-steps__when">{when}</div>
                   <div>
                     <b>{name}</b>
                     <p>{desc}</p>
@@ -200,7 +200,7 @@ export default async function JobDetailPage({
             <p>{COMPANY_INTRO}</p>
             <h3>인재상</h3>
             <p className="jd-note">2차 오프라인 면접은 아래 네 가지를 기준으로 진행합니다.</p>
-            <ul className="jd-values">
+            <ul className="ev-values">
               {EVENT_VALUES.map(([en, ko, def]) => (
                 <li key={en}>
                   <b>{en}</b>
@@ -210,7 +210,7 @@ export default async function JobDetailPage({
               ))}
             </ul>
             <p className="jd-note">
-              <Link href={`/event/${e.slug}`}>행사 안내에서 인재상 정의와 FAQ 전문 보기</Link>
+              <Link href={`/event/${e.slug}`}>행사 안내에서 인재상 정의와 FAQ 보기</Link>
             </p>
           </section>
 
