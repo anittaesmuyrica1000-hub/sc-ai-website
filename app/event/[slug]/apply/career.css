@@ -17,7 +17,7 @@
   padding: 0 20px;
 }
 
-/* ── 상단 바 — 가상기업 워드마크 + 행사명·주최 ───────────── */
+/* ── 상단 바 — 가상기업 워드마크 ─────────────────────────── */
 .career-top {
   display: flex;
   align-items: center;
@@ -33,22 +33,7 @@
   gap: 11px;
   min-width: 0;
 }
-/* 행사명·주최 — 슈퍼전자 워드마크보다 작고 흐리게. 여기서 눈에 띄면 몰입이 깨지고,
-   없으면 주최가 누구인지 알 수 없다. 읽으려 하면 읽히는 크기가 맞다. */
-.career-host {
-  display: flex;
-  flex-direction: column;
-  /* 두 줄 다 왼쪽 기준. 오른쪽 정렬이면 짧은 '주최 슈퍼코더'가 오른쪽 끝에 붙어
-     왼쪽 변이 들쭉날쭉해진다. 블록 자체는 상단 바 오른쪽에 그대로 있다. */
-  align-items: flex-start;
-  gap: 2px;
-  text-align: left;
-  text-decoration: none;
-  flex-shrink: 0;
-}
-.career-host b { font-size: 13.5px; font-weight: 600; color: var(--slate); }
-.career-host span { font-size: 12.5px; font-weight: 500; color: var(--slate-2); }
-.career-host:hover b { color: var(--blue-d); }
+
 .career-brand b {
   font-size: 22px;
   font-weight: 800;
@@ -61,37 +46,11 @@
   color: var(--slate-2);
   letter-spacing: 0.02em;
 }
-/* ── 가상기업 고지 — 고정 문구. 화면 상단과 폼 양쪽에 둔다 ──
-   기획안 slide 4: 포스터 하단·이벤트 페이지·지원 폼 첫 화면에 같은 문장으로 넣는다. */
-.career-notice {
-  display: flex;
-  gap: 11px;
-  align-items: flex-start;
-  background: var(--soft);
-  border: 1px solid var(--tint);
-  border-radius: 12px;
-  padding: 14px 16px;
-  margin: 22px 0 0;
-  font-size: 15px;
-  line-height: 1.65;
-  color: var(--slate);
-  word-break: keep-all;
-}
-.career-notice i {
-  color: var(--blue);
-  font-size: 15px;
-  margin-top: 2px;
-  flex-shrink: 0;
-}
-.career-notice b { color: var(--ink); font-weight: 700; }
-
-/* ── 배너 2컷 ─────────────────────────────────────────────
+/* ── 배너 ─────────────────────────────────────────────────
    이미지 없이 CSS 그라데이션으로 만든다 — 10/6 OPEN 전까지 디자인 외주를 기다리지 않아도 되고,
-   이미지가 나오면 .career-banner 에 background-image 만 덮으면 된다. */
+   이미지가 나오면 .career-banner 에 background-image 만 덮으면 된다.
+   한 컷이라 폭을 다 쓴다. 장식 원도 그만큼 키워 빈 오른쪽을 받는다. */
 .career-banners {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 16px;
   margin-top: 26px;
 }
 .career-banner {
@@ -108,24 +67,18 @@
   background: linear-gradient(135deg, #1B3B8F 0%, var(--blue) 62%, var(--blue-2) 100%);
   color: #fff;
 }
-.career-banner--sub {
-  background: var(--soft);
-  border: 1px solid var(--tint);
-  color: var(--ink);
-}
-/* 배경 장식 원 — 두 배너 모두 오른쪽 아래에 하나씩 */
+/* 배경 장식 원 — 오른쪽 아래 */
 .career-banner::after {
   content: "";
   position: absolute;
-  right: -46px;
-  bottom: -64px;
-  width: 190px;
-  height: 190px;
+  right: -70px;
+  bottom: -110px;
+  width: 300px;
+  height: 300px;
   border-radius: 50%;
   background: rgba(255, 255, 255, 0.11);
   pointer-events: none;
 }
-.career-banner--sub::after { background: rgba(51, 106, 255, 0.07); }
 
 .career-banner .eyebrow-s {
   font-size: 12px;
@@ -398,7 +351,6 @@
 .ev-next ul { list-style: none; display: grid; gap: 4px; }
 
 @media (max-width: 860px) {
-  .career-banners { grid-template-columns: 1fr; }
   .career-form { max-width: 560px; }
 }
 @media (max-width: 560px) {

@@ -10,7 +10,7 @@ import {
   APPLICANT_TYPES, FINAL_ATTEND_OPTIONS,
   EV_HOW_FOUND_OPTIONS, EV_HOW_FOUND_ETC,
   eventEmailError, EVENT_EMAIL_ERROR_MSG,
-  isValidName, isValidPhone, FICTION_NOTICE,
+  isValidName, isValidPhone,
 } from "@/lib/eventApply";
 
 /* 가상기업 슈퍼전자의 채용공고 화면.
@@ -61,14 +61,6 @@ export default function CareerApply({ event, status }: { event: EventItem; statu
             <b>슈퍼전자</b>
             <span>SUPER ELECTRONICS · 채용</span>
           </div>
-          {/* 행사명·주최를 워드마크 반대편에 둔다. 이 줄이 없으면 화면 전체가 슈퍼전자
-              브랜드라 '슈퍼코더가 슈퍼전자 채용을 대행한다'로 읽힌다 — 행사명에 가상기업이
-              들어가는 이상 대외물마다 주최 표기가 따라붙어야 한다.
-              링크로 둬서 행사 안내로 되돌아가는 길도 겸한다(상단 '행사 안내로 돌아가기'를 대신한다). */}
-          <Link href={`/event/${event.slug}`} className="career-host">
-            <b>{event.title}</b>
-            <span>주최 슈퍼코더</span>
-          </Link>
         </div>
 
         {job ? (
@@ -89,24 +81,6 @@ export default function CareerApply({ event, status }: { event: EventItem; statu
                   접수 {event.applyFrom} ~ {event.applyTo}
                 </p>
               </div>
-              <div className="career-banner career-banner--sub">
-                <div>
-                  <div className="eyebrow-s">전형 안내</div>
-                  <h2>
-                    1차 전형은
-                    <br />
-                    온라인 AI 면접으로
-                  </h2>
-                </div>
-                <p>전공·학년·졸업 시기 제한 없음 · 어학 점수·자격증·수상 경력 미반영</p>
-              </div>
-            </div>
-
-            <div className="career-notice">
-              <i className="fa-solid fa-circle-info"></i>
-              <span>
-                <b>안내</b> — {FICTION_NOTICE}
-              </span>
             </div>
 
             <div className="career-listhead">
