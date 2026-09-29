@@ -78,8 +78,14 @@
 }
 .ev-hero__inner{
   position:relative;max-width:1180px;margin:0 auto;
-  padding:clamp(40px,4.4vw,60px) 24px clamp(34px,3.6vw,48px)
+  padding:clamp(40px,4.4vw,60px) 24px clamp(34px,3.6vw,48px);
+  /* 배경 이미지가 들어갈 자리를 확보한다. 글이 짧아도 이 높이는 유지된다.
+     ⚠️ 높이를 바꾸려면 이 값과 아래 모바일 값만 고치면 된다(1440 기준 460px). */
+  min-height:460px;display:flex;flex-direction:column
 }
+/* 뒤로가기·공유 줄은 위에, 제목 블록은 아래에 붙인다 —
+   남는 공간이 가운데로 가야 배경 이미지가 보일 자리가 생긴다 */
+.ev-hero__body{margin-top:auto}
 .ev-hero__back{
   display:inline-flex;align-items:center;gap:7px;margin-bottom:24px;
   font-size:14px;font-weight:700;color:rgba(255,255,255,.88);text-decoration:none
@@ -142,7 +148,7 @@
   .ev-side{padding:22px 20px}
 }
 @media(max-width:560px){
-  .ev-hero__inner{padding-left:16px;padding-right:16px}
+  .ev-hero__inner{padding-left:16px;padding-right:16px;min-height:380px}
   .ev-detail{padding-left:16px;padding-right:16px}
   .ev-side__list>div{grid-template-columns:78px minmax(0,1fr);gap:10px}
 }
@@ -286,3 +292,29 @@
 .ev-hero .share-btn{color:rgba(255,255,255,.9)}
 .ev-hero .share-btn--icon:hover{background:rgba(255,255,255,.16);color:#fff}
 .ev-hero .share-btn:focus-visible{outline-color:#fff}
+
+/* ── 히어로 배경 이미지 ──────────────────────────────────
+   lib/events.ts 의 cover 가 있을 때만 붙는다. 없으면 파란 그라데이션 그대로.
+   이미지 위에 흰 글자가 얹히므로 왼쪽을 짙게 덮는 그라데이션을 한 겹 깐다 —
+   사진에 따라 제목이 읽히지 않는 일을 막는 건 이 레이어다. 사진 자체를 밝게 받아도 된다.
+   이미지 크기: 데스크톱 2560×920, 모바일 1080×760 (표시 크기의 2배). */
+.ev-hero--img{
+  background-image:
+    linear-gradient(90deg,rgba(11,26,66,.94) 0%,rgba(11,26,66,.82) 42%,rgba(11,26,66,.42) 100%),
+    var(--ev-hero-img);
+  background-size:cover;background-position:center right;background-repeat:no-repeat
+}
+/* 장식 원은 사진과 겹치면 얼룩처럼 보인다 */
+.ev-hero--img::after{display:none}
+@media(max-width:768px){
+  .ev-hero--img{
+    background-image:
+      linear-gradient(180deg,rgba(11,26,66,.78) 0%,rgba(11,26,66,.9) 58%,rgba(11,26,66,.96) 100%),
+      var(--ev-hero-img-m);
+    background-position:center top
+  }
+}
+/* 사진이 밝은 쪽에 걸리면 흰 아이콘이 사라진다 — 이미지가 있을 때만 옅은 막을 깐다 */
+.ev-hero--img .share-btn--icon{background:rgba(9,20,52,.42)}
+.ev-hero--img .share-btn--icon:hover{background:rgba(9,20,52,.66)}
+.ev-hero--img .ev-hero__back{text-shadow:0 1px 6px rgba(9,20,52,.55)}

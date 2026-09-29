@@ -23,8 +23,17 @@ export type EventItem = {
   announce: string;
   final: string;
   contact: string;
-  /** 커버 이미지가 없으면 블로그와 같은 그라데이션 플레이스홀더를 쓴다 */
+  /**
+   * 히어로 배경 이미지. 없으면 파란 그라데이션을 그대로 쓴다.
+   * 데스크톱 2560 × 920 (표시 1280×460 @2x), WebP 우선·400KB 이하.
+   * 글자가 왼쪽에 얹히므로 이미지의 주요 요소는 오른쪽에 두고, 이미지 안에 글자를 넣지 않는다.
+   */
   cover?: string;
+  /**
+   * 모바일용 세로 비율 이미지. 없으면 cover 를 그대로 쓴다(좌우가 크게 잘린다).
+   * 1080 × 760 (표시 540×380 @2x), 250KB 이하.
+   */
+  coverMobile?: string;
   /** 참가 신청 경로. 자체 폼은 /event/<slug>/apply (app/event/[slug]/apply) */
   applyUrl: string;
 };

@@ -383,7 +383,19 @@ export default async function EventDetailPage({ params }: { params: Promise<{ sl
       {/* ⚠️ header 태그로 쓰면 안 된다 — globals.css 의 GNB 규칙이 태그 선택자(header, header:hover)라
           position:sticky 와 hover 배경(흰색)까지 그대로 먹는다. 마우스를 올리면 흰 배경이 덮여
           흰 글씨가 통째로 사라졌다(2026-09-28). */}
-      <section className="ev-hero">
+      <section
+        className={`ev-hero${e.cover ? " ev-hero--img" : ""}`}
+        /* 배경 이미지는 CSS 변수로 넘긴다 — 미디어쿼리에서 모바일 이미지로 갈아끼우려면
+           background-image 를 인라인으로 박으면 안 된다(인라인이 항상 이긴다). */
+        style={
+          e.cover
+            ? ({
+                "--ev-hero-img": `url(${e.cover})`,
+                "--ev-hero-img-m": `url(${e.coverMobile || e.cover})`,
+              } as React.CSSProperties)
+            : undefined
+        }
+      >
         <div className="ev-hero__inner">
           {/* 행사가 한 건뿐이면 /event 가 이 페이지로 되돌려 보내므로(목록 건너뛰기) 링크를 숨긴다 —
               누르면 제자리로 돌아오는 링크가 된다. 두 건 이상이면 자동으로 다시 나온다. */}
@@ -403,13 +415,15 @@ export default async function EventDetailPage({ params }: { params: Promise<{ sl
               label="이 행사 링크 공유하기"
             />
           </div>
-          <span className="ev-hero__status">{STATUS_LABEL[status]}</span>
-          <h1 className="ev-hero__title">{e.title}</h1>
-          <p className="ev-hero__excerpt">{e.excerpt}</p>
-          <div className="ev-hero__meta">
-            <span>주최 슈퍼코더</span>
-            <span>대학·대학원 재학생 및 졸업생</span>
-            <span>참가비 무료</span>
+          <div className="ev-hero__body">
+            <span className="ev-hero__status">{STATUS_LABEL[status]}</span>
+            <h1 className="ev-hero__title">{e.title}</h1>
+            <p className="ev-hero__excerpt">{e.excerpt}</p>
+            <div className="ev-hero__meta">
+              <span>주최 슈퍼코더</span>
+              <span>대학·대학원 재학생 및 졸업생</span>
+              <span>참가비 무료</span>
+            </div>
           </div>
         </div>
       </section>
