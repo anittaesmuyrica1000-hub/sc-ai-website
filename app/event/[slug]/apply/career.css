@@ -11,13 +11,17 @@
   padding: 40px 0 96px;
   min-height: calc(100vh - 64px);
 }
-/* 지원서 단계 — 바탕은 흰색 그대로 두고, 카드를 그림자로 띄워 경계를 만든다.
-   카드 기본값(#FBFCFD)과 페이지(#fff)가 둘 다 흰색에 가까워 어디까지가 입력 영역인지
-   보이지 않던 문제를, 배경색이 아니라 높이로 푼다.
-   그림자 값은 지원 패널(.ev-side)과 같은 계열이되 면적이 큰 카드라 한 단계 깊게 준다. */
-.career--form .apply-card {
-  background: #fff;
-  box-shadow: 0 18px 44px -28px rgba(20, 40, 90, 0.4);
+/* 지원서 단계 — 폼을 카드로 묶지 않는다. 이 화면에 있는 것이 폼뿐이라 테두리가
+   구분할 대상이 없고, 상자 안쪽 여백(40px)만큼 글이 페이지 왼쪽 기준선에서 밀려난다.
+   상자를 벗기고 워드마크와 같은 기준선에 세운다.
+   ⚠️ :not(.apply-done) — 제출 완료 화면은 가운데 정렬 카드가 맞다. 거기까지 벗기면
+      체크 아이콘과 문구가 허공에 뜬다. */
+.career--form .apply-card:not(.apply-done) {
+  background: none;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  padding: 0;
 }
 .career-wrap {
   max-width: 1000px;
@@ -287,10 +291,11 @@
 /* ── 지원서 단계 ──────────────────────────────────────────
    지원서 카드(.apply-card 재사용) 한 장만 둔다. 공고 요약을 옆에 세워 두면
    작성 중에 읽을 것이 생기고, 그 내용은 이미 공고 상세(/jobs/[job])에 있다.
-   680px 은 입력 칸이 지나치게 늘어나지 않는 폭 — .career-wrap(1000px) 안에서 가운데로 모은다. */
+   680px 은 입력 칸이 지나치게 늘어나지 않는 폭. 가운데가 아니라 왼쪽에 붙여
+   상단 워드마크와 같은 기준선에서 시작하게 한다. */
 .career-form {
   max-width: 680px;
-  margin: 30px auto 0;
+  margin: 30px 0 0;
 }
 /* 카드 제목이 이 화면의 h1 이다 — 브라우저 기본 위 여백만 지운다 */
 .career .apply-card h1.ct { margin-top: 0; }
