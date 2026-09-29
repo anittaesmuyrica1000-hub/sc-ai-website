@@ -11,6 +11,12 @@
   padding: 40px 0 96px;
   min-height: calc(100vh - 64px);
 }
+/* 지원서 단계 — 바탕은 #3A6FFF 를 10% 로 깔고 카드는 흰색으로 띄운다.
+   둘 다 흰색에 가까우면 카드가 배경에 묻혀 어디까지가 입력 영역인지 보이지 않는다.
+   공고 목록 화면(.career 만)은 흰 바탕 그대로다 — .career-job:hover 가 --soft 배경을
+   쓰는데 페이지를 물들이면 호버가 페이지보다 밝아져 뒤집힌다. */
+.career--form { background: rgba(58, 111, 255, 0.1); }
+.career--form .apply-card { background: #fff; }
 .career-wrap {
   max-width: 1000px;
   margin: 0 auto;
@@ -32,7 +38,10 @@
   align-items: baseline;
   gap: 11px;
   min-width: 0;
+  text-decoration: none;
+  transition: 0.15s;
 }
+.career-brand:hover b { color: var(--blue-d); }
 
 .career-brand b {
   font-size: 22px;
@@ -53,13 +62,15 @@
 .career-banners {
   margin-top: 26px;
 }
+/* justify-content 를 space-between 으로 두면 제목이 한 줄이 된 지금 접수 일자가
+   배너 맨 아래로 떨어져 제목과 따로 논다. 위에서부터 쌓고 간격은 p 가 직접 잡는다. */
 .career-banner {
   border-radius: var(--r);
   padding: 34px 30px 30px;
   min-height: 188px;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: flex-start;
   position: relative;
   overflow: hidden;
 }

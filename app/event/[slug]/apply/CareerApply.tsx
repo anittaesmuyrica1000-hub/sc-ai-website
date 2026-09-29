@@ -63,13 +63,16 @@ export default function CareerApply({ event, status }: { event: EventItem; statu
   const jobs = EVENT_JOBS.filter((j) => filter === "all" || j.v === filter);
 
   return (
-    <section className="career">
+    <section className={`career${job ? " career--form" : ""}`}>
       <div className="career-wrap">
         <div className="career-top">
-          <div className="career-brand">
+          {/* 워드마크는 실제 채용사이트처럼 홈(공고 목록)으로 돌아가는 링크다.
+              지원서 단계(?job=…)에서 누르면 목록으로 되돌아온다 — setJob(null) 을 함께 부르는
+              이유는 같은 라우트의 쿼리만 바뀌어서 컴포넌트가 다시 마운트되지 않을 수 있기 때문이다. */}
+          <Link href={`/event/${event.slug}/apply`} className="career-brand" onClick={() => setJob(null)}>
             <b>슈퍼전자</b>
             <span>SUPER ELECTRONICS · 채용</span>
-          </div>
+          </Link>
         </div>
 
         {job ? (
