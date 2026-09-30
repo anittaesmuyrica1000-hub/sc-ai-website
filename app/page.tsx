@@ -21,6 +21,7 @@ export const revalidate = 120;
 // 로고별 시각 크기 보정 — 기준은 NEXON. 보정값 산출 근거는 app/landing.css의 .logo-* 주석 참고
 const LOGOS: { src: string; alt: string; className?: string }[] = [
   { src: "/logos/nexon.svg", alt: "NEXON" },
+  { src: "/logos/hyundai-autoever.svg", alt: "Hyundai AutoEver", className: "logo-autoever" },
   { src: "/logos/woongjin.webp", alt: "Woongjin", className: "logo-woongjin" },
   { src: "/logos/skonec.webp", alt: "SKONEC entertainment", className: "logo-skonec" },
   { src: "/logos/markany.webp", alt: "MarkAny", className: "logo-markany" },

@@ -22,8 +22,9 @@
        웅진     잉크 0.789 · 글자 0.148 — 장식이 퍼져 글자가 작다   → 1.745
        SKONEC   잉크 0.693 · 글자 0.386                          → 1.153
        MarkAny  잉크 0.654 · 글자 0.436 — 여백이 많아 잉크가 작다  → 1.117
+       AutoEver 잉크 0.972 · 글자 0.512 — 여백 없이 잘라낸 SVG라 작게 → 0.846
      쓰는 쪽은 마퀴 트랙에 --logo-h(=NEXON 높이)만 정하면 나머지가 따라온다. */
-  --logo-woongjin:1.745; --logo-skonec:1.153; --logo-markany:1.117;
+  --logo-woongjin:1.745; --logo-skonec:1.153; --logo-markany:1.117; --logo-autoever:.846;
 }
 
 /* ===== Base ===== */
