@@ -256,7 +256,7 @@ export const SEO_PAGES: { path: string; label: string }[] = [
   { path: "/brochure", label: "서비스소개서" },
   { path: "/blog", label: "블로그 목록" },
   { path: "/event", label: "이벤트 목록" },
-  { path: "/event/ai-mock-challenge-2026", label: "이벤트 · 2026 슈퍼전자 AI 면접 챌린지" },
+  { path: "/event/ai-mock-challenge-2026", label: "이벤트 · 2026 슈퍼닉스 AI 면접 챌린지" },
   { path: "/privacy", label: "개인정보처리방침" },
   { path: "/terms", label: "서비스 이용약관(기업)" },
   { path: "/terms-applicant", label: "지원자용 이용약관" },

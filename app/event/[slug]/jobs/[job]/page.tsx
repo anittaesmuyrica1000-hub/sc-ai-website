@@ -7,7 +7,7 @@ import { EVENTS, findEvent, statusOf, ddayLabel, withoutYear, applyRange } from 
 import { EVENT_JOBS, FICTION_NOTICE, JOB_DETAIL_EVENT, findJob } from "@/lib/eventApply";
 import { buildPageMetadata } from "@/lib/pageSeo";
 
-/* 가상기업 슈퍼전자의 채용공고 상세.
+/* 가상기업 슈퍼닉스의 채용공고 상세.
    공고 목록(/apply) → 이 화면 → 지원서(/apply?job=) 순서다. 실제 채용 사이트가 그렇고,
    지원자가 겪는 것이 '이벤트 신청'이 아니라 '채용 지원'이어야 행사의 전제가 산다.
 
@@ -39,9 +39,9 @@ export async function generateMetadata({
   if (!e || !j) return { title: "공고를 찾을 수 없습니다" };
 
   const title = `${j.l} 신입사원 모집 · ${e.title}`;
-  // ⚠️ 카톡 공유 카드에 "슈퍼전자 채용"만 보이면 실제 채용으로 오인된다.
+  // ⚠️ 카톡 공유 카드에 "슈퍼닉스 채용"만 보이면 실제 채용으로 오인된다.
   //    제목과 설명 양쪽에 행사명과 주최 표기를 함께 둔다.
-  const description = `가상기업 슈퍼전자의 채용 전형을 지원서부터 2차 면접까지. 참가비 무료, 전공·학년 제한 없음. ${e.applyTo}까지 접수. 주최 슈퍼코더`;
+  const description = `가상기업 슈퍼닉스의 채용 전형을 지원서부터 2차 면접까지. 참가비 무료, 전공·학년 제한 없음. ${e.applyTo}까지 접수. 주최 슈퍼코더`;
   const url = `/event/${e.slug}/jobs/${j.v}`;
   const fallback: Metadata = {
     title,
@@ -99,13 +99,13 @@ export default async function JobDetailPage({
           <p className="jd-mock">
             <i className="fa-solid fa-circle-info" aria-hidden="true"></i>
             <span>
-              이 공고는 모의채용 행사 <Link href={`/event/${e.slug}`}>{e.title}</Link>의 가상 공고입니다. 슈퍼전자는 실제
+              이 공고는 모의채용 행사 <Link href={`/event/${e.slug}`}>{e.title}</Link>의 가상 공고입니다. 슈퍼닉스는 실제
               회사가 아닙니다.
             </span>
           </p>
 
           <h1 className="jd-title">{j.l} 신입사원 모집</h1>
-          <p className="jd-org">슈퍼전자</p>
+          <p className="jd-org">슈퍼닉스</p>
 
           <div className="jd-meta">
             <span className="ev-tag ev-tag--dday">{dday}</span>

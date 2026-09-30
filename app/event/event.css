@@ -86,6 +86,10 @@
 /* 뒤로가기·공유 줄은 위에, 제목 블록은 아래에 붙인다 —
    남는 공간이 가운데로 가야 배경 이미지가 보일 자리가 생긴다 */
 .ev-hero__body{margin-top:auto}
+/* 가상기업 로고(흰색 반전형). 높이만 정하고 폭은 비율대로 둔다.
+   margin-bottom 은 제목 블록이 길어져 위로 차오를 때 로고와 붙지 않게 하는 최소 간격이다. */
+.ev-hero__brand{margin-bottom:28px;line-height:0}
+.ev-hero__brand img{display:block;height:30px;width:auto}
 .ev-hero__back{
   display:inline-flex;align-items:center;gap:7px;margin-bottom:24px;
   font-size:14px;font-weight:700;color:rgba(255,255,255,.88);text-decoration:none
@@ -249,6 +253,8 @@
 }
 @media(max-width:560px){
   .ev-hero__inner{padding-left:16px;padding-right:16px;min-height:380px}
+  .ev-hero__brand{margin-bottom:22px}
+  .ev-hero__brand img{height:24px}
   .ev-detail{padding-left:16px;padding-right:16px}
   .ev-bar{padding-left:14px;padding-right:14px;gap:10px}
   .ev-bar .btn{padding:12px 18px}

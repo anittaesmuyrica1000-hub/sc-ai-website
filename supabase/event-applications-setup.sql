@@ -1,6 +1,6 @@
 -- ============================================================
 -- 이벤트 참가 신청(event_applications)
--- 2026 슈퍼전자 AI 면접 챌린지 — /event/ai-mock-challenge-2026/apply
+-- 2026 슈퍼닉스 AI 면접 챌린지 — /event/ai-mock-challenge-2026/apply
 -- Supabase 대시보드 → SQL Editor 에 붙여넣고 1회 실행하세요.
 -- (로컬엔 DB 접속정보가 없어 DDL 직접 적용이 안 됩니다.)
 --
@@ -28,7 +28,7 @@ create table if not exists public.event_applications (
 
   -- 동의 (지원 폼에서 받은 값을 그대로 보존 — 분쟁 시 근거가 된다)
   consent_privacy   boolean not null default false,  -- [필수] 개인정보 수집·이용
-  consent_fiction   boolean not null default false,  -- [필수] 슈퍼전자가 가상기업임을 확인
+  consent_fiction   boolean not null default false,  -- [필수] 슈퍼닉스가 가상기업임을 확인
   consent_content   boolean not null default false,  -- [선택] 응답의 비식별 콘텐츠 활용
 
   -- 운영

@@ -40,6 +40,12 @@ export type EventItem = {
    * 1080 × 760 (표시 540×380 @2x), 250KB 이하.
    */
   coverMobile?: string;
+  /**
+   * 히어로 왼쪽 위에 얹는 가상기업 로고. 없으면 아무것도 그리지 않는다.
+   * 짙은 배경 위에 놓이므로 흰색 반전형을 쓴다. width·height 는 원본 픽셀 —
+   * 표시 높이는 CSS(.ev-hero__brand img)가 정하고, 이 값은 비율을 미리 잡아 밀림을 막는 데만 쓴다.
+   */
+  brandLogo?: { src: string; alt: string; width: number; height: number };
   /** 참가 신청 경로. 자체 폼은 /event/<slug>/apply (app/event/[slug]/apply) */
   applyUrl: string;
 };
@@ -47,12 +53,12 @@ export type EventItem = {
 export const EVENTS: EventItem[] = [
   {
     slug: "ai-mock-challenge-2026",
-    // 행사명은 기획안(2026-슈퍼전자-AI면접챌린지-기획안.pptx) 표기를 그대로 쓴다.
+    // 행사명은 기획안(2026-슈퍼닉스-AI면접챌린지-기획안.pptx) 표기를 그대로 쓴다.
     // 포스터·채용공고문·보도자료·대학 게시물과 같은 이름이어야 검색에서 한 건으로 모인다.
-    title: "2026 슈퍼전자 AI 면접 챌린지",
+    title: "2026 슈퍼닉스 AI 면접 챌린지",
     excerpt:
-      "가상기업 '슈퍼전자'에 지원해 지원서부터 2차 면접까지 채용 전형을 그대로 겪어 봅니다. 참가비 무료, 전공·학년 제한 없음.",
-    lead: "가상기업 '슈퍼전자'에 지원해 지원서부터 2차 면접까지 채용 전형을 그대로 겪어 봅니다.",
+      "가상기업 '슈퍼닉스'에 지원해 지원서부터 2차 면접까지 채용 전형을 그대로 겪어 봅니다. 참가비 무료, 전공·학년 제한 없음.",
+    lead: "가상기업 '슈퍼닉스'에 지원해 지원서부터 2차 면접까지 채용 전형을 그대로 겪어 봅니다.",
     period: "모집 2026.10.06 ~ 11.01",
     applyStart: "2026-10-06",
     applyEnd: "2026-11-01",
@@ -63,6 +69,7 @@ export const EVENTS: EventItem[] = [
     final: "2026년 11월 20일(금), 서울",
     cover: "/event-hero.webp",
     coverMobile: "/event-hero-m.webp",
+    brandLogo: { src: "/logos/supernics-white.png", alt: "슈퍼닉스", width: 654, height: 132 },
     contact: "support@supercoder.co",
     applyUrl: "/event/ai-mock-challenge-2026/apply",
   },
@@ -94,7 +101,7 @@ function monthDay(iso: string): string {
 
 /**
  * 모집 시작 표기 — short "10.06 오픈"(공고 카드 칩·뱃지), long "10월 6일 오픈"(모집 전 지원 버튼).
- * 이벤트 페이지와 슈퍼전자 채용 화면이 같은 말을 쓰도록 여기 하나에 둔다.
+ * 이벤트 페이지와 슈퍼닉스 채용 화면이 같은 말을 쓰도록 여기 하나에 둔다.
  */
 export function openLabel(e: EventItem, style: "short" | "long" = "short"): string {
   return style === "long" ? `${monthDay(e.applyStart)} 오픈` : `${e.applyStart.slice(5).replace("-", ".")} 오픈`;
@@ -129,7 +136,7 @@ export function applyPeriodLabel(e: EventItem): string {
 
 /**
  * 사이드 패널의 일정 표기에서 연도를 뺀다.
- * 행사명("2026 슈퍼전자 AI 면접 챌린지")과 히어로에 이미 연도가 있어
+ * 행사명("2026 슈퍼닉스 AI 면접 챌린지")과 히어로에 이미 연도가 있어
  * 항목마다 "2026년"을 반복하면 다섯 줄이 같은 말로 시작해 날짜가 눈에 안 들어온다.
  * 본문 문장과 지원 폼 안내는 연도를 그대로 쓴다 — 거기서는 문장 하나가 독립적으로 읽혀야 한다.
  */

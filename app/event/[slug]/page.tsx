@@ -74,7 +74,7 @@ export async function generateMetadata({
 /* ── 이벤트별 본문 ───────────────────────────────
    행사마다 내용이 다르므로 slug로 본문을 고른다. 레이아웃·타이포는 전부 post.css 공용.
 
-   ⚠️ 사실관계의 출처는 03_회의자료/2026-슈퍼전자-AI면접챌린지-기획안.pptx 다.
+   ⚠️ 사실관계의 출처는 03_회의자료/2026-슈퍼닉스-AI면접챌린지-기획안.pptx 다.
       고칠 때 함께 지켜야 하는 제약 세 가지:
       1) 문항 수·소요시간을 쓰지 않는다 — "5문항", "약 O분" 금지(slide 14).
       2) 모델 직무의 설계 근거가 된 실존 기업명을 쓰지 않는다(slide 13).
@@ -94,7 +94,7 @@ const FINALIST_RULE =
    문의처는 e.contact 를 써야 해서 행사 값을 받는 함수로 둔다. */
 const faqs = (e: EventItem) => [
   [
-    "슈퍼전자는 실제로 있는 회사인가요?",
+    "슈퍼닉스는 실제로 있는 회사인가요?",
     "아닙니다. 이 행사를 위해 만든 가상 기업입니다. 실제 채용 절차나 입사 자격과 관계가 없으며, 참가와 결과는 어떠한 기업의 채용에도 영향을 주지 않습니다.",
   ],
   [
@@ -133,7 +133,7 @@ function MockChallengeBody({ e, dday }: { e: EventItem; dday: string }) {
         답변 내용과 무관한 이유로 실력을 보이지 못하게 됩니다.
       </p>
       <p>
-        슈퍼코더는 취업 전에 AI 면접을 실전처럼 겪어 볼 자리를 만들었습니다. 이 행사를 위해 만든 가상기업 슈퍼전자의
+        슈퍼코더는 취업 전에 AI 면접을 실전처럼 겪어 볼 자리를 만들었습니다. 이 행사를 위해 만든 가상기업 슈퍼닉스의
         채용 전형을 지원서부터 2차 면접까지 그대로 진행합니다.
       </p>
       <p>결과는 어떠한 기업의 채용에도 영향을 주지 않습니다. 연습용으로 편하게 보셔도 됩니다.</p>
@@ -151,7 +151,7 @@ function MockChallengeBody({ e, dday }: { e: EventItem; dday: string }) {
             <li key={j.v}>
               <Link href={`/event/${e.slug}/jobs/${j.v}`} className="ev-jobcard">
                 <span className="ev-jobcard__main">
-                  <span className="ev-jobcard__org">슈퍼전자</span>
+                  <span className="ev-jobcard__org">슈퍼닉스</span>
                   <span className="ev-jobcard__title">{j.l} 신입사원 모집</span>
                   <span className="ev-jobcard__meta">
                     <span>신입</span>
@@ -188,7 +188,7 @@ function MockChallengeBody({ e, dday }: { e: EventItem; dday: string }) {
         ))}
       </ol>
 
-      <h2>슈퍼전자와 인재상</h2>
+      <h2>슈퍼닉스와 인재상</h2>
       {COMPANY_PROFILE.map((para) => (
         <p key={para}>{para}</p>
       ))}
@@ -300,7 +300,7 @@ function MockChallengeBody({ e, dday }: { e: EventItem; dday: string }) {
 /* 지원 버튼 — 사이드 패널 · 하단 배너 · 좁은 화면 하단 바가 같이 쓴다.
    모집 전에는 여는 날을 적는다. 예전엔 '지원 신청하기'를 눌러 도착한 화면이
    '아직 접수 전입니다'라 지원자가 막힌 느낌을 받았다(2026-09-30).
-   openBefore — 모집 전에도 누를 수 있게 둔다. 슈퍼전자 공고 목록은 오픈 전에도 볼 수 있어야 해서
+   openBefore — 모집 전에도 누를 수 있게 둔다. 슈퍼닉스 공고 목록은 오픈 전에도 볼 수 있어야 해서
    사이드 패널만 켠다. 하단 배너·하단 바는 비활성 그대로다.
    문구는 '공고 미리 보기' — 날짜만 적어 두면 누르면 무엇이 나오는지 알 수 없다. */
 function ApplyCta({
@@ -398,6 +398,15 @@ export default async function EventDetailPage({ params }: { params: Promise<{ sl
               <Link href="/event" className="ev-hero__back">
                 <i className="fa-solid fa-arrow-left"></i> 이벤트 목록
               </Link>
+            </div>
+          )}
+          {/* 가상기업 로고 — 히어로 왼쪽 위 빈자리에 둔다. 제목 블록은 아래에 붙어 있어 밀리지 않는다.
+              로고만 둔다 — 옆에 글자를 붙이지 않는다(2026-09-30).
+              ⚠️ 바로 위 GNB 의 Supercoder 로고와 심볼·서체가 같다. 흰색 반전형이라 구분되는 것이므로
+                 파란 원색 로고로 바꾸지 않는다. */}
+          {e.brandLogo && (
+            <div className="ev-hero__brand">
+              <img src={e.brandLogo.src} alt={e.brandLogo.alt} width={e.brandLogo.width} height={e.brandLogo.height} />
             </div>
           )}
           <div className="ev-hero__body">
