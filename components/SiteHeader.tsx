@@ -4,6 +4,16 @@ import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { trackEvent } from "@/lib/track";
+import { EVENTS } from "@/lib/events";
+
+/**
+ * '이벤트' 메뉴의 목적지.
+ * 행사가 한 건뿐이면 /event 는 상세로 되돌려 보낸다(app/event/page.tsx 의 redirect).
+ * 메뉴가 /event 를 거쳐 가면 그 사이 본문이 통째로 비어 푸터가 헤더 바로 밑까지 올라왔다가
+ * 상세가 다시 그려진다 — 행사 상세에서 '이벤트'를 누르면 푸터가 먼저 보였다(2026-09-30).
+ * 같은 조건으로 상세 주소를 바로 건다. 두 건 이상이 되면 자동으로 목록(/event)으로 돌아간다.
+ */
+const EVENT_HREF = EVENTS.length === 1 ? `/event/${EVENTS[0].slug}` : "/event";
 
 /**
  * '로그인'(ai.supercoder.co)은 GA4 자동 아웃바운드 클릭으로 잡히지 않는다 —
@@ -103,6 +113,12 @@ export default function SiteHeader() {
 
   const close = () => setMenuOpen(false);
 
+  // 이미 그 페이지에 있으면 맨 위로 바로 올린다. globals.css 의 html{scroll-behavior:smooth} 때문에
+  // 그냥 두면 긴 페이지를 위로 훑으며 올라간다 — 메뉴를 누른 사람은 첫 화면을 바로 보고 싶어 한다.
+  const onEventClick = () => {
+    if (pathname === EVENT_HREF) window.scrollTo({ top: 0, behavior: "instant" });
+  };
+
   // 어드민 콘솔은 자체 사이드바 내비를 쓰므로 공개 GNB 숨김
   if (pathname?.startsWith("/admin")) return null;
 
@@ -118,7 +134,7 @@ export default function SiteHeader() {
         {/* 우측: 페이지 메뉴 + 로그인 + 도입 문의 + (모바일)햄버거 */}
         <div className="navlinks">
           <div className="nav-center">
-            <Link href="/event">이벤트</Link>
+            <Link href={EVENT_HREF} onClick={onEventClick}>이벤트</Link>
             <Link href="/blog">블로그</Link>
             <Link href="/brochure">서비스소개서</Link>
           </div>
@@ -146,7 +162,7 @@ export default function SiteHeader() {
             </button>
             <div className={`nav-menu${menuOpen ? " open" : ""}`} id="navMenu" aria-hidden={!menuOpen}>
               <div className="nav-menu-links">
-                <Link href="/event" onClick={close}>이벤트</Link>
+                <Link href={EVENT_HREF} onClick={() => { close(); onEventClick(); }}>이벤트</Link>
                 <Link href="/blog" onClick={close}>블로그</Link>
                 <Link href="/brochure" onClick={close}>서비스소개서</Link>
                 <Link href="/apply" className="nav-menu-item-cta" onClick={close}>도입 문의</Link>
