@@ -22,7 +22,7 @@ create table if not exists public.event_applications (
   email             text not null,           -- 면접 링크 발송용
   job               text not null,           -- marketing | dev  (한 직군만 선택)
   applicant_type    text not null,           -- undergrad | grad | graduated | etc
-  final_attend      text not null,           -- yes | no | undecided (11/20 오프라인 Final)
+  final_attend      text not null,           -- yes | no | undecided (11/14 2차 인재상 AI 면접, 오프라인)
   how_found         text,                    -- 유입 경로 직접 응답(채널별 성과 측정)
   how_found_detail  text,
 

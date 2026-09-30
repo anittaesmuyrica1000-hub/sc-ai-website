@@ -64,9 +64,9 @@ export const EVENTS: EventItem[] = [
     applyEnd: "2026-11-01",
     applyFrom: "2026년 10월 6일(화)",
     applyTo: "2026년 11월 1일(일) 23:59",
-    interview: "2026년 11월 4일(수) ~ 11월 8일(일)",
+    interview: "2026년 11월 6일(금) ~ 11월 8일(일)",
     announce: "2026년 11월 11일(수)",
-    final: "2026년 11월 20일(금), 서울",
+    final: "2026년 11월 14일(토), 서울",
     // 2026-09-30 밝은 배경으로 교체. 원본은 1440×810(전체 불투명)이고 좁은 화면이 그대로 쓴다.
     // 데스크톱용 -wide 는 원본 왼쪽 끝 색을 1120px 늘려 2560×810 으로 만든 것이다 —
     // 1440 보다 넓은 화면에서 이미지를 키우지 않고 남는 폭을 받는다(event.css .ev-hero--img 주석).
@@ -76,7 +76,7 @@ export const EVENTS: EventItem[] = [
     // brandLogo 는 뺐다(2026-09-30). 바로 위 GNB 의 Supercoder 로고와 심볼·서체가 같아 로고가
     // 두 번 나온 것처럼 보였다. 다시 넣으려면 아래 한 줄만 되살리면 된다(파일은 public/logos 에 있다).
     // brandLogo: { src: "/logos/supernics-white.png", alt: "슈퍼닉스", width: 654, height: 132 },
-    contact: "support@supercoder.co",
+    contact: "juhee.kim@supercoder.co",
     applyUrl: "/event/ai-mock-challenge-2026/apply",
   },
 ];

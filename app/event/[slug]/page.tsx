@@ -87,6 +87,10 @@ export async function generateMetadata({
 const FINALIST_RULE =
   "Finalist 3인은 제품마케팅 부문 1인, 소프트웨어 개발 부문 1인, 전체 부문 1인입니다. 부문 1인은 각 직군에서 1차 직무 AI 면접 점수가 가장 높은 1인이고, 전체 부문 1인은 두 부문 선발자를 뺀 나머지 가운데 직군과 관계없이 같은 기준으로 비교한 점수가 가장 높은 1인입니다.";
 
+/* 상금 등수 — Finalist 3인 안에서 정한다(2026-09-30 확정). 선발(1차 점수)과 등수(2차 결과)는 기준이 다르다.
+   참가 혜택 표 아래 설명과 FAQ 가 같은 문장을 쓴다. */
+const RANK_RULE = "1등·2등·3등은 2차 인재상 AI 면접 결과 순으로 정합니다.";
+
 /* 자주 묻는 질문.
    2026-09-30 쿠폰·Finalist·문의처 세 문항을 더했다 — 지원자가 가장 먼저 물을 내용인데 표와 유의사항에만 있었다.
    뺀 것: "참가비가 있나요"(히어로 메타·하단 지원 배너에 이미 나온다),
@@ -112,9 +116,9 @@ const faqs = (e: EventItem) => [
   ],
   [
     "선착순 쿠폰은 언제 받나요?",
-    "1차 직무 AI 면접을 끝까지 마친 순서로 100명에게 스타벅스 모바일 쿠폰 5,000원권을 드립니다. 11월 13일에 지원서에 적은 휴대폰 번호로 문자를 보냅니다.",
+    "1차 직무 AI 면접을 끝까지 성실히 마친 순서로 100명에게 스타벅스 모바일 쿠폰 5,000원권을 드립니다. 11월 13일에 지원서에 적은 휴대폰 번호로 문자를 보냅니다.",
   ],
-  ["Finalist는 어떻게 뽑나요?", `${FINALIST_RULE} 결과는 11월 11일에 개별로 안내드립니다.`],
+  ["Finalist는 어떻게 뽑나요?", `${FINALIST_RULE} 결과는 11월 11일에 개별로 안내드립니다. ${RANK_RULE}`],
   ["문의는 어디로 하면 되나요?", `${e.contact}로 메일을 보내 주세요.`],
 ];
 
@@ -226,7 +230,9 @@ function MockChallengeBody({ e, dday }: { e: EventItem; dday: string }) {
       {/* '지급' 열을 둔 이유 — 받는 시점과 경로를 표 밖 문장으로 빼 두면 표를 읽고도
           다시 찾아 내려가야 한다. 대상·혜택·지급을 한 줄에서 끝낸다.
           ⚠️ 수료증은 Finalist 3인에게만 준다(2026-09-29 확인). 완주자 전원 발급은
-             05_시상물/상장-수료증-문구.md §2-A 에 안으로 남아 있을 뿐 채택되지 않았다. */}
+             05_시상물/상장-수료증-문구.md §2-A 에 안으로 남아 있을 뿐 채택되지 않았다.
+          2026-09-30 피드백 반영: 교통 실비를 빼고 상금(총 60만원)을 넣었다. 쿠폰 대상은
+             '성실히 마친' 선착순 100명. 2차 면접일이 11/14 로 당겨져 현장 지급일도 바뀌었다. */}
       <div className="post-table-wrap">
         <table className="post-table">
           <thead>
@@ -238,14 +244,14 @@ function MockChallengeBody({ e, dday }: { e: EventItem; dday: string }) {
           </thead>
           <tbody>
             <tr>
-              <td>1차 직무 AI 면접까지 완료한 선착순 100명</td>
+              <td>1차 직무 AI 면접까지 성실히 마친 선착순 100명</td>
               <td>스타벅스 모바일 쿠폰 5,000원권</td>
               <td>11월 13일 · 문자</td>
             </tr>
             <tr>
               <td>Finalist 3인</td>
-              <td>슈퍼코더 주최 상장·수료증, 2차 인재상 AI 면접 참여, 교통 실비 3만원</td>
-              <td>11월 20일 · 현장</td>
+              <td>슈퍼코더 주최 상장·수료증, 2차 인재상 AI 면접 참여, 상금 총 60만원(1등 30만원 · 2등 20만원 · 3등 10만원)</td>
+              <td>11월 14일 · 현장</td>
             </tr>
           </tbody>
         </table>
@@ -253,8 +259,9 @@ function MockChallengeBody({ e, dday }: { e: EventItem; dday: string }) {
       {/* 표 아래 보조 설명 — 표 본문보다 작게 둔다(.ev-notes). 유의사항의 post-list 는 그대로다 */}
       {/* 표의 행 순서(쿠폰 → Finalist)를 따른다 */}
       <ul className="post-list ev-notes">
-        <li>선착순은 지원서를 낸 순서가 아니라 1차 직무 AI 면접을 끝까지 마친 시각을 기준으로 합니다.</li>
+        <li>선착순은 지원서를 낸 순서가 아니라 1차 직무 AI 면접을 끝까지 성실히 마친 시각을 기준으로 합니다.</li>
         <li>{FINALIST_RULE}</li>
+        <li>{RANK_RULE}</li>
       </ul>
 
       <h2>자주 묻는 질문</h2>
@@ -283,7 +290,7 @@ function MockChallengeBody({ e, dday }: { e: EventItem; dday: string }) {
           쓰는 것은 지원서에서 따로 동의를 받고, 동의하지 않아도 참가에는 지장이 없습니다.
         </li>
         <li>
-          11월 20일 현장에서는 면접과 인터뷰, 상장 받는 장면을 사진·영상으로 찍습니다. 이 사진·영상과 이름·소속을
+          11월 14일 현장에서는 면접과 인터뷰, 상장 받는 장면을 사진·영상으로 찍습니다. 이 사진·영상과 이름·소속을
           홍보에 쓰는 것은 Finalist가 정해진 뒤 따로 동의를 받고, 동의하지 않아도 그대로 참여하실 수 있습니다.
         </li>
         <li>
@@ -349,7 +356,7 @@ export default async function EventDetailPage({ params }: { params: Promise<{ sl
     name: e.title,
     description: e.excerpt,
     startDate: e.applyStart,
-    endDate: "2026-11-20",
+    endDate: "2026-11-14",
     eventAttendanceMode: "https://schema.org/MixedEventAttendanceMode",
     eventStatus: "https://schema.org/EventScheduled",
     inLanguage: "ko-KR",
