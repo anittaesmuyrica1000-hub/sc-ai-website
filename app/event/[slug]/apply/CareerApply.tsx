@@ -356,7 +356,8 @@ function ApplyStep({
                   value={fields.name}
                   onChange={(e) => set("name", e.target.value)}
                 />
-                <div className="hint">상장·수료증과 쿠폰에 쓰이므로 실명으로 적어 주세요.</div>
+                {/* 상장과 수료증은 별개 수여물이지만(05_시상물 참조) 힌트에서는 대표 단어 하나면 된다 */}
+                <div className="hint">상장과 쿠폰에 쓰이므로 실명으로 적어 주세요.</div>
                 <div className="err">이름을 실명으로 입력해 주세요.</div>
               </div>
 
