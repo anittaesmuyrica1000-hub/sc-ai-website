@@ -26,11 +26,13 @@
             mask-image:linear-gradient(90deg,transparent 0,#000 8%,#000 92%,transparent 100%)}
   /* --logo-h = 기준 로고(NEXON) 높이. 나머지 로고는 globals.css의 보정 배수를 곱해 따라온다.
      랜딩 herostrip과 같은 규칙이고 기준 높이만 이 스트립 크기(34px)에 맞췄다. */
-  .apply-marquee-track{display:flex;align-items:center;width:max-content;animation:apply-scroll 36s linear infinite;--logo-h:34px}
+  /* 44s — 로고가 4→5개로 늘어 한 세트 폭이 603→740px(×1.23)가 됐다. 흐르는 속도를 그대로 두려고 36s에서 같은 비율로 늘림 */
+  .apply-marquee-track{display:flex;align-items:center;width:max-content;animation:apply-scroll 44s linear infinite;--logo-h:34px}
   .apply-marquee-track img{flex:0 0 auto;margin-right:40px;max-width:none;max-height:var(--logo-h);width:auto;height:auto;object-fit:contain}
   .apply-marquee-track img.logo-woongjin{max-height:calc(var(--logo-h) * var(--logo-woongjin))}
   .apply-marquee-track img.logo-skonec{max-height:calc(var(--logo-h) * var(--logo-skonec))}
   .apply-marquee-track img.logo-markany{max-height:calc(var(--logo-h) * var(--logo-markany))}
+  .apply-marquee-track img.logo-autoever{max-height:calc(var(--logo-h) * var(--logo-autoever))}
   @keyframes apply-scroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
   @media(prefers-reduced-motion:reduce){.apply-marquee-track{animation:none}}
   @media(max-width:860px){

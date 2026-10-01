@@ -25,9 +25,10 @@ export function generateMetadata() {
 }
 
 // 로고별 시각 크기 보정 — 기준은 NEXON. 보정 배수는 app/globals.css의 --logo-* 주석 참고
-// nexon.svg는 배경이 투명해 랜딩(흰 배경)·이 페이지(-t 세트) 양쪽에 같은 파일을 쓴다
+// nexon.svg·hyundai-autoever.svg는 배경이 투명해 랜딩(흰 배경)·이 페이지(-t 세트) 양쪽에 같은 파일을 쓴다
 const APPLY_LOGOS: { src: string; alt: string; className?: string }[] = [
   { src: "/logos/nexon.svg", alt: "NEXON" },
+  { src: "/logos/hyundai-autoever.svg", alt: "Hyundai AutoEver", className: "logo-autoever" },
   { src: "/logos/woongjin-t.webp", alt: "Woongjin", className: "logo-woongjin" },
   { src: "/logos/skonec-t.webp", alt: "SKONEC entertainment", className: "logo-skonec" },
   { src: "/logos/markany-t.webp", alt: "MarkAny", className: "logo-markany" },
