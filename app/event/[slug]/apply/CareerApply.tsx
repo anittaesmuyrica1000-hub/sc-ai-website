@@ -13,7 +13,7 @@ import {
   isValidName, isValidPhone,
 } from "@/lib/eventApply";
 
-/* 가상기업 슈퍼닉스의 채용공고 화면.
+/* 가상기업 슈퍼전자의 채용공고 화면.
    기획안(2026-슈퍼닉스-AI면접챌린지-기획안.pptx) slide 12 "참가자가 보는 화면"을
    실제 기업 채용 사이트의 공고 목록 → 공고 선택 → 지원서 흐름으로 구현한다.
    지원자가 겪는 것이 '이벤트 신청'이 아니라 '채용 지원'이어야 행사의 전제가 산다.
@@ -36,8 +36,8 @@ const EMPTY: Fields = {
 
 /* 공고 카드 뱃지 — 값의 출처는 목록·상세와 같은 statusOf() 다.
    말은 STATUS_LABEL('모집 중'·'모집 마감') 대신 실제 채용사이트가 쓰는 쪽으로 쓴다 —
-   이 화면은 슈퍼닉스 채용사이트 말투를 유지하는 자리다.
-   모집 전은 이벤트 페이지 공고 카드와 같은 '10.06 오픈'을 쓴다 — '모집 예정'은 언제 여는지 말하지 않는다. */
+   이 화면은 슈퍼전자 채용사이트 말투를 유지하는 자리다.
+   모집 전은 이벤트 페이지 공고 카드와 같은 '10.08 오픈'을 쓴다 — '모집 예정'은 언제 여는지 말하지 않는다. */
 function jobBadge(event: EventItem, status: EventStatus): string {
   if (status === "upcoming") return openLabel(event);
   return status === "open" ? "채용중" : "마감";
@@ -63,7 +63,7 @@ export default function CareerApply({ event, status }: { event: EventItem; statu
   return (
     <section className={`career${job ? " career--form" : ""}`}>
       <div className="career-wrap">
-        {/* 슈퍼닉스 채용 화면에서 행사로 나가는 길. 공고 목록에만 둔다 —
+        {/* 슈퍼전자 채용 화면에서 행사로 나가는 길. 공고 목록에만 둔다 —
             지원서 단계에서 누르면 적던 내용이 사라지고, 거기엔 워드마크(목록으로)가 이미 있다 */}
         {!job && (
           <Link href={`/event/${event.slug}`} className="career-back">
@@ -75,8 +75,8 @@ export default function CareerApply({ event, status }: { event: EventItem; statu
               지원서 단계(?job=…)에서 누르면 목록으로 되돌아온다 — setJob(null) 을 함께 부르는
               이유는 같은 라우트의 쿼리만 바뀌어서 컴포넌트가 다시 마운트되지 않을 수 있기 때문이다. */}
           <Link href={`/event/${event.slug}/apply`} className="career-brand" onClick={() => setJob(null)}>
-            <b>슈퍼닉스</b>
-            <span>SUPERNICS · 채용</span>
+            <b>슈퍼전자</b>
+            <span>SUPER ELECTRONICS · 채용</span>
           </Link>
         </div>
 
@@ -416,11 +416,11 @@ function ApplyStep({
 
               <div className={`field${invalid.finalAttend ? " invalid" : ""}`}>
                 <label>
-                  2차 인재상 AI 면접 참석 가능 여부 <span className="req">*</span>
+                  오프라인 AI 역량 검사 참석 가능 여부 <span className="req">*</span>
                 </label>
                 <div className="hint" style={{ marginTop: 0, marginBottom: 9 }}>
-                  {event.final} · Finalist 3인만 참여합니다. 1차 직무 AI 면접까지만 참여하셔도 됩니다.
-                  현장에서는 면접·인터뷰와 시상식의 상장 수여 장면을 촬영하며, 촬영물의 홍보 활용은
+                  {event.final} · Finalist 2인만 참여합니다. 1차 직무 AI 면접까지만 참여하셔도 됩니다.
+                  현장에서는 검사·인터뷰와 시상식의 상장 수여 장면을 촬영하며, 촬영물의 홍보 활용은
                   Finalist 확정 후 따로 동의를 받습니다.
                 </div>
                 <div className="ev-radios">
@@ -500,7 +500,7 @@ function ApplyStep({
                     <tbody>
                       <tr>
                         <th>수집 항목</th>
-                        <td>이름, 휴대폰 번호, 이메일, 지원 직군, 현재 상태, 오프라인 면접 참석 가능 여부, 유입 경로</td>
+                        <td>이름, 휴대폰 번호, 이메일, 지원 직군, 현재 상태, 오프라인 AI 역량 검사 참석 가능 여부, 유입 경로</td>
                       </tr>
                       <tr>
                         <th>이용 목적</th>
@@ -532,7 +532,7 @@ function ApplyStep({
                       }}
                     />
                     <span>
-                      <b>[필수]</b> 슈퍼닉스가 본 행사를 위한 가상 기업이며, 참가와 결과가 어떠한 기업의 채용에도 영향을
+                      <b>[필수]</b> 슈퍼전자가 본 행사를 위한 가상 기업이며, 참가와 결과가 어떠한 기업의 채용에도 영향을
                       주지 않는다는 점을 확인했습니다.
                     </span>
                   </label>

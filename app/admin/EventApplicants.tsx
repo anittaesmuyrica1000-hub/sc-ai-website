@@ -19,8 +19,8 @@ import {
 
 // 이벤트 페이지 유의사항·지원 폼 동의서에 공지한 파기일. 세 곳이 같은 값이어야 한다.
 const PURGE_DATE = "2027-02-28";
-// 쿠폰 지급 상한 — 기획안 slide 10(5,000원 × 선착순 100명 = 50만원, 예산 상한)
-const COUPON_LIMIT = 100;
+// 쿠폰 지급 상한 — 5,000원 × 선착순 30명 = 15만원(2026-10-02 회의, 100명 → 30명)
+const COUPON_LIMIT = 30;
 
 function fmtDateTime(s?: string | null) {
   if (!s) return "—";

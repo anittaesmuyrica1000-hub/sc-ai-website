@@ -1,6 +1,6 @@
 -- ============================================================
 -- 이벤트 참가 신청(event_applications)
--- 2026 슈퍼닉스 AI 면접 챌린지 — /event/ai-mock-challenge-2026/apply
+-- 2026 슈퍼코더 AI 면접 대회 — /event/ai-mock-challenge-2026/apply
 -- Supabase 대시보드 → SQL Editor 에 붙여넣고 1회 실행하세요.
 -- (로컬엔 DB 접속정보가 없어 DDL 직접 적용이 안 됩니다.)
 --
@@ -22,13 +22,13 @@ create table if not exists public.event_applications (
   email             text not null,           -- 면접 링크 발송용
   job               text not null,           -- marketing | dev  (한 직군만 선택)
   applicant_type    text not null,           -- undergrad | grad | graduated | etc
-  final_attend      text not null,           -- yes | no | undecided (11/14 2차 인재상 AI 면접, 오프라인)
+  final_attend      text not null,           -- yes | no | undecided (11/14 오프라인 AI 역량 검사)
   how_found         text,                    -- 유입 경로 직접 응답(채널별 성과 측정)
   how_found_detail  text,
 
   -- 동의 (지원 폼에서 받은 값을 그대로 보존 — 분쟁 시 근거가 된다)
   consent_privacy   boolean not null default false,  -- [필수] 개인정보 수집·이용
-  consent_fiction   boolean not null default false,  -- [필수] 슈퍼닉스가 가상기업임을 확인
+  consent_fiction   boolean not null default false,  -- [필수] 슈퍼전자가 가상기업임을 확인
   consent_content   boolean not null default false,  -- [선택] 응답의 비식별 콘텐츠 활용
 
   -- 운영
@@ -97,7 +97,7 @@ create policy "event_applications admin delete" on public.event_applications
 -- 운영 쿼리 (필요할 때 SQL Editor 에서 실행)
 -- ============================================================
 
--- 선착순 100명 — 쿠폰 지급 대상. 기준은 "1차 AI 면접 완료 선착순"이므로
+-- 선착순 30명 — 쿠폰 지급 대상. 기준은 "1차 AI 면접 완료 선착순"이므로
 -- 면접 응시 결과와 대조한 뒤 발송한다(이 쿼리는 지원 순번만 보여준다).
 -- select row_number() over (order by created_at) as no, created_at, name, phone, job
 --   from public.event_applications

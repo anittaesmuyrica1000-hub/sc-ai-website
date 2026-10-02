@@ -55,14 +55,17 @@ export const EVENTS: EventItem[] = [
     slug: "ai-mock-challenge-2026",
     // 행사명은 기획안(2026-슈퍼닉스-AI면접챌린지-기획안.pptx) 표기를 그대로 쓴다.
     // 포스터·채용공고문·보도자료·대학 게시물과 같은 이름이어야 검색에서 한 건으로 모인다.
-    title: "2026 슈퍼닉스 AI 면접 챌린지",
+    // 2026-10-02 회의: 행사명을 '슈퍼코더 AI 면접 대회'로 바꾸고 가상기업명은 슈퍼전자로 되돌렸다.
+    // 행사명에서 가상기업이 빠지고 주최사가 들어가므로, 가상기업이 주최한 행사로 읽히던 문제도 함께 사라진다.
+    title: "2026 슈퍼코더 AI 면접 대회",
     excerpt:
-      "가상기업 '슈퍼닉스'에 지원해 지원서부터 2차 면접까지 채용 전형을 그대로 겪어 봅니다. 참가비 무료, 전공·학년 제한 없음.",
-    lead: "가상기업 '슈퍼닉스'에 지원해 지원서부터 2차 면접까지 채용 전형을 그대로 겪어 봅니다.",
-    period: "모집 2026.10.06 ~ 11.01",
-    applyStart: "2026-10-06",
+      "가상기업 '슈퍼전자'에 지원해 지원서부터 2차 면접까지 채용 전형을 그대로 겪어 봅니다. 참가비 무료, 전공·학년 제한 없음.",
+    lead: "가상기업 '슈퍼전자'에 지원해 지원서부터 2차 면접까지 채용 전형을 그대로 겪어 봅니다.",
+    period: "모집 2026.10.08 ~ 11.01",
+    // 10/6 → 10/8 (2026-10-02 회의)
+    applyStart: "2026-10-08",
     applyEnd: "2026-11-01",
-    applyFrom: "2026년 10월 6일(화)",
+    applyFrom: "2026년 10월 8일(목)",
     applyTo: "2026년 11월 1일(일) 23:59",
     interview: "2026년 11월 6일(금) ~ 11월 8일(일)",
     announce: "2026년 11월 11일(수)",
@@ -74,9 +77,10 @@ export const EVENTS: EventItem[] = [
     cover: "/event-hero-v2-wide.webp",
     coverMobile: "/event-hero-v2.webp",
     // brandLogo 는 뺐다(2026-09-30). 바로 위 GNB 의 Supercoder 로고와 심볼·서체가 같아 로고가
-    // 두 번 나온 것처럼 보였다. 다시 넣으려면 아래 한 줄만 되살리면 된다(파일은 public/logos 에 있다).
-    // brandLogo: { src: "/logos/supernics-white.png", alt: "슈퍼닉스", width: 654, height: 132 },
-    contact: "juhee.kim@supercoder.co",
+    // 두 번 나온 것처럼 보였다. public/logos/supernics-white.png 는 슈퍼닉스 시절 로고라
+    // 가상기업명이 슈퍼전자로 돌아온 지금(2026-10-02)은 쓰지 않는다.
+    // 행사 전용 주소(2026-10-02). 계정은 Google Workspace 에서 따로 만든다 — 만들기 전에는 메일이 반송된다
+    contact: "aicontest@supercoder.co",
     applyUrl: "/event/ai-mock-challenge-2026/apply",
   },
 ];
@@ -107,7 +111,7 @@ function monthDay(iso: string): string {
 
 /**
  * 모집 시작 표기 — short "10.06 오픈"(공고 카드 칩·뱃지), long "10월 6일 오픈"(모집 전 지원 버튼).
- * 이벤트 페이지와 슈퍼닉스 채용 화면이 같은 말을 쓰도록 여기 하나에 둔다.
+ * 이벤트 페이지와 슈퍼전자 채용 화면이 같은 말을 쓰도록 여기 하나에 둔다.
  */
 export function openLabel(e: EventItem, style: "short" | "long" = "short"): string {
   return style === "long" ? `${monthDay(e.applyStart)} 오픈` : `${e.applyStart.slice(5).replace("-", ".")} 오픈`;
@@ -142,7 +146,7 @@ export function applyPeriodLabel(e: EventItem): string {
 
 /**
  * 사이드 패널의 일정 표기에서 연도를 뺀다.
- * 행사명("2026 슈퍼닉스 AI 면접 챌린지")과 히어로에 이미 연도가 있어
+ * 행사명("2026 슈퍼코더 AI 면접 대회")과 히어로에 이미 연도가 있어
  * 항목마다 "2026년"을 반복하면 다섯 줄이 같은 말로 시작해 날짜가 눈에 안 들어온다.
  * 본문 문장과 지원 폼 안내는 연도를 그대로 쓴다 — 거기서는 문장 하나가 독립적으로 읽혀야 한다.
  */
