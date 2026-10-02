@@ -417,6 +417,14 @@ export default async function EventDetailPage({ params }: { params: Promise<{ sl
             <span className="ev-hero__status">{STATUS_LABEL[status]}</span>
             <h1 className="ev-hero__title">{e.title}</h1>
             <p className="ev-hero__excerpt">{e.lead ?? e.excerpt}</p>
+            {/* 가상기업 고지 — 요약 문장의 '슈퍼전자' 바로 아래에 둔다. 유의사항까지 내려가야
+                가상 기업인 걸 알던 문제를 첫 화면에서 끝낸다(2026-10-02). 전문은 유의사항에 그대로 있다 */}
+            {e.heroNote && (
+              <p className="ev-hero__note">
+                <i className="fa-solid fa-circle-info" aria-hidden="true"></i>
+                {e.heroNote}
+              </p>
+            )}
             {/* 공유 버튼은 메타 줄 끝에 둔다. 히어로 오른쪽 위에 얹으면 제목으로 내려가는
                 시선을 먼저 가로채고, 마미톡처럼 오른쪽 끝으로 밀면 밝은 그래픽 위에 놓여
                 흰 아이콘이 보이지 않는다. 읽는 순서(제목 → 요약 → 메타)의 끝이자
