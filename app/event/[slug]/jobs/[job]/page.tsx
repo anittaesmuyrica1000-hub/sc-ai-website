@@ -154,7 +154,7 @@ export default async function JobDetailPage({
             </ul>
             {/* 이 목록은 1차 면접 채점의 직무 역량 기준과 짝이다(lib/eventApply.ts evaluates 주석).
                 지원자에게도 그 연결을 말해 준다. 문항 수는 쓰지 않는다 */}
-            <p className="jd-note">1차 직무 AI 면접에서 이 경험을 중심으로 질문합니다.</p>
+            <p className="jd-note">직무 AI 면접에서 이 경험을 중심으로 질문합니다.</p>
           </section>
 
           <section className="jd-sec">
@@ -219,7 +219,12 @@ export default async function JobDetailPage({
                 </dd>
               </div>
               <div>
-                <dt>1차 직무 AI 면접</dt>
+                {/* 아래 '오프라인 AI 역량 검사' 와 짝이 되게 '온라인'을 붙이고 같은 자리에서 끊는다 */}
+                <dt>
+                  온라인
+                  <br />
+                  직무 AI 면접
+                </dt>
                 <dd>{withoutYear(e.interview)}</dd>
               </div>
               <div>

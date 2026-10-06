@@ -293,7 +293,7 @@ function ApplyStep({
               <b>다음 일정</b>
               <ul>
                 <li>11월 2일~3일 · 입력하신 메일로 응시 안내와 면접 링크를 보내드립니다</li>
-                <li>11월 6일~8일 · 1차 직무 AI 면접 (기간 안에서 원하는 시간에 응시)</li>
+                <li>11월 6일~8일 · 온라인 직무 AI 면접 (기간 안에서 원하는 시간에 응시)</li>
                 <li>11월 11일 · Finalist 발표 (개별 안내)</li>
               </ul>
             </div>
@@ -420,7 +420,7 @@ function ApplyStep({
                   오프라인 AI 역량 검사 참석 가능 여부 <span className="req">*</span>
                 </label>
                 <div className="hint" style={{ marginTop: 0, marginBottom: 9 }}>
-                  {event.final} · Finalist 2인만 참여합니다. 1차 직무 AI 면접까지만 참여하셔도 됩니다.
+                  {event.final} · Finalist 2인만 참여합니다. 직무 AI 면접까지만 참여하셔도 됩니다.
                   Finalist 2인은 시상식을 마친 뒤 참가자 인터뷰와 사진 촬영을 진행합니다(영상 촬영은 없습니다).
                   사진의 홍보 활용은 아래 필수 동의 항목에서 확인합니다.
                 </div>
@@ -574,7 +574,7 @@ function ApplyStep({
                       onChange={(e) => setAgree((a) => ({ ...a, content: e.target.checked }))}
                     />
                     <span>
-                      <b>[선택]</b> 1차 직무 AI 면접 응답을 개인을 식별할 수 없도록 처리한 뒤 보도자료·블로그 등 콘텐츠에
+                      <b>[선택]</b> 직무 AI 면접 응답을 개인을 식별할 수 없도록 처리한 뒤 보도자료·블로그 등 콘텐츠에
                       활용하는 것에 동의합니다. 동의하지 않으셔도 참가에는 영향이 없습니다.
                     </span>
                   </label>

@@ -191,7 +191,7 @@ export type EventApplication = {
   status?: string | null;
   admin_note?: string | null;
   coupon_sent_at?: string | null;
-  /** 1차 직무 AI 면접 완료 시각 — 쿠폰 선착순 30명 판정 기준(지원 순서가 아니다) */
+  /** 직무 AI 면접 완료 시각 — 쿠폰 선착순 30명 판정 기준(지원 순서가 아니다) */
   interview_done_at?: string | null;
   utm_source?: string | null;
   utm_medium?: string | null;

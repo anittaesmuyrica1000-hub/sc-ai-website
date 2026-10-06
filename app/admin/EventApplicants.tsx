@@ -159,7 +159,7 @@ export default function EventApplicants() {
   }
 
   /* 선착순 순번 — 테스트 행을 뺀 실제 지원자만 순서대로 센다.
-     쿠폰 지급 기준은 "1차 직무 AI 면접 완료 선착순"이므로 이 번호는 지원 순서일 뿐이다.
+     쿠폰 지급 기준은 "직무 AI 면접 완료 선착순"이므로 이 번호는 지원 순서일 뿐이다.
      실제 지급 대상은 면접 완료 시각으로 다시 정렬해야 한다(상태 = 면접 완료). */
   const seq = useMemo(() => {
     const m = new Map<string, number>();
@@ -271,7 +271,7 @@ export default function EventApplicants() {
     { label: "제품마케팅", v: stats.marketing, sub: "마케팅 직군 지원", icon: "fa-chart-simple" },
     { label: "소프트웨어 개발", v: stats.dev, sub: "개발 직군 지원", icon: "fa-diagram-project" },
     {
-      label: "1차 면접 완료",
+      label: "직무 면접 완료",
       v: stats.done,
       sub:
         stats.done >= COUPON_LIMIT
