@@ -268,7 +268,7 @@ export default function EventApplicants() {
 
   const STATS: { label: string; v: string | number; sub: string; icon: string }[] = [
     { label: "총 지원자", v: stats.total, sub: stats.test > 0 ? `테스트 ${stats.test}건 제외` : "실제 지원 기준", icon: "fa-users" },
-    { label: "제품마케팅", v: stats.marketing, sub: "마케팅 직군 지원", icon: "fa-chart-simple" },
+    { label: "제품 마케팅", v: stats.marketing, sub: "마케팅 직군 지원", icon: "fa-chart-simple" },
     { label: "소프트웨어 개발", v: stats.dev, sub: "개발 직군 지원", icon: "fa-diagram-project" },
     {
       label: "직무 면접 완료",
