@@ -264,7 +264,7 @@ export const EVENT_EMAIL_ERROR_MSG: Record<"empty" | "format" | "temp", string> 
   temp: "일회용 메일로는 면접 링크를 받을 수 없습니다. 실제로 쓰는 메일을 입력해 주세요.",
 };
 
-/** 이름 — 한글·영문·공백만. 쿠폰·상장 표기에 쓰므로 실명을 받는다. */
+/** 이름 — 한글·영문·공백만. 쿠폰·수료증 표기에 쓰므로 실명을 받는다. */
 export function isValidName(v: string): boolean {
   const s = v.trim();
   return s.length >= 2 && s.length <= 40 && /^[가-힣a-zA-Z][가-힣a-zA-Z\s.·-]*$/.test(s);
