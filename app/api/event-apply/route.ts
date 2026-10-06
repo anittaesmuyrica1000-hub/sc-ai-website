@@ -84,14 +84,15 @@ export async function POST(req: Request) {
     return bad("메일을 받을 수 없는 주소입니다. 주소를 다시 확인해 주세요.");
   }
 
-  // 필수 동의 — 두 항목 모두 체크돼야 접수한다.
+  // 필수 동의 — 세 항목 모두 체크돼야 접수한다(2026-10-06 현장 사진 동의가 필수로 바뀌었다).
   const consentPrivacy = body.consent_privacy === true;
   const consentFiction = body.consent_fiction === true;
   const consentContent = body.consent_content === true; // 선택
-  // [선택] 11/14 현장 사진의 홍보 활용. Finalist 가 아니면 쓰이지 않지만 동의는 지원 시점에 받아 둔다.
+  // [필수] 11/14 현장 사진의 홍보 활용. Finalist 가 아니면 쓰이지 않지만 동의는 지원 시점에 받아 둔다.
   const consentPhoto = body.consent_photo === true;
   if (!consentPrivacy) return bad("개인정보 수집 및 이용에 동의해 주세요.");
   if (!consentFiction) return bad("가상 기업 안내를 확인하고 동의해 주세요.");
+  if (!consentPhoto) return bad("11월 14일 현장 사진 활용에 동의해 주세요.");
 
   // 유입 추적 파라미터(utm·클릭 ID·referrer, 있는 값만)
   const utm: Record<string, string> = {};

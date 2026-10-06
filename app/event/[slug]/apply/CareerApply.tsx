@@ -233,9 +233,9 @@ function ApplyStep({
       howFoundEtc: fields.howFound === EV_HOW_FOUND_ETC && fields.howFoundEtc.trim() === "",
     };
     setInvalid(next);
-    const agreeBad = { privacy: !agree.privacy, fiction: !agree.fiction };
+    const agreeBad = { privacy: !agree.privacy, fiction: !agree.fiction, photo: !agree.photo };
     setAgreeInvalid(agreeBad);
-    if (Object.values(next).some(Boolean) || agreeBad.privacy || agreeBad.fiction) return;
+    if (Object.values(next).some(Boolean) || Object.values(agreeBad).some(Boolean)) return;
 
     setLoading(true);
     try {
@@ -422,7 +422,7 @@ function ApplyStep({
                 <div className="hint" style={{ marginTop: 0, marginBottom: 9 }}>
                   {event.final} · Finalist 2인만 참여합니다. 1차 직무 AI 면접까지만 참여하셔도 됩니다.
                   현장에서는 검사·인터뷰와 상장 수여 장면을 사진으로 찍습니다(영상 촬영은 없습니다).
-                  사진의 홍보 활용은 아래에서 따로 동의를 받습니다.
+                  사진의 홍보 활용은 아래 필수 동의 항목에서 확인합니다.
                 </div>
                 <div className="ev-radios">
                   {FINAL_ATTEND_OPTIONS.map((o) => (
@@ -539,6 +539,29 @@ function ApplyStep({
                   </label>
                 </div>
 
+                {/* [필수] 현장 사진 — 2026-10-06. 예전에는 Finalist 확정 후에 따로 받기로 했는데,
+                    발표(11/11)와 현장(11/14) 사이가 사흘이라 동의를 못 받은 사람이 생기면 그날 사진을
+                    한 장도 쓸 수 없다. 지원 시점에 받아 둔다.
+                    Finalist 가 아니면 쓸 일이 없는 항목이라 조건을 문장 안에 적어 둔다.
+                    ⚠️ 필수 항목이므로 .agree-opt 를 붙이지 않는다 — 그 클래스가 말머리를 흐린 회색으로 바꾼다.
+                       필수 세 개를 먼저 쌓고 [선택] 은 맨 아래 하나만 남긴다. */}
+                <div className={`agree${agreeInvalid.photo ? " invalid" : ""}`}>
+                  <label className="agree-main">
+                    <input
+                      type="checkbox"
+                      checked={agree.photo}
+                      onChange={(e) => {
+                        setAgree((a) => ({ ...a, photo: e.target.checked }));
+                        setAgreeInvalid((m) => ({ ...m, photo: false }));
+                      }}
+                    />
+                    <span>
+                      <b>[필수]</b> Finalist로 선발되어 11월 14일 현장에 참여하는 경우, 현장에서 찍은 사진과 이름·소속을
+                      슈퍼코더의 행사 홍보에 활용하는 것에 동의합니다.
+                    </span>
+                  </label>
+                </div>
+
                 {/* [선택] — 기획안 slide 8. 결과 기사에 응시 데이터를 쓰려면 지원 시점에 받아 둬야 하고,
                     나중에 소급해서 받을 수 없다. 참가에 필수인 항목이 아니므로 선택으로 둔다. */}
                 <div className="agree">
@@ -551,25 +574,6 @@ function ApplyStep({
                     <span>
                       <b>[선택]</b> 1차 직무 AI 면접 응답을 개인을 식별할 수 없도록 처리한 뒤 보도자료·블로그 등 콘텐츠에
                       활용하는 것에 동의합니다. 동의하지 않으셔도 참가에는 영향이 없습니다.
-                    </span>
-                  </label>
-                </div>
-
-                {/* [선택] 현장 사진 — 2026-10-06. 예전에는 Finalist 확정 후에 따로 받기로 했는데,
-                    발표(11/11)와 현장(11/14) 사이가 사흘이라 동의를 못 받은 사람이 생기면 그날 사진을
-                    한 장도 쓸 수 없다. 지원 시점에 미리 받아 둔다.
-                    Finalist 가 아니면 쓸 일이 없는 항목이라 조건을 문장 안에 적어 둔다. */}
-                <div className="agree">
-                  <label className="agree-main agree-opt">
-                    <input
-                      type="checkbox"
-                      checked={agree.photo}
-                      onChange={(e) => setAgree((a) => ({ ...a, photo: e.target.checked }))}
-                    />
-                    <span>
-                      <b>[선택]</b> Finalist로 선발되어 11월 14일 현장에 참여하는 경우, 현장에서 찍은 사진과 이름·소속을
-                      슈퍼코더의 행사 홍보에 활용하는 것에 동의합니다. 동의하지 않으셔도 참가와 Finalist 선발에는 영향이
-                      없습니다.
                     </span>
                   </label>
                 </div>
