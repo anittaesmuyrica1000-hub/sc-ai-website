@@ -30,6 +30,7 @@ create table if not exists public.event_applications (
   consent_privacy   boolean not null default false,  -- [필수] 개인정보 수집·이용
   consent_fiction   boolean not null default false,  -- [필수] 슈퍼전자가 가상기업임을 확인
   consent_content   boolean not null default false,  -- [선택] 응답의 비식별 콘텐츠 활용
+  consent_photo     boolean not null default false,  -- [선택] 11/14 현장 사진·이름의 홍보 활용
 
   -- 운영
   is_test           boolean not null default false,   -- 내부 제출 테스트·스팸. 집계에서 제외
@@ -54,6 +55,8 @@ alter table public.event_applications add column if not exists coupon_sent_at ti
 -- 쿠폰 선착순 판정 기준. 자세한 배경은 supabase/event-applications-interview-done-at.sql
 alter table public.event_applications add column if not exists interview_done_at timestamptz;
 alter table public.event_applications add column if not exists consent_content boolean not null default false;
+-- 11/14 현장 사진 활용 동의. 배경은 supabase/event-applications-consent-photo.sql
+alter table public.event_applications add column if not exists consent_photo boolean not null default false;
 
 -- 2) 중복 지원 차단 ---------------------------------------------
 -- 기획안 slide 10: "중복 지원·허위 기재·참가 대상이 아닌 경우는 빼고 다음 순번으로 넘깁니다."

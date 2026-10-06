@@ -226,7 +226,8 @@ export default function EventApplicants() {
   function exportCsv() {
     const head = [
       "순번", "쿠폰순번", "접수일시", "이름", "지원직군", "연락처", "이메일", "현재상태", "오프라인참석",
-      "알게된경로", "알게된경로(기타)", "진행상태", "면접완료일시", "콘텐츠활용동의", "쿠폰발송일", "내부메모", "테스트여부",
+      "알게된경로", "알게된경로(기타)", "진행상태", "면접완료일시", "콘텐츠활용동의", "현장사진활용동의",
+      "쿠폰발송일", "내부메모", "테스트여부",
       ...TRACKING_KEYS,
     ];
     const esc = (v: unknown) => `"${String(v ?? "").replace(/"/g, '""')}"`;
@@ -246,6 +247,7 @@ export default function EventApplicants() {
         r.status || "신규",
         r.interview_done_at ? fmtDateTime(r.interview_done_at) : "",
         r.consent_content ? "동의" : "미동의",
+        r.consent_photo ? "동의" : "미동의",
         r.coupon_sent_at ? fmtDateTime(r.coupon_sent_at) : "",
         r.admin_note ?? "",
         r.is_test ? "테스트" : "",
@@ -429,6 +431,8 @@ export default function EventApplicants() {
                   <th>오프라인</th>
                   <th>유입</th>
                   <th>콘텐츠</th>
+                  {/* 11/14 현장 사진 활용 동의 — Finalist 사진을 쓸 수 있는지 그날 바로 확인해야 한다 */}
+                  <th>사진</th>
                   <th>진행 상태</th>
                   <th>면접 완료</th>
                   <th>관리</th>
@@ -471,6 +475,7 @@ export default function EventApplicants() {
                       {r.how_found ? EV_HOW_FOUND_LABEL[r.how_found]?.split(" (")[0] || r.how_found : "—"}
                     </td>
                     <td className="nowrap">{r.consent_content ? "동의" : "—"}</td>
+                    <td className="nowrap">{r.consent_photo ? "동의" : "—"}</td>
                     <td className="nowrap">
                       <select
                         className="status-sel"

@@ -88,6 +88,8 @@ export async function POST(req: Request) {
   const consentPrivacy = body.consent_privacy === true;
   const consentFiction = body.consent_fiction === true;
   const consentContent = body.consent_content === true; // 선택
+  // [선택] 11/14 현장 사진의 홍보 활용. Finalist 가 아니면 쓰이지 않지만 동의는 지원 시점에 받아 둔다.
+  const consentPhoto = body.consent_photo === true;
   if (!consentPrivacy) return bad("개인정보 수집 및 이용에 동의해 주세요.");
   if (!consentFiction) return bad("가상 기업 안내를 확인하고 동의해 주세요.");
 
@@ -121,6 +123,7 @@ export async function POST(req: Request) {
     consent_privacy: consentPrivacy,
     consent_fiction: consentFiction,
     consent_content: consentContent,
+    consent_photo: consentPhoto,
     is_test: isTest,
     ...utm,
   };
@@ -165,6 +168,7 @@ export async function POST(req: Request) {
         ${r("오프라인 Final", esc(FINAL_ATTEND_LABEL[finalAttend] || finalAttend))}
         ${r("알게 된 경로", `<b>${esc(evHowFoundText(howFound, howFoundDetail) || "-")}</b>`)}
         ${r("콘텐츠 활용 동의", consentContent ? "동의" : "<span style='color:#B23B2E'>미동의</span>")}
+        ${r("현장 사진 동의", consentPhoto ? "동의" : "<span style='color:#B23B2E'>미동의</span>")}
         ${Object.keys(utm).length ? r("유입", esc(TRACKING_KEYS.filter((k) => utm[k]).map((k) => `${k}=${utm[k]}`).join(", "))) : ""}
       </table>
     </div>`;

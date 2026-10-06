@@ -41,7 +41,7 @@ export async function generateMetadata({
   const title = `${j.l} 신입사원 모집 · ${e.title}`;
   // ⚠️ 카톡 공유 카드에 "슈퍼전자 채용"만 보이면 실제 채용으로 오인된다.
   //    제목과 설명 양쪽에 행사명과 주최 표기를 함께 둔다.
-  const description = `가상기업 슈퍼전자의 채용 전형을 지원서부터 2차 면접까지. 참가비 무료, 전공·학년 제한 없음. ${e.applyTo}까지 접수. 주최 슈퍼코더`;
+  const description = `가상기업 슈퍼전자의 채용 전형을 지원서부터 AI 면접·AI 역량 검사까지. 참가비 무료, 전공·학년 제한 없음. ${e.applyTo}까지 접수. 주최 슈퍼코더`;
   const url = `/event/${e.slug}/jobs/${j.v}`;
   const fallback: Metadata = {
     title,

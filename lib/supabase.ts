@@ -186,6 +186,7 @@ export type EventApplication = {
   consent_privacy: boolean;
   consent_fiction: boolean;
   consent_content: boolean; // [선택] 비식별 응답의 콘텐츠 활용
+  consent_photo: boolean;   // [선택] 11/14 현장 사진·이름의 홍보 활용
   is_test?: boolean | null;
   status?: string | null;
   admin_note?: string | null;
