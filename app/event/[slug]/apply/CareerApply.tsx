@@ -421,7 +421,7 @@ function ApplyStep({
                 </label>
                 <div className="hint" style={{ marginTop: 0, marginBottom: 9 }}>
                   {event.final} · Finalist 2인만 참여합니다. 1차 직무 AI 면접까지만 참여하셔도 됩니다.
-                  현장에서는 검사·인터뷰와 상장 수여 장면을 사진으로 찍습니다(영상 촬영은 없습니다).
+                  Finalist 2인은 시상식을 마친 뒤 참가자 인터뷰와 사진 촬영을 진행합니다(영상 촬영은 없습니다).
                   사진의 홍보 활용은 아래 필수 동의 항목에서 확인합니다.
                 </div>
                 <div className="ev-radios">
@@ -556,8 +556,10 @@ function ApplyStep({
                       }}
                     />
                     <span>
-                      <b>[필수]</b> Finalist로 선발되어 11월 14일 현장에 참여하는 경우, 현장에서 찍은 사진과 이름·소속을
-                      슈퍼코더의 행사 홍보에 활용하는 것에 동의합니다.
+                      {/* 가운뎃점이 줄바꿈 자리로 잡혀 '이름' / '·소속' 으로 끊겼다. 한 덩어리로 묶는다 */}
+                      <b>[필수]</b> Finalist로 선발되어 11월 14일 현장에 참여하는 경우, 시상식 후 진행하는 참가자
+                      인터뷰에서 찍은 사진과 <span style={{ whiteSpace: "nowrap" }}>이름·소속</span>을 슈퍼코더의 행사
+                      홍보에 활용하는 것에 동의합니다.
                     </span>
                   </label>
                 </div>
