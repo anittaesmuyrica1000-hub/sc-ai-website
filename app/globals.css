@@ -89,24 +89,29 @@ h2{font-size:clamp(28px,3.6vw,44px);font-weight:700;letter-spacing:-.02em;line-h
   .evb-cta .evb-cta-more{display:none}
 }
 
-/* ===== 이벤트 코너 카드 (components/EventPopup.tsx) ===== */
-/* 홈 첫 진입 시 좌하단에 올라오는 비모달 카드 — 딤·스크롤 잠금 없음.
-   우하단은 챗봇(.cbot) 자리이므로 좌측 고정, z-index는 챗봇(120)보다 낮게.
-   (센터 모달 스타일: 포스터형 git 65e5b5d · 16:9+본문형 897336b 참고) */
-.evp-card{position:fixed;left:20px;bottom:20px;z-index:110;width:min(320px,calc(100vw - 104px));background:#fff;border:1px solid var(--line);border-radius:var(--r);overflow:hidden;box-shadow:0 22px 60px -18px rgba(8,13,28,.4);animation:evpUp .35s ease}
-@keyframes evpUp{from{opacity:0;transform:translateY(16px)}}
-.evp-card-link{display:block;text-decoration:none;color:var(--ink)}
-.evp-card-media{display:block;position:relative;aspect-ratio:720/405;overflow:hidden}
-.evp-card-media img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
-.evp-card-body{display:flex;flex-direction:column;gap:3px;padding:13px 16px 14px}
-.evp-card-title{font-size:15px;font-weight:800;letter-spacing:-.01em}
-.evp-card-meta{font-size:12.5px;color:var(--slate-2)}
-.evp-card-cta{margin-top:5px;font-size:13px;font-weight:700;color:var(--blue-d)}
-.evp-card-link:hover .evp-card-cta{text-decoration:underline;text-underline-offset:3px}
-.evp-x{position:absolute;right:10px;top:10px;z-index:1;width:28px;height:28px;border:0;border-radius:8px;background:rgba(10,19,48,.35);color:#fff;font-size:18px;line-height:1;cursor:pointer;backdrop-filter:blur(4px)}
+/* ===== 이벤트 센터 팝업 (components/EventPopup.tsx) ===== */
+/* 홈 첫 진입 시 1회 노출되는 모달. 비주얼은 행사 페이지 히어로와 같은 이미지. */
+.evp-dim{position:fixed;inset:0;z-index:300;background:rgba(8,13,28,.55);backdrop-filter:blur(2px);display:flex;align-items:center;justify-content:center;padding:20px;animation:evpFade .22s ease}
+.evp{position:relative;width:min(420px,100%);background:#fff;border-radius:var(--r);overflow:hidden;box-shadow:0 30px 80px -20px rgba(8,13,28,.5);animation:evpUp .3s ease}
+@keyframes evpFade{from{opacity:0}}
+@keyframes evpUp{from{opacity:0;transform:translateY(14px)}}
+/* 비주얼: 16:9 이미지 — '이벤트' 칩·행사명이 이미지 안에 디자인되어 있어 오버레이 없음
+   (글자 없는 이미지용 오버레이 마크업·스타일은 git 2ac2a9d 참고) */
+.evp-visual{display:block;position:relative;aspect-ratio:1440/810;overflow:hidden}
+.evp-visual img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
+.evp-body{padding:20px 22px 18px;display:flex;flex-direction:column;gap:8px}
+.evp-lead{margin:0;font-size:14px;line-height:1.6;color:var(--ink)}
+.evp-meta{margin:0;font-size:13px;color:var(--slate-2)}
+.evp-dday{color:var(--blue-d);font-weight:800}
+.evp-cta{justify-content:center;margin-top:8px}
+.evp-foot{display:flex;justify-content:center;align-items:center;gap:10px;padding:0 22px 16px;color:var(--slate-2)}
+.evp-foot button{border:0;background:transparent;padding:4px 2px;font-size:13px;color:var(--slate-2);cursor:pointer}
+.evp-foot button:hover{color:var(--ink);text-decoration:underline;text-underline-offset:3px}
+.evp-x{position:absolute;right:12px;top:12px;width:32px;height:32px;border:0;border-radius:9px;background:rgba(10,19,48,.35);color:#fff;font-size:20px;line-height:1;cursor:pointer;backdrop-filter:blur(4px)}
 .evp-x:hover{background:rgba(10,19,48,.55)}
-@media(max-width:560px){
-  .evp-card{left:16px;bottom:16px}
+@media(max-width:480px){
+  .evp-body{padding:18px 18px 14px}
+  .evp-foot{padding:0 18px 14px}
 }
 
 /* ===== GNB / Header (partial: <site-header>) ===== */
