@@ -113,7 +113,7 @@ export default async function JobDetailPage({
               {applyRange(e)}
             </span>
             <span>신입</span>
-            <span>학력·전공 무관</span>
+            <span>전공·학년 무관</span>
           </div>
         </div>
       </section>
@@ -160,8 +160,8 @@ export default async function JobDetailPage({
           <section className="jd-sec">
             <h2>자격요건</h2>
             <ul className="jd-list">
-              <li>취업을 준비하고 있는 대학·대학원 재학생 및 졸업생</li>
-              <li>전공, 학년, 졸업 시기 제한 없음</li>
+              <li>취업을 준비하고 있는 대학·대학원 재학생 (휴학생 포함)</li>
+              <li>전공, 학년 제한 없음</li>
               <li>두 직군 중 한 곳에만 지원할 수 있습니다</li>
             </ul>
             {/* 목록은 '되는 조건', 이 문장은 '보지 않는 것'. 반도체 회사 공고라 물러서기 쉬운 자리에 둔다 */}

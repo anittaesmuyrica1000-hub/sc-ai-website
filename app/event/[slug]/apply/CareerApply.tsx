@@ -123,7 +123,7 @@ export default function CareerApply({ event, status }: { event: EventItem; statu
                         <span>{j.team}</span>
                         <span>신입</span>
                         <span>서울</span>
-                        <span>학력·전공 무관</span>
+                        <span>전공·학년 무관</span>
                       </div>
                       <p className="career-job__desc">{j.desc}</p>
                     </div>

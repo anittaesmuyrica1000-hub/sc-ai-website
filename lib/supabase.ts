@@ -179,7 +179,7 @@ export type EventApplication = {
   phone: string;
   email: string;
   job: string;              // marketing | dev (lib/eventApply.ts EVENT_JOBS)
-  applicant_type: string;   // undergrad | grad | graduated | etc
+  applicant_type: string;   // undergrad | grad (10/7 축소 — 옛 테스트 행엔 graduated·etc 가 남아 있을 수 있다)
   final_attend: string;     // yes | no | undecided
   how_found?: string | null;
   how_found_detail?: string | null;
