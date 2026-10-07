@@ -15,6 +15,9 @@ import { trackEvent } from "@/lib/track";
  * - 비주얼은 팝업 전용 이미지(/event-popup.webp, 사용자 제작 1440×810 — 2026-10-07).
  *   행사 페이지 히어로(/event-hero-v2.webp)와 같은 3D 키비주얼 계열이라 행사로 이어져 읽히되,
  *   파일은 분리 — 팝업 이미지를 바꿔도 히어로가 따라 바뀌지 않는다.
+ *   ⚠️ '이벤트' 칩과 행사명이 이미지 안에 디자인되어 있다 — HTML로 칩·행사명을 다시
+ *   얹지 않는다(이중 표기). 대신 img alt가 행사명을 읽는다. 글자 없는 이미지로 되돌리면
+ *   옛 오버레이 마크업·스타일은 git 2ac2a9d 참고.
  * - 행사명·기간·D-day는 전부 lib/events.ts에서 온다. 모집 마감(closed)되면 스스로 사라진다.
  * - '오늘 하루 보지 않기'는 localStorage(KST 날짜), '닫기'는 sessionStorage —
  *   닫아도 다음 방문에는 다시 보이지만, 같은 방문 안에서 다시 뜨지는 않는다.
@@ -101,11 +104,8 @@ export default function EventPopup() {
       >
         {/* 비주얼도 통째로 행사 페이지 링크 — 팝업에서 그림을 누르는 사람이 가장 많다 */}
         <Link href={href} className="evp-visual" onClick={onCta}>
-          <img src="/event-popup.webp" alt="" width={1440} height={810} />
-          <span className="evp-visual-txt">
-            <span className="evp-chip">EVENT</span>
-            <strong className="evp-title">{EVENT.title}</strong>
-          </span>
+          {/* 행사명이 이미지에 들어 있으므로 alt가 그 역할을 한다 */}
+          <img src="/event-popup.webp" alt={`이벤트 — ${EVENT.title}`} width={1440} height={810} />
         </Link>
 
         <div className="evp-body">
