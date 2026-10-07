@@ -106,12 +106,11 @@ h2{font-size:clamp(28px,3.6vw,44px);font-weight:700;letter-spacing:-.02em;line-h
 .evp-meta{margin:0;font-size:13px;color:var(--slate-2)}
 .evp-dday{color:var(--blue-d);font-weight:800}
 .evp-cta{justify-content:center;margin-top:8px}
-.evp-foot{display:flex;justify-content:center;align-items:center;gap:10px;padding:0 9.3% 16px;color:var(--slate-2)}
-.evp-foot button{border:0;background:transparent;padding:4px 2px;font-size:13px;color:var(--slate-2);cursor:pointer}
-.evp-foot button:hover{color:var(--ink);text-decoration:underline;text-underline-offset:3px}
+/* 푸터 대신 돌아온 유일한 닫기 버튼(2026-10-08) — 비주얼 우상단, 반투명 배경으로 이미지 위에서도 보인다 */
+.evp-x{position:absolute;right:12px;top:12px;width:32px;height:32px;border:0;border-radius:9px;background:rgba(10,19,48,.35);color:#fff;font-size:20px;line-height:1;cursor:pointer;backdrop-filter:blur(4px)}
+.evp-x:hover{background:rgba(10,19,48,.55)}
 @media(max-width:480px){
-  .evp-body{padding-top:16px;padding-bottom:12px}
-  .evp-foot{padding-bottom:13px}
+  .evp-body{padding-top:16px;padding-bottom:16px}
 }
 
 /* ===== GNB / Header (partial: <site-header>) ===== */

@@ -19,18 +19,12 @@ import { trackEvent } from "@/lib/track";
  *   얹지 않는다(이중 표기). 대신 img alt가 행사명을 읽는다. 글자 없는 이미지로 되돌리면
  *   옛 오버레이 마크업·스타일은 git 2ac2a9d 참고.
  * - 행사명·기간·D-day는 전부 lib/events.ts에서 온다. 모집 마감(closed)되면 스스로 사라진다.
- * - '오늘 하루 보지 않기'는 localStorage(KST 날짜), '닫기'는 sessionStorage —
- *   닫아도 다음 방문에는 다시 보이지만, 같은 방문 안에서 다시 뜨지는 않는다.
+ * - 닫기(X·ESC·바깥 클릭)는 sessionStorage — 같은 방문 안에서 다시 뜨지 않고 다음 방문엔 다시 보인다.
+ *   '오늘 하루 보지 않기' 푸터는 세로 길이를 줄이려고 뺐다(2026-10-08 사용자) — 복원은 git 686fb64 참고.
  */
 const EVENT = EVENTS[0];
 
-const HIDE_TODAY_KEY = `evp-hide-today:${EVENT?.slug}`;
 const SESSION_KEY = `evp-closed:${EVENT?.slug}`;
-
-/** 한국 시간 기준 오늘(YYYY-MM-DD) — lib/events.ts kstToday와 같은 계산 */
-function kstToday(): string {
-  return new Date(Date.now() + 9 * 60 * 60 * 1000).toISOString().slice(0, 10);
-}
 
 /** ISO 날짜 → "10/8" — 팝업 한 줄에 맞춘 최단 표기(앞자리 0 제거) */
 function md(iso: string): string {
@@ -48,7 +42,6 @@ export default function EventPopup() {
     if (!EVENT || pathname !== "/") return;
     if (statusOf(EVENT) === "closed") return;
     try {
-      if (localStorage.getItem(HIDE_TODAY_KEY) === kstToday()) return;
       if (sessionStorage.getItem(SESSION_KEY)) return;
     } catch {
       /* 사생활 보호 모드 — 그냥 보여준다 */
@@ -64,15 +57,6 @@ export default function EventPopup() {
       sessionStorage.setItem(SESSION_KEY, "1");
     } catch {
       /* 저장 실패 — 이번 렌더에서만 닫힘 */
-    }
-  }, []);
-
-  const hideToday = useCallback(() => {
-    setOpen(false);
-    try {
-      localStorage.setItem(HIDE_TODAY_KEY, kstToday());
-    } catch {
-      /* 저장 실패 — 세션 닫힘과 동일하게 동작 */
     }
   }, []);
 
@@ -127,13 +111,10 @@ export default function EventPopup() {
           </Link>
         </div>
 
-        {/* 우상단 X는 뺐다(2026-10-07 사용자) — 닫기 수단은 아래 '닫기'·ESC·바깥 클릭으로 충분하고,
-            비주얼 위에 떠 있어 이미지를 가렸다 */}
-        <div className="evp-foot">
-          <button type="button" onClick={hideToday}>오늘 하루 보지 않기</button>
-          <span aria-hidden="true">·</span>
-          <button type="button" onClick={closeSession}>닫기</button>
-        </div>
+        {/* 유일한 가시적 닫기 수단 — 푸터('오늘 하루 보지 않기 · 닫기')를 뺀 대신 X가 돌아왔다(2026-10-08) */}
+        <button type="button" className="evp-x" aria-label="이벤트 팝업 닫기" onClick={closeSession}>
+          ×
+        </button>
       </div>
     </div>
   );
