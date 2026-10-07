@@ -60,6 +60,60 @@ h2{font-size:clamp(28px,3.6vw,44px);font-weight:700;letter-spacing:-.02em;line-h
 .tagchip{display:inline-flex;align-items:center;gap:8px;background:#fff;border:1px solid var(--line);border-radius:999px;padding:7px 16px;font-size:13px;font-weight:700;color:var(--slate);margin-bottom:24px;box-shadow:0 4px 12px -6px rgba(20,40,90,.15)}
 .tagchip i{color:var(--blue)}
 
+/* ===== 이벤트 공지 배너 (components/EventBanner.tsx) ===== */
+/* 헤더(sticky) 위, 문서 흐름에 놓이는 한 줄 스트립 — 스크롤하면 함께 올라간다.
+   배경은 랜딩 히어로의 다크 네이비 계열: 랜딩 최상단에서 히어로와 한 덩어리로 읽히고,
+   밝은 페이지(블로그 등)에서는 흰 배경과 또렷하게 분리된다.
+   높이가 생기는 만큼 GNB 색 판정선 보정은 SiteHeader.syncHeader가 .evb를 읽어서 한다. */
+.evb{position:relative;z-index:61;background:linear-gradient(100deg,#0A1330 0%,#132252 58%,#1E3A8F 100%)}
+.evb-link{display:block;text-decoration:none;color:#fff}
+.evb-in{display:flex;align-items:center;gap:12px;min-height:44px;padding-top:6px;padding-bottom:6px}
+.evb-chip{flex:none;font-size:11px;font-weight:800;letter-spacing:.08em;color:#AFC4FF;border:1px solid rgba(175,196,255,.45);border-radius:999px;padding:2px 9px}
+.evb-title{font-size:14px;font-weight:700;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.evb-sub{font-size:13px;color:rgba(255,255,255,.62);white-space:nowrap}
+.evb-cta{margin-left:auto;flex:none;font-size:13px;font-weight:700;color:#CFE0FF;white-space:nowrap;
+  /* 닫기 버튼(절대 배치)과 겹치지 않게 오른쪽 여백 확보 */
+  padding-right:34px}
+.evb-link:hover .evb-cta{color:#fff;text-decoration:underline;text-underline-offset:3px}
+.evb-x{position:absolute;right:10px;top:50%;transform:translateY(-50%);width:28px;height:28px;border:0;border-radius:8px;background:transparent;color:rgba(255,255,255,.55);font-size:19px;line-height:1;cursor:pointer}
+.evb-x:hover{background:rgba(255,255,255,.12);color:#fff}
+@media(max-width:760px){
+  .evb-sub{display:none}
+  .evb-in{gap:9px;min-height:40px}
+  .evb-title{font-size:13px}
+  .evb-cta{font-size:12px}
+}
+@media(max-width:480px){
+  /* 좁은 화면: 행사명 + D-day만 — '자세히 보기'는 칩·화살표가 대신 말한다 */
+  .evb-chip{display:none}
+  .evb-cta .evb-cta-more{display:none}
+}
+
+/* ===== 이벤트 센터 팝업 (components/EventPopup.tsx) ===== */
+/* 홈 첫 진입 시 1회 노출되는 모달. 비주얼은 행사 페이지 히어로와 같은 이미지. */
+.evp-dim{position:fixed;inset:0;z-index:300;background:rgba(8,13,28,.55);backdrop-filter:blur(2px);display:flex;align-items:center;justify-content:center;padding:20px;animation:evpFade .22s ease}
+.evp{position:relative;width:min(420px,100%);background:#fff;border-radius:var(--r);overflow:hidden;box-shadow:0 30px 80px -20px rgba(8,13,28,.5);animation:evpUp .3s ease}
+@keyframes evpFade{from{opacity:0}}
+@keyframes evpUp{from{opacity:0;transform:translateY(14px)}}
+/* 비주얼: 16:9 이미지 — '이벤트' 칩·행사명이 이미지 안에 디자인되어 있어 오버레이 없음
+   (글자 없는 이미지용 오버레이 마크업·스타일은 git 2ac2a9d 참고) */
+.evp-visual{display:block;position:relative;aspect-ratio:1440/810;overflow:hidden}
+.evp-visual img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
+/* 좌우 패딩 9.3% = 이미지 속 행사명 글자의 시작점(1440px 중 134px, 실측 2026-10-07).
+   px가 아니라 %라 팝업이 줄어도 본문·버튼이 이미지 타이틀과 같은 선에 정렬된다 */
+.evp-body{padding:20px 9.3% 18px;display:flex;flex-direction:column;gap:8px}
+.evp-lead{margin:0;font-size:14px;line-height:1.6;color:var(--ink)}
+.evp-meta{margin:0;font-size:13px;color:var(--slate-2)}
+.evp-dday{color:var(--blue-d);font-weight:800}
+.evp-cta{justify-content:center;margin-top:8px}
+.evp-foot{display:flex;justify-content:center;align-items:center;gap:10px;padding:0 9.3% 16px;color:var(--slate-2)}
+.evp-foot button{border:0;background:transparent;padding:4px 2px;font-size:13px;color:var(--slate-2);cursor:pointer}
+.evp-foot button:hover{color:var(--ink);text-decoration:underline;text-underline-offset:3px}
+@media(max-width:480px){
+  .evp-body{padding-top:16px;padding-bottom:12px}
+  .evp-foot{padding-bottom:13px}
+}
+
 /* ===== GNB / Header (partial: <site-header>) ===== */
 /* 섹션 인지형 GNB — partials.js가 헤더 아래 섹션을 감지해 클래스를 토글한다(Notion 식).
    · 기본            : 투명 배경 + 어두운 콘텐츠(밝은 섹션 최상단·apply.html 등)
