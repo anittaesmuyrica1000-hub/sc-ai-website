@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { EVENTS, statusOf, ddayLabel } from "@/lib/events";
+import { EVENTS, statusOf, promoLabel } from "@/lib/events";
 import { trackEvent } from "@/lib/track";
 
 /**
@@ -119,7 +119,7 @@ export default function EventPopup() {
           {/* 날짜 줄 = 상태 라벨 + 모집 기간(2026-10-07 사용자) — 모집 전 "10월 8일 모집 시작" → 모집 중 "D-n".
               기간은 applyStart/End에서 "10/8 ~ 11/1"로 만든다(참가비 등 나머지는 비주얼·행사 페이지 몫) */}
           <p className="evp-meta">
-            <strong className="evp-dday">{ddayLabel(EVENT, "long")}</strong>
+            <strong className="evp-dday">{promoLabel(EVENT)}</strong>
             {` · 모집 기간 ${md(EVENT.applyStart)} ~ ${md(EVENT.applyEnd)}`}
           </p>
           <Link href={href} className="btn btn-blue evp-cta" onClick={onCta}>

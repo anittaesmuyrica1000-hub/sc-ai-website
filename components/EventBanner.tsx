@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { EVENTS, statusOf, ddayLabel } from "@/lib/events";
+import { EVENTS, statusOf, promoLabel } from "@/lib/events";
 import { trackEvent } from "@/lib/track";
 
 /**
@@ -70,7 +70,7 @@ export default function EventBanner() {
           <span className="evb-sub">참가비 무료 · 전공·학년 제한 없음</span>
           {/* 날짜 기반 라벨 — 프리렌더 시점과 접속 시점이 날짜 경계를 걸치면 서로 다를 수 있다 */}
           <span className="evb-cta" suppressHydrationWarning>
-            {ddayLabel(EVENT, "long")}
+            {promoLabel(EVENT)}
             <span className="evb-cta-more"> · 자세히 보기</span> <span aria-hidden="true">→</span>
           </span>
         </span>
