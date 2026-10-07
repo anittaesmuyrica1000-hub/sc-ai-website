@@ -32,6 +32,12 @@ function kstToday(): string {
   return new Date(Date.now() + 9 * 60 * 60 * 1000).toISOString().slice(0, 10);
 }
 
+/** ISO 날짜 → "10/8" — 팝업 한 줄에 맞춘 최단 표기(앞자리 0 제거) */
+function md(iso: string): string {
+  const [, m, d] = iso.split("-").map(Number);
+  return `${m}/${d}`;
+}
+
 export default function EventPopup() {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
@@ -110,10 +116,11 @@ export default function EventPopup() {
 
         <div className="evp-body">
           <p className="evp-lead">{EVENT.lead}</p>
-          {/* 날짜 줄은 상태 라벨 하나만(2026-10-07 사용자) — 모집 전 "10월 8일 모집 시작" → 모집 중 "D-n".
-              기간·참가비는 비주얼·행사 페이지와 중복이라 뺐다 */}
+          {/* 날짜 줄 = 상태 라벨 + 모집 기간(2026-10-07 사용자) — 모집 전 "10월 8일 모집 시작" → 모집 중 "D-n".
+              기간은 applyStart/End에서 "10/8 ~ 11/1"로 만든다(참가비 등 나머지는 비주얼·행사 페이지 몫) */}
           <p className="evp-meta">
             <strong className="evp-dday">{ddayLabel(EVENT, "long")}</strong>
+            {` · 모집 기간 ${md(EVENT.applyStart)} ~ ${md(EVENT.applyEnd)}`}
           </p>
           <Link href={href} className="btn btn-blue evp-cta" onClick={onCta}>
             이벤트 자세히 보기 <span aria-hidden="true">→</span>
