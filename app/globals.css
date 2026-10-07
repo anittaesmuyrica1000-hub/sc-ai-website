@@ -99,17 +99,19 @@ h2{font-size:clamp(28px,3.6vw,44px);font-weight:700;letter-spacing:-.02em;line-h
    (글자 없는 이미지용 오버레이 마크업·스타일은 git 2ac2a9d 참고) */
 .evp-visual{display:block;position:relative;aspect-ratio:1440/810;overflow:hidden}
 .evp-visual img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
-.evp-body{padding:20px 22px 18px;display:flex;flex-direction:column;gap:8px}
+/* 좌우 패딩 9.3% = 이미지 속 행사명 글자의 시작점(1440px 중 134px, 실측 2026-10-07).
+   px가 아니라 %라 팝업이 줄어도 본문·버튼이 이미지 타이틀과 같은 선에 정렬된다 */
+.evp-body{padding:20px 9.3% 18px;display:flex;flex-direction:column;gap:8px}
 .evp-lead{margin:0;font-size:14px;line-height:1.6;color:var(--ink)}
 .evp-meta{margin:0;font-size:13px;color:var(--slate-2)}
 .evp-dday{color:var(--blue-d);font-weight:800}
 .evp-cta{justify-content:center;margin-top:8px}
-.evp-foot{display:flex;justify-content:center;align-items:center;gap:10px;padding:0 22px 16px;color:var(--slate-2)}
+.evp-foot{display:flex;justify-content:center;align-items:center;gap:10px;padding:0 9.3% 16px;color:var(--slate-2)}
 .evp-foot button{border:0;background:transparent;padding:4px 2px;font-size:13px;color:var(--slate-2);cursor:pointer}
 .evp-foot button:hover{color:var(--ink);text-decoration:underline;text-underline-offset:3px}
 @media(max-width:480px){
-  .evp-body{padding:18px 18px 14px}
-  .evp-foot{padding:0 18px 14px}
+  .evp-body{padding-top:16px;padding-bottom:12px}
+  .evp-foot{padding-bottom:13px}
 }
 
 /* ===== GNB / Header (partial: <site-header>) ===== */
