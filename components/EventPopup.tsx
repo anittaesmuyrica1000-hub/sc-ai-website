@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { EVENTS, statusOf, ddayLabel } from "@/lib/events";
+import { EVENTS, statusOf } from "@/lib/events";
 import { trackEvent } from "@/lib/track";
 
 /**
@@ -12,12 +12,11 @@ import { trackEvent } from "@/lib/track";
  * 한 번 확실히 보여주는 장치다 — 홈("/")에서만 뜨고, 블로그 글 등 다른 입구에서는
  * 스트립만 남겨 반복 방문자를 방해하지 않는다.
  *
- * - 비주얼은 팝업 전용 이미지(/event-popup.webp, 사용자 제작 1440×810 — 2026-10-07).
- *   행사 페이지 히어로(/event-hero-v2.webp)와 같은 3D 키비주얼 계열이라 행사로 이어져 읽히되,
- *   파일은 분리 — 팝업 이미지를 바꿔도 히어로가 따라 바뀌지 않는다.
- *   ⚠️ '이벤트' 칩과 행사명이 이미지 안에 디자인되어 있다 — HTML로 칩·행사명을 다시
- *   얹지 않는다(이중 표기). 대신 img alt가 행사명을 읽는다. 글자 없는 이미지로 되돌리면
- *   옛 오버레이 마크업·스타일은 git 2ac2a9d 참고.
+ * - 포스터형(2026-10-07 사용자 선택): 카드 전체가 포스터 이미지 한 장(/event-popup.webp,
+ *   1080×1350 4:5 — SNS 포스터와 같은 규격)이고, 아래에 '오늘 하루 보지 않기 · 닫기'만 남는다.
+ *   행사명·기간·혜택·전형 절차가 전부 이미지 안에 있으므로 HTML 본문(리드·D-day·CTA 버튼)은
+ *   두지 않는다 — 내용 수정은 이미지 재제작·교체로 한다. 이미지 전체가 행사 페이지 링크다.
+ *   (16:9 비주얼 + HTML 본문 구조로 되돌리려면 git 897336b 참고)
  * - 행사명·기간·D-day는 전부 lib/events.ts에서 온다. 모집 마감(closed)되면 스스로 사라진다.
  * - '오늘 하루 보지 않기'는 localStorage(KST 날짜), '닫기'는 sessionStorage —
  *   닫아도 다음 방문에는 다시 보이지만, 같은 방문 안에서 다시 뜨지는 않는다.
@@ -102,23 +101,15 @@ export default function EventPopup() {
         aria-label={`${EVENT.title} 안내`}
         onClick={(e) => e.stopPropagation()}
       >
-        {/* 비주얼도 통째로 행사 페이지 링크 — 팝업에서 그림을 누르는 사람이 가장 많다 */}
+        {/* 포스터 전체가 행사 페이지 링크 — 내용은 이미지가, 접근성은 alt가 담당한다 */}
         <Link href={href} className="evp-visual" onClick={onCta}>
-          {/* 행사명이 이미지에 들어 있으므로 alt가 그 역할을 한다 */}
-          <img src="/event-popup.webp" alt={`이벤트 — ${EVENT.title}`} width={1440} height={810} />
+          <img
+            src="/event-popup.webp"
+            alt={`${EVENT.title} — ${EVENT.period} · 참가비 무료. 눌러서 자세히 보기`}
+            width={1080}
+            height={1350}
+          />
         </Link>
-
-        <div className="evp-body">
-          <p className="evp-lead">{EVENT.lead}</p>
-          {/* 날짜 기반 라벨 — 모집 전 "10월 8일 모집 시작" → 모집 중 "D-n" */}
-          <p className="evp-meta">
-            <strong className="evp-dday">{ddayLabel(EVENT, "long")}</strong>
-            {` · ${EVENT.period} · 참가비 무료`}
-          </p>
-          <Link href={href} className="btn btn-blue evp-cta" onClick={onCta}>
-            이벤트 자세히 보기 <span aria-hidden="true">→</span>
-          </Link>
-        </div>
 
         <div className="evp-foot">
           <button type="button" onClick={hideToday}>오늘 하루 보지 않기</button>
