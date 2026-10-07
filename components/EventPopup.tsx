@@ -12,8 +12,9 @@ import { trackEvent } from "@/lib/track";
  * 한 번 확실히 보여주는 장치다 — 홈("/")에서만 뜨고, 블로그 글 등 다른 입구에서는
  * 스트립만 남겨 반복 방문자를 방해하지 않는다.
  *
- * - 비주얼은 이벤트 페이지 히어로와 같은 이미지(/event-hero-v2.webp)를 그대로 쓴다.
- *   팝업에서 본 그림이 행사 페이지에서 다시 보여야 같은 행사로 읽힌다.
+ * - 비주얼은 팝업 전용 이미지(/event-popup.webp, 사용자 제작 1440×810 — 2026-10-07).
+ *   행사 페이지 히어로(/event-hero-v2.webp)와 같은 3D 키비주얼 계열이라 행사로 이어져 읽히되,
+ *   파일은 분리 — 팝업 이미지를 바꿔도 히어로가 따라 바뀌지 않는다.
  * - 행사명·기간·D-day는 전부 lib/events.ts에서 온다. 모집 마감(closed)되면 스스로 사라진다.
  * - '오늘 하루 보지 않기'는 localStorage(KST 날짜), '닫기'는 sessionStorage —
  *   닫아도 다음 방문에는 다시 보이지만, 같은 방문 안에서 다시 뜨지는 않는다.
@@ -100,7 +101,7 @@ export default function EventPopup() {
       >
         {/* 비주얼도 통째로 행사 페이지 링크 — 팝업에서 그림을 누르는 사람이 가장 많다 */}
         <Link href={href} className="evp-visual" onClick={onCta}>
-          <img src="/event-hero-v2.webp" alt="" width={1440} height={810} />
+          <img src="/event-popup.webp" alt="" width={1440} height={810} />
           <span className="evp-visual-txt">
             <span className="evp-chip">EVENT</span>
             <strong className="evp-title">{EVENT.title}</strong>
