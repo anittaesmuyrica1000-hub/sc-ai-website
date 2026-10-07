@@ -1,0 +1,571 @@
+/* /event — AI 면접 이벤트.
+   목록(히어로·필터·카드 그리드)은 app/blog/blog.css,
+   상세(읽기 폭·타이포·표·태그·하단 CTA)는 app/blog/[id]/post.css 를 그대로 쓴다.
+   여기에는 이벤트에만 있는 것만 둔다. */
+
+/* ── /event 목록의 행사 한 건 ─────────────────────────────
+   블로그식 커버 카드(.post-card)를 쓰지 않는다. 커버 이미지가 없는 동안
+   빈 그라데이션 박스가 화면 대부분을 차지하고, 정작 지원자가 알아야 할
+   "어떤 직군을, 언제까지"는 안 보였다.
+   요약 한 블록 + 채용 카드로 바꿔 목록에서 바로 지원까지 간다. */
+.ev-entry{max-width:980px;margin:0 auto;padding:0 0 8px}
+.ev-entry+.ev-entry{margin-top:56px;padding-top:48px;border-top:1px solid var(--line)}
+/* 상단 배너 박스 — 지원 페이지(app/event/[slug]/apply/career.css)의 .career-banner 와 같은 문법.
+   이미지 없이 그라데이션으로 만들어, 포스터 디자인이 나오면 background 만 덮으면 된다. */
+/* 배너 전체가 상세로 가는 링크다 — 안에 링크를 또 두지 않는다(어디를 눌러야 하는지 헷갈린다) */
+.ev-banner{
+  display:block;text-decoration:none;
+  position:relative;overflow:hidden;border-radius:var(--r);
+  background:linear-gradient(135deg,#1B3B8F 0%,var(--blue) 62%,var(--blue-2) 100%);
+  color:#fff;padding:clamp(38px,4.4vw,58px) clamp(28px,4vw,52px);transition:.15s
+}
+.ev-banner:hover{box-shadow:0 18px 40px -22px rgba(20,40,90,.6);transform:translateY(-2px)}
+.ev-banner:focus-visible{outline:2px solid var(--blue);outline-offset:3px}
+.ev-banner__status,.ev-banner__title,.ev-banner__excerpt,.ev-banner__meta{display:block}
+/* 배경 장식 원 — 지원 페이지 배너와 같은 위치 */
+.ev-banner::after{
+  content:"";position:absolute;right:-58px;bottom:-84px;width:240px;height:240px;
+  border-radius:50%;background:rgba(255,255,255,.1);pointer-events:none
+}
+.ev-banner>*{position:relative}
+
+.ev-banner__status{
+  display:inline-block;border-radius:999px;padding:5px 12px;
+  background:rgba(255,255,255,.18);color:#fff;
+  font-size:12.5px;font-weight:700;letter-spacing:-.01em
+}
+.ev-banner__title{
+  margin:16px 0 0;font-size:clamp(26px,3.6vw,38px);font-weight:700;
+  line-height:1.3;letter-spacing:-.025em;word-break:keep-all;color:#fff
+}
+.ev-banner__excerpt{
+  margin:14px 0 0;font-size:clamp(15.5px,1.4vw,17px);line-height:1.68;
+  color:rgba(255,255,255,.88);word-break:keep-all;max-width:60ch
+}
+.ev-banner__meta{
+  display:flex;align-items:center;gap:16px;flex-wrap:wrap;
+  margin-top:26px;padding-top:20px;border-top:1px solid rgba(255,255,255,.22);
+  font-size:14px;font-weight:600;color:rgba(255,255,255,.92)
+}
+
+@media(max-width:560px){
+  .ev-banner{padding:28px 22px 24px}
+  .ev-banner__meta{flex-direction:column;align-items:flex-start;gap:10px}
+}
+
+/* ── 대문 아래 공고 카드 ──────────────────────────────────
+   실제 기업 채용 사이트의 공고 목록과 같은 읽기 순서로 둔다:
+   회사 → 공고명 → 고용형태·접수기간 → D-day·직무 태그.
+   훑는 사람이 "내 직군인가 / 언제까지인가"를 두 줄 안에 끝내는 게 목적이라
+   설명 문장은 카드에 넣지 않는다(상세는 지원 페이지의 공고 화면이 맡는다). */
+/* ══ 상세 페이지 레이아웃 (데스크톱 1440 기준) ══════════════
+   블로그 상세(.post-wrap, 760px 한 칼럼)를 그대로 쓰면 1440에서 양옆이 비고
+   지원 버튼이 스크롤 밖으로 밀린다. 히어로(전체 폭) + 본문·사이드바 2단으로 잡는다.
+   본문 타이포(.post-content: 표·목록·제목)는 post.css 를 계속 쓴다 — 거기까지 새로 만들 이유가 없다. */
+
+/* 컨테이너 폭: 1180 = 본문 740 + 간격 60 + 사이드바 340 + 좌우 여백 */
+.ev-hero{
+  background:linear-gradient(135deg,#1B3B8F 0%,var(--blue) 62%,var(--blue-2) 100%);
+  color:#fff;position:relative;overflow:hidden;
+  /* ⚠️ globals.css 의 `section{padding:var(--sec-y) 0}` (랜딩 섹션 리듬, 최대 120px)를 끈다.
+     그대로 두면 아래 .ev-hero__inner 패딩에 120px 이 더해져 히어로가 645px 까지 커진다. */
+  padding:0
+}
+/* 배경 장식 원 — 목록 배너·지원 페이지 배너와 같은 문법 */
+.ev-hero::after{
+  content:"";position:absolute;right:6%;bottom:-160px;width:420px;height:420px;
+  border-radius:50%;background:rgba(255,255,255,.09);pointer-events:none
+}
+.ev-hero__inner{
+  position:relative;max-width:1180px;margin:0 auto;
+  padding:clamp(40px,4.4vw,60px) 24px clamp(34px,3.6vw,48px);
+  /* 배경 이미지가 들어갈 자리를 확보한다. 글이 짧아도 이 높이는 유지된다.
+     ⚠️ 높이를 바꾸려면 이 값과 아래 모바일 값만 고치면 된다(1440 기준 460px). */
+  min-height:460px;display:flex;flex-direction:column
+}
+/* 뒤로가기·공유 줄은 위에, 제목 블록은 아래에 붙인다 —
+   남는 공간이 가운데로 가야 배경 이미지가 보일 자리가 생긴다 */
+.ev-hero__body{margin-top:auto}
+/* 가상기업 로고(흰색 반전형). 높이만 정하고 폭은 비율대로 둔다.
+   margin-bottom 은 제목 블록이 길어져 위로 차오를 때 로고와 붙지 않게 하는 최소 간격이다. */
+.ev-hero__brand{margin-bottom:28px;line-height:0}
+.ev-hero__brand img{display:block;height:30px;width:auto}
+.ev-hero__back{
+  display:inline-flex;align-items:center;gap:7px;margin-bottom:24px;
+  font-size:14px;font-weight:700;color:rgba(255,255,255,.88);text-decoration:none
+}
+.ev-hero__back:hover{color:#fff}
+.ev-hero__status{
+  display:inline-block;border-radius:999px;padding:6px 14px;
+  background:rgba(255,255,255,.18);color:#fff;font-size:13px;font-weight:700
+}
+.ev-hero__title{
+  margin:18px 0 0;font-size:clamp(30px,4.2vw,48px);font-weight:700;
+  line-height:1.24;letter-spacing:-.03em;word-break:keep-all;max-width:20ch
+}
+.ev-hero__excerpt{
+  margin:16px 0 0;font-size:clamp(16px,1.4vw,18px);line-height:1.68;
+  color:rgba(255,255,255,.88);word-break:keep-all;max-width:62ch
+}
+/* 가상기업 고지 칩. 흰 18% 막은 밝은 파랑 배경 위에서 대비가 모자라(아래 상태 칩 주석)
+   짙은 남색 막을 깐다 — 흰 글자 대비 약 6.9:1. 칩 모양이라 요약 본문과 다른 층위로 읽힌다 */
+.ev-hero__note{
+  display:inline-flex;align-items:center;gap:8px;margin:14px 0 0;padding:7px 14px;
+  border-radius:999px;background:rgba(9,20,52,.34);
+  font-size:14px;font-weight:600;line-height:1.45;color:#fff;word-break:keep-all
+}
+.ev-hero__note i{font-size:13px;opacity:.9}
+.ev-hero__meta{
+  display:flex;flex-wrap:wrap;align-items:center;gap:10px 22px;margin-top:26px;padding-top:20px;
+  border-top:1px solid rgba(255,255,255,.22);
+  font-size:14px;font-weight:600;color:rgba(255,255,255,.92)
+}
+/* 글자 변형이라 줄 높이를 밀지 않는다 — 메타 줄의 gap(22px)을 그대로 쓴다 */
+
+.ev-detail{
+  display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:60px;align-items:start;
+  max-width:1180px;margin:0 auto;padding:clamp(40px,4vw,56px) 24px 80px
+}
+/* post.css 가 본문 위에 주던 여백은 여기서 레이아웃이 대신 잡는다 */
+.ev-detail .post-content{margin-top:0}
+
+/* ── 이벤트 액센트 원색 ────────────────────────────────
+   #3A6FFF. rgba() 에 넣을 수 있도록 채널값 세 개로 둔다.
+   전형 절차의 원과 참가 혜택 표가 이 한 값에서 파생한다.
+   .jd 도 같이 선언하는 이유 — 공고 상세가 .ev-flow 를 함께 쓰는데
+   그쪽은 .ev-detail 바깥이라 변수를 상속받지 못한다. */
+.ev-detail,
+.jd{--ev-accent:58,111,255}
+
+/* 참가 혜택 표 — 전형 절차의 원과 같은 색. 면은 머리행 한 줄에만 깐다.
+   본문 행까지 줄무늬를 넣으면 색 덩어리가 겹겹이 되어 표가 본문보다 먼저 읽힌다.
+   머리행만 채우면 '여기부터 표'라는 신호는 주면서 무게는 한 줄에서 끝난다.
+   나머지 위계는 선의 진하기로 — 머리행 아래 28% · 본문 행 14% · 바깥 테두리 22%.
+   ⚠️ 머리행 면이 둥근 위 모서리를 넘지 않는 것은 .post-table-wrap 의
+      overflow-x:auto 덕이다(overflow 가 visible 이 아니면 잘라 낸다). 이 값을 지우면 각이 진다.
+   ⚠️ 마지막 행의 `border-bottom:none` 은 건드리지 않는다 — 여기서 색만 바꾸고
+      style 은 손대지 않으므로 마지막 행은 그대로 선이 없다. */
+.ev-detail .post-content .post-table-wrap{border-color:rgba(var(--ev-accent),.22)}
+.ev-detail .post-content .post-table th,
+.ev-detail .post-content .post-table td{border-bottom-color:rgba(var(--ev-accent),.14)}
+.ev-detail .post-content .post-table thead th{
+  background:rgba(var(--ev-accent),.08);color:var(--blue-d);
+  border-bottom-color:rgba(var(--ev-accent),.28)
+}
+.ev-detail .post-content .post-table tbody tr:nth-child(even){background:transparent}
+
+/* 표 아래 보조 설명 — 본문 17px·표 15px 보다 작은 14px 로 둬서 표가 먼저 읽히게 한다.
+   불릿 점은 post.css 가 top:13px 으로 17px/1.85 줄에 맞춰 둔 값이라, 줄 높이가
+   23.8px(14 × 1.7)로 줄면 점이 글자보다 아래로 내려간다. 함께 올린다. */
+/* 2026-09-30 14 → 15px. 카드·목록 안 글씨는 15px 을 하한으로 둔다(메인 페이지 카드 설명과 같다).
+   줄 높이 25.5px(15 × 1.7)에 맞춰 불릿 점도 10px 로 내린다 */
+.ev-detail .post-content ul.post-list.ev-notes{font-size:15px;line-height:1.7;gap:8px}
+.ev-detail .post-content ul.post-list.ev-notes li::before{top:10px;width:6px;height:6px}
+
+/* ── 섹션 간격 ────────────────────────────────────────
+   행사 안내는 성격이 다른 블록(소개·공고·절차·인재상·혜택·FAQ·유의사항)이 잇달아
+   나와서 블로그 글의 38px 리듬으로는 어디서 끊기는지 잘 보이지 않는다.
+   post.css 를 고치면 블로그 글 전체가 따라 움직이므로 .ev-detail 안으로 가둔다.
+   ⚠️ 자식 선택자(>)인 이유 — 공고 카드 블록 안의 h2(.ev-jobs__head h2)는
+      여백을 0 으로 죽여 뒀는데, 후손 선택자로 쓰면 점수가 같아 순서로 이기고 져서
+      그 h2 까지 60px 이 붙는다. */
+/* 섹션 제목 크기 — post.css 의 22px(블로그 글 기준)은 48px 히어로 바로 아래에서 너무 떨어진다.
+   메인 페이지 섹션 제목(44px)과 블로그(22px) 사이인 28px 로 둔다(2026-09-30). 좁은 화면은 23px 까지 */
+.ev-detail .post-content > h2{margin-top:60px;font-size:clamp(23px,3vw,28px);letter-spacing:-.02em}
+/* 첫 섹션 위는 히어로다 — 그 간격은 .ev-detail 의 padding 이 이미 잡는다 */
+.ev-detail .post-content > h2:first-child{margin-top:0}
+/* 유의사항 앞 구분선 — post.css 기본은 위 34px 이라 섹션 리듬(60px)보다 붙어 보였다.
+   위도 60px 으로 맞춘다(아래 34px 은 h2 의 margin-top 60px 과 상쇄되어 60px 이 된다). */
+.ev-detail .post-content .post-hr{margin-top:60px}
+
+/* ── 스크롤을 따라오는 지원 패널 ────────────────────────── */
+.ev-detail__side{position:sticky;top:88px}
+.ev-side{
+  border:1px solid var(--line);border-radius:var(--r);background:#fff;
+  box-shadow:0 12px 32px -24px rgba(20,40,90,.4);padding:24px 22px
+}
+.ev-side__head{display:flex;align-items:center;gap:9px;margin-bottom:18px}
+/* 실제 채용 공고의 요약 카드와 같은 위계로 둔다:
+   줄마다 선을 긋지 않고, 라벨은 흐리고 작게 · 값은 진하고 굵게.
+   선을 지우면 '표'가 아니라 '한 덩어리 정보'로 읽혀서 훑는 속도가 빨라진다. */
+.ev-side__list{display:grid;gap:0;margin:0}
+.ev-side__list>div{
+  /* 라벨 108px · 간격 12px (2026-09-30 116 → 108).
+     라벨은 108px 안에 한 줄로 든다. 예외는 '오프라인 AI 역량 검사'(2026-10-02) — 한 줄이면 칸을 넘어
+     '검사'만 떨어져서, 마크업에서 '오프라인 / AI 역량 검사' 로 끊었다. 값 칸은 174px 이 남고,
+     가장 긴 값 '11월 6일(금) ~ 11월 8일(일)'이 15px 에서 실측 168px 이라 한 줄에 든다.
+     116px 이던 때(값 칸 166px)는 값을 15px 로 올리자 '(일)'만 둘째 줄로 떨어졌다.
+     (116px 은 문의 메일 행이 있던 때의 값이다 — 그 행은 뺐다) */
+  display:grid;grid-template-columns:108px minmax(0,1fr);gap:12px;
+  padding:0 0 14px;line-height:1.55
+}
+.ev-side__list>div:last-child{padding-bottom:0}
+.ev-side__list dt{font-size:13.5px;font-weight:400;color:var(--slate-2);padding-top:2px}
+/* 값은 굵기를 쓰지 않는다 — 700 → 500 → 400. 여섯 줄이 이어지면 굵기가 곧 무게가 된다.
+   라벨과의 구분은 크기(13.5 → 15)와 색(--slate-2 → --ink)이 맡는다. */
+.ev-side__list dd{margin:0;font-size:15px;font-weight:400;color:var(--ink);word-break:keep-all;overflow-wrap:anywhere}
+.ev-side__cta{
+  width:100%;justify-content:center;margin-top:20px;
+  font-size:15.5px;padding:14px;text-decoration:none
+}
+/* ⚠️ 흰 글자는 파란 버튼일 때만. 모집 전 CTA 는 btn-out(흰 배경)이라
+   여기에 color:#fff 를 걸면 글자가 통째로 사라진다(2026-09-29). */
+.ev-side__cta.btn-blue,.ev-side__cta.btn-blue:hover{color:#fff}
+/* 모집 전 지원 버튼(ApplyCta) — 버튼 자리는 지키되 누를 수 없음을 색으로 알린다.
+   hover 에 떠오르거나 손가락 커서가 뜨면 다시 눌러 보게 된다 */
+.btn.ev-btn-off,.btn.ev-btn-off:hover{
+  background:var(--soft);color:var(--slate-2);border:1px solid var(--line);
+  cursor:default;transform:none
+}
+.ev-side__note{margin:12px 0 0;font-size:12.5px;color:var(--slate-2);text-align:center}
+
+/* ── 좁은 화면 하단 고정 지원 바 ──────────────────────────
+   1080 아래에서 오른쪽 패널이 사라진 자리를 받는다. 공고 상세(.jd-bar)와 같은 구조·높이로
+   둬서 행사 안내와 공고 상세를 오갈 때 지원 버튼의 손 위치가 바뀌지 않는다. */
+.ev-bar{display:none}
+
+/* 1080 아래에서는 오른쪽 지원 패널을 감춘다.
+   본문 위로 올리면(예전 order:-1) 화면을 줄이자마자 일정표부터 읽혀 모집 공고가 뒤로 밀린다.
+   패널의 일정·문의는 본문 '모집 요강' 표가 같은 값을 담고 있어 사라져도 잃는 정보가 없고,
+   지원 버튼은 하단 고정 바(.ev-bar)가 스크롤 내내 대신 받는다. */
+@media(max-width:1080px){
+  .ev-detail{
+    grid-template-columns:minmax(0,1fr);gap:32px;max-width:760px;
+    /* 고정 바가 본문 마지막 줄을 가리지 않도록 끝에 자리를 비운다 */
+    padding-bottom:calc(96px + env(safe-area-inset-bottom))
+  }
+  .ev-detail__side{display:none}
+
+  .ev-bar{
+    display:flex;align-items:center;justify-content:space-between;gap:14px;
+    position:fixed;left:0;right:0;bottom:0;z-index:60;
+    background:rgba(255,255,255,.96);backdrop-filter:blur(10px);
+    border-top:1px solid var(--line);
+    padding:12px 16px calc(12px + env(safe-area-inset-bottom))
+  }
+  .ev-bar__info{display:flex;align-items:baseline;gap:9px;min-width:0}
+  .ev-bar__info b{font-size:14px;font-weight:800;color:var(--blue-d);white-space:nowrap}
+  .ev-bar__info span{
+    font-size:13.5px;color:var(--slate-2);
+    overflow:hidden;text-overflow:ellipsis;white-space:nowrap
+  }
+  .ev-bar .btn{padding:12px 22px;font-size:15px;text-decoration:none;flex-shrink:0}
+  .ev-bar .btn-blue,.ev-bar .btn-blue:hover{color:#fff}
+  .ev-bar__off{font-size:13.5px;font-weight:600;color:var(--slate-2);flex-shrink:0}
+
+  /* 푸터 마지막 줄도 바에 가리지 않게 한다 */
+  body:has(.ev-bar) footer{padding-bottom:calc(92px + env(safe-area-inset-bottom))}
+  /* 챗봇 FAB(.cbot, z-index 120)이 바 오른쪽 끝에 겹쳐 지원 버튼을 가린다.
+     바를 FAB 위로 올리면 채팅을 못 열게 되므로 FAB 을 바 위로 띄운다.
+     :has 미지원 브라우저에서는 지금과 같은 겹침으로 남는다(기능은 유지). */
+  body:has(.ev-bar) .cbot{bottom:calc(80px + env(safe-area-inset-bottom))}
+}
+@media(max-width:560px){
+  .ev-hero__inner{padding-left:16px;padding-right:16px;min-height:380px}
+  .ev-hero__brand{margin-bottom:22px}
+  .ev-hero__brand img{height:24px}
+  .ev-detail{padding-left:16px;padding-right:16px}
+  .ev-bar{padding-left:14px;padding-right:14px;gap:10px}
+  .ev-bar .btn{padding:12px 18px}
+  .ev-side__list>div{grid-template-columns:70px minmax(0,1fr);gap:12px}
+}
+
+/* ── 공고 카드 ───────────────────────────────────────────
+   상세 페이지에만 둔다(목록은 행사 배너만). 실제 채용 사이트의 공고 목록과 같은
+   읽기 순서: 회사 → 공고명 → 고용형태·접수기간 → D-day·직무 태그. */
+/* 이 블록의 h2 는 .ev-jobs__head h2{margin:0} 으로 여백을 죽여 뒀으므로,
+   섹션 간격은 블록 바깥에서 준다 — 값은 위 `.ev-detail .post-content > h2` 와 같은 60px.
+   앞 문단의 margin-bottom(22px), 뒤 h2 의 margin-top(60px)과는 마진 상쇄로 합쳐진다. */
+.ev-jobs{margin:60px 0 0}
+.ev-jobs__head{display:flex;align-items:center;gap:9px;margin-bottom:16px}
+/* post.css 의 h2 여백·크기를 상속하지 않도록 값을 직접 지정한다.
+   크기는 다른 섹션 제목(.ev-detail .post-content > h2)과 같다 — 이 블록도 섹션 하나다 */
+.post-content .ev-jobs__head h2{
+  margin:0;font-size:clamp(23px,3vw,28px);font-weight:700;line-height:1.4;
+  letter-spacing:-.02em;color:var(--ink)
+}
+.ev-jobs__count{
+  min-width:24px;height:24px;padding:0 7px;border-radius:999px;
+  background:var(--soft-2);color:var(--blue-d);
+  font-size:13px;font-weight:800;display:grid;place-items:center
+}
+/* ⚠️ post.css 의 `.post-content ul:not(.post-list)` 가 padding-left:24px 를 준다.
+   선택자 점수가 더 높아서 .ev-jobs__list 만으로는 이기지 못하고 카드만 24px 안으로 밀렸다 —
+   제목·설명은 왼쪽 끝인데 카드만 들여쓰여 보였다. .post-content 조합을 함께 둔다. */
+.ev-jobs__list,
+.post-content ul.ev-jobs__list{list-style:none;display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:0;padding:0}
+.ev-jobs__list>li{margin:0}
+.ev-jobs__list>li::before{content:none} /* post.css 의 목록 불릿 제거 */
+
+.ev-jobcard{
+  display:flex;flex-direction:column;height:100%;
+  border:1px solid var(--line);border-radius:14px;background:#fff;
+  padding:22px 22px 20px;transition:.15s
+}
+/* .post-content a 가 본문 링크를 파란 밑줄로 만든다. 카드는 그 규칙에서 빼낸다.
+   ⚠️ .ev-jobcard 만 쓰면 선택자 점수가 낮아 밑줄이 그대로 남는다 — .post-content 조합을 함께 둔다. */
+.ev-jobcard,
+.post-content .ev-jobcard{text-decoration:none;color:inherit}
+.ev-jobcard:hover{border-color:var(--blue-2);box-shadow:0 10px 26px -18px rgba(20,40,90,.35);transform:translateY(-2px)}
+.ev-jobcard:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+
+.ev-jobcard__org{font-size:13px;font-weight:600;color:var(--slate-2);letter-spacing:-.01em}
+.ev-jobcard__title{
+  margin-top:7px;font-size:18px;font-weight:700;line-height:1.42;
+  letter-spacing:-.025em;color:var(--ink);word-break:keep-all
+}
+/* 고용형태 | 접수기간 — 삼성 카드와 같은 구분선 한 줄 */
+.ev-jobcard__meta{
+  display:flex;align-items:center;flex-wrap:wrap;gap:10px;
+  margin-top:12px;font-size:13.5px;font-weight:500;color:var(--slate-2)
+}
+.ev-jobcard__meta>span+span{
+  padding-left:11px;border-left:1px solid var(--line);
+  font-variant-numeric:tabular-nums
+}
+.ev-jobcard__tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:auto;padding-top:18px}
+
+/* 세로로 쌓는 배치 — 읽기 폭(약 720px) 안에서 2열로 두면 제목이 접히고 태그가 넘친다.
+   카드를 한 줄씩 full width 로 두고, 오른쪽에 화살표를 붙여 누를 수 있음을 알린다. */
+/* 위 규칙과 같은 점수(0,2,1)라 순서로 이긴다 — 반드시 아래에 둔다 */
+.ev-jobs__list--stack,
+.post-content ul.ev-jobs__list--stack{grid-template-columns:1fr;gap:12px}
+.ev-jobs__list--stack .ev-jobcard{
+  flex-direction:row;align-items:center;gap:20px;padding:22px 24px
+}
+.ev-jobs__list--stack .ev-jobcard__main{display:flex;flex-direction:column;flex:1;min-width:0}
+/* 가로 배치에서는 태그를 바닥까지 밀 필요가 없다 */
+.ev-jobs__list--stack .ev-jobcard__tags{margin-top:0;padding-top:16px}
+.ev-jobs__list--stack .ev-jobcard__go{
+  flex-shrink:0;width:40px;height:40px;border-radius:50%;
+  background:var(--soft-2);color:var(--blue);
+  display:grid;place-items:center;font-size:14px;transition:.15s
+}
+.ev-jobs__list--stack .ev-jobcard:hover .ev-jobcard__go{background:var(--blue);color:#fff}
+.ev-jobs__list--stack .ev-jobcard:hover{transform:none}
+/* 면이 아니라 라인으로 — 카드 안에 색 덩어리가 네 개씩 들어가면 제목보다 태그가 먼저 읽힌다.
+   테두리로 두면 태그는 보조 정보로 물러나고 카드 제목이 먼저 잡힌다. */
+.ev-tag{
+  border-radius:999px;padding:5px 15px;font-size:12.5px;font-weight:600;
+  letter-spacing:-.01em;background:transparent;
+  border:1px solid var(--line);color:var(--slate);white-space:nowrap
+}
+/* D-day 만 파란 라인 — 카드에서 가장 먼저 읽혀야 하는 값 */
+.ev-tag--dday{border-color:var(--blue);color:var(--blue-d);font-weight:800}
+
+
+@media(max-width:720px){
+  .ev-jobs__list{grid-template-columns:1fr}
+  .ev-jobcard{padding:20px 18px 18px}
+  .ev-jobcard__title{font-size:17px}
+}
+
+/* 상세 본문 중간 지원 버튼 — 공고 카드를 목록으로 옮긴 뒤 이 자리를 맡는다.
+   하단 .post-cta 가 마지막으로 한 번 더 받는다. */
+.ev-apply{
+  display:flex;align-items:center;flex-wrap:wrap;gap:14px;margin:0 0 34px
+}
+.ev-apply__note{font-size:14px;font-weight:600;color:var(--slate-2)}
+
+/* .post-content a 가 본문 링크를 파란 밑줄로 만든다. 버튼은 그 규칙에서 빼낸다 */
+.post-content .ev-apply .btn{text-decoration:none}
+.post-content .ev-apply .btn-blue{color:#fff}
+.post-content .ev-apply .btn-blue:hover{color:#fff}
+
+@media(max-width:560px){
+  .ev-apply .btn{width:100%;justify-content:center}
+  .ev-apply__note{width:100%;text-align:center}
+}
+
+/* ── 공유 버튼 (components/ShareButton) ──────────────────
+   행사 안내 히어로(파란 배경)와 공고 헤더(흰 배경) 양쪽이 같은 컴포넌트를 쓴다.
+   취준생이 공고를 옮기는 경로가 단톡방·커뮤니티 링크라, 읽기 전과 다 읽은 뒤 두 지점에 둔다. */
+.share-wrap{position:relative;display:inline-flex;flex-shrink:0}
+.share-btn{
+  display:inline-flex;align-items:center;gap:8px;border:0;background:transparent;
+  color:var(--slate);cursor:pointer;transition:.15s;font-family:inherit
+}
+.share-btn--icon{width:40px;height:40px;border-radius:50%;justify-content:center;font-size:16px}
+/* 인라인 SVG 아이콘 — FontAwesome 글리프가 없는 모양(공유 노드)에 쓴다. 글자 크기를 따라간다 */
+.share-btn__svg{width:1em;height:1em;display:block;flex-shrink:0}
+.share-btn--icon:hover{background:var(--soft-2);color:var(--blue)}
+.share-btn--line{
+  border:1px solid var(--line);border-radius:999px;padding:9px 16px;
+  font-size:13.5px;font-weight:600
+}
+.share-btn--line:hover{border-color:var(--blue-2);color:var(--blue-d)}
+/* 테두리 없이 아이콘 + 글자. 링크 아이콘이 '누를 수 있는 것'임을 알리므로
+   밑줄은 쓰지 않는다 — 밑줄과 아이콘을 같이 두면 장식이 두 겹이 된다. */
+.share-btn--text{font-size:14px;font-weight:600;padding:0;gap:7px}
+.share-btn--text i{font-size:13px}
+.share-btn--text:hover{color:var(--blue-d)}
+.share-btn:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+
+/* 복사 결과를 눈으로도 확인시킨다 — 복사는 화면에 아무 변화를 남기지 않는 동작이라
+   피드백이 없으면 계속 다시 누르게 된다 */
+.share-toast{
+  position:absolute;right:0;top:calc(100% + 8px);z-index:20;
+  background:var(--ink);color:#fff;border-radius:9px;padding:8px 12px;
+  font-size:12.5px;font-weight:600;white-space:nowrap;
+  opacity:0;transform:translateY(-4px);pointer-events:none;transition:.16s
+}
+.share-toast[data-show="1"]{opacity:1;transform:none}
+
+/* 파란 히어로 위 */
+.ev-hero__top{display:flex;align-items:center;gap:16px;margin-bottom:24px}
+.ev-hero__top .ev-hero__back{margin-bottom:0}
+.ev-hero .share-btn{color:rgba(255,255,255,.9)}
+.ev-hero .share-btn--text:hover{color:#fff}
+.ev-hero .share-btn:focus-visible{outline-color:#fff}
+
+/* ── 히어로 배경 이미지 ──────────────────────────────────
+   lib/events.ts 의 cover 가 있을 때만 붙는다. 없으면 파란 그라데이션 그대로.
+
+   2026-09-30 밝은 배경으로 바꿨다(원본 event-hero-v2.webp, 1440×810, 전체 불투명).
+   예전 그래픽은 남색 그라데이션 위에 얹고 남색 막(최대 58%)으로 눌러서 답답했다.
+   새 이미지는 그래픽이 위쪽 절반에, 글자가 놓일 아래·왼쪽은 밝은 파랑 면이라
+   막 없이도 흰 글자 대비가 4.5:1 을 넘는다(제목 자리의 가장 밝은 점만 3.3:1 — 큰 글씨 기준 통과).
+   그래서 막은 '누르는' 남색이 아니라 같은 계열 파랑을 옅게 깔아 여유만 둔다.
+   레이어 순서(위 → 아래): 파란 막 · 이미지 · 바탕 그라데이션.
+   ⚠️ 이미지를 더 밝은 것으로 바꾸면 흰 글자 대비부터 다시 잰다 — 막을 남색으로 되돌리기 전에
+      이미지 쪽(글자 자리의 밝기)을 먼저 본다.
+
+   데스크톱 이미지(event-hero-v2-wide.webp)는 2560×810 이다. 오른쪽 1440px 이 원본이고,
+   왼쪽 1120px 은 원본 왼쪽 끝 열의 색을 행마다 그대로 늘린 것이다(이음매 없음).
+   이미지는 오른쪽 위에 붙이고 원본 부분이 1440px 보다 커지지 않게 한다.
+   · 히어로(460px)가 이미지(810px)보다 낮아서 위쪽 그래픽이 보이고 아래 단색 면은 잘린다.
+   · cover 로 두면 1920 에서 1.33배로 커져 밝은 막대가 제목·요약 끝에 걸리고(요약 3.4:1),
+     2560 에서는 세로가 잘려 로고 타일 아래가 날아간다. 그래서 넓은 화면은 키우지 않고
+     늘려 둔 왼쪽 면이 남는 폭을 받는다.
+   · 177.78% = 2560/1440. 화면이 1440 보다 좁으면 원본 부분이 화면 폭에 맞게 줄어든다.
+   · 1529px(원본 부분 860px) 아래로는 줄이지 않는다 — 높이가 460 밑으로 내려가 아래가 빈다.
+   · 2560 보다 넓은 화면의 왼쪽 끝은 바탕 그라데이션이 받는다(원본 왼쪽 끝 열 y 0~460 실측). */
+.ev-hero--img{
+  /* 이미지가 뜨기 전 바탕 — 이미지 아래쪽 면과 같은 색 */
+  background-color:#2A55C8;
+  background-image:
+    linear-gradient(90deg,rgba(16,48,168,.28) 0%,rgba(16,48,168,.14) 38%,rgba(16,48,168,0) 62%),
+    var(--ev-hero-img),
+    linear-gradient(180deg,#215de7 0%,#2e70fd 14%,#255efb 27%,#2e61f0 52%,#3060e5 65%,#2d59d1 88%,#2b56cb 100%);
+  background-size:cover,max(min(177.78%,2560px),1529px) auto,cover;
+  background-position:center,right top,center;
+  background-repeat:no-repeat
+}
+/* 장식 원은 그래픽과 겹치면 얼룩처럼 보인다 */
+.ev-hero--img::after{display:none}
+/* 상태 칩 — 흰 18% 막은 짙은 남색 위에서만 읽힌다. 밝은 파랑 위에서는 칩 면이 #4c76ee 쯤이 되어
+   흰 글자 대비가 4.1:1 로 떨어진다(13px 은 4.5:1 이 필요하다). 흰 칩에 파란 글자로 뒤집는다 */
+.ev-hero--img .ev-hero__status{background:#fff;color:var(--blue-d)}
+
+@media(max-width:768px){
+  /* 좁은 화면은 글자가 히어로 전체를 덮는다. 세로를 꽉 채우고(cover) 그래픽이 오른쪽 위에 오게 둔다.
+     로고·상태 칩이 놓이는 왼쪽 위가 그래픽의 흰 막대와 겹쳐서 막을 왼쪽에서 진하게,
+     그래픽이 있는 오른쪽으로 갈수록 옅게 깐다(역시 파랑 계열 — 남색으로 누르지 않는다). */
+  .ev-hero--img{
+    background-image:
+      linear-gradient(100deg,rgba(16,48,168,.7) 0%,rgba(16,48,168,.48) 50%,rgba(16,48,168,.24) 100%),
+      var(--ev-hero-img-m);
+    background-size:cover,cover;
+    background-position:center,88% top
+  }
+}
+
+/* 사진이 밝은 쪽에 걸리면 흰 아이콘이 사라진다 — 이미지가 있을 때만 옅은 막을 깐다 */
+.ev-hero--img .share-btn--icon{background:rgba(9,20,52,.42)}
+.ev-hero--img .share-btn--icon:hover{background:rgba(9,20,52,.66)}
+.ev-hero--img .ev-hero__back{text-shadow:0 1px 6px rgba(9,20,52,.55)}
+
+/* ── 전형 절차 · 인재상 · FAQ ────────────────────────────
+   행사 안내(.post-content 안)와 공고 상세가 같이 쓴다. 두 페이지 모두
+   본문 단 폭이 732px(1180 - 좌우 24 - 패널 340 - 간격 60)이라 한 벌로 맞춘다.
+   ⚠️ post.css 의 `.post-content ol:not(.post-list)` 가 여백을 잡으므로
+      같은 점수(0,2,1)로 덮는다 — event.css 가 post.css 뒤에 실리는 것을 이용한다. */
+
+/* 원 안에 단계 이름, 원 아래에 기간.
+   연결선은 원을 덮지 않고 원과 원 사이 구간만 긋는다 — 겹쳐 그린 뒤 z-index 로
+   가리면 원 배경색을 바꿀 때마다 선까지 따라 고쳐야 한다.
+   앞 원의 오른쪽 끝(-50%+dot/2)부터 이 원의 왼쪽 끝(50%-dot/2)까지라 길이는 100%-dot. */
+.ev-flow{--dot:116px;list-style:none;display:grid;grid-template-columns:repeat(4,1fr);margin:0;padding:0}
+.post-content ol.ev-flow{margin:0 0 4px;padding-left:0}
+.ev-flow li{position:relative;display:flex;flex-direction:column;align-items:center;text-align:center}
+.post-content ol.ev-flow li{padding-left:0}
+.post-content ol.ev-flow li::before{content:none} /* post.css 의 번호 불릿 제거 */
+.ev-flow li:not(:first-child)::after{
+  content:"";position:absolute;top:calc(var(--dot)/2);
+  right:calc(50% + var(--dot)/2);width:calc(100% - var(--dot));
+  height:1px;background:var(--line)
+}
+/* 원 색은 --ev-accent(#3A6FFF) 하나를 투명도로 옅게 깐다 — 면과 테두리를 각각
+   고정 톤으로 만들어 두면 브랜드 블루가 바뀔 때 여러 군데를 따로 맞춰야 한다.
+   ⚠️ 글자색만 --blue-d 로 남긴다. 8% 면 위에 #3A6FFF 를 그대로 쓰면 대비가
+      3.9:1 이라 본문 크기 기준(4.5:1)에 못 미친다(--blue-d 는 7.8:1). */
+.ev-flow__dot{
+  width:var(--dot);height:var(--dot);border-radius:50%;box-sizing:border-box;
+  display:grid;place-items:center;padding:0 12px;
+  background:rgba(var(--ev-accent),.08);border:1px solid rgba(var(--ev-accent),.22);
+  font-size:14.5px;font-weight:700;line-height:1.4;letter-spacing:-.02em;
+  color:var(--blue-d);word-break:keep-all;white-space:pre-line
+}
+.ev-flow__when{
+  margin-top:13px;font-size:13.5px;font-weight:700;color:var(--ink);
+  font-variant-numeric:tabular-nums
+}
+.ev-flow li p{margin:6px 0 0;font-size:15px;line-height:1.65;color:var(--slate);word-break:keep-all}
+
+.ev-values{list-style:none;display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:0;padding:0}
+.post-content ul.ev-values{margin:0 0 4px;padding-left:0}
+.ev-values li{border:1px solid var(--line);border-radius:12px;padding:16px 18px}
+.post-content ul.ev-values li{padding-left:18px}
+.post-content ul.ev-values li::before{content:none}
+.ev-values li b{font-size:15px;font-weight:800;color:var(--ink);letter-spacing:-.01em}
+.ev-values li span{margin-left:7px;font-size:13px;font-weight:600;color:var(--slate-2)}
+.ev-values li p{margin:7px 0 0;font-size:15px;line-height:1.6;color:var(--slate)}
+/* 한 줄 정의 아래 '이런 사람' 두 줄. 점으로 시작하고, 정의와는 색(--slate → --slate-2)으로 가른다.
+   크기는 2026-09-30 13.5 → 15px — 카드 안 글씨 하한(15px)에 맞췄다. 점은 줄 높이 24px 에 맞춰 10px.
+   셀렉터는 (0,2,1) — 위 `.ev-values li p` (0,1,2) 를 이기려면 이 정도가 필요하다 */
+.ev-values .ev-values__dos{margin-top:12px;padding-top:12px;border-top:1px solid var(--line)}
+.ev-values .ev-values__dos p{position:relative;margin:0;padding-left:12px;font-size:15px;line-height:1.6;color:var(--slate-2);word-break:keep-all}
+.ev-values .ev-values__dos p + p{margin-top:4px}
+.ev-values .ev-values__dos p::before{content:"";position:absolute;left:1px;top:10px;width:4px;height:4px;border-radius:50%;background:var(--blue-2)}
+
+/* 회사 개요 — 설립·임직원·본사·사업 4칸. 실제 채용 공고의 기업 정보 줄처럼 선으로만 나눈다.
+   값은 굵기를 쓰지 않는다(지원 패널과 같은 원칙) — 라벨과는 크기·색으로 구분한다 */
+.ev-facts{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));margin:8px 0 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.ev-facts>div{padding:14px 16px;border-left:1px solid var(--line)}
+.ev-facts>div:first-child{border-left:0;padding-left:0}
+.ev-facts dt{margin:0 0 4px;font-size:12.5px;color:var(--slate-2)}
+.ev-facts dd{margin:0;font-size:15px;line-height:1.5;color:var(--ink);word-break:keep-all}
+
+/* FAQ — 펼쳐 두면 스크롤의 4분의 1을 차지한다. 질문만 보이고 필요한 것만 연다 */
+.ev-faq{border-top:1px solid var(--line);margin:0 0 22px}
+.ev-faq details{border-bottom:1px solid var(--line)}
+.ev-faq summary{
+  cursor:pointer;list-style:none;position:relative;
+  /* 600 — 700 이면 섹션 제목(자주 묻는 질문)과 같은 무게라 질문 다섯 줄이 제목처럼 읽힌다.
+     한 단계 낮춰 제목 > 질문 > 답변 순서가 보이게 한다 */
+  padding:15px 36px 15px 0;font-size:16px;font-weight:600;
+  color:var(--ink);line-height:1.5;word-break:keep-all
+}
+.ev-faq summary::-webkit-details-marker{display:none}
+.ev-faq summary::after{
+  content:"";position:absolute;right:10px;top:22px;width:8px;height:8px;
+  border-right:2px solid var(--slate-2);border-bottom:2px solid var(--slate-2);
+  transform:rotate(45deg);transition:.15s
+}
+.ev-faq details[open] summary{color:var(--blue-d)}
+.ev-faq details[open] summary::after{transform:rotate(225deg);top:26px;border-color:var(--blue)}
+.ev-faq details p{margin:0 0 18px;font-size:15.5px;line-height:1.78;color:var(--slate)}
+
+@media(max-width:640px){
+  /* 원 네 개가 한 줄에 들어가지 않는다. 2열로 접고, 줄이 바뀌는 3번째 칸의
+     연결선은 지운다(왼쪽 바깥으로 선이 삐져나간다). */
+  .ev-flow{--dot:104px;grid-template-columns:1fr 1fr;row-gap:28px}
+  .ev-flow li:nth-child(odd)::after{content:none}
+}
+@media(max-width:560px){
+  .ev-values{grid-template-columns:1fr}
+  /* 4칸이 좁아지면 2x2 로. 왼쪽 열은 세로선 없이 시작한다 */
+  .ev-facts{grid-template-columns:1fr 1fr}
+  .ev-facts>div:nth-child(odd){border-left:0;padding-left:0}
+  .ev-facts>div:nth-child(n+3){border-top:1px solid var(--line)}
+}

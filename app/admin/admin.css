@@ -4,7 +4,12 @@
   .admin-head h1{font-size:clamp(24px,3vw,32px);font-weight:800;letter-spacing:-.02em}
   .admin-head .sub{color:var(--slate);font-size:15px;margin-top:4px}
   .admin-note{background:#FFF8E6;border:1px solid #F4E2A8;color:#8A6A12;font-size:13px;font-weight:600;border-radius:10px;padding:10px 14px;margin:14px 0 26px}
-  .admin-grid{display:grid;grid-template-columns:1fr 1.1fr;gap:36px;align-items:start}
+  /* 이벤트 지원자 통계 카드 6장. 1fr 1.1fr · gap 36px 은 2단 불균등 패널용 값이라,
+     카드 6장이 두 칸으로 갈라져 한 장이 화면 절반을 먹었다. 대시보드 통계(.dash-stats)와
+     같은 밀도로 맞춘다 — 넓으면 한 줄, 좁아지면 알아서 접히므로 분기가 따로 필요 없다. */
+  .admin-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px;align-items:start;margin-bottom:28px}
+  /* margin-bottom 28px — 아래 필터 바(.adm-filters)의 라벨이 카드 밑변에 바로 붙어 있었다.
+     필터 바 쪽에 margin-top 을 주지 않는 이유는 그 클래스를 다른 탭도 쓰기 때문이다. */
 
   /* 폼 카드 */
   .card{background:#fff;border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow);padding:28px}
@@ -326,13 +331,19 @@
   .set-row span{color:var(--slate)}
   .set-row b{color:var(--ink);word-break:break-all}
 
-  /* 필터 바 */
-  .adm-filters{display:flex;gap:12px;flex-wrap:wrap;align-items:flex-end;margin-bottom:20px}
-  .filt{display:flex;flex-direction:column;gap:5px}
+  /* 필터 바 — 항목이 8개까지 늘어나는 화면(이벤트 지원자)이 기준이다.
+     gap 12px·label 간격 5px 에서는 어디까지가 한 항목인지 눈으로 끊기지 않았다.
+     가로 간격을 세로보다 넓게 둬서 줄바꿈이 생겨도 열이 섞여 보이지 않는다. */
+  .adm-filters{display:flex;gap:18px 22px;flex-wrap:wrap;align-items:flex-end;margin-bottom:28px}
+  .filt{display:flex;flex-direction:column;gap:8px}
   .filt.grow{flex:1;min-width:180px}
   .filt label{font-size:12px;font-weight:700;color:var(--slate)}
-  .filt select,.filt input{padding:9px 11px;border:1px solid var(--line);border-radius:9px;font-size:13.5px;font-family:inherit;background:#fff;color:var(--ink)}
+  .filt select,.filt input{padding:10px 13px;border:1px solid var(--line);border-radius:9px;font-size:13.5px;font-family:inherit;background:#fff;color:var(--ink)}
   .filt input{width:100%}
+  /* 셀렉트는 가장 긴 option 글자만큼 넓어진다. '유입 경로'의 '대외활동 플랫폼
+     (링커리어·캠퍼스픽·씽굿·위비티)' 하나 때문에 한 칸이 500px 을 먹고, 그만큼 밀린
+     검색 칸이 다음 줄로 떨어진다. 닫혀 있을 때 보이는 건 선택된 값('전체')뿐이라 잘려도 된다. */
+  .adm-filters .filt:not(.grow) select{max-width:200px}
 
   /* 상태 배지/셀렉트 */
   .pill{display:inline-block;font-size:12px;font-weight:700;padding:3px 9px;border-radius:999px;white-space:nowrap}
@@ -342,6 +353,9 @@
   .pill-amber{background:#FFF3DC;color:#9A6A12}
   .pill-gray{background:#EEF1F6;color:#6B7689}
   .status-sel{padding:6px 8px;border:1px solid var(--line);border-radius:8px;font-size:12.5px;font-family:inherit;background:#fff;color:var(--ink);font-weight:600}
+  /* 면접 완료 시각 — 쿠폰 선착순을 정하는 값이라 표에서 바로 고칠 수 있게 둔다 */
+  .dt-sel{padding:6px 8px;border:1px solid var(--line);border-radius:8px;font-size:12.5px;font-family:inherit;background:#fff;color:var(--ink)}
+  .dt-sel:disabled{opacity:.5}
 
   /* 셀 보조 */
   .cell-title{font-weight:700;color:var(--ink)}
@@ -480,7 +494,7 @@
     .adm-bar{padding:16px 18px}
   }
   @media(max-width:640px){
-    .adm-filters{gap:8px}
+    .adm-filters{gap:14px}
     .filt{width:100%}
     .filt select,.filt input{width:100%}
     .adm-body{padding:16px 14px 48px}
@@ -504,7 +518,8 @@
     .dash-stats{grid-template-columns:1fr}
     .quick-cards{grid-template-columns:1fr}
   }
-  @media(max-width:880px){.admin-grid{grid-template-columns:1fr;gap:28px}.admin{padding:76px 16px 60px}}
+  /* .admin-grid 는 auto-fit 이라 열 수를 따로 지정하지 않는다 */
+  @media(max-width:880px){.admin-grid{gap:12px}.admin{padding:76px 16px 60px}}
 
 /* 도입문의 유입(UTM) 칩 */
 .utm-chip{display:inline-block;max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;vertical-align:middle;padding:2px 8px;border-radius:999px;background:var(--soft);color:var(--blue-d);font-size:12px;font-weight:600}
