@@ -52,6 +52,12 @@ export type EventItem = {
    * 표시 높이는 CSS(.ev-hero__brand img)가 정하고, 이 값은 비율을 미리 잡아 밀림을 막는 데만 쓴다.
    */
   brandLogo?: { src: string; alt: string; width: number; height: number };
+  /**
+   * 카톡·커뮤니티 공유 카드(og:image·twitter) 썸네일. 1200×630.
+   * 없으면 사이트 공통 /og-image.png 를 쓴다. 기사와 함께 링크가 퍼지는 행사는
+   * 공유 카드가 보도 이미지와 같은 그림이어야 같은 행사로 읽힌다(2026-10-07).
+   */
+  ogImage?: string;
   /** 참가 신청 경로. 자체 폼은 /event/<slug>/apply (app/event/[slug]/apply) */
   applyUrl: string;
 };
@@ -87,6 +93,8 @@ export const EVENTS: EventItem[] = [
     // 예전 파일(/event-hero.webp · /event-hero-m.webp)은 되돌릴 때를 위해 public 에 남겨 뒀다.
     cover: "/event-hero-v2-wide.webp",
     coverMobile: "/event-hero-v2.webp",
+    // 10/8 보도 이미지([슈퍼코더] 보도이미지1, 1440×810)를 1200×630 으로 줄여 가운데를 자른 것(2026-10-07).
+    ogImage: "/og-event-ai-mock-challenge-2026.jpg",
     // brandLogo 는 뺐다(2026-09-30). 바로 위 GNB 의 Supercoder 로고와 심볼·서체가 같아 로고가
     // 두 번 나온 것처럼 보였다. public/logos/supernics-white.png 는 슈퍼닉스 시절 로고라
     // 가상기업명이 슈퍼전자로 돌아온 지금(2026-10-02)은 쓰지 않는다.

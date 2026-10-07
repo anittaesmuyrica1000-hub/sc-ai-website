@@ -56,7 +56,7 @@ export async function generateMetadata({
       title: `${e.title} 참가자 모집`,
       description: e.excerpt,
       url: `/event/${e.slug}`,
-      images: [{ url: "/og-image.png?v=3", width: 1200, height: 630 }],
+      images: [{ url: e.ogImage ?? "/og-image.png?v=3", width: 1200, height: 630 }],
       tags: TAGS,
     },
     /* layout 의 twitter 는 홈 문구("AI 면접으로 검증된 인재만 만나세요")라 이 페이지를
@@ -65,7 +65,7 @@ export async function generateMetadata({
       card: "summary_large_image",
       title: `${e.title} 참가자 모집`,
       description: e.excerpt,
-      images: ["/og-image.png?v=3"],
+      images: [e.ogImage ?? "/og-image.png?v=3"],
     },
   };
   return buildPageMetadata(`/event/${e.slug}`, fallback);
@@ -102,7 +102,7 @@ const faqs = (e: EventItem) => [
   ],
   [
     "AI 면접은 어떻게 진행되나요?",
-    "직무 AI 면접은 온라인으로 진행하며, 응시 기간 안에서 원하는 시간을 골라 응시합니다. 자격증이나 스펙을 직접 묻는 대신 직무 역량에 연결된 본인의 경험을 질문하고, 답변에 따라 후속 질문이 이어집니다. 답변 시간에 제한은 없습니다.",
+    "직무 AI 면접은 온라인으로 진행하며, 별도 선발 없이 지원서를 낸 모든 분이 응시 기간 안에서 원하는 시간을 골라 응시합니다. 자격증이나 스펙을 직접 묻는 대신 직무 역량에 연결된 본인의 경험을 질문하고, 답변에 따라 후속 질문이 이어집니다. 답변 시간에 제한은 없습니다.",
   ],
   ["두 직군에 모두 지원할 수 있나요?", "한 직군만 선택해 지원할 수 있습니다. 지원 후에는 직군을 바꿀 수 없습니다."],
   [
