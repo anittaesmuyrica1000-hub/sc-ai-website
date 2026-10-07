@@ -156,6 +156,15 @@ export function ddayLabel(e: EventItem, style: "short" | "long" = "short", today
 }
 
 /**
+ * 배너·팝업처럼 문맥 없이 단독으로 보이는 자리의 상태 라벨.
+ * 공고 카드·지원 패널은 마감일이 옆에 있어 D-n 단독이 관행이지만,
+ * 처음 보는 방문자는 D-n만으로는 시작까지인지 마감까지인지 알 수 없다(2026-10-08 사용자 피드백).
+ */
+export function promoLabel(e: EventItem, today = new Date()): string {
+  return statusOf(e, today) === "open" ? `마감 ${ddayLabel(e, "short", today)}` : ddayLabel(e, "long", today);
+}
+
+/**
  * 접수 기간 문장형 — "10월 6일 오픈 · 11월 1일 마감".
  * 마감일만 쓰면 모집 전에 읽는 사람이 지금 지원할 수 있는지 알 수 없다.
  */
