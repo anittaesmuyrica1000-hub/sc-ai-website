@@ -45,7 +45,12 @@ export default function SiteHeader() {
       const header = headerRef.current;
       if (!header) return;
       const y = window.scrollY;
-      const navLine = y + 33;
+      // 이벤트 공지 배너(.evb)가 헤더 위에 있으면 헤더가 그만큼 내려가 있다.
+      // 배너는 흐름에 놓여 스크롤과 함께 올라가므로, 화면에 남은 높이만큼만 판정선을 내린다.
+      // (배너가 없거나 이미 지나갔으면 0 — 기존과 동일)
+      const evb = document.querySelector(".evb");
+      const evbPush = evb ? Math.max(0, evb.getBoundingClientRect().bottom) : 0;
+      const navLine = y + evbPush + 33;
       function over(sel: string) {
         const els = document.querySelectorAll(sel);
         for (let i = 0; i < els.length; i++) {

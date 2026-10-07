@@ -3,6 +3,8 @@ import "./globals.css";
 import "./pretendard.css"; // Pretendard Variable dynamic subset — CSS는 번들, woff2 청크만 jsdelivr
 import "./fontawesome.css"; // Font Awesome 6 Free 서브셋 — 사용 아이콘만, 폰트는 /fonts 자체 호스팅
 import SiteHeader from "@/components/SiteHeader";
+import EventBanner from "@/components/EventBanner";
+import EventPopup from "@/components/EventPopup";
 import SiteFooter from "@/components/SiteFooter";
 import Chatbot from "@/components/Chatbot";
 import Analytics from "@/components/Analytics";
@@ -85,9 +87,13 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         )}
       </head>
       <body>
+        {/* 이벤트 공지 스트립 — 헤더(sticky) 위 문서 흐름. 모집 마감 시 스스로 사라진다 */}
+        <EventBanner />
         <SiteHeader />
         {children}
         <SiteFooter />
+        {/* 이벤트 센터 팝업 — 홈("/") 첫 진입 시 1회. 모집 마감 시 스스로 사라진다 */}
+        <EventPopup />
         <Chatbot />
         {/* 어드민이 ID 대신 전체 스니펫을 붙여넣은 경우에만 클라이언트에서 주입한다 */}
         <Analytics gaRaw={tags.gaRaw} gtmRaw={tags.gtmRaw} consentInjected={useGoogleTags} />
