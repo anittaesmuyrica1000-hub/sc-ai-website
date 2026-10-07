@@ -110,25 +110,23 @@ export default function EventPopup() {
 
         <div className="evp-body">
           <p className="evp-lead">{EVENT.lead}</p>
-          {/* 날짜 기반 라벨 — 모집 전 "10월 8일 모집 시작" → 모집 중 "D-n" */}
+          {/* 날짜 줄은 상태 라벨 하나만(2026-10-07 사용자) — 모집 전 "10월 8일 모집 시작" → 모집 중 "D-n".
+              기간·참가비는 비주얼·행사 페이지와 중복이라 뺐다 */}
           <p className="evp-meta">
             <strong className="evp-dday">{ddayLabel(EVENT, "long")}</strong>
-            {` · ${EVENT.period} · 참가비 무료`}
           </p>
           <Link href={href} className="btn btn-blue evp-cta" onClick={onCta}>
             이벤트 자세히 보기 <span aria-hidden="true">→</span>
           </Link>
         </div>
 
+        {/* 우상단 X는 뺐다(2026-10-07 사용자) — 닫기 수단은 아래 '닫기'·ESC·바깥 클릭으로 충분하고,
+            비주얼 위에 떠 있어 이미지를 가렸다 */}
         <div className="evp-foot">
           <button type="button" onClick={hideToday}>오늘 하루 보지 않기</button>
           <span aria-hidden="true">·</span>
           <button type="button" onClick={closeSession}>닫기</button>
         </div>
-
-        <button type="button" className="evp-x" aria-label="이벤트 팝업 닫기" onClick={closeSession}>
-          ×
-        </button>
       </div>
     </div>
   );

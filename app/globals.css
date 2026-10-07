@@ -107,8 +107,6 @@ h2{font-size:clamp(28px,3.6vw,44px);font-weight:700;letter-spacing:-.02em;line-h
 .evp-foot{display:flex;justify-content:center;align-items:center;gap:10px;padding:0 22px 16px;color:var(--slate-2)}
 .evp-foot button{border:0;background:transparent;padding:4px 2px;font-size:13px;color:var(--slate-2);cursor:pointer}
 .evp-foot button:hover{color:var(--ink);text-decoration:underline;text-underline-offset:3px}
-.evp-x{position:absolute;right:12px;top:12px;width:32px;height:32px;border:0;border-radius:9px;background:rgba(10,19,48,.35);color:#fff;font-size:20px;line-height:1;cursor:pointer;backdrop-filter:blur(4px)}
-.evp-x:hover{background:rgba(10,19,48,.55)}
 @media(max-width:480px){
   .evp-body{padding:18px 18px 14px}
   .evp-foot{padding:0 18px 14px}
