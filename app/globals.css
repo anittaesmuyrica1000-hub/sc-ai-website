@@ -89,21 +89,25 @@ h2{font-size:clamp(28px,3.6vw,44px);font-weight:700;letter-spacing:-.02em;line-h
   .evb-cta .evb-cta-more{display:none}
 }
 
-/* ===== 이벤트 센터 팝업 (components/EventPopup.tsx) ===== */
-/* 홈 첫 진입 시 1회 노출되는 포스터형 모달 — 카드 전체가 4:5 포스터 이미지, 아래 푸터만 HTML.
-   (16:9 비주얼 + HTML 본문 구조의 옛 스타일은 git 897336b 참고) */
-.evp-dim{position:fixed;inset:0;z-index:300;background:rgba(8,13,28,.55);backdrop-filter:blur(2px);display:flex;align-items:center;justify-content:center;padding:20px;animation:evpFade .22s ease}
-/* 폭 = 4:5 포스터 + 푸터(44px)가 화면 높이를 넘지 않는 값. 세로가 짧은 화면에선 뷰포트 기준으로 줄어든다 */
-.evp{position:relative;width:min(400px,100%,calc((100vh - 110px) * .8));background:#fff;border-radius:var(--r);overflow:hidden;box-shadow:0 30px 80px -20px rgba(8,13,28,.5);animation:evpUp .3s ease}
-@keyframes evpFade{from{opacity:0}}
-@keyframes evpUp{from{opacity:0;transform:translateY(14px)}}
-.evp-visual{display:block;position:relative;aspect-ratio:1080/1350;overflow:hidden}
-.evp-visual img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
-.evp-foot{display:flex;justify-content:center;align-items:center;gap:10px;padding:10px 22px 12px;color:var(--slate-2)}
-.evp-foot button{border:0;background:transparent;padding:4px 2px;font-size:13px;color:var(--slate-2);cursor:pointer}
-.evp-foot button:hover{color:var(--ink);text-decoration:underline;text-underline-offset:3px}
-.evp-x{position:absolute;right:12px;top:12px;width:32px;height:32px;border:0;border-radius:9px;background:rgba(10,19,48,.35);color:#fff;font-size:20px;line-height:1;cursor:pointer;backdrop-filter:blur(4px)}
+/* ===== 이벤트 코너 카드 (components/EventPopup.tsx) ===== */
+/* 홈 첫 진입 시 좌하단에 올라오는 비모달 카드 — 딤·스크롤 잠금 없음.
+   우하단은 챗봇(.cbot) 자리이므로 좌측 고정, z-index는 챗봇(120)보다 낮게.
+   (센터 모달 스타일: 포스터형 git 65e5b5d · 16:9+본문형 897336b 참고) */
+.evp-card{position:fixed;left:20px;bottom:20px;z-index:110;width:min(320px,calc(100vw - 104px));background:#fff;border:1px solid var(--line);border-radius:var(--r);overflow:hidden;box-shadow:0 22px 60px -18px rgba(8,13,28,.4);animation:evpUp .35s ease}
+@keyframes evpUp{from{opacity:0;transform:translateY(16px)}}
+.evp-card-link{display:block;text-decoration:none;color:var(--ink)}
+.evp-card-media{display:block;position:relative;aspect-ratio:720/405;overflow:hidden}
+.evp-card-media img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
+.evp-card-body{display:flex;flex-direction:column;gap:3px;padding:13px 16px 14px}
+.evp-card-title{font-size:15px;font-weight:800;letter-spacing:-.01em}
+.evp-card-meta{font-size:12.5px;color:var(--slate-2)}
+.evp-card-cta{margin-top:5px;font-size:13px;font-weight:700;color:var(--blue-d)}
+.evp-card-link:hover .evp-card-cta{text-decoration:underline;text-underline-offset:3px}
+.evp-x{position:absolute;right:10px;top:10px;z-index:1;width:28px;height:28px;border:0;border-radius:8px;background:rgba(10,19,48,.35);color:#fff;font-size:18px;line-height:1;cursor:pointer;backdrop-filter:blur(4px)}
 .evp-x:hover{background:rgba(10,19,48,.55)}
+@media(max-width:560px){
+  .evp-card{left:16px;bottom:16px}
+}
 
 /* ===== GNB / Header (partial: <site-header>) ===== */
 /* 섹션 인지형 GNB — partials.js가 헤더 아래 섹션을 감지해 클래스를 토글한다(Notion 식).
