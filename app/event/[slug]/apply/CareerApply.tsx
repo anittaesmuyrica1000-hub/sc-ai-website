@@ -379,17 +379,22 @@ function ApplyStep({
 
               <div className={`field${invalid.email ? " invalid" : ""}`}>
                 <label htmlFor="ev-email">
-                  이메일 <span className="req">*</span>
+                  대학 이메일 <span className="req">*</span>
                 </label>
                 <input
                   type="email"
                   id="ev-email"
-                  placeholder="hong@example.com"
+                  placeholder="hong@univ.ac.kr"
                   value={fields.email}
                   onChange={(e) => set("email", e.target.value)}
                   onBlur={checkEmail}
                 />
-                <div className="hint">응시 안내와 AI 면접 링크를 이 주소로 보내드립니다.</div>
+                {/* 대학 메일 전용(2026-10-09) — 참가 대상 확인용. 면접 링크가 이 주소로 가므로
+                    본인 메일을 쓸 수밖에 없다. ac.kr 가 없는 경우(해외대 등)는 문의처로 받는다. */}
+                <div className="hint">
+                  재학·휴학 확인을 위해 대학 메일(@OO.ac.kr)만 입력할 수 있습니다. 응시 안내와 AI 면접 링크를 이
+                  주소로 보내드립니다. 대학 메일이 없다면 aicontest@supercoder.co로 문의해 주세요.
+                </div>
                 <div className="err">{emailMsg}</div>
               </div>
 
