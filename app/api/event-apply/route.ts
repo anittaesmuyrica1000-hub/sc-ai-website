@@ -75,6 +75,10 @@ export async function POST(req: Request) {
   const emailErr = eventEmailError(email);
   if (emailErr === "empty") return bad("이메일을 입력해 주세요.");
   if (emailErr === "format") return bad("올바른 이메일 형식으로 입력해 주세요.");
+  // 대학 메일 전용(2026-10-09). 참가 대상이 재학·휴학생이라 ac.kr 가 아니면 받지 않는다.
+  if (emailErr === "univ") {
+    return bad("대학 메일(@OO.ac.kr)로만 지원할 수 있습니다. 대학 메일이 없다면 aicontest@supercoder.co로 문의해 주세요.");
+  }
   // 일회용 메일은 11/2~3 면접 링크 발송이 그대로 유실된다. 전체 목록(8,792개)으로 한 번 더 본다.
   if (emailErr === "temp" || isDisposableEmail(email)) {
     return bad("일회용 메일로는 면접 링크를 받을 수 없습니다. 실제로 쓰는 메일을 입력해 주세요.");
