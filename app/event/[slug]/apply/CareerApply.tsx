@@ -389,11 +389,12 @@ function ApplyStep({
                   onChange={(e) => set("email", e.target.value)}
                   onBlur={checkEmail}
                 />
-                {/* 대학 메일 전용(2026-10-09) — 참가 대상 확인용. 면접 링크가 이 주소로 가므로
-                    본인 메일을 쓸 수밖에 없다. ac.kr 가 없는 경우(해외대 등)는 문의처로 받는다. */}
+                {/* 대학 메일 전용(2026-10-09, 10-11 .edu·ewhain.net 확장) — 참가 대상 확인용. 면접 링크가
+                    이 주소로 가므로 본인 메일을 쓸 수밖에 없다. 학교 메일이 없는 경우는 문의처로 받는다. */}
                 <div className="hint">
-                  재학·휴학 확인을 위해 대학 메일(@OO.ac.kr)만 입력할 수 있습니다. 응시 안내와 AI 면접 링크를 이
-                  주소로 보내드립니다. 대학 메일이 없다면 aicontest@supercoder.co로 문의해 주세요.
+                  재학·휴학 확인을 위해 학교에서 발급한 메일(@OO.ac.kr, @OO.edu, @ewhain.net)만 입력할 수
+                  있습니다. 응시 안내와 AI 면접 링크를 이 주소로 보내드립니다. 대학 메일이 없다면
+                  aicontest@supercoder.co로 문의해 주세요.
                 </div>
                 <div className="err">{emailMsg}</div>
               </div>
