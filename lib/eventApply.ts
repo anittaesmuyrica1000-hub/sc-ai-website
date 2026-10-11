@@ -248,11 +248,14 @@ export function evHowFoundText(how?: string | null, detail?: string | null): str
 }
 
 /* ── 이메일 ──────────────────────────────────────────────
-   대학 메일(*.ac.kr)만 받는다(2026-10-09). 참가 대상이 대학·대학원 재학·휴학생이라
+   대학 메일만 받는다(2026-10-09). 참가 대상이 대학·대학원 재학·휴학생이라
    대학 메일이 없는 직장인·일반인을 입구에서 거른다. 면접 링크가 이 주소로 가므로
-   남의 ac.kr 주소를 적으면 본인이 응시를 못 한다 — 소유 확인을 따로 하지 않는 근거.
+   남의 대학 주소를 적으면 본인이 응시를 못 한다 — 소유 확인을 따로 하지 않는 근거.
    졸업생도 평생 메일로는 통과할 수 있어 완전한 재학 검증은 아니다.
-   해외 대학 등 ac.kr 메일이 없는 지원자는 행사 문의처(aicontest@)로 받는다.
+   허용 도메인은 *.ac.kr 외에 *.edu 와 ewhain.net(2026-10-11 확장) — 성균관(@skku.edu·@g.skku.edu),
+   동국 교내메일(@dongguk.edu), 인하(@inha.edu), 한동(@handong.edu)처럼 ac.kr 을 안 쓰는 학교와
+   이화(@ewhain.net, 2024-02 이전 발급 재학생)가 ac.kr 전용 필터에 막혔기 때문. 해외 대학도 .edu 로 열린다.
+   그래도 학교 메일이 없는 지원자는 행사 문의처(aicontest@)로 받는다.
    일회용(temp mail) 차단은 유지 — 전체 목록 대조는 서버(lib/leadGuard.isDisposableEmail)가 한 번 더 한다. */
 const TEMP_MAIL_HINTS = [
   "mailinator.com", "10minutemail.com", "guerrillamail.com", "sharklasers.com",
@@ -266,14 +269,16 @@ export function eventEmailError(v: string): "empty" | "format" | "univ" | "temp"
   if (!emailRe.test(s)) return "format";
   const domain = s.toLowerCase().split("@")[1] || "";
   if (TEMP_MAIL_HINTS.some((d) => domain === d || domain.endsWith(`.${d}`))) return "temp";
-  if (!(domain === "ac.kr" || domain.endsWith(".ac.kr"))) return "univ";
+  const isUnivDomain =
+    domain === "ac.kr" || domain.endsWith(".ac.kr") || domain.endsWith(".edu") || domain === "ewhain.net";
+  if (!isUnivDomain) return "univ";
   return null;
 }
 
 export const EVENT_EMAIL_ERROR_MSG: Record<"empty" | "format" | "univ" | "temp", string> = {
   empty: "이메일을 입력해 주세요.",
   format: "올바른 이메일 형식으로 입력해 주세요.",
-  univ: "대학 메일(@OO.ac.kr)로만 지원할 수 있습니다. 대학 메일이 없다면 aicontest@supercoder.co로 문의해 주세요.",
+  univ: "대학 메일(@OO.ac.kr, @OO.edu 등)로만 지원할 수 있습니다. 대학 메일이 없다면 aicontest@supercoder.co로 문의해 주세요.",
   temp: "일회용 메일로는 면접 링크를 받을 수 없습니다. 실제로 쓰는 메일을 입력해 주세요.",
 };
 
