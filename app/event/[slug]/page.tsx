@@ -385,6 +385,18 @@ export default async function EventDetailPage({ params }: { params: Promise<{ sl
       },
     ],
     organizer: { "@type": "Organization", name: "슈퍼코더", url: "https://www.supercoder.co/" },
+    // image·offers·performer — GSC가 권장 필드 누락으로 경고한 3개(2026-10-10 메일).
+    // 무료 행사라 offers 는 0원 Offer 로 적는다(isAccessibleForFree 만으로는 경고가 안 닫힌다).
+    image: [`https://www.supercoder.co${e.ogImage}`],
+    performer: { "@type": "Organization", name: "슈퍼코더" },
+    offers: {
+      "@type": "Offer",
+      price: 0,
+      priceCurrency: "KRW",
+      availability: "https://schema.org/InStock",
+      validFrom: e.applyStart,
+      url: `https://www.supercoder.co/event/${e.slug}/apply`,
+    },
     isAccessibleForFree: true,
   };
 
