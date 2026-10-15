@@ -231,6 +231,34 @@ export type LegalVersion = {
   created_at?: string;
 };
 
+// 약관 용어 메모장(glossary_terms) — 어드민 #glossary 탭. 관리자 공용 본문.
+// 테이블·RLS는 supabase/glossary-setup.sql 참고.
+export type GlossaryTerm = {
+  id: string;
+  cat: string;
+  term: string;
+  aka: string;
+  short: string;
+  body: string;
+  refs: string[];          // 약관에서(조문 위치)
+  ours: string;            // 우리 서비스에선
+  watch: string;           // 이번 개정에서 볼 점 — 비어 있지 않으면 '개정 관련'
+  sort_order: number;
+  source: string;          // claude | me
+  asked: boolean;          // 담당자가 직접 물어본 개념
+  created_at?: string;
+  updated_at?: string | null;
+};
+
+// 약관 용어 메모장 — 관리자 본인의 숙지 체크·메모(본인 행만 RLS로 보인다)
+export type GlossaryProgress = {
+  term_id: string;
+  email: string;
+  learned: boolean;
+  memo: string;
+  updated_at?: string;
+};
+
 // 페이지별 SEO 메타데이터(초안) 타입 — 어드민 관리 + 페이지 generateMetadata 반영
 export type PageSeo = {
   id: string;

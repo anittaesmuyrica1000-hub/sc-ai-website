@@ -13,11 +13,12 @@ import { renderBody } from "@/lib/postRender";
 import { formatUpdateBody } from "@/lib/updateFormat";
 import { recommendTags } from "@/lib/keywords";
 import EventApplicants from "./EventApplicants";
+import Glossary from "./Glossary";
 
 // HTML 태그 제거(목록 미리보기·검증용)
 const stripTags = (s: string) => String(s || "").replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim();
 
-type Section = "dash" | "blog" | "updates" | "faq" | "brochure" | "legal" | "seo" | "signups" | "applicants" | "settings";
+type Section = "dash" | "blog" | "updates" | "faq" | "brochure" | "legal" | "glossary" | "seo" | "signups" | "applicants" | "settings";
 
 function fmtDateTime(s?: string) {
   if (!s) return "—";
@@ -152,6 +153,7 @@ const NAV: { key: Section; label: string; icon: string }[] = [
   { key: "faq", label: "FAQ", icon: "fa-circle-question" },
   { key: "brochure", label: "소개서", icon: "fa-file-pdf" },
   { key: "legal", label: "약관", icon: "fa-scale-balanced" },
+  { key: "glossary", label: "약관 용어", icon: "fa-bookmark" },
   { key: "seo", label: "SEO", icon: "fa-magnifying-glass" },
   { key: "signups", label: "도입문의", icon: "fa-inbox" },
   { key: "applicants", label: "이벤트 지원자", icon: "fa-user-check" },
@@ -164,6 +166,7 @@ const TITLE: Record<Section, { h: string; d: string }> = {
   faq: { h: "FAQ 관리", d: "자주 묻는 질문을 추가하고 수정합니다." },
   brochure: { h: "AI 면접 서비스 소개서", d: "도입문의 페이지와 웹사이트에서 제공되는 서비스 소개서를 관리합니다." },
   legal: { h: "약관 관리", d: "웹사이트 푸터의 약관(개인정보처리방침·이용약관)을 수정하거나 새 약관을 추가합니다." },
+  glossary: { h: "약관 용어 메모장", d: "처리방침·이용약관에 나오는 용어를 익힙니다. 숙지 체크와 메모는 나만 보고, 용어 설명은 관리자 모두가 함께 씁니다." },
   seo: { h: "SEO 메타데이터", d: "페이지별 검색·공유 메타데이터(제목·설명·OG)를 초안으로 만들고 적용합니다." },
   signups: { h: "도입문의 관리", d: "고객이 남긴 도입문의 기록을 확인하고 상담 상태를 관리합니다." },
   applicants: { h: "이벤트 지원자 관리", d: "이벤트 참가 신청 내역을 확인하고 선착순 순번·진행 상태를 관리합니다." },
@@ -181,7 +184,7 @@ function Console({ email }: { email: string }) {
   // (SSR 초기값은 "dash"로 두고, 마운트 후 해시를 읽어 복원 — 하이드레이션 불일치 방지.)
   const skipFirstSync = useRef(true);
   useEffect(() => {
-    const valid = new Set<Section>(["dash", "blog", "updates", "faq", "brochure", "legal", "seo", "signups", "applicants", "settings"]);
+    const valid = new Set<Section>(["dash", "blog", "updates", "faq", "brochure", "legal", "glossary", "seo", "signups", "applicants", "settings"]);
     const readHash = (): Section | null => {
       const h = (window.location.hash || "").replace(/^#/, "") as Section;
       return valid.has(h) ? h : null;
@@ -287,6 +290,7 @@ function Console({ email }: { email: string }) {
           {section === "faq" && <FaqManager />}
           {section === "brochure" && <BrochureSection onPurged={refreshExpired} />}
           {section === "legal" && <LegalManager />}
+          {section === "glossary" && <Glossary email={email} />}
           {section === "seo" && <SeoManager />}
           {section === "signups" && <SignupsManager onPurged={refreshExpired} />}
           {section === "applicants" && <EventApplicants />}
