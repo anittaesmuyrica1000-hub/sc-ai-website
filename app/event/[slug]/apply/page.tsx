@@ -7,10 +7,11 @@ import CareerApply from "./CareerApply";
 import { findEvent, statusOf } from "@/lib/events";
 import { buildPageMetadata } from "@/lib/pageSeo";
 
-// 모집 상태(모집 예정 → 모집 중 → 모집 마감)를 요청 시 계산한다.
-// ⚠️ generateStaticParams 를 두면 안 된다 — 빌드 시점 상태가 HTML에 박혀서
-//    10/6 이 와도 재배포 전까지 "아직 접수 전입니다"가 그대로 남는다.
-export const dynamic = "force-dynamic";
+// 모집 상태(모집 예정 → 모집 중 → 모집 마감)는 2분마다 재계산된다(ISR, 상세 페이지와 동일).
+// ⚠️ generateStaticParams 에서 실제 slug 를 돌려주면 안 된다 — 빌드 시점 상태가 HTML에 박혀서
+//    10/6 이 와도 재배포 전까지 "아직 접수 전입니다"가 그대로 남는다. 아래처럼 빈 배열만 둔다.
+export const revalidate = 120; // 모집 상태(예정→중→마감)는 2분마다 재계산 — 상세 페이지와 동일. 요청마다 렌더하던 force-dynamic 은 CPU 한도 때문에 제거(2026-10-19)
+export function generateStaticParams() { return []; } // 빌드 때 굽지 않음 — 첫 요청 렌더 후 2분 캐시
 
 export async function generateMetadata({
   params,

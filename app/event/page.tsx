@@ -9,7 +9,7 @@ import { EVENTS, statusOf } from "@/lib/events";
 import { buildPageMetadata } from "@/lib/pageSeo";
 
 // 모집 상태(모집 예정 → 모집 중 → 모집 마감)가 날짜에 따라 바뀌므로 요청 시 계산한다
-export const dynamic = "force-dynamic";
+export const revalidate = 120; // 모집 상태(예정→중→마감)는 2분마다 재계산 — 상세 페이지와 동일. 요청마다 렌더하던 force-dynamic 은 CPU 한도 때문에 제거(2026-10-19)
 
 const FALLBACK_METADATA: Metadata = {
   title: "이벤트 · AI 면접을 직접 해보는 자리",

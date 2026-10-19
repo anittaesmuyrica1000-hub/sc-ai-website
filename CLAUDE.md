@@ -32,6 +32,13 @@ Supercoder AI 웹사이트 — **AIVIEW** 제품 랜딩 + 블로그/도입문의
 - **정적 에셋은 `public/`** (로고 SVG, 리포트 PNG/webp, 파비콘, `brochure-aiview.pdf`, `logos/`, `charts/`, `robots.txt`, `sitemap.xml`). 절대경로(`/supercoder-nav.svg`)로 참조.
 - **구 `.html` URL은 `next.config.mjs` redirects로 클린 URL에 308 매핑**(`/apply.html`→`/apply` 등). 기존 인바운드 링크·SEO 보존.
 
+## 렌더링·캐시 (2026-10-19, Vercel 무료 한도 대응)
+
+- **공개 페이지는 전부 ISR.** 블로그 목록·상세·RSS·사이트맵·업데이트·약관/개인정보(날짜 이력 포함)·법적 문서는 `revalidate = 600`, 이벤트 목록·지원 페이지는 `120`(상세와 동일), 랜딩·도입문의·소개서는 기존 `120`. **`force-dynamic`을 다시 넣지 않는다** — 봇 요청마다 서버 렌더가 돌아 Hobby Active CPU 한도(월 4h)를 넘겼던 원인이다.
+- **"저장하면 바로 반영"은 `/api/revalidate`가 담당.** 어드민(`AdminClient.tsx`)은 posts·updates·faq·legal_docs·page_seo·site_settings 저장/삭제 직후 `revalidateSite(paths?)`(`lib/revalidateClient.ts`)를 호출한다. 서버는 Supabase 세션 토큰을 검증하고 `admins`에 있는 이메일만 통과시킨 뒤 `revalidatePath`를 실행한다. 새 어드민 저장 지점을 만들면 같은 호출을 붙인다.
+- **예약 발행(publish_at)은 최대 10분 지연**될 수 있다(ISR 주기). 정확한 시각이 중요하면 그 시각에 어드민에서 아무 저장이나 한 번 하거나 `/api/revalidate`를 호출한다.
+- **middleware.ts는 제거됨.** `*.vercel.app` 접근 noindex 헤더는 `next.config.mjs`의 `headers()`(host 조건)로 옮겼다. 미들웨어가 필요해지면 호출 비용을 먼저 따진다.
+
 ## Backend (Supabase)
 
 - **프로젝트:** `supercoder-aiview` (ref `ymzlcghqamkynuvotzgh`, region ap-northeast-2). org `uwuwftckkxbtbqjlsrav`.

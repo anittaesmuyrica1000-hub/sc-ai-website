@@ -5,7 +5,11 @@ import { supabase, type Update } from "@/lib/supabase";
 import UpdateShell from "../UpdateShell";
 import ViewCounter from "@/components/ViewCounter";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 600; // ISR 10분 캐시 — 어드민 저장 시 /api/revalidate 가 즉시 갱신. force-dynamic 은 봇 요청마다 서버 렌더가 돌아 Vercel 무료 CPU 한도를 넘겼다(2026-10-19)
+
+// 동적 세그먼트는 generateStaticParams 가 없으면 revalidate 를 적어도 매 요청 렌더(SSR)로 취급된다.
+// 빈 배열을 돌려주면 빌드 때는 아무것도 굽지 않고, 첫 요청 때 렌더한 결과를 revalidate 주기로 캐시한다(on-demand ISR).
+export function generateStaticParams() { return []; }
 
 async function getData(id: string): Promise<{ items: Update[]; active: Update | null }> {
   try {
