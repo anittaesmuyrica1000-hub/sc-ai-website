@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState, useCallback, useRef } from "react";
 import type { Session } from "@supabase/supabase-js";
 import { supabase, type Post, type Update, type Faq, type Signup, type BrochureRequest, type LegalDoc, type LegalVersion, type PageSeo, legalPath, RESERVED_LEGAL_SLUGS, SIGNUP_STATUSES, SEO_PAGES, TRACKING_KEYS, UTM_LABEL } from "@/lib/supabase";
+import { revalidateSite } from "@/lib/revalidateClient";
 import { UPDATE_CATEGORIES } from "@/app/update/badge";
 import { howFoundText } from "@/lib/leadForm";
 import { fmtDate } from "@/lib/format";
@@ -557,6 +558,7 @@ function Settings({ email }: { email: string }) {
       const { error } = await supabase.from("site_settings")
         .upsert({ key: "ga_measurement_id", value: v, updated_at: new Date().toISOString() }, { onConflict: "key" });
       if (error) throw error;
+      void revalidateSite();
       setGaMsg({ text: v ? "저장됐습니다. 잠시 후 사이트에 적용됩니다." : "측정 ID를 비웠습니다(GA 비활성화).", ok: true });
     } catch (err) { console.error("ga save failed:", err); setGaMsg({ text: "저장에 실패했습니다. 설정 테이블(site-settings-setup.sql) 적용 여부를 확인해 주세요.", ok: false }); }
     finally { setGaBusy(false); }
@@ -574,6 +576,7 @@ function Settings({ email }: { email: string }) {
       const { error } = await supabase.from("site_settings")
         .upsert({ key: "gtm_container_id", value: v, updated_at: new Date().toISOString() }, { onConflict: "key" });
       if (error) throw error;
+      void revalidateSite();
       setGtmMsg({ text: v ? "저장됐습니다. 잠시 후 사이트에 적용됩니다." : "컨테이너 ID를 비웠습니다(GTM 비활성화).", ok: true });
     } catch (err) { console.error("gtm save failed:", err); setGtmMsg({ text: "저장에 실패했습니다. 설정 테이블(site-settings-setup.sql) 적용 여부를 확인해 주세요.", ok: false }); }
     finally { setGtmBusy(false); }
@@ -877,6 +880,7 @@ function BlogManager() {
       }
       if (res.error) throw res.error;
       showMsg(form.id ? "수정되었습니다." : "등록되었습니다.", true);
+      void revalidateSite(["/blog", "/blog/rss.xml", "/sitemap.xml", ...(slug ? [`/blog/${slug}`] : []), ...(form.id ? [`/blog/${form.id}`] : [])]);
       // 저장 후 목록을 통째로 다시 받으면(load 의 select("*")) 글 수십 편의 본문까지 딸려 와
       // 저장할 때마다 화면이 눈에 띄게 멈춘다. 수정은 방금 보낸 값을 이미 알고 있으므로
       // 로컬 목록만 갱신하고, 신규는 서버가 만든 id 가 필요하므로 그때만 재조회한다.
@@ -898,6 +902,7 @@ function BlogManager() {
     try {
       const res = await supabase.from("posts").delete().eq("id", p.id);
       if (res.error) throw res.error;
+      void revalidateSite();
       if (form?.id === p.id) setForm(null);
       await load();
     } catch (err) { console.error("delete failed:", err); alert("삭제에 실패했습니다."); }
@@ -1370,6 +1375,7 @@ function UpdatesManager() {
       }
       if (res.error) throw res.error;
       showMsg(form.id ? "수정되었습니다." : "등록되었습니다.", true);
+      void revalidateSite(["/update", "/sitemap.xml", ...(slug ? [`/update/${slug}`] : []), ...(form.id ? [`/update/${form.id}`] : [])]);
       // 블로그 저장과 같은 이유 — 수정은 로컬 목록만 갱신해 전체 재조회를 피한다.
       if (form.id) {
         const id = form.id;
@@ -1391,6 +1397,7 @@ function UpdatesManager() {
     try {
       const res = await supabase.from("updates").delete().eq("id", u.id);
       if (res.error) throw res.error;
+      void revalidateSite();
       if (form?.id === u.id) setForm(null);
       await load();
     } catch (err) { console.error("delete failed:", err); alert("삭제에 실패했습니다."); }
@@ -1577,14 +1584,14 @@ function FaqManager() {
       if (form.id) { payload.updated_at = new Date().toISOString(); res = await supabase.from("faq").update(payload).eq("id", form.id); }
       else { res = await supabase.from("faq").insert(payload); }
       if (res.error) throw res.error;
-      showMsg(form.id ? "수정되었습니다." : "등록되었습니다.", true); setForm(null); await load();
+      showMsg(form.id ? "수정되었습니다." : "등록되었습니다.", true); void revalidateSite(); setForm(null); await load();
     } catch (err) { console.error("faq save failed:", err); showMsg("저장에 실패했습니다. 관리자 권한 또는 마이그레이션 적용을 확인해 주세요.", false); }
     finally { setSaving(false); }
   }
 
   async function del(it: Faq) {
     if (!confirm("이 FAQ를 삭제할까요? 되돌릴 수 없습니다.\n\n" + it.question)) return;
-    try { const res = await supabase.from("faq").delete().eq("id", it.id); if (res.error) throw res.error; if (form?.id === it.id) setForm(null); await load(); }
+    try { const res = await supabase.from("faq").delete().eq("id", it.id); if (res.error) throw res.error; void revalidateSite(); if (form?.id === it.id) setForm(null); await load(); }
     catch (err) { console.error("faq delete failed:", err); alert("삭제에 실패했습니다."); }
   }
 
@@ -1595,6 +1602,7 @@ function FaqManager() {
     try {
       await supabase.from("faq").update({ sort_order: b.sort_order, updated_at: new Date().toISOString() }).eq("id", a.id);
       await supabase.from("faq").update({ sort_order: a.sort_order, updated_at: new Date().toISOString() }).eq("id", b.id);
+      void revalidateSite();
       await load();
     } catch (err) { console.error("reorder failed:", err); alert("순서 변경에 실패했습니다."); }
   }
@@ -1776,7 +1784,7 @@ function LegalManager() {
         if (res.error) throw res.error;
         showMsg("등록되었습니다.", true);
       }
-      setForm(null); await load(); await loadVersions();
+      void revalidateSite(); setForm(null); await load(); await loadVersions();
     } catch (err) {
       console.error("legal save failed:", err);
       const dup = String((err as { message?: string })?.message || "").toLowerCase().includes("duplicate");
@@ -1789,6 +1797,7 @@ function LegalManager() {
     try {
       const res = await supabase.from("legal_docs").delete().eq("id", it.id);
       if (res.error) throw res.error;
+      void revalidateSite();
       if (form?.id === it.id) setForm(null);
       await load();
     } catch (err) { console.error("legal delete failed:", err); alert("삭제에 실패했습니다."); }
@@ -2036,6 +2045,7 @@ function SeoManager() {
         : await supabase.from("page_seo").insert(payload);
       if (res.error) throw res.error;
       showMsg(form.published ? "저장 후 페이지에 적용됐습니다." : "초안으로 저장됐습니다. (적용 체크 시 페이지에 반영)", true);
+      void revalidateSite([form.path]);
       setForm(null);
       await load();
     } catch (err) {
@@ -2050,6 +2060,7 @@ function SeoManager() {
     try {
       const res = await supabase.from("page_seo").delete().eq("id", row.id);
       if (res.error) throw res.error;
+      void revalidateSite([row.path]);
       if (form?.id === row.id) setForm(null);
       await load();
     } catch (err) { console.error("page_seo delete failed:", err); alert("삭제에 실패했습니다."); }

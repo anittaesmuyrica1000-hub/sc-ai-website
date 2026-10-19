@@ -7,7 +7,7 @@ import { EVENT_JOBS, JOB_DETAIL_EVENT } from "@/lib/eventApply";
 // /sitemap.xml 로 제공된다(기존 정적 public/sitemap.xml 대체). 글을 추가하면 자동 반영.
 const SITE_URL = "https://www.supercoder.co";
 
-export const dynamic = "force-dynamic"; // 글 변경이 바로 반영되도록 요청 시 생성
+export const revalidate = 600; // ISR 10분 캐시 — 어드민 저장 시 /api/revalidate 가 즉시 갱신. force-dynamic 은 봇 요청마다 서버 렌더가 돌아 Vercel 무료 CPU 한도를 넘겼다(2026-10-19)
 
 type PostRow = { id: string; slug?: string | null; updated_at?: string | null; created_at?: string | null };
 

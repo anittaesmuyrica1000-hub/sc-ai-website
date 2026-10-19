@@ -4,7 +4,7 @@ import { supabase, publishAtVisibleOr, type Post } from "@/lib/supabase";
 import BlogClient from "./BlogClient";
 import { buildPageMetadata } from "@/lib/pageSeo";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 600; // ISR 10분 캐시 — 어드민 저장 시 /api/revalidate 가 즉시 갱신. force-dynamic 은 봇 요청마다 서버 렌더가 돌아 Vercel 무료 CPU 한도를 넘겼다(2026-10-19)
 
 const FALLBACK_METADATA: Metadata = {
   title: "블로그 · AI 면접 채용 인사이트",

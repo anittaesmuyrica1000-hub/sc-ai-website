@@ -27,6 +27,13 @@ const nextConfig = {
   // 보안 헤더 (SEO 진단 2026-08-07: 클릭재킹·MIME 스니핑·리퍼러 노출 방지)
   async headers() {
     return [
+      // *.vercel.app 접근은 색인 차단 — 예전 middleware.ts 가 하던 일. 미들웨어는 모든 요청마다
+      // 실행돼 호출·CPU를 쓰므로(2026-10-19 Vercel Hobby Active CPU 한도 초과) 정적 헤더 규칙으로 대체했다.
+      {
+        source: "/(.*)",
+        has: [{ type: "host", value: "(.*)\\.vercel\\.app" }],
+        headers: [{ key: "X-Robots-Tag", value: "noindex, nofollow" }],
+      },
       {
         source: "/(.*)",
         headers: [

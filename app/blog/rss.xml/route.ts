@@ -5,7 +5,7 @@ import { renderBody } from "@/lib/postRender";
 // 네이버 권장: 대표 이미지 + 본문 전체(content:encoded) 포함. /blog/rss.xml 로 제공.
 const SITE_URL = "https://www.supercoder.co";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 600; // ISR 10분 캐시 — 어드민 저장 시 /api/revalidate 가 즉시 갱신. force-dynamic 은 봇 요청마다 서버 렌더가 돌아 Vercel 무료 CPU 한도를 넘겼다(2026-10-19)
 
 type Row = {
   id: string;
